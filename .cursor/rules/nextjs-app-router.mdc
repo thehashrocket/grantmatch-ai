@@ -245,6 +245,7 @@ export const fetchDashboardStats = cache(async () => {
 ## Resources
 - @React Documentation https://react.dev/reference/react
 - @Next.js Documentation https://nextjs.org/docs
+- @Prisma Documentation https://www.prisma.io/docs/guides/nextjs
 - @TypeScript Documentation https://www.typescriptlang.org/docs/
 - @Tailwind CSS https://tailwindcss.com/docs
 - Lucide-React for icons

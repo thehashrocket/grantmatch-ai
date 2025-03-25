@@ -331,6 +331,7 @@ export const ProductCard = ({ product, onAddToCart }: ProductCardProps) => {
 ## Resources
 - [React Documentation](mdc:https:/react.dev) https://react.dev/reference/react
 - [Next.js Documentation](mdc:https:/nextjs.org/docs) https://nextjs.org/docs
+- @Prisma Documentation https://www.prisma.io/docs/guides/nextjs
 - [TypeScript Documentation](mdc:https:/www.typescriptlang.org/docs) https://www.typescriptlang.org/docs/
 - [Tailwind CSS](mdc:https:/tailwindcss.com/docs) https://tailwindcss.com/docs
 - Lucide-React for icons

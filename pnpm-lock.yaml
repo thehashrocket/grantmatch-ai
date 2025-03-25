@@ -8,6 +8,30 @@ importers:
 
   .:
     dependencies:
+      '@tanstack/react-query':
+        specifier: ^5.69.0
+        version: 5.69.0(react@19.0.0)
+      '@trpc/client':
+        specifier: ^11.0.0
+        version: 11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2)
+      '@trpc/next':
+        specifier: ^11.0.0
+        version: 11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/react-query@11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(next@15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
+      '@trpc/react-query':
+        specifier: ^11.0.0
+        version: 11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
+      '@trpc/server':
+        specifier: ^11.0.0
+        version: 11.0.0(typescript@5.8.2)
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      lucide-react:
+        specifier: ^0.483.0
+        version: 0.483.0(react@19.0.0)
       next:
         specifier: 15.2.3
         version: 15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -17,33 +41,45 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.0.0(react@19.0.0)
+      superjson:
+        specifier: ^2.2.2
+        version: 2.2.2
+      tailwind-merge:
+        specifier: ^3.0.2
+        version: 3.0.2
+      tw-animate-css:
+        specifier: ^1.2.4
+        version: 1.2.4
+      zod:
+        specifier: ^3.24.2
+        version: 3.24.2
     devDependencies:
       '@eslint/eslintrc':
-        specifier: ^3
+        specifier: ^3.3.1
         version: 3.3.1
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: ^4.0.15
         version: 4.0.15
       '@types/node':
-        specifier: ^20
+        specifier: ^20.17.25
         version: 20.17.25
       '@types/react':
-        specifier: ^19
+        specifier: ^19.0.12
         version: 19.0.12
       '@types/react-dom':
-        specifier: ^19
+        specifier: ^19.0.4
         version: 19.0.4(@types/react@19.0.12)
       eslint:
-        specifier: ^9
+        specifier: ^9.23.0
         version: 9.23.0(jiti@2.4.2)
       eslint-config-next:
         specifier: 15.2.3
         version: 15.2.3(eslint@9.23.0(jiti@2.4.2))(typescript@5.8.2)
       tailwindcss:
-        specifier: ^4
+        specifier: ^4.0.15
         version: 4.0.15
       typescript:
-        specifier: ^5
+        specifier: ^5.8.2
         version: 5.8.2
 
 packages:
@@ -385,6 +421,52 @@ packages:
   '@tailwindcss/postcss@4.0.15':
     resolution: {integrity: sha512-qyrpoDKIO7wzkRbKCvGLo7gXRjT9/Njf7ZJiJhG4njrfZkvOhjwnaHpYbpxYeDysEg+9pB1R4jcd+vQ7ZUDsmQ==}
 
+  '@tanstack/query-core@5.69.0':
+    resolution: {integrity: sha512-Kn410jq6vs1P8Nm+ZsRj9H+U3C0kjuEkYLxbiCyn3MDEiYor1j2DGVULqAz62SLZtUZ/e9Xt6xMXiJ3NJ65WyQ==}
+
+  '@tanstack/react-query@5.69.0':
+    resolution: {integrity: sha512-Ift3IUNQqTcaFa1AiIQ7WCb/PPy8aexZdq9pZWLXhfLcLxH0+PZqJ2xFImxCpdDZrFRZhLJrh76geevS5xjRhA==}
+    peerDependencies:
+      react: ^18 || ^19
+
+  '@trpc/client@11.0.0':
+    resolution: {integrity: sha512-U2THlxsdr4ykAX5lpTU8k5WRADPQ+68Ex2gfUht3MlCxGK7njBmNSSzjpQSWNt7tMI/xsYrddFiRlmEPrh+Cbg==}
+    peerDependencies:
+      '@trpc/server': 11.0.0
+      typescript: '>=5.7.2'
+
+  '@trpc/next@11.0.0':
+    resolution: {integrity: sha512-HpowgsF0jfXG30jEBVK8v90ltbEZiQZq/x0rsjScfZuedkAfapqZvrsrkzv6Pkemz7sxaxJcZB3HEqXxWfkGoA==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.59.15
+      '@trpc/client': 11.0.0
+      '@trpc/react-query': 11.0.0
+      '@trpc/server': 11.0.0
+      next: '>=15.2.2'
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+      typescript: '>=5.7.2'
+    peerDependenciesMeta:
+      '@tanstack/react-query':
+        optional: true
+      '@trpc/react-query':
+        optional: true
+
+  '@trpc/react-query@11.0.0':
+    resolution: {integrity: sha512-HeE9bBLA6nqC2xk5wlNZIPQ5vmyli3tgNNab8fTE489+ksNMKxaIx66pZKsMJIorDcP1wS0rWNV+GroU0iR98g==}
+    peerDependencies:
+      '@tanstack/react-query': ^5.67.1
+      '@trpc/client': 11.0.0
+      '@trpc/server': 11.0.0
+      react: '>=18.2.0'
+      react-dom: '>=18.2.0'
+      typescript: '>=5.7.2'
+
+  '@trpc/server@11.0.0':
+    resolution: {integrity: sha512-xY9q/b/wR/tWGYTm5xmRjivkYD2EZZXmOKmHuNJRYZuLbieeNUsdfQRjJC409WB1pjKWInomhHwuA8bahZJ4lQ==}
+    peerDependencies:
+      typescript: '>=5.7.2'
+
   '@tybys/wasm-util@0.9.0':
     resolution: {integrity: sha512-6+7nlbMVX/PVDCwaIQ8nTOPveOcFLSt8GcXdx8hD0bt39uWxYT88uXzqTd4fTvqta7oeUJqudepapKNt2DYJFw==}
 
@@ -625,8 +707,15 @@ packages:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
 
+  class-variance-authority@0.7.1:
+    resolution: {integrity: sha512-Ka+9Trutv7G8M6WT6SeiRWz792K5qEqIGEGzXKhAE6xOWAY6pPH8U+9IY3oCMv6kqTmLsv7Xh/2w2RigkePMsg==}
+
   client-only@0.0.1:
     resolution: {integrity: sha512-IV3Ou0jSMzZrd3pZ48nLkT9DA7Ag1pnPzaiQhpW7c3RbcqqzvzzVu+L8gfqMp/8IM2MQtSiqaCxrrcfu8I8rMA==}
+
+  clsx@2.1.1:
+    resolution: {integrity: sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==}
+    engines: {node: '>=6'}
 
   color-convert@2.0.1:
     resolution: {integrity: sha512-RRECPsj7iu/xb5oKYcsFHSppFNnsj/52OVTRKb4zP5onXwVF3zVmmToNcOfGC+CRDpfK/U584fMg38ZHCaElKQ==}
@@ -644,6 +733,10 @@ packages:
 
   concat-map@0.0.1:
     resolution: {integrity: sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==}
+
+  copy-anything@3.0.5:
+    resolution: {integrity: sha512-yCEafptTtb4bk7GLEQoM8KVJpxAfdBJYaXyzQEgQQQgYrZiDp8SJmGKlYza6CYjEDNstAdNdKA3UuoULlEbS6w==}
+    engines: {node: '>=12.13'}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -1113,6 +1206,10 @@ packages:
     resolution: {integrity: sha512-mfcwb6IzQyOKTs84CQMrOwW4gQcaTOAWJ0zzJCl2WSPDrWk/OzDaImWFH3djXhb24g4eudZfLRozAvPGw4d9hQ==}
     engines: {node: '>= 0.4'}
 
+  is-what@4.1.16:
+    resolution: {integrity: sha512-ZhMwEosbFJkA0YhFnNDgTM4ZxDRsS6HqTo7qsZM08fehyRYIYa0yHu5R6mgo1n/8MgaPBXiPimPD77baVFYg+A==}
+    engines: {node: '>=12.13'}
+
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
@@ -1239,6 +1336,11 @@ packages:
   loose-envify@1.4.0:
     resolution: {integrity: sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==}
     hasBin: true
+
+  lucide-react@0.483.0:
+    resolution: {integrity: sha512-WldsY17Qb/T3VZdMnVQ9C3DDIP7h1ViDTHVdVGnLZcvHNg30zH/MTQ04RTORjexoGmpsXroiQXZ4QyR0kBy0FA==}
+    peerDependencies:
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -1562,6 +1664,10 @@ packages:
       babel-plugin-macros:
         optional: true
 
+  superjson@2.2.2:
+    resolution: {integrity: sha512-5JRxVqC8I8NuOUjzBbvVJAKNM8qoVuH0O77h4WInc/qC2q5IreqKxYwgkga3PfA22OayK2ikceb/B26dztPl+Q==}
+    engines: {node: '>=16'}
+
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
     engines: {node: '>=8'}
@@ -1569,6 +1675,9 @@ packages:
   supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+
+  tailwind-merge@3.0.2:
+    resolution: {integrity: sha512-l7z+OYZ7mu3DTqrL88RiKrKIqO3NcpEO8V/Od04bNpvk0kiIFndGEoqfuzvj4yuhRkHKjRkII2z+KS2HfPcSxw==}
 
   tailwindcss@4.0.15:
     resolution: {integrity: sha512-6ZMg+hHdMJpjpeCCFasX7K+U615U9D+7k5/cDK/iRwl6GptF24+I/AbKgOnXhVKePzrEyIXutLv36n4cRsq3Sg==}
@@ -1596,6 +1705,9 @@ packages:
 
   tslib@2.8.1:
     resolution: {integrity: sha512-oJFu94HQb+KVduSUQL7wnpmqnfmLsOA/nAh6b6EH0wCEoK0/mPeXU6c3wKDV83MkOuHPRHtSXKKU99IBazS/2w==}
+
+  tw-animate-css@1.2.4:
+    resolution: {integrity: sha512-yt+HkJB41NAvOffe4NweJU6fLqAlVx/mBX6XmHRp15kq0JxTtOKaIw8pVSWM1Z+n2nXtyi7cW6C9f0WG/F/QAQ==}
 
   type-check@0.4.0:
     resolution: {integrity: sha512-XleUoc9uwGXqjWwXaUTZAmzMcFZ5858QA2vvx1Ur5xIcixXIP+8LnFDgRplU30us6teqdlskFfu+ae4K79Ooew==}
@@ -1660,6 +1772,9 @@ packages:
   yocto-queue@0.1.0:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
+
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
 snapshots:
 
@@ -1935,6 +2050,43 @@ snapshots:
       lightningcss: 1.29.2
       postcss: 8.5.3
       tailwindcss: 4.0.15
+
+  '@tanstack/query-core@5.69.0': {}
+
+  '@tanstack/react-query@5.69.0(react@19.0.0)':
+    dependencies:
+      '@tanstack/query-core': 5.69.0
+      react: 19.0.0
+
+  '@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2)':
+    dependencies:
+      '@trpc/server': 11.0.0(typescript@5.8.2)
+      typescript: 5.8.2
+
+  '@trpc/next@11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/react-query@11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(next@15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)':
+    dependencies:
+      '@trpc/client': 11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2)
+      '@trpc/server': 11.0.0(typescript@5.8.2)
+      next: 15.2.3(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      typescript: 5.8.2
+    optionalDependencies:
+      '@tanstack/react-query': 5.69.0(react@19.0.0)
+      '@trpc/react-query': 11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
+
+  '@trpc/react-query@11.0.0(@tanstack/react-query@5.69.0(react@19.0.0))(@trpc/client@11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2))(@trpc/server@11.0.0(typescript@5.8.2))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.8.2)':
+    dependencies:
+      '@tanstack/react-query': 5.69.0(react@19.0.0)
+      '@trpc/client': 11.0.0(@trpc/server@11.0.0(typescript@5.8.2))(typescript@5.8.2)
+      '@trpc/server': 11.0.0(typescript@5.8.2)
+      react: 19.0.0
+      react-dom: 19.0.0(react@19.0.0)
+      typescript: 5.8.2
+
+  '@trpc/server@11.0.0(typescript@5.8.2)':
+    dependencies:
+      typescript: 5.8.2
 
   '@tybys/wasm-util@0.9.0':
     dependencies:
@@ -2214,7 +2366,13 @@ snapshots:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
 
+  class-variance-authority@0.7.1:
+    dependencies:
+      clsx: 2.1.1
+
   client-only@0.0.1: {}
+
+  clsx@2.1.1: {}
 
   color-convert@2.0.1:
     dependencies:
@@ -2235,6 +2393,10 @@ snapshots:
     optional: true
 
   concat-map@0.0.1: {}
+
+  copy-anything@3.0.5:
+    dependencies:
+      is-what: 4.1.16
 
   cross-spawn@7.0.6:
     dependencies:
@@ -2867,6 +3029,8 @@ snapshots:
       call-bound: 1.0.4
       get-intrinsic: 1.3.0
 
+  is-what@4.1.16: {}
+
   isarray@2.0.5: {}
 
   isexe@2.0.0: {}
@@ -2974,6 +3138,10 @@ snapshots:
   loose-envify@1.4.0:
     dependencies:
       js-tokens: 4.0.0
+
+  lucide-react@0.483.0(react@19.0.0):
+    dependencies:
+      react: 19.0.0
 
   math-intrinsics@1.1.0: {}
 
@@ -3375,11 +3543,17 @@ snapshots:
       client-only: 0.0.1
       react: 19.0.0
 
+  superjson@2.2.2:
+    dependencies:
+      copy-anything: 3.0.5
+
   supports-color@7.2.0:
     dependencies:
       has-flag: 4.0.0
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  tailwind-merge@3.0.2: {}
 
   tailwindcss@4.0.15: {}
 
@@ -3406,6 +3580,8 @@ snapshots:
       strip-bom: 3.0.0
 
   tslib@2.8.1: {}
+
+  tw-animate-css@1.2.4: {}
 
   type-check@0.4.0:
     dependencies:
@@ -3507,3 +3683,5 @@ snapshots:
   word-wrap@1.2.5: {}
 
   yocto-queue@0.1.0: {}
+
+  zod@3.24.2: {}

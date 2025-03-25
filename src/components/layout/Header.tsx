@@ -3,6 +3,7 @@
 import { MainNav } from '@/components/layout/MainNav'
 import { MobileNav } from '@/components/layout/MobileNav'
 import { UserNav } from '@/components/layout/UserNav'
+import { Sparkles } from 'lucide-react'
 
 interface HeaderProps {
   user?: {
@@ -17,7 +18,8 @@ export function Header({ user }: HeaderProps) {
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
         <MobileNav user={user} />
-        <div className="mr-4 hidden md:flex">
+        <div className="mr-4 hidden md:flex items-center space-x-2">
+          <Sparkles className="h-5 w-5 text-primary" />
           <span className="font-bold">GrantMatch</span>
         </div>
         <MainNav className="hidden md:flex" />

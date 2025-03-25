@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { Home, Info } from 'lucide-react'
 
 export function MainNav({
   className,
@@ -18,20 +19,22 @@ export function MainNav({
       <Link
         href="/"
         className={cn(
-          'text-sm font-medium transition-colors hover:text-primary',
+          'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
           pathname === '/' ? 'text-primary' : 'text-muted-foreground'
         )}
       >
-        Home
+        <Home className="h-4 w-4" />
+        <span>Home</span>
       </Link>
       <Link
         href="/about"
         className={cn(
-          'text-sm font-medium transition-colors hover:text-primary',
+          'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
           pathname === '/about' ? 'text-primary' : 'text-muted-foreground'
         )}
       >
-        About
+        <Info className="h-4 w-4" />
+        <span>About</span>
       </Link>
     </nav>
   )

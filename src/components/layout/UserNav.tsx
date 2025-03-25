@@ -11,7 +11,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { User } from 'lucide-react'
+import { User, LogIn, LogOut, UserCircle } from 'lucide-react'
 
 interface UserNavProps {
   user?: {
@@ -24,8 +24,11 @@ interface UserNavProps {
 export function UserNav({ user }: UserNavProps) {
   if (!user) {
     return (
-      <Button asChild variant="ghost">
-        <Link href="/login">Login</Link>
+      <Button asChild variant="ghost" size="sm" className="gap-2">
+        <Link href="/login">
+          <LogIn className="h-4 w-4" />
+          <span>Login</span>
+        </Link>
       </Button>
     )
   }
@@ -64,15 +67,20 @@ export function UserNav({ user }: UserNavProps) {
         </div>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile">Profile</Link>
+          <Link href="/profile" className="flex items-center gap-2">
+            <UserCircle className="h-4 w-4" />
+            <span>Profile</span>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem
+          className="flex items-center gap-2"
           onSelect={(event) => {
             event.preventDefault()
             signOut({ callbackUrl: '/' })
           }}
         >
-          Log out
+          <LogOut className="h-4 w-4" />
+          <span>Log out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

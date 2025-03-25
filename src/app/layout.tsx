@@ -4,6 +4,7 @@ import { TRPCProvider } from "@/lib/trpc/Provider";
 import { Toaster } from "sonner";
 import "./globals.css";
 import { NextAuthProvider } from '@/components/providers/next-auth-provider'
+import { ErrorBoundary } from "@/components/error-boundary";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,39 +23,41 @@ export default function RootLayout({
       <body className={inter.className}>
         <NextAuthProvider>
           <TRPCProvider>
-            <div className="min-h-screen flex flex-col">
-              <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="h-16 flex items-center justify-between">
-                    <div className="flex items-center">
-                      <h1 className="text-2xl font-bold tracking-tight">
-                        GrantMatch.AI
-                      </h1>
+            <ErrorBoundary>
+              <div className="min-h-screen flex flex-col">
+                <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="h-16 flex items-center justify-between">
+                      <div className="flex items-center">
+                        <h1 className="text-2xl font-bold tracking-tight">
+                          GrantMatch.AI
+                        </h1>
+                      </div>
+                      {/* Navigation can be added here later */}
+                      <nav className="hidden md:block">
+                        {/* Future nav items */}
+                      </nav>
                     </div>
-                    {/* Navigation can be added here later */}
-                    <nav className="hidden md:block">
-                      {/* Future nav items */}
-                    </nav>
                   </div>
-                </div>
-              </header>
+                </header>
 
-              <main className="flex-grow">
-                <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
-                  {children}
-                </div>
-              </main>
-
-              <footer className="mt-auto bg-gray-50 border-t border-gray-200">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="py-8 text-center text-gray-600">
-                    <p className="text-sm">
-                      © {new Date().getFullYear()} GrantMatch.AI - Empowering Non-Profits
-                    </p>
+                <main className="flex-grow">
+                  <div className="max-w-4xl mx-auto p-4 sm:p-6 lg:p-8">
+                    {children}
                   </div>
-                </div>
-              </footer>
-            </div>
+                </main>
+
+                <footer className="mt-auto bg-gray-50 border-t border-gray-200">
+                  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="py-8 text-center text-gray-600">
+                      <p className="text-sm">
+                        © {new Date().getFullYear()} GrantMatch.AI - Empowering Non-Profits
+                      </p>
+                    </div>
+                  </div>
+                </footer>
+              </div>
+            </ErrorBoundary>
           </TRPCProvider>
           <Toaster />
         </NextAuthProvider>

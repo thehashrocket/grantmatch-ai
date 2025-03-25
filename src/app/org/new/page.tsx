@@ -4,23 +4,34 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from 'sonner';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Loading } from '@/components/ui/loading';
+import { useState } from 'react';
 
 const organizationSchema = z.object({
-  name: z.string().min(2, 'Organization name must be at least 2 characters'),
-  mission: z.string().min(10, 'Mission statement must be at least 10 characters'),
-  focusAreas: z.string().min(2, 'Focus areas are required'),
-  location: z.string().min(2, 'Location is required'),
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  mission: z.string().min(10, 'Mission must be at least 10 characters'),
+  focusAreas: z.string().min(2, 'At least one focus area is required'),
+  location: z.string().min(2, 'Location must be at least 2 characters'),
 });
 
 type OrganizationForm = z.infer<typeof organizationSchema>;
 
 export default function NewOrganizationPage() {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  
   const form = useForm<OrganizationForm>({
     resolver: zodResolver(organizationSchema),
     defaultValues: {
@@ -33,6 +44,7 @@ export default function NewOrganizationPage() {
 
   async function onSubmit(data: OrganizationForm) {
     try {
+      setIsSubmitting(true);
       const response = await fetch('/api/organizations', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -42,15 +54,23 @@ export default function NewOrganizationPage() {
         }),
       });
 
+      const result = await response.json();
+
       if (!response.ok) {
-        throw new Error('Failed to create organization');
+        throw new Error(result.error || 'Failed to create organization');
       }
 
       toast.success('Organization created successfully');
       router.push('/dashboard');
     } catch (error) {
-      toast.error('Failed to create organization');
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error('An unexpected error occurred');
+      }
       console.error('Error creating organization:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -121,15 +141,25 @@ export default function NewOrganizationPage() {
                 <FormItem>
                   <FormLabel>Location</FormLabel>
                   <FormControl>
-                    <Input placeholder="City, State, Country" {...field} />
+                    <Input
+                      placeholder="City, State, or Country"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Button type="submit" className="w-full">
-              {form.formState.isSubmitting ? 'Creating...' : 'Create Organization'}
+            <Button type="submit" disabled={isSubmitting} className="w-full">
+              {isSubmitting ? (
+                <>
+                  <Loading size="sm" className="mr-2" />
+                  Creating...
+                </>
+              ) : (
+                'Create Organization'
+              )}
             </Button>
           </form>
         </Form>

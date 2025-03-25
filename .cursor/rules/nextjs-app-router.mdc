@@ -243,11 +243,12 @@ export const fetchDashboardStats = cache(async () => {
 - Maintain proper color contrast
 
 ## Resources
-- @React Documentation https://react.dev/reference/react
-- @Next.js Documentation https://nextjs.org/docs
-- @Prisma Documentation https://www.prisma.io/docs/guides/nextjs
-- @TypeScript Documentation https://www.typescriptlang.org/docs/
-- @Tailwind CSS https://tailwindcss.com/docs
+- React Documentation https://react.dev/reference/react
+- NextAuth Documentation https://next-auth.js.org/getting-started/introduction
+- Next.js Documentation https://nextjs.org/docs
+- Prisma Documentation https://www.prisma.io/docs/guides/nextjs
+- TypeScript Documentation https://www.typescriptlang.org/docs/
+- Tailwind CSS https://tailwindcss.com/docs
 - Lucide-React for icons
-- @Shadcn UI - Use shadcn@latest instead of shadcn-ui@latest
+- Shadcn UI - Use shadcn@latest instead of shadcn-ui@latest
 - @WCAG Guidelines

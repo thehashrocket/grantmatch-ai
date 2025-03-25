@@ -1,132 +1,139 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from 'sonner';
-import { trpc } from '@/lib/trpc/client';
-import { createOrganizationSchema } from '@/lib/validations/organization';
-import type { z } from 'zod';
-import type { TRPCClientErrorLike } from '@trpc/client';
-import { DefaultErrorShape } from '@trpc/server/unstable-core-do-not-import';
-type FormData = z.infer<typeof createOrganizationSchema>;
+
+const organizationSchema = z.object({
+  name: z.string().min(2, 'Organization name must be at least 2 characters'),
+  mission: z.string().min(10, 'Mission statement must be at least 10 characters'),
+  focusAreas: z.string().min(2, 'Focus areas are required'),
+  location: z.string().min(2, 'Location is required'),
+});
+
+type OrganizationForm = z.infer<typeof organizationSchema>;
 
 export default function NewOrganizationPage() {
   const router = useRouter();
-  const createOrganization = trpc.organization.create.useMutation({
-    onSuccess: () => {
-      toast.success('Organization created successfully');
-      router.push('/dashboard');
-    },
-    onError: (error: TRPCClientErrorLike<{ input: { name: string; mission: string; focusAreas: string[]; location: string; }; output: { name: string; mission: string; focusAreas: string[]; location: string; id: string; createdAt: Date; updatedAt: Date; }; transformer: true; errorShape: DefaultErrorShape; }>) => {
-      toast.error(error.message);
-    },
-  });
-
-  const form = useForm<FormData>({
-    resolver: zodResolver(createOrganizationSchema),
+  const form = useForm<OrganizationForm>({
+    resolver: zodResolver(organizationSchema),
     defaultValues: {
       name: '',
       mission: '',
-      focusAreas: [],
+      focusAreas: '',
       location: '',
     },
   });
 
-  const onSubmit = async (data: FormData) => {
-    // Convert comma-separated focus areas string to array
-    const formattedData = {
-      ...data,
-      focusAreas: data.focusAreas.length ? data.focusAreas : data.focusAreas.toString().split(',').map(area => area.trim()).filter(Boolean),
-    };
-    
-    createOrganization.mutate(formattedData);
-  };
+  async function onSubmit(data: OrganizationForm) {
+    try {
+      const response = await fetch('/api/organizations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...data,
+          focusAreas: data.focusAreas.split(',').map(area => area.trim()),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to create organization');
+      }
+
+      toast.success('Organization created successfully');
+      router.push('/dashboard');
+    } catch (error) {
+      toast.error('Failed to create organization');
+      console.error('Error creating organization:', error);
+    }
+  }
 
   return (
-    <div className="max-w-2xl mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-8">Create New Organization</h1>
-      
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Organization Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Enter organization name" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+    <div className="container mx-auto max-w-2xl py-8">
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight">Create Your Organization</h1>
+          <p className="text-muted-foreground">
+            Tell us about your organization to get started.
+          </p>
+        </div>
 
-          <FormField
-            control={form.control}
-            name="mission"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Mission Statement</FormLabel>
-                <FormControl>
-                  <Textarea 
-                    placeholder="Enter your organization's mission statement"
-                    className="min-h-[100px]"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Organization Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter organization name" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="focusAreas"
-            render={({ field: { onChange, value, ...fieldProps } }) => (
-              <FormItem>
-                <FormLabel>Focus Areas</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter focus areas (comma-separated)"
-                    onChange={(e) => onChange(e.target.value.split(',').map(area => area.trim()))}
-                    value={Array.isArray(value) ? value.join(', ') : ''}
-                    {...fieldProps}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="mission"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Mission Statement</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe your organization's mission"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="City, State" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+            <FormField
+              control={form.control}
+              name="focusAreas"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Focus Areas</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Education, Healthcare, Environment (comma-separated)"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-          <Button 
-            type="submit" 
-            className="w-full"
-            disabled={createOrganization.isPending}
-          >
-            {createOrganization.isPending ? 'Creating...' : 'Create Organization'}
-          </Button>
-        </form>
-      </Form>
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Location</FormLabel>
+                  <FormControl>
+                    <Input placeholder="City, State, Country" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type="submit" className="w-full">
+              {form.formState.isSubmitting ? 'Creating...' : 'Create Organization'}
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 } 

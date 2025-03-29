@@ -2,6 +2,8 @@ import { PrismaAdapter } from "@auth/prisma-adapter"
 import { NextAuthOptions } from "next-auth"
 import { db } from "./db"
 import GoogleProvider from "next-auth/providers/google"
+import CredentialsProvider from "next-auth/providers/credentials"
+import { compare } from "bcryptjs"
 import { Prisma } from "@prisma/client"
 
 type UserWithRole = Prisma.UserGetPayload<{
@@ -38,9 +40,48 @@ export const authOptions: NextAuthOptions = {
     strategy: "jwt"
   },
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/login",
   },
   providers: [
+    CredentialsProvider({
+      id: "credentials",
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" }
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials")
+        }
+
+        const user = await db.user.findUnique({
+          where: { email: credentials.email }
+        })
+
+        if (!user || !user.password) {
+          throw new Error("Invalid credentials")
+        }
+
+        if (!user.emailVerified) {
+          throw new Error("Please verify your email before signing in")
+        }
+
+        const isValid = await compare(credentials.password, user.password)
+
+        if (!isValid) {
+          throw new Error("Invalid credentials")
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          role: user.role,
+          organizationId: user.organizationId,
+        }
+      }
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -72,7 +113,23 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async signIn({ user }) {
-      return true // Allow all sign-ins for now
+      if (user.email) {
+        const dbUser = await db.user.findUnique({
+          where: { email: user.email },
+          select: { emailVerified: true }
+        })
+
+        // For OAuth sign-in, automatically verify email
+        if (!dbUser?.emailVerified && user.email.endsWith("@gmail.com")) {
+          await db.user.update({
+            where: { email: user.email },
+            data: { emailVerified: new Date() }
+          })
+        }
+
+        return !!dbUser?.emailVerified
+      }
+      return true
     },
     async redirect({ url, baseUrl }) {
       // Handle role-based redirects after sign-in

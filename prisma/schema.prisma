@@ -47,8 +47,10 @@ model Session {
 
 model User {
   id            String    @id @default(cuid())
-  name          String?
+  firstName     String?
+  lastName      String?
   email         String?   @unique
+  phone         String?
   password      String?   @db.Text
   emailVerified DateTime?
   image         String?
@@ -72,10 +74,34 @@ model VerificationToken {
 model Organization {
   id          String   @id @default(uuid())
   name        String
-  mission     String
+  description String   @db.Text
+  mission     String   @default("Not specified")
   focusAreas  String[]
-  location    String
+  address1    String
+  address2    String?
+  city        String
+  state       String
+  zipCode     String
   users       User[]
+  invitations Invitation[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+model Invitation {
+  id            String           @id @default(cuid())
+  email         String
+  status        InvitationStatus @default(PENDING)
+  organization  Organization     @relation(fields: [organizationId], references: [id])
+  organizationId String
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  @@unique([email, organizationId])
 }

@@ -76,7 +76,7 @@ export const authOptions: NextAuthOptions = {
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
+          name: user.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : null,
           role: user.role,
           organizationId: user.organizationId,
         }

@@ -5,7 +5,8 @@ import { db } from '@/lib/db'
 import { sendVerificationEmail } from '@/lib/mail'
 
 const registerSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters'),
+  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
   password: z.string()
     .min(12, 'Password must be at least 12 characters')
@@ -38,7 +39,8 @@ export async function POST(req: Request) {
     // Create the user
     const user = await db.user.create({
       data: {
-        name: body.name,
+        firstName: body.firstName,
+        lastName: body.lastName,
         email: body.email,
         password: hashedPassword,
       },

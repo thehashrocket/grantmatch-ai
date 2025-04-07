@@ -85,6 +85,18 @@ export const authOptions: NextAuthOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      profile(profile) {
+        // Split the name into firstName and lastName
+        const [firstName = '', lastName = ''] = (profile.name ?? '').split(' ')
+        return {
+          id: profile.sub,
+          firstName,
+          lastName,
+          email: profile.email,
+          image: profile.picture,
+          role: "USER" as const,
+        }
+      },
     }),
   ],
   callbacks: {

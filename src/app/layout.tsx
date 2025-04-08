@@ -10,14 +10,14 @@ import { Header } from "@/components/layout/Header";
 import { getServerSession } from "next-auth";
 
 export const metadata: Metadata = {
-  title: "GrantMatch.AI",
+  title: "AI GrantMatch",
   description: "Find the perfect grants for your non-profit organization",
-  metadataBase: new URL('https://grantmatch.ai'),
+  metadataBase: new URL('https://aigrantmatch.com'),
   keywords: ['grants', 'nonprofits', 'funding', 'AI', 'grant matching'],
-  authors: [{ name: 'GrantMatch.AI' }],
+  authors: [{ name: 'AI GrantMatch' }],
   openGraph: {
     type: 'website',
-    title: 'GrantMatch.AI - Empowering Nonprofits',
+    title: 'AI GrantMatch - Empowering Nonprofits',
     description: 'Find and secure the funding you need to make a lasting impact in your community',
   },
 };
@@ -61,7 +61,7 @@ export default async function RootLayout({
                           <a href="/contact" className="hover:text-primary transition-colors">Contact</a>
                         </div>
                         <p className="text-sm text-gray-500 dark:text-gray-500">
-                          © {new Date().getFullYear()} GrantMatch.AI - Empowering Non-Profits
+                          © {new Date().getFullYear()} AI GrantMatch - Empowering Non-Profits
                         </p>
                       </div>
                     </div>

@@ -3,8 +3,8 @@ import { redirect } from 'next/navigation'
 import { db } from '@/lib/db'
 
 export const metadata: Metadata = {
-  title: 'Verify Email - GrantMatch.AI',
-  description: 'Verify your email address to activate your GrantMatch.AI account',
+  title: 'Verify Email - AI GrantMatch',
+  description: 'Verify your email address to activate your AI GrantMatch account',
 }
 
 async function verifyEmail(token: string) {

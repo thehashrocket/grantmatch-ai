@@ -3,8 +3,8 @@ import Link from 'next/link'
 import { RegisterForm } from '@/components/auth/register-form'
 
 export const metadata: Metadata = {
-  title: 'Create Account - GrantMatch.AI',
-  description: 'Create a new account to get started with GrantMatch.AI',
+  title: 'Create Account - AI GrantMatch',
+  description: 'Create a new account to get started with AI GrantMatch',
 }
 
 export default function RegisterPage() {

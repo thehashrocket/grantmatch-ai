@@ -4,8 +4,8 @@ import { redirect } from 'next/navigation'
 import { ProfileForm } from '@/components/profile/profile-form'
 
 export const metadata: Metadata = {
-  title: 'Profile - GrantMatch.AI',
-  description: 'Manage your GrantMatch.AI profile',
+  title: 'Profile - AI GrantMatch',
+  description: 'Manage your AI GrantMatch profile',
 }
 
 export default async function ProfilePage() {

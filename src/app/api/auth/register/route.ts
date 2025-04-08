@@ -18,6 +18,7 @@ const registerSchema = z.object({
 
 export async function POST(req: Request) {
   try {
+    console.log('Starting registration process...')
     const json = await req.json()
     const body = registerSchema.parse(json)
 
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
     })
 
     if (existingUser) {
+      console.log('User already exists:', body.email)
       return NextResponse.json(
         { message: 'User with this email already exists' },
         { status: 409 }
@@ -36,6 +38,7 @@ export async function POST(req: Request) {
     // Hash the password
     const hashedPassword = await hash(body.password, 10)
 
+    console.log('Creating new user:', body.email)
     // Create the user
     const user = await db.user.create({
       data: {
@@ -46,6 +49,7 @@ export async function POST(req: Request) {
       },
     })
 
+    console.log('Creating verification token...')
     // Create verification token
     const verificationToken = await db.verificationToken.create({
       data: {
@@ -55,8 +59,20 @@ export async function POST(req: Request) {
       },
     })
 
+    console.log('Sending verification email...')
     // Send verification email
-    await sendVerificationEmail(body.email, verificationToken.token)
+    try {
+      await sendVerificationEmail(body.email, verificationToken.token)
+      console.log('Verification email sent successfully')
+    } catch (emailError) {
+      console.error('Failed to send verification email:', emailError)
+      // Delete the created user and token if email fails
+      await db.$transaction([
+        db.verificationToken.delete({ where: { token: verificationToken.token } }),
+        db.user.delete({ where: { id: user.id } })
+      ])
+      throw emailError
+    }
 
     return NextResponse.json(
       { message: 'User created successfully. Please check your email to verify your account.' },
@@ -64,6 +80,7 @@ export async function POST(req: Request) {
     )
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.error('Validation error:', error.issues)
       return NextResponse.json(
         { message: 'Invalid registration data', errors: error.issues },
         { status: 422 }
@@ -71,6 +88,10 @@ export async function POST(req: Request) {
     }
 
     console.error('Registration error:', error)
+    if (error instanceof Error) {
+      console.error('Error details:', error.message)
+      console.error('Error stack:', error.stack)
+    }
     return NextResponse.json(
       { message: 'Something went wrong. Please try again.' },
       { status: 500 }

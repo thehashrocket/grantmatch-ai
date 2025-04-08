@@ -2,8 +2,8 @@ import { Metadata } from 'next'
 import { LoginForm } from '@/components/auth/login-form'
 
 export const metadata: Metadata = {
-  title: 'Login - GrantMatch.AI',
-  description: 'Login to your GrantMatch.AI account',
+  title: 'Login - AI GrantMatch',
+  description: 'Login to your AI GrantMatch account',
 }
 
 export default function LoginPage() {
@@ -24,14 +24,14 @@ export default function LoginPage() {
         
         <div className="relative z-20 flex items-center">
           <h1 className="text-4xl font-bold tracking-tight">
-            GrantMatch.AI
+            AI GrantMatch
           </h1>
         </div>
         
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-6">
             <p className="text-xl leading-relaxed">
-              "GrantMatch.AI has revolutionized how we find and apply for grants. It's an invaluable tool that has helped us secure funding to make a real difference in our community."
+              "AI GrantMatch has revolutionized how we find and apply for grants. It's an invaluable tool that has helped us secure funding to make a real difference in our community."
             </p>
             <footer className="text-sm">
               <p className="font-semibold">Sofia Davis</p>
@@ -65,7 +65,7 @@ export default function LoginPage() {
           </div>
           
           <p className="px-8 text-center text-sm text-muted-foreground">
-            New to GrantMatch.AI?{" "}
+            New to AI GrantMatch?{" "}
             <a href="/register" className="underline underline-offset-4 hover:text-primary transition-colors">
               Create an account
             </a>

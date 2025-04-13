@@ -31,6 +31,7 @@ declare module "next-auth/jwt" {
   interface JWT {
     role?: UserWithRole["role"]
     organizationId?: string | null
+    sub?: string
   }
 }
 
@@ -41,6 +42,10 @@ export const authOptions: NextAuthOptions = {
   },
   pages: {
     signIn: "/login",
+    signOut: "/",
+    error: "/login",
+    verifyRequest: "/verify-request",
+    newUser: "/onboarding"
   },
   providers: [
     CredentialsProvider({
@@ -102,27 +107,23 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.sub!
-        session.user.role = token.role as UserWithRole["role"]
-        session.user.organizationId = token.organizationId ?? null
+        session.user.id = token.sub as string;
+        session.user.role = token.role as UserWithRole["role"];
+        session.user.organizationId = token.organizationId as string | null;
       }
-      return session
+      return session;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
-        const dbUser = await db.user.findUnique({
-          where: { id: user.id },
-          select: {
-            role: true,
-            organizationId: true
-          }
-        })
-        if (dbUser) {
-          token.role = dbUser.role
-          token.organizationId = dbUser.organizationId
-        }
+        // Initial sign in
+        token.role = (user as unknown as UserWithRole).role;
+        token.organizationId = (user as unknown as UserWithRole).organizationId;
+      } else if (trigger === "update" && session?.user) {
+        // Handle session update
+        token.role = session.user.role;
+        token.organizationId = session.user.organizationId;
       }
-      return token
+      return token;
     },
     async signIn({ user }) {
       if (user.email) {
@@ -144,28 +145,7 @@ export const authOptions: NextAuthOptions = {
       return true
     },
     async redirect({ url, baseUrl }) {
-      // Handle role-based redirects after sign-in
-      if (url.startsWith(baseUrl)) {
-        // Get user ID from the URL or token
-        const userId = new URL(url).searchParams.get("userId")
-        
-        if (!userId) return baseUrl
-
-        const dbUser = await db.user.findUnique({
-          where: { id: userId },
-          select: { role: true, organizationId: true }
-        })
-
-        if (dbUser?.role === "ADMIN") {
-          return `${baseUrl}/admin`
-        }
-
-        if (dbUser?.role === "USER" && !dbUser?.organizationId) {
-          return `${baseUrl}/org/new`
-        }
-
-        return `${baseUrl}/dashboard`
-      }
+      if (url.startsWith(baseUrl)) return url
       return baseUrl
     }
   }

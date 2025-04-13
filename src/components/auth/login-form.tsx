@@ -91,6 +91,7 @@ export function LoginForm() {
                 <Input
                   type="password"
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                   {...field}
                   disabled={isPending}
                 />

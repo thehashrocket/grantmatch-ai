@@ -39,7 +39,9 @@ export default async function VerifyEmailPage({
 }: {
   searchParams: { token?: string }
 }) {
-  const token = searchParams.token
+  // Ensure searchParams is resolved before accessing properties
+  const params = await Promise.resolve(searchParams)
+  const token = params.token
 
   if (!token) {
     redirect('/')

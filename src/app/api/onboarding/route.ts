@@ -2,12 +2,13 @@ import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { createId } from '@paralleldrive/cuid2';
+import { authOptions } from '@/lib/auth';
 
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession();
-    if (!session?.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized - User ID not found' }, { status: 401 });
     }
 
     const formData = await req.formData();
@@ -29,11 +30,15 @@ export async function POST(req: Request) {
     const teamEmails = formData.get('teamEmails') as string;
     const teamEmailsArray = teamEmails ? JSON.parse(teamEmails) as string[] : [];
 
+    // Validate required fields
+    if (!firstName || !lastName || !companyName || !address1 || !city || !state || !zipCode || !description) {
+      return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
+    }
+
     // Handle avatar upload if provided
     let avatarUrl: string | undefined;
     if (avatar) {
       // TODO: Implement file upload to your preferred storage service
-      // For now, we'll skip this part
     }
 
     // Create or update organization
@@ -42,8 +47,8 @@ export async function POST(req: Request) {
         id: createId(),
         name: companyName,
         description,
-        mission: 'Not specified', // Using the default value
-        focusAreas: [], // Empty array for now
+        mission: 'Not specified',
+        focusAreas: [],
         address1,
         address2: address2 || undefined,
         city,
@@ -52,9 +57,11 @@ export async function POST(req: Request) {
       },
     });
 
-    // Update user
-    await db.user.update({
-      where: { id: session.user.id },
+    // Update user with organization ID
+    const updatedUser = await db.user.update({
+      where: { 
+        id: session.user.id 
+      },
       data: {
         firstName,
         lastName,
@@ -62,6 +69,14 @@ export async function POST(req: Request) {
         image: avatarUrl,
         organizationId: organization.id,
       },
+      select: {
+        id: true,
+        email: true,
+        firstName: true,
+        lastName: true,
+        organizationId: true,
+        role: true,
+      }
     });
 
     // Send invitations to team members
@@ -80,17 +95,30 @@ export async function POST(req: Request) {
       );
     }
 
-    return NextResponse.json(
+    // Return response with updated user data
+    const response = NextResponse.json(
       { 
         message: 'Onboarding completed successfully',
-        organizationId: organization.id 
+        organizationId: organization.id,
+        user: updatedUser
       },
       { status: 200 }
     );
+
+    // Set a cookie to handle the transition period
+    response.cookies.set('onboarding_complete', 'true', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 5 // 5 minutes
+    });
+
+    return response;
+
   } catch (error) {
     console.error('Onboarding error:', error);
     return NextResponse.json(
-      { error: 'Failed to complete onboarding' },
+      { error: error instanceof Error ? error.message : 'Failed to complete onboarding' },
       { status: 500 }
     );
   }

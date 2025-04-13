@@ -162,6 +162,7 @@ export function RegisterForm() {
                 <Input
                   type="password"
                   placeholder="Create a password"
+                  autoComplete="new-password"
                   {...field}
                   disabled={isPending}
                 />
@@ -191,6 +192,7 @@ export function RegisterForm() {
                 <Input
                   type="password"
                   placeholder="Confirm your password"
+                  autoComplete="new-password"
                   {...field}
                   disabled={isPending}
                 />

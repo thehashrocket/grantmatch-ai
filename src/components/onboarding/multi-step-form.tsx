@@ -6,6 +6,7 @@ import { PersonalInfoForm } from './personal-info-form';
 import { CompanyInfoForm } from './company-info-form';
 import { TeamInviteForm } from './team-invite-form';
 import { toast } from 'sonner';
+import { signIn, useSession } from 'next-auth/react';
 
 type OnboardingStep = 'personal' | 'company' | 'team';
 
@@ -31,6 +32,7 @@ export interface FormData {
 
 export function MultiStepForm() {
   const router = useRouter();
+  const { update: updateSession } = useSession();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('personal');
   const [formData, setFormData] = useState<FormData>({
@@ -69,6 +71,7 @@ export function MultiStepForm() {
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true);
+      console.log('Starting onboarding submission...');
       
       const submitData = new FormData();
       
@@ -83,22 +86,38 @@ export function MultiStepForm() {
         }
       });
 
+      console.log('Submitting onboarding data to API...');
       const response = await fetch('/api/onboarding', {
         method: 'POST',
         body: submitData,
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to submit form');
-      }
-
       const result = await response.json();
+      console.log('Onboarding API response:', result);
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit form');
+      }
       
+      // Update the session with new user data
+      await updateSession({
+        ...result.user,
+        organizationId: result.organizationId
+      });
+
       toast.success('Profile completed successfully!');
-      router.push('/dashboard'); // Redirect to dashboard after successful submission
+      
+      // Navigate to dashboard
+      router.push('/dashboard');
+
     } catch (error) {
       console.error('Form submission error:', error);
-      toast.error('Failed to complete profile. Please try again.');
+      
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to complete profile. Please try again.';
+      
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }

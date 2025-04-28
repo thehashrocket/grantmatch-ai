@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { User, LogIn, LogOut, UserCircle } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 
 interface UserNavProps {
   user?: {
@@ -22,7 +23,8 @@ interface UserNavProps {
 }
 
 export function UserNav({ user }: UserNavProps) {
-  if (!user) {
+  const { data: session } = useSession()
+  if (!session) {
     return (
       <Button asChild variant="ghost" size="sm" className="gap-2">
         <Link href="/login">
@@ -38,10 +40,10 @@ export function UserNav({ user }: UserNavProps) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            {user.image ? (
+            {session?.user?.image ? (
               <img
-                src={user.image}
-                alt={user.name || 'User avatar'}
+                src={session.user.image}
+                alt={session.user.name || 'User avatar'}
                 className="h-8 w-8 rounded-full"
               />
             ) : (
@@ -55,12 +57,12 @@ export function UserNav({ user }: UserNavProps) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <div className="flex items-center justify-start gap-2 p-2">
           <div className="flex flex-col space-y-1">
-            {user.name && (
-              <p className="text-sm font-medium leading-none">{user.name}</p>
+            {session?.user?.name && (
+              <p className="text-sm font-medium leading-none">{session?.user?.name}</p>
             )}
-            {user.email && (
+            {session?.user?.email && (
               <p className="text-xs leading-none text-muted-foreground">
-                {user.email}
+                {session?.user?.email}
               </p>
             )}
           </div>

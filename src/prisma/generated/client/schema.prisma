@@ -64,7 +64,7 @@ enum GrantOpenDateType {
 }
 
 model Grant {
-  id                    String       @id @default(cuid())
+  id                    String             @id @default(cuid())
   url                   String
   title                 String
   deadline              DateTime?
@@ -78,7 +78,7 @@ model Grant {
   fundsDisbursment      String
   currentAsOf           DateTime
   grantor               String
-  portalId              Int          @unique
+  portalId              Int                @unique
   opportunityType       String
   purpose               String
   eligibleApplicants    String

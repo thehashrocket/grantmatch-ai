@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect } from 'react';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { trpc } from '@/lib/trpc/client';
 import { getFitScoreCategory, getFitScoreColor, type GrantMatch } from '@/lib/types/grant';
+import { Button } from '@/components/ui/button';
+import { useSession } from 'next-auth/react';
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('en-US', {
@@ -22,13 +23,42 @@ function formatDate(dateString: string): string {
   });
 }
 
+// Make a fetch grants button
+// Makes a request to the /api/gp/start route
+// Redirects to the /dashboard page
+
+const fetchGrants = async (session: any) => {
+  const response = await fetch('/api/gp/start', {
+    method: 'POST',
+    body: JSON.stringify(
+      { dateStart: '2024-01-01', 
+        dateEnd: '2024-01-31',
+        requestedByUserId: session?.user?.id
+      }
+    ),
+  });
+  return response.json();
+}
+
 export default function DashboardPage() {
+  const { data: session } = useSession();
   const { data: grants, isLoading, error } = trpc.grants.getMatches.useQuery();
 
   if (isLoading) {
     return (
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">Grant Matches</h1>
+        <p className="text-muted-foreground">Loading...</p>
+        <div className="flex justify-center items-center">
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="gap-2"
+            onClick={() => {
+              fetchGrants(session);
+            }}
+          >Fetch Grants</Button>
+        </div>
         <div className="grid gap-4 md:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
             <Card key={i} className="animate-pulse">

@@ -156,9 +156,29 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
                   {grant.details.eligibilityRequirements && (
                     <div>
                       <h3 className="font-medium">Additional Requirements</h3>
-                      <pre className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">
-                        {JSON.stringify(grant.details.eligibilityRequirements, null, 2)}
-                      </pre>
+                      <div className="mt-2 space-y-2">
+                        {grant.details.eligibilityRequirements.requirements && (
+                          <p className="text-sm text-muted-foreground">
+                            {grant.details.eligibilityRequirements.requirements}
+                          </p>
+                        )}
+                        {grant.details.eligibilityRequirements.eligibleApplicants && Array.isArray(grant.details.eligibilityRequirements.eligibleApplicants) && (
+                          <div>
+                            <span className="font-medium">Eligible Applicants: </span>
+                            <span className="text-sm text-muted-foreground">
+                              {grant.details.eligibilityRequirements.eligibleApplicants.join(', ')}
+                            </span>
+                          </div>
+                        )}
+                        {grant.details.eligibilityRequirements.eligibleGeographies && (
+                          <div>
+                            <span className="font-medium">Eligible Geographies: </span>
+                            <span className="text-sm text-muted-foreground">
+                              {grant.details.eligibilityRequirements.eligibleGeographies}
+                            </span>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   )}
                 </div>
@@ -171,9 +191,56 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
               </CardHeader>
               <CardContent>
                 {grant.details.fundingDetails && (
-                  <pre className="whitespace-pre-wrap text-sm text-muted-foreground">
-                    {JSON.stringify(grant.details.fundingDetails, null, 2)}
-                  </pre>
+                  <div className="space-y-2">
+                    {grant.details.fundingDetails.fundingMethod && (
+                      <div>
+                        <span className="font-medium">Funding Method: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.fundingMethod}</span>
+                        {grant.details.fundingDetails.fundingMethodNotes && (
+                          <p className="text-xs text-muted-foreground mt-1">{grant.details.fundingDetails.fundingMethodNotes}</p>
+                        )}
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.fundingSource && (
+                      <div>
+                        <span className="font-medium">Funding Source: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.fundingSource}</span>
+                        {grant.details.fundingDetails.fundingSourceNotes && (
+                          <p className="text-xs text-muted-foreground mt-1">{grant.details.fundingDetails.fundingSourceNotes}</p>
+                        )}
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.totalEstimatedFunding && (
+                      <div>
+                        <span className="font-medium">Total Estimated Funding: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.totalEstimatedFunding}</span>
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.expectedNumberOfAwards && (
+                      <div>
+                        <span className="font-medium">Expected Number of Awards: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.expectedNumberOfAwards}</span>
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.estimatedAmountPerAward && (
+                      <div>
+                        <span className="font-medium">Estimated Amount Per Award: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.estimatedAmountPerAward}</span>
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.letterOfIntentRequired && (
+                      <div>
+                        <span className="font-medium">Letter of Intent Required: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.letterOfIntentRequired}</span>
+                      </div>
+                    )}
+                    {grant.details.fundingDetails.requiresMatchedFunding && (
+                      <div>
+                        <span className="font-medium">Requires Matched Funding: </span>
+                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.requiresMatchedFunding}</span>
+                      </div>
+                    )}
+                  </div>
                 )}
               </CardContent>
             </Card>

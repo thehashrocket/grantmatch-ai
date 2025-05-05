@@ -79,7 +79,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   try {
     await prisma.grantDetail.create({
       data: {
-        grantId: grant.id,
+        grantId: grantId,
         title: grant.title, // n8n does not return title
         purpose: webhookData.purpose || grant.purpose,
         description: typeof webhookData.description === 'string' ? webhookData.description : JSON.stringify(webhookData.description),

@@ -46,6 +46,7 @@ export const grantsRouter = router({
           id: grant.id,
           title: grant.title,
           url: grant.url,
+          internalUrl: `/grants/${grant.id}`,
           fitScore,
           explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose}`,
           fundingAmount: Number(grant.estimatedTotalFunding),

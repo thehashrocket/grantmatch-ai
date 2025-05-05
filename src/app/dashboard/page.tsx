@@ -6,6 +6,7 @@ import { trpc } from '@/lib/trpc/client';
 import { getFitScoreCategory, getFitScoreColor, type GrantMatch } from '@/lib/types/grant';
 import { Button } from '@/components/ui/button';
 import { useSession } from 'next-auth/react';
+import { ExternalLink } from 'lucide-react';
 
 function formatCurrency(amount: number): string {
   return new Intl.NumberFormat('en-US', {
@@ -17,9 +18,9 @@ function formatCurrency(amount: number): string {
 
 function formatDate(dateString: string): string {
   return new Date(dateString).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
+    month: 'short',
     day: 'numeric',
+    year: 'numeric'
   });
 }
 
@@ -87,7 +88,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="container mx-auto space-y-4">
       <h1 className="text-3xl font-bold">Grant Matches</h1>
       <div className="grid gap-4 md:grid-cols-2">
         {grants?.map((grant: GrantMatch) => {
@@ -101,18 +102,25 @@ export default function DashboardPage() {
                   <div className="space-y-1.5">
                     <CardTitle className="text-xl">
                       <Link 
-                        href={grant.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                        href={grant.internalUrl}
                         className="hover:underline"
                       >
                         {grant.title}
                       </Link>
                     </CardTitle>
-                    <CardDescription>
+                    <CardDescription className="flex items-center gap-2">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
                         Fit Score: {grant.fitScore.toFixed(1)}
                       </span>
+                      <a
+                        href={grant.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        <span>View Original</span>
+                      </a>
                     </CardDescription>
                   </div>
                   <div className="text-right">

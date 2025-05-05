@@ -1,0 +1,185 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
+
+interface GrantDetailsClientProps {
+  grantId: string;
+  initialGrant: any;
+}
+
+function GrantDetailsSkeleton() {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Skeleton className="h-8 w-[250px]" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Skeleton className="h-[200px]" />
+        <Skeleton className="h-[200px]" />
+      </div>
+    </div>
+  );
+}
+
+export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetailsClientProps) {
+  const [grant, setGrant] = useState(initialGrant);
+  const [loading, setLoading] = useState(!initialGrant.details);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchDetails() {
+      try {
+        const res = await fetch(`/api/grants/${grantId}/details`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+        });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (!cancelled) {
+          setGrant(data);
+          if (data.details) {
+            setLoading(false);
+            if (intervalRef.current) clearInterval(intervalRef.current);
+          }
+        }
+      } catch (e) {
+        // Optionally handle error
+      }
+    }
+
+    // If details are missing, poll every 3s
+    if (!grant.details) {
+      setLoading(true);
+      fetchDetails();
+      intervalRef.current = setInterval(fetchDetails, 3000);
+    } else {
+      setLoading(false);
+    }
+    return () => {
+      cancelled = true;
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grantId]);
+
+  if (loading) return <GrantDetailsSkeleton />;
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">{grant.title}</h1>
+        <p className="text-muted-foreground">
+          Portal ID: {grant.portalId}
+        </p>
+      </div>
+
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle>Basic Information</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h3 className="font-medium">Purpose</h3>
+              <p className="text-sm text-muted-foreground">{grant.purpose}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">State Agency</h3>
+              <p className="text-sm text-muted-foreground">{grant.stateAgency}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Grantor</h3>
+              <p className="text-sm text-muted-foreground">{grant.grantor}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Opportunity Type</h3>
+              <p className="text-sm text-muted-foreground">{grant.opportunityType}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Funding Details</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <h3 className="font-medium">Estimated Total Funding</h3>
+              <p className="text-sm text-muted-foreground">
+                ${Number(grant.estimatedTotalFunding).toLocaleString()}
+              </p>
+            </div>
+            <div>
+              <h3 className="font-medium">Award Amounts</h3>
+              <p className="text-sm text-muted-foreground">{grant.estimatedAwardAmounts}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Match Funding</h3>
+              <p className="text-sm text-muted-foreground">{grant.matchFunding}</p>
+            </div>
+            <div>
+              <h3 className="font-medium">Funds Disbursement</h3>
+              <p className="text-sm text-muted-foreground">{grant.fundsDisbursment}</p>
+            </div>
+          </CardContent>
+        </Card>
+
+        {grant.details && (
+          <>
+            <Card className="md:col-span-2">
+              <CardHeader>
+                <CardTitle>Detailed Description</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground">{grant.details.description}</p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Eligibility Requirements</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="font-medium">Eligible Applicants</h3>
+                    <p className="text-sm text-muted-foreground">{grant.eligibleApplicants}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium">Eligible Geographies</h3>
+                    <p className="text-sm text-muted-foreground">{grant.eligibleGeographies}</p>
+                  </div>
+                  {grant.details.eligibilityRequirements && (
+                    <div>
+                      <h3 className="font-medium">Additional Requirements</h3>
+                      <pre className="mt-2 whitespace-pre-wrap text-sm text-muted-foreground">
+                        {JSON.stringify(grant.details.eligibilityRequirements, null, 2)}
+                      </pre>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Additional Funding Details</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {grant.details.fundingDetails && (
+                  <pre className="whitespace-pre-wrap text-sm text-muted-foreground">
+                    {JSON.stringify(grant.details.fundingDetails, null, 2)}
+                  </pre>
+                )}
+              </CardContent>
+            </Card>
+          </>
+        )}
+      </div>
+    </div>
+  );
+} 

@@ -2,6 +2,7 @@ export interface GrantMatch {
   id: string;
   title: string;
   url: string;
+  internalUrl: string;
   fitScore: number;
   explanation: string;
   fundingAmount: number;

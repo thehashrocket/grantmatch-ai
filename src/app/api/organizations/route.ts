@@ -10,6 +10,11 @@ const organizationSchema = z.object({
   mission: z.string().min(10, 'Mission must be at least 10 characters'),
   focusAreas: z.array(z.string()),
   location: z.string().min(2, 'Location must be at least 2 characters'),
+  description: z.string().optional().default(''),
+  address1: z.string().optional().default(''),
+  city: z.string().optional().default(''),
+  state: z.string().optional().default(''),
+  zipCode: z.string().optional().default(''),
 })
 
 export async function POST(req: Request) {

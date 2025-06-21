@@ -4,78 +4,127 @@ import { parseDateFlexible, parseFundingAmount, toSmartTitleCase } from "@/lib/u
 import { Prisma, $Enums } from "@/prisma/generated/client";
 // import { GrantDeadlineType, GrantOpenDateType } from "@/prisma/generated/client";
 
-// Schema looks like this:
-// [
-//   {
-//     "output": {
-//       "title": "INCREASING MAT SERVICES WITHIN DHCS-LICENSED SUD FACILITIES ROUND THREE",
-//       "url": "https://www.grants.ca.gov/grants/increasing-mat-services-within-dhcs-licensed-sud-facilities-round-three/",
-//       "deadline": "4/30/25",
-//       "open_date": "Mar 24, 2025",
-//       "state_agency": "Department of Health Care Services",
-//       "match_funding": "No",
-//       "estimated_total_funding": "$0",
-//       "estimated_award_amounts": "Dependent",
-//       "funds_disbursement": "Other",
-//       "current_as_of": "April 8, 2025, 10:56 am",
-//       "grantor": "Department of Health Care Services",
-//       "portal_id": "99765",
-//       "opportunity_type": "Grant",
-//       "purpose": "The purpose of this project is to improve access to MAT in DHCS-licensed residential SUD facilities. This will be done by supporting costs associated with recruitment, mentorship, training, and other associated costs to increase provider knowledge and comfort with providing MAT through a collaborative learning opportunity for facilities to implement best practices.",
-//       "eligible_applicants": [
-//         "Nonprofit"
-//       ],
-//       "eligible_geographies": "Must be in the State of California."
-//     },
-//     "runId": "cma1dfnpc001msa4l0kkr5r74"
-//   },
-//   {
-//     "output": {
-//       "title": "Division of Boating and Waterways Surrendered and Abandoned Vessel Exchange (SAVE) FY25",
-//       "url": "https://www.grants.ca.gov/grants/division-of-boating-and-waterways-surrendered-and-abandoned-vessel-exchange-save-fy25/",
-//       "deadline": "4/30/25 17:00",
-//       "open_date": "Mar 14, 2025",
-//       "state_agency": "Department of Parks and Recreation",
-//       "match_funding": "10%",
-//       "estimated_total_funding": "$2,750,000",
-//       "estimated_award_amounts": "Dependent",
-//       "funds_disbursement": "Reimbursement(s)",
-//       "current_as_of": "February 10, 2025, 1:34 pm",
-//       "grantor": "Department of Parks and Recreation",
-//       "portal_id": "97163",
-//       "opportunity_type": "Grant",
-//       "purpose": "Improve public and navigational safety and reduce environmental damage.",
-//       "eligible_applicants": [
-//         "Public Agency"
-//       ],
-//       "eligible_geographies": "California navigable waterways"
-//     },
-//     "runId": "cma1dfnpc001msa4l0kkr5r74"
-//   }
-// ]
+// Validation helper functions
+const validationHelpers = {
+  // Date validation
+  isValidDate: (val: string) => parseDateFlexible(val) !== null,
+  
+  // Currency validation
+  isValidCurrency: (val: string) => {
+    if (val === "Dependent") return true;
+    return /^\$?[\d,]+(\.\d{2})?$/.test(val);
+  },
+  
+  // Numeric validation
+  isValidNumber: (val: string) => /^\d+$/.test(val),
+  
+  // CFDA number validation (XX.XXX format)
+  isValidCFDA: (val: string) => /^\d{2}\.\d{3}$/.test(val),
+  
+  // Grant number validation (uppercase letters, numbers, hyphens)
+  isValidGrantNumber: (val: string) => /^[A-Z0-9-]+$/.test(val),
+  
+  // Opportunity status validation
+  isValidOppStatus: (val: string) => ["posted", "closed", "upcoming"].includes(val.toLowerCase()),
+  
+  // Portal ID validation
+  isValidPortalId: (val: string) => /^\d+$/.test(val),
+};
 
-// Define the schema for the incoming object
-const schema = z.object({
+// Common validation schemas
+const commonSchemas = {
+  url: z.string().url("Invalid URL format"),
+  requiredString: (fieldName: string) => z.string().min(1, `${fieldName} is required`),
+  requiredDate: (fieldName: string) => z.string()
+    .min(1, `${fieldName} is required`)
+    .refine(validationHelpers.isValidDate, {
+      message: `Invalid date format for ${fieldName}`
+    }),
+  requiredCurrency: (fieldName: string) => z.string()
+    .min(1, `${fieldName} is required`)
+    .refine(validationHelpers.isValidCurrency, {
+      message: `Invalid currency format for ${fieldName}. Must be a currency value or 'Dependent'`
+    }),
+  requiredNumber: (fieldName: string) => z.string()
+    .min(1, `${fieldName} is required`)
+    .refine(validationHelpers.isValidNumber, {
+      message: `${fieldName} must be a number`
+    }),
+  requiredArray: (fieldName: string) => z.array(z.string())
+    .min(1, `At least one ${fieldName} is required`),
+};
+
+// Base schema for common fields
+const baseGrantSchema = z.object({
+  runId: commonSchemas.requiredString("Run ID"),
   output: z.object({
-    title: z.string(),
-    url: z.string(),
-    deadline: z.string(),
-    open_date: z.string(),
-    state_agency: z.string(),
-    match_funding: z.string(),
-    estimated_total_funding: z.string(),
-    estimated_award_amounts: z.string(),
-    funds_disbursement: z.string(),
-    current_as_of: z.string(),
-    grantor: z.string(),
-    portal_id: z.string(),
-    opportunity_type: z.string(),
-    purpose: z.string(),
-    eligible_applicants: z.array(z.string()),
-    eligible_geographies: z.string(),
+    url: commonSchemas.url,
+    title: commonSchemas.requiredString("Title"),
+    grantor: commonSchemas.requiredString("Grantor"),
   }),
-  runId: z.string(),
 });
+
+// California-specific schema
+const californiaGrantSchema = baseGrantSchema.extend({
+  output: z.object({
+    url: commonSchemas.url,
+    title: commonSchemas.requiredString("Title"),
+    deadline: commonSchemas.requiredString("Deadline"),
+    open_date: commonSchemas.requiredString("Open date"),
+    state_agency: commonSchemas.requiredString("State agency"),
+    match_funding: commonSchemas.requiredString("Match funding information"),
+    estimated_total_funding: commonSchemas.requiredCurrency("Estimated total funding"),
+    estimated_award_amounts: commonSchemas.requiredString("Estimated award amounts"),
+    funds_disbursement: commonSchemas.requiredString("Funds disbursement information"),
+    current_as_of: commonSchemas.requiredDate("Current as of date"),
+    grantor: commonSchemas.requiredString("Grantor"),
+    portal_id: z.string()
+      .min(1, "Portal ID is required")
+      .refine(validationHelpers.isValidPortalId, {
+        message: "Portal ID must be a number"
+      }),
+    opportunity_type: commonSchemas.requiredString("Opportunity type"),
+    purpose: commonSchemas.requiredString("Purpose"),
+    eligible_applicants: commonSchemas.requiredArray("eligible applicant type"),
+    eligible_geographies: commonSchemas.requiredString("Eligible geographies"),
+  }),
+});
+
+// Federal-specific schema
+const federalGrantSchema = baseGrantSchema.extend({
+  output: z.object({
+    url: commonSchemas.url,
+    title: commonSchemas.requiredString("Title"),
+    number: z.string()
+      .min(1, "Grant number is required")
+      .refine(validationHelpers.isValidGrantNumber, {
+        message: "Grant number must contain only uppercase letters, numbers, and hyphens"
+      }),
+    agencyCode: commonSchemas.requiredString("Agency code"),
+    agency: commonSchemas.requiredString("Agency name"),
+    openDate: commonSchemas.requiredDate("Open date"),
+    closeDate: commonSchemas.requiredDate("Close date"),
+    oppStatus: z.string()
+      .min(1, "Opportunity status is required")
+      .refine(validationHelpers.isValidOppStatus, {
+        message: "Invalid opportunity status"
+      }),
+    cfdaList: z.array(z.string())
+      .min(1, "At least one CFDA number is required")
+      .refine((val) => val.every(validationHelpers.isValidCFDA), {
+        message: "Invalid CFDA number format. Must be in format XX.XXX"
+      }),
+    awardFloor: commonSchemas.requiredNumber("Award floor"),
+    awardCeiling: commonSchemas.requiredNumber("Award ceiling"),
+    grantor: commonSchemas.requiredString("Grantor"),
+  }),
+});
+
+// Combined schema that checks for either California or Federal format
+const schema = z.discriminatedUnion('source', [
+  z.object({ source: z.literal('CALIFORNIA'), ...californiaGrantSchema.shape }),
+  z.object({ source: z.literal('FEDERAL'), ...federalGrantSchema.shape }),
+]);
 
 // Helper to map string to enum
 function mapToEnumType(value: string, validTypes: string[]): string {
@@ -91,7 +140,7 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log('body', body);
     const parsed = schema.parse(body);
-    console.log('body', body);
+    console.log('parsed', parsed);
 
     // 1. update the run to mark completed
     await db.grantImportRun.update({
@@ -99,60 +148,98 @@ export async function POST(req: Request) {
       data: { status: "COMPLETED" },
     });
 
-    // 2. create the grant
-    const deadlineDate = parseDateFlexible(parsed.output.deadline);
-    let deadlineType: $Enums.GrantDeadlineType | null = null;
-    if (deadlineDate) {
-      deadlineType = $Enums.GrantDeadlineType.FIXED;
+    // 2. create the grant based on source
+    if (parsed.source === 'CALIFORNIA') {
+      await handleCaliforniaGrant(parsed);
     } else {
-      const type = mapToEnumType(parsed.output.deadline, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
-      deadlineType = $Enums.GrantDeadlineType[type as keyof typeof $Enums.GrantDeadlineType] ?? $Enums.GrantDeadlineType.UNKNOWN;
+      await handleFederalGrant(parsed);
     }
 
-    const openDateDate = parseDateFlexible(parsed.output.open_date);
-    let openDateType: $Enums.GrantOpenDateType | null = null;
-    if (openDateDate) {
-      openDateType = $Enums.GrantOpenDateType.FIXED;
-    } else {
-      const type = mapToEnumType(parsed.output.open_date, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
-      openDateType = $Enums.GrantOpenDateType[type as keyof typeof $Enums.GrantOpenDateType] ?? $Enums.GrantOpenDateType.UNKNOWN;
-    }
-
-    const currentAsOfDate = parseDateFlexible(parsed.output.current_as_of);
-    if (!currentAsOfDate) {
-      return new Response(JSON.stringify({ error: 'Invalid date format for current_as_of.' }), { status: 400 });
-    }
-    const grantData = {
-      url: parsed.output.url,
-      title: toSmartTitleCase(parsed.output.title),
-      deadline: deadlineDate ?? null,
-      deadlineType,
-      openDate: openDateDate ?? null,
-      openDateType,
-      stateAgency: parsed.output.state_agency,
-      matchFunding: parsed.output.match_funding,
-      estimatedTotalFunding: BigInt(parseFundingAmount(parsed.output.estimated_total_funding)),
-      estimatedAwardAmounts: parsed.output.estimated_award_amounts,
-      fundsDisbursment: parsed.output.funds_disbursement,
-      currentAsOf: currentAsOfDate,
-      grantor: parsed.output.grantor,
-      portalId: parseInt(parsed.output.portal_id),
-      opportunityType: parsed.output.opportunity_type,
-      purpose: parsed.output.purpose,
-      eligibleApplicants: parsed.output.eligible_applicants.join(', '),
-      eligibleGeographies: parsed.output.eligible_geographies,
-    };
-
-
-    await db.grant.upsert({
-      where: { portalId: grantData.portalId },
-      create: grantData,
-      update: grantData,
-    });
-
-    return new Response(JSON.stringify({ message: 'Hello, world!' }), { status: 200 });
+    return new Response(JSON.stringify({ message: 'Grant imported successfully' }), { status: 200 });
   } catch (err) {
-    console.error('Error parsing JSON:', err);
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), { status: 400 });
+    console.error('Error processing grant:', err);
+    if (err instanceof z.ZodError) {
+      return new Response(JSON.stringify({ error: 'Validation failed', details: err.errors }), { status: 400 });
+    }
+    return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400 });
   }
+}
+
+async function handleCaliforniaGrant(parsed: z.infer<typeof californiaGrantSchema> & { source: 'CALIFORNIA' }) {
+  const deadlineDate = parseDateFlexible(parsed.output.deadline);
+  let deadlineType: $Enums.GrantDeadlineType | null = null;
+  if (deadlineDate) {
+    deadlineType = $Enums.GrantDeadlineType.FIXED;
+  } else {
+    const type = mapToEnumType(parsed.output.deadline, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
+    deadlineType = $Enums.GrantDeadlineType[type as keyof typeof $Enums.GrantDeadlineType] ?? $Enums.GrantDeadlineType.UNKNOWN;
+  }
+
+  const openDateDate = parseDateFlexible(parsed.output.open_date);
+  let openDateType: $Enums.GrantOpenDateType | null = null;
+  if (openDateDate) {
+    openDateType = $Enums.GrantOpenDateType.FIXED;
+  } else {
+    const type = mapToEnumType(parsed.output.open_date, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
+    openDateType = $Enums.GrantOpenDateType[type as keyof typeof $Enums.GrantOpenDateType] ?? $Enums.GrantOpenDateType.UNKNOWN;
+  }
+
+  const currentAsOfDate = parseDateFlexible(parsed.output.current_as_of);
+  if (!currentAsOfDate) {
+    throw new Error('Invalid date format for current_as_of.');
+  }
+
+  const grantData = {
+    url: parsed.output.url,
+    title: toSmartTitleCase(parsed.output.title),
+    deadline: deadlineDate ?? null,
+    deadlineType,
+    openDate: openDateDate ?? null,
+    openDateType,
+    stateAgency: parsed.output.state_agency,
+    matchFunding: parsed.output.match_funding,
+    estimatedTotalFunding: BigInt(parseFundingAmount(parsed.output.estimated_total_funding)),
+    estimatedAwardAmounts: parsed.output.estimated_award_amounts,
+    fundsDisbursment: parsed.output.funds_disbursement,
+    currentAsOf: currentAsOfDate,
+    grantor: parsed.output.grantor,
+    portalId: parseInt(parsed.output.portal_id),
+    opportunityType: parsed.output.opportunity_type,
+    purpose: parsed.output.purpose,
+    eligibleApplicants: parsed.output.eligible_applicants.join(', '),
+    eligibleGeographies: parsed.output.eligible_geographies,
+    source: $Enums.GrantSource.CALIFORNIA,
+  };
+
+  await db.grant.upsert({
+    where: { portalId: grantData.portalId },
+    create: grantData,
+    update: grantData,
+  });
+}
+
+async function handleFederalGrant(parsed: z.infer<typeof federalGrantSchema> & { source: 'FEDERAL' }) {
+  const openDate = parseDateFlexible(parsed.output.openDate);
+  const closeDate = parseDateFlexible(parsed.output.closeDate);
+
+  const grantData = {
+    url: parsed.output.url,
+    title: toSmartTitleCase(parsed.output.title),
+    number: parsed.output.number,
+    openDate: openDate ?? null,
+    deadline: closeDate ?? null,
+    grantor: parsed.output.grantor,
+    agencyCode: parsed.output.agencyCode,
+    awardFloor: BigInt(parseFundingAmount(parsed.output.awardFloor)),
+    awardCeiling: BigInt(parseFundingAmount(parsed.output.awardCeiling)),
+    cfdaList: parsed.output.cfdaList,
+    source: $Enums.GrantSource.FEDERAL,
+  };
+
+  // For Federal grants, we'll use the number as the unique identifier
+  await db.grant.upsert({
+    where: { number: grantData.number },
+    create: grantData,
+    update: grantData,
+  });
 }

@@ -1,10 +1,10 @@
-import { PrismaAdapter } from "@auth/prisma-adapter"
+import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { NextAuthOptions } from "next-auth"
-import { db } from "./db"
+import { db } from "@/lib/db"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
-import { Prisma } from "@prisma/client"
+import { Prisma } from "@/prisma/generated/client"
 
 type UserWithRole = Prisma.UserGetPayload<{
   select: {
@@ -40,6 +40,8 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt"
   },
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === "development",
   pages: {
     signIn: "/login",
     signOut: "/",

@@ -63,27 +63,40 @@ enum GrantOpenDateType {
   UNKNOWN
 }
 
+enum GrantSource {
+  CALIFORNIA
+  FEDERAL
+  OHIO
+  OTHER
+}
+
 model Grant {
   id                    String             @id @default(cuid())
   url                   String
   title                 String
+  number                String?            @unique // For Federal grant numbers
   deadline              DateTime?
   deadlineType          GrantDeadlineType?
   openDate              DateTime?
   openDateType          GrantOpenDateType?
-  stateAgency           String
-  matchFunding          String
-  estimatedTotalFunding BigInt
-  estimatedAwardAmounts String
-  fundsDisbursment      String
-  currentAsOf           DateTime
+  stateAgency           String?
+  matchFunding          String?
+  estimatedTotalFunding BigInt?
+  awardFloor            BigInt? // For Federal grants
+  awardCeiling          BigInt? // For Federal grants
+  estimatedAwardAmounts String?
+  fundsDisbursment      String?
+  currentAsOf           DateTime?
   grantor               String
-  portalId              Int                @unique
-  opportunityType       String
-  purpose               String
-  eligibleApplicants    String
-  eligibleGeographies   String
+  portalId              Int?               @unique // Made optional since Federal uses different ID system
+  opportunityType       String?
+  purpose               String?
+  eligibleApplicants    String?
+  eligibleGeographies   String?
   details               GrantDetail?
+  source                GrantSource        @default(CALIFORNIA)
+  agencyCode            String? // For Federal grants
+  cfdaList              Json?              @db.JsonB // For Federal grants
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

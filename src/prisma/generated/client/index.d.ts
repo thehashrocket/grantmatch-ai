@@ -105,6 +105,16 @@ export const GrantOpenDateType: {
 export type GrantOpenDateType = (typeof GrantOpenDateType)[keyof typeof GrantOpenDateType]
 
 
+export const GrantSource: {
+  CALIFORNIA: 'CALIFORNIA',
+  FEDERAL: 'FEDERAL',
+  OHIO: 'OHIO',
+  OTHER: 'OTHER'
+};
+
+export type GrantSource = (typeof GrantSource)[keyof typeof GrantSource]
+
+
 export const InvitationStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -130,6 +140,10 @@ export const GrantDeadlineType: typeof $Enums.GrantDeadlineType
 export type GrantOpenDateType = $Enums.GrantOpenDateType
 
 export const GrantOpenDateType: typeof $Enums.GrantOpenDateType
+
+export type GrantSource = $Enums.GrantSource
+
+export const GrantSource: typeof $Enums.GrantSource
 
 export type InvitationStatus = $Enums.InvitationStatus
 
@@ -407,8 +421,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.6.0
-   * Query Engine version: f676762280b54cd07c770017ed3711ddde35f37a
+   * Prisma Client JS version: 6.10.1
+   * Query Engine version: 9b628578b3b7cae625e8c927178f15a170e74a9c
    */
   export type PrismaVersion = {
     client: string
@@ -2958,11 +2972,15 @@ export namespace Prisma {
 
   export type GrantAvgAggregateOutputType = {
     estimatedTotalFunding: number | null
+    awardFloor: number | null
+    awardCeiling: number | null
     portalId: number | null
   }
 
   export type GrantSumAggregateOutputType = {
     estimatedTotalFunding: bigint | null
+    awardFloor: bigint | null
+    awardCeiling: bigint | null
     portalId: number | null
   }
 
@@ -2970,6 +2988,7 @@ export namespace Prisma {
     id: string | null
     url: string | null
     title: string | null
+    number: string | null
     deadline: Date | null
     deadlineType: $Enums.GrantDeadlineType | null
     openDate: Date | null
@@ -2977,6 +2996,8 @@ export namespace Prisma {
     stateAgency: string | null
     matchFunding: string | null
     estimatedTotalFunding: bigint | null
+    awardFloor: bigint | null
+    awardCeiling: bigint | null
     estimatedAwardAmounts: string | null
     fundsDisbursment: string | null
     currentAsOf: Date | null
@@ -2986,6 +3007,8 @@ export namespace Prisma {
     purpose: string | null
     eligibleApplicants: string | null
     eligibleGeographies: string | null
+    source: $Enums.GrantSource | null
+    agencyCode: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -2994,6 +3017,7 @@ export namespace Prisma {
     id: string | null
     url: string | null
     title: string | null
+    number: string | null
     deadline: Date | null
     deadlineType: $Enums.GrantDeadlineType | null
     openDate: Date | null
@@ -3001,6 +3025,8 @@ export namespace Prisma {
     stateAgency: string | null
     matchFunding: string | null
     estimatedTotalFunding: bigint | null
+    awardFloor: bigint | null
+    awardCeiling: bigint | null
     estimatedAwardAmounts: string | null
     fundsDisbursment: string | null
     currentAsOf: Date | null
@@ -3010,6 +3036,8 @@ export namespace Prisma {
     purpose: string | null
     eligibleApplicants: string | null
     eligibleGeographies: string | null
+    source: $Enums.GrantSource | null
+    agencyCode: string | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3018,6 +3046,7 @@ export namespace Prisma {
     id: number
     url: number
     title: number
+    number: number
     deadline: number
     deadlineType: number
     openDate: number
@@ -3025,6 +3054,8 @@ export namespace Prisma {
     stateAgency: number
     matchFunding: number
     estimatedTotalFunding: number
+    awardFloor: number
+    awardCeiling: number
     estimatedAwardAmounts: number
     fundsDisbursment: number
     currentAsOf: number
@@ -3034,6 +3065,9 @@ export namespace Prisma {
     purpose: number
     eligibleApplicants: number
     eligibleGeographies: number
+    source: number
+    agencyCode: number
+    cfdaList: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3042,11 +3076,15 @@ export namespace Prisma {
 
   export type GrantAvgAggregateInputType = {
     estimatedTotalFunding?: true
+    awardFloor?: true
+    awardCeiling?: true
     portalId?: true
   }
 
   export type GrantSumAggregateInputType = {
     estimatedTotalFunding?: true
+    awardFloor?: true
+    awardCeiling?: true
     portalId?: true
   }
 
@@ -3054,6 +3092,7 @@ export namespace Prisma {
     id?: true
     url?: true
     title?: true
+    number?: true
     deadline?: true
     deadlineType?: true
     openDate?: true
@@ -3061,6 +3100,8 @@ export namespace Prisma {
     stateAgency?: true
     matchFunding?: true
     estimatedTotalFunding?: true
+    awardFloor?: true
+    awardCeiling?: true
     estimatedAwardAmounts?: true
     fundsDisbursment?: true
     currentAsOf?: true
@@ -3070,6 +3111,8 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    source?: true
+    agencyCode?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3078,6 +3121,7 @@ export namespace Prisma {
     id?: true
     url?: true
     title?: true
+    number?: true
     deadline?: true
     deadlineType?: true
     openDate?: true
@@ -3085,6 +3129,8 @@ export namespace Prisma {
     stateAgency?: true
     matchFunding?: true
     estimatedTotalFunding?: true
+    awardFloor?: true
+    awardCeiling?: true
     estimatedAwardAmounts?: true
     fundsDisbursment?: true
     currentAsOf?: true
@@ -3094,6 +3140,8 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    source?: true
+    agencyCode?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3102,6 +3150,7 @@ export namespace Prisma {
     id?: true
     url?: true
     title?: true
+    number?: true
     deadline?: true
     deadlineType?: true
     openDate?: true
@@ -3109,6 +3158,8 @@ export namespace Prisma {
     stateAgency?: true
     matchFunding?: true
     estimatedTotalFunding?: true
+    awardFloor?: true
+    awardCeiling?: true
     estimatedAwardAmounts?: true
     fundsDisbursment?: true
     currentAsOf?: true
@@ -3118,6 +3169,9 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    source?: true
+    agencyCode?: true
+    cfdaList?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3213,22 +3267,28 @@ export namespace Prisma {
     id: string
     url: string
     title: string
+    number: string | null
     deadline: Date | null
     deadlineType: $Enums.GrantDeadlineType | null
     openDate: Date | null
     openDateType: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date
+    stateAgency: string | null
+    matchFunding: string | null
+    estimatedTotalFunding: bigint | null
+    awardFloor: bigint | null
+    awardCeiling: bigint | null
+    estimatedAwardAmounts: string | null
+    fundsDisbursment: string | null
+    currentAsOf: Date | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId: number | null
+    opportunityType: string | null
+    purpose: string | null
+    eligibleApplicants: string | null
+    eligibleGeographies: string | null
+    source: $Enums.GrantSource
+    agencyCode: string | null
+    cfdaList: JsonValue | null
     createdAt: Date
     updatedAt: Date
     _count: GrantCountAggregateOutputType | null
@@ -3256,6 +3316,7 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     title?: boolean
+    number?: boolean
     deadline?: boolean
     deadlineType?: boolean
     openDate?: boolean
@@ -3263,6 +3324,8 @@ export namespace Prisma {
     stateAgency?: boolean
     matchFunding?: boolean
     estimatedTotalFunding?: boolean
+    awardFloor?: boolean
+    awardCeiling?: boolean
     estimatedAwardAmounts?: boolean
     fundsDisbursment?: boolean
     currentAsOf?: boolean
@@ -3272,6 +3335,9 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    source?: boolean
+    agencyCode?: boolean
+    cfdaList?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     details?: boolean | Grant$detailsArgs<ExtArgs>
@@ -3281,6 +3347,7 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     title?: boolean
+    number?: boolean
     deadline?: boolean
     deadlineType?: boolean
     openDate?: boolean
@@ -3288,6 +3355,8 @@ export namespace Prisma {
     stateAgency?: boolean
     matchFunding?: boolean
     estimatedTotalFunding?: boolean
+    awardFloor?: boolean
+    awardCeiling?: boolean
     estimatedAwardAmounts?: boolean
     fundsDisbursment?: boolean
     currentAsOf?: boolean
@@ -3297,6 +3366,9 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    source?: boolean
+    agencyCode?: boolean
+    cfdaList?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["grant"]>
@@ -3305,6 +3377,7 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     title?: boolean
+    number?: boolean
     deadline?: boolean
     deadlineType?: boolean
     openDate?: boolean
@@ -3312,6 +3385,8 @@ export namespace Prisma {
     stateAgency?: boolean
     matchFunding?: boolean
     estimatedTotalFunding?: boolean
+    awardFloor?: boolean
+    awardCeiling?: boolean
     estimatedAwardAmounts?: boolean
     fundsDisbursment?: boolean
     currentAsOf?: boolean
@@ -3321,6 +3396,9 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    source?: boolean
+    agencyCode?: boolean
+    cfdaList?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["grant"]>
@@ -3329,6 +3407,7 @@ export namespace Prisma {
     id?: boolean
     url?: boolean
     title?: boolean
+    number?: boolean
     deadline?: boolean
     deadlineType?: boolean
     openDate?: boolean
@@ -3336,6 +3415,8 @@ export namespace Prisma {
     stateAgency?: boolean
     matchFunding?: boolean
     estimatedTotalFunding?: boolean
+    awardFloor?: boolean
+    awardCeiling?: boolean
     estimatedAwardAmounts?: boolean
     fundsDisbursment?: boolean
     currentAsOf?: boolean
@@ -3345,11 +3426,14 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    source?: boolean
+    agencyCode?: boolean
+    cfdaList?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
+  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "source" | "agencyCode" | "cfdaList" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
   export type GrantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     details?: boolean | Grant$detailsArgs<ExtArgs>
   }
@@ -3365,22 +3449,28 @@ export namespace Prisma {
       id: string
       url: string
       title: string
+      number: string | null
       deadline: Date | null
       deadlineType: $Enums.GrantDeadlineType | null
       openDate: Date | null
       openDateType: $Enums.GrantOpenDateType | null
-      stateAgency: string
-      matchFunding: string
-      estimatedTotalFunding: bigint
-      estimatedAwardAmounts: string
-      fundsDisbursment: string
-      currentAsOf: Date
+      stateAgency: string | null
+      matchFunding: string | null
+      estimatedTotalFunding: bigint | null
+      awardFloor: bigint | null
+      awardCeiling: bigint | null
+      estimatedAwardAmounts: string | null
+      fundsDisbursment: string | null
+      currentAsOf: Date | null
       grantor: string
-      portalId: number
-      opportunityType: string
-      purpose: string
-      eligibleApplicants: string
-      eligibleGeographies: string
+      portalId: number | null
+      opportunityType: string | null
+      purpose: string | null
+      eligibleApplicants: string | null
+      eligibleGeographies: string | null
+      source: $Enums.GrantSource
+      agencyCode: string | null
+      cfdaList: Prisma.JsonValue | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["grant"]>
@@ -3810,6 +3900,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Grant", 'String'>
     readonly url: FieldRef<"Grant", 'String'>
     readonly title: FieldRef<"Grant", 'String'>
+    readonly number: FieldRef<"Grant", 'String'>
     readonly deadline: FieldRef<"Grant", 'DateTime'>
     readonly deadlineType: FieldRef<"Grant", 'GrantDeadlineType'>
     readonly openDate: FieldRef<"Grant", 'DateTime'>
@@ -3817,6 +3908,8 @@ export namespace Prisma {
     readonly stateAgency: FieldRef<"Grant", 'String'>
     readonly matchFunding: FieldRef<"Grant", 'String'>
     readonly estimatedTotalFunding: FieldRef<"Grant", 'BigInt'>
+    readonly awardFloor: FieldRef<"Grant", 'BigInt'>
+    readonly awardCeiling: FieldRef<"Grant", 'BigInt'>
     readonly estimatedAwardAmounts: FieldRef<"Grant", 'String'>
     readonly fundsDisbursment: FieldRef<"Grant", 'String'>
     readonly currentAsOf: FieldRef<"Grant", 'DateTime'>
@@ -3826,6 +3919,9 @@ export namespace Prisma {
     readonly purpose: FieldRef<"Grant", 'String'>
     readonly eligibleApplicants: FieldRef<"Grant", 'String'>
     readonly eligibleGeographies: FieldRef<"Grant", 'String'>
+    readonly source: FieldRef<"Grant", 'GrantSource'>
+    readonly agencyCode: FieldRef<"Grant", 'String'>
+    readonly cfdaList: FieldRef<"Grant", 'Json'>
     readonly createdAt: FieldRef<"Grant", 'DateTime'>
     readonly updatedAt: FieldRef<"Grant", 'DateTime'>
   }
@@ -12012,6 +12108,7 @@ export namespace Prisma {
     id: 'id',
     url: 'url',
     title: 'title',
+    number: 'number',
     deadline: 'deadline',
     deadlineType: 'deadlineType',
     openDate: 'openDate',
@@ -12019,6 +12116,8 @@ export namespace Prisma {
     stateAgency: 'stateAgency',
     matchFunding: 'matchFunding',
     estimatedTotalFunding: 'estimatedTotalFunding',
+    awardFloor: 'awardFloor',
+    awardCeiling: 'awardCeiling',
     estimatedAwardAmounts: 'estimatedAwardAmounts',
     fundsDisbursment: 'fundsDisbursment',
     currentAsOf: 'currentAsOf',
@@ -12028,6 +12127,9 @@ export namespace Prisma {
     purpose: 'purpose',
     eligibleApplicants: 'eligibleApplicants',
     eligibleGeographies: 'eligibleGeographies',
+    source: 'source',
+    agencyCode: 'agencyCode',
+    cfdaList: 'cfdaList',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12137,6 +12239,14 @@ export namespace Prisma {
   };
 
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
+
+
+  export const NullableJsonNullValueInput: {
+    DbNull: typeof DbNull,
+    JsonNull: typeof JsonNull
+  };
+
+  export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
 
 
   export const JsonNullValueInput: {
@@ -12257,6 +12367,20 @@ export namespace Prisma {
    * Reference to a field of type 'BigInt[]'
    */
   export type ListBigIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BigInt[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'GrantSource'
+   */
+  export type EnumGrantSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantSource'>
+    
+
+
+  /**
+   * Reference to a field of type 'GrantSource[]'
+   */
+  export type ListEnumGrantSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantSource[]'>
     
 
 
@@ -12433,22 +12557,28 @@ export namespace Prisma {
     id?: StringFilter<"Grant"> | string
     url?: StringFilter<"Grant"> | string
     title?: StringFilter<"Grant"> | string
+    number?: StringNullableFilter<"Grant"> | string | null
     deadline?: DateTimeNullableFilter<"Grant"> | Date | string | null
     deadlineType?: EnumGrantDeadlineTypeNullableFilter<"Grant"> | $Enums.GrantDeadlineType | null
     openDate?: DateTimeNullableFilter<"Grant"> | Date | string | null
     openDateType?: EnumGrantOpenDateTypeNullableFilter<"Grant"> | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFilter<"Grant"> | string
-    matchFunding?: StringFilter<"Grant"> | string
-    estimatedTotalFunding?: BigIntFilter<"Grant"> | bigint | number
-    estimatedAwardAmounts?: StringFilter<"Grant"> | string
-    fundsDisbursment?: StringFilter<"Grant"> | string
-    currentAsOf?: DateTimeFilter<"Grant"> | Date | string
+    stateAgency?: StringNullableFilter<"Grant"> | string | null
+    matchFunding?: StringNullableFilter<"Grant"> | string | null
+    estimatedTotalFunding?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    awardFloor?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    awardCeiling?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    estimatedAwardAmounts?: StringNullableFilter<"Grant"> | string | null
+    fundsDisbursment?: StringNullableFilter<"Grant"> | string | null
+    currentAsOf?: DateTimeNullableFilter<"Grant"> | Date | string | null
     grantor?: StringFilter<"Grant"> | string
-    portalId?: IntFilter<"Grant"> | number
-    opportunityType?: StringFilter<"Grant"> | string
-    purpose?: StringFilter<"Grant"> | string
-    eligibleApplicants?: StringFilter<"Grant"> | string
-    eligibleGeographies?: StringFilter<"Grant"> | string
+    portalId?: IntNullableFilter<"Grant"> | number | null
+    opportunityType?: StringNullableFilter<"Grant"> | string | null
+    purpose?: StringNullableFilter<"Grant"> | string | null
+    eligibleApplicants?: StringNullableFilter<"Grant"> | string | null
+    eligibleGeographies?: StringNullableFilter<"Grant"> | string | null
+    source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
+    agencyCode?: StringNullableFilter<"Grant"> | string | null
+    cfdaList?: JsonNullableFilter<"Grant">
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
@@ -12458,22 +12588,28 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     title?: SortOrder
+    number?: SortOrderInput | SortOrder
     deadline?: SortOrderInput | SortOrder
     deadlineType?: SortOrderInput | SortOrder
     openDate?: SortOrderInput | SortOrder
     openDateType?: SortOrderInput | SortOrder
-    stateAgency?: SortOrder
-    matchFunding?: SortOrder
-    estimatedTotalFunding?: SortOrder
-    estimatedAwardAmounts?: SortOrder
-    fundsDisbursment?: SortOrder
-    currentAsOf?: SortOrder
+    stateAgency?: SortOrderInput | SortOrder
+    matchFunding?: SortOrderInput | SortOrder
+    estimatedTotalFunding?: SortOrderInput | SortOrder
+    awardFloor?: SortOrderInput | SortOrder
+    awardCeiling?: SortOrderInput | SortOrder
+    estimatedAwardAmounts?: SortOrderInput | SortOrder
+    fundsDisbursment?: SortOrderInput | SortOrder
+    currentAsOf?: SortOrderInput | SortOrder
     grantor?: SortOrder
-    portalId?: SortOrder
-    opportunityType?: SortOrder
-    purpose?: SortOrder
-    eligibleApplicants?: SortOrder
-    eligibleGeographies?: SortOrder
+    portalId?: SortOrderInput | SortOrder
+    opportunityType?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    eligibleApplicants?: SortOrderInput | SortOrder
+    eligibleGeographies?: SortOrderInput | SortOrder
+    source?: SortOrder
+    agencyCode?: SortOrderInput | SortOrder
+    cfdaList?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     details?: GrantDetailOrderByWithRelationInput
@@ -12481,6 +12617,7 @@ export namespace Prisma {
 
   export type GrantWhereUniqueInput = Prisma.AtLeast<{
     id?: string
+    number?: string
     portalId?: number
     AND?: GrantWhereInput | GrantWhereInput[]
     OR?: GrantWhereInput[]
@@ -12491,42 +12628,53 @@ export namespace Prisma {
     deadlineType?: EnumGrantDeadlineTypeNullableFilter<"Grant"> | $Enums.GrantDeadlineType | null
     openDate?: DateTimeNullableFilter<"Grant"> | Date | string | null
     openDateType?: EnumGrantOpenDateTypeNullableFilter<"Grant"> | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFilter<"Grant"> | string
-    matchFunding?: StringFilter<"Grant"> | string
-    estimatedTotalFunding?: BigIntFilter<"Grant"> | bigint | number
-    estimatedAwardAmounts?: StringFilter<"Grant"> | string
-    fundsDisbursment?: StringFilter<"Grant"> | string
-    currentAsOf?: DateTimeFilter<"Grant"> | Date | string
+    stateAgency?: StringNullableFilter<"Grant"> | string | null
+    matchFunding?: StringNullableFilter<"Grant"> | string | null
+    estimatedTotalFunding?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    awardFloor?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    awardCeiling?: BigIntNullableFilter<"Grant"> | bigint | number | null
+    estimatedAwardAmounts?: StringNullableFilter<"Grant"> | string | null
+    fundsDisbursment?: StringNullableFilter<"Grant"> | string | null
+    currentAsOf?: DateTimeNullableFilter<"Grant"> | Date | string | null
     grantor?: StringFilter<"Grant"> | string
-    opportunityType?: StringFilter<"Grant"> | string
-    purpose?: StringFilter<"Grant"> | string
-    eligibleApplicants?: StringFilter<"Grant"> | string
-    eligibleGeographies?: StringFilter<"Grant"> | string
+    opportunityType?: StringNullableFilter<"Grant"> | string | null
+    purpose?: StringNullableFilter<"Grant"> | string | null
+    eligibleApplicants?: StringNullableFilter<"Grant"> | string | null
+    eligibleGeographies?: StringNullableFilter<"Grant"> | string | null
+    source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
+    agencyCode?: StringNullableFilter<"Grant"> | string | null
+    cfdaList?: JsonNullableFilter<"Grant">
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
-  }, "id" | "portalId">
+  }, "id" | "number" | "portalId">
 
   export type GrantOrderByWithAggregationInput = {
     id?: SortOrder
     url?: SortOrder
     title?: SortOrder
+    number?: SortOrderInput | SortOrder
     deadline?: SortOrderInput | SortOrder
     deadlineType?: SortOrderInput | SortOrder
     openDate?: SortOrderInput | SortOrder
     openDateType?: SortOrderInput | SortOrder
-    stateAgency?: SortOrder
-    matchFunding?: SortOrder
-    estimatedTotalFunding?: SortOrder
-    estimatedAwardAmounts?: SortOrder
-    fundsDisbursment?: SortOrder
-    currentAsOf?: SortOrder
+    stateAgency?: SortOrderInput | SortOrder
+    matchFunding?: SortOrderInput | SortOrder
+    estimatedTotalFunding?: SortOrderInput | SortOrder
+    awardFloor?: SortOrderInput | SortOrder
+    awardCeiling?: SortOrderInput | SortOrder
+    estimatedAwardAmounts?: SortOrderInput | SortOrder
+    fundsDisbursment?: SortOrderInput | SortOrder
+    currentAsOf?: SortOrderInput | SortOrder
     grantor?: SortOrder
-    portalId?: SortOrder
-    opportunityType?: SortOrder
-    purpose?: SortOrder
-    eligibleApplicants?: SortOrder
-    eligibleGeographies?: SortOrder
+    portalId?: SortOrderInput | SortOrder
+    opportunityType?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    eligibleApplicants?: SortOrderInput | SortOrder
+    eligibleGeographies?: SortOrderInput | SortOrder
+    source?: SortOrder
+    agencyCode?: SortOrderInput | SortOrder
+    cfdaList?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: GrantCountOrderByAggregateInput
@@ -12543,22 +12691,28 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Grant"> | string
     url?: StringWithAggregatesFilter<"Grant"> | string
     title?: StringWithAggregatesFilter<"Grant"> | string
+    number?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     deadline?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     deadlineType?: EnumGrantDeadlineTypeNullableWithAggregatesFilter<"Grant"> | $Enums.GrantDeadlineType | null
     openDate?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     openDateType?: EnumGrantOpenDateTypeNullableWithAggregatesFilter<"Grant"> | $Enums.GrantOpenDateType | null
-    stateAgency?: StringWithAggregatesFilter<"Grant"> | string
-    matchFunding?: StringWithAggregatesFilter<"Grant"> | string
-    estimatedTotalFunding?: BigIntWithAggregatesFilter<"Grant"> | bigint | number
-    estimatedAwardAmounts?: StringWithAggregatesFilter<"Grant"> | string
-    fundsDisbursment?: StringWithAggregatesFilter<"Grant"> | string
-    currentAsOf?: DateTimeWithAggregatesFilter<"Grant"> | Date | string
+    stateAgency?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    matchFunding?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    estimatedTotalFunding?: BigIntNullableWithAggregatesFilter<"Grant"> | bigint | number | null
+    awardFloor?: BigIntNullableWithAggregatesFilter<"Grant"> | bigint | number | null
+    awardCeiling?: BigIntNullableWithAggregatesFilter<"Grant"> | bigint | number | null
+    estimatedAwardAmounts?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    fundsDisbursment?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    currentAsOf?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     grantor?: StringWithAggregatesFilter<"Grant"> | string
-    portalId?: IntWithAggregatesFilter<"Grant"> | number
-    opportunityType?: StringWithAggregatesFilter<"Grant"> | string
-    purpose?: StringWithAggregatesFilter<"Grant"> | string
-    eligibleApplicants?: StringWithAggregatesFilter<"Grant"> | string
-    eligibleGeographies?: StringWithAggregatesFilter<"Grant"> | string
+    portalId?: IntNullableWithAggregatesFilter<"Grant"> | number | null
+    opportunityType?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    purpose?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    eligibleApplicants?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    eligibleGeographies?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    source?: EnumGrantSourceWithAggregatesFilter<"Grant"> | $Enums.GrantSource
+    agencyCode?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    cfdaList?: JsonNullableWithAggregatesFilter<"Grant">
     createdAt?: DateTimeWithAggregatesFilter<"Grant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Grant"> | Date | string
   }
@@ -13162,22 +13316,28 @@ export namespace Prisma {
     id?: string
     url: string
     title: string
+    number?: string | null
     deadline?: Date | string | null
     deadlineType?: $Enums.GrantDeadlineType | null
     openDate?: Date | string | null
     openDateType?: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint | number
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date | string
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
@@ -13187,22 +13347,28 @@ export namespace Prisma {
     id?: string
     url: string
     title: string
+    number?: string | null
     deadline?: Date | string | null
     deadlineType?: $Enums.GrantDeadlineType | null
     openDate?: Date | string | null
     openDateType?: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint | number
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date | string
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
@@ -13212,22 +13378,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
@@ -13237,22 +13409,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
@@ -13262,22 +13440,28 @@ export namespace Prisma {
     id?: string
     url: string
     title: string
+    number?: string | null
     deadline?: Date | string | null
     deadlineType?: $Enums.GrantDeadlineType | null
     openDate?: Date | string | null
     openDateType?: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint | number
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date | string
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13286,22 +13470,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13310,22 +13500,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14056,15 +14252,45 @@ export namespace Prisma {
     not?: NestedEnumGrantOpenDateTypeNullableFilter<$PrismaModel> | $Enums.GrantOpenDateType | null
   }
 
-  export type BigIntFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
     lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type EnumGrantSourceFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantSourceFilter<$PrismaModel> | $Enums.GrantSource
+  }
+  export type JsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
@@ -14078,17 +14304,6 @@ export namespace Prisma {
     not?: NestedDateTimeFilter<$PrismaModel> | Date | string
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type GrantDetailNullableScalarRelationFilter = {
     is?: GrantDetailWhereInput | null
     isNot?: GrantDetailWhereInput | null
@@ -14098,6 +14313,7 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     title?: SortOrder
+    number?: SortOrder
     deadline?: SortOrder
     deadlineType?: SortOrder
     openDate?: SortOrder
@@ -14105,6 +14321,8 @@ export namespace Prisma {
     stateAgency?: SortOrder
     matchFunding?: SortOrder
     estimatedTotalFunding?: SortOrder
+    awardFloor?: SortOrder
+    awardCeiling?: SortOrder
     estimatedAwardAmounts?: SortOrder
     fundsDisbursment?: SortOrder
     currentAsOf?: SortOrder
@@ -14114,12 +14332,17 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    source?: SortOrder
+    agencyCode?: SortOrder
+    cfdaList?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type GrantAvgOrderByAggregateInput = {
     estimatedTotalFunding?: SortOrder
+    awardFloor?: SortOrder
+    awardCeiling?: SortOrder
     portalId?: SortOrder
   }
 
@@ -14127,6 +14350,7 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     title?: SortOrder
+    number?: SortOrder
     deadline?: SortOrder
     deadlineType?: SortOrder
     openDate?: SortOrder
@@ -14134,6 +14358,8 @@ export namespace Prisma {
     stateAgency?: SortOrder
     matchFunding?: SortOrder
     estimatedTotalFunding?: SortOrder
+    awardFloor?: SortOrder
+    awardCeiling?: SortOrder
     estimatedAwardAmounts?: SortOrder
     fundsDisbursment?: SortOrder
     currentAsOf?: SortOrder
@@ -14143,6 +14369,8 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    source?: SortOrder
+    agencyCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14151,6 +14379,7 @@ export namespace Prisma {
     id?: SortOrder
     url?: SortOrder
     title?: SortOrder
+    number?: SortOrder
     deadline?: SortOrder
     deadlineType?: SortOrder
     openDate?: SortOrder
@@ -14158,6 +14387,8 @@ export namespace Prisma {
     stateAgency?: SortOrder
     matchFunding?: SortOrder
     estimatedTotalFunding?: SortOrder
+    awardFloor?: SortOrder
+    awardCeiling?: SortOrder
     estimatedAwardAmounts?: SortOrder
     fundsDisbursment?: SortOrder
     currentAsOf?: SortOrder
@@ -14167,12 +14398,16 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    source?: SortOrder
+    agencyCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
 
   export type GrantSumOrderByAggregateInput = {
     estimatedTotalFunding?: SortOrder
+    awardFloor?: SortOrder
+    awardCeiling?: SortOrder
     portalId?: SortOrder
   }
 
@@ -14210,20 +14445,56 @@ export namespace Prisma {
     _max?: NestedEnumGrantOpenDateTypeNullableFilter<$PrismaModel>
   }
 
-  export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
     lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumGrantSourceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantSourceWithAggregatesFilter<$PrismaModel> | $Enums.GrantSource
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedBigIntFilter<$PrismaModel>
-    _min?: NestedBigIntFilter<$PrismaModel>
-    _max?: NestedBigIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantSourceFilter<$PrismaModel>
+    _max?: NestedEnumGrantSourceFilter<$PrismaModel>
+  }
+  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
+        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
+
+  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedJsonNullableFilter<$PrismaModel>
+    _max?: NestedJsonNullableFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14238,22 +14509,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
   export type JsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -14712,24 +14967,20 @@ export namespace Prisma {
     set?: $Enums.GrantOpenDateType | null
   }
 
-  export type BigIntFieldUpdateOperationsInput = {
-    set?: bigint | number
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
     increment?: bigint | number
     decrement?: bigint | number
     multiply?: bigint | number
     divide?: bigint | number
   }
 
-  export type DateTimeFieldUpdateOperationsInput = {
-    set?: Date | string
+  export type EnumGrantSourceFieldUpdateOperationsInput = {
+    set?: $Enums.GrantSource
   }
 
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
+  export type DateTimeFieldUpdateOperationsInput = {
+    set?: Date | string
   }
 
   export type GrantDetailUpdateOneWithoutGrantNestedInput = {
@@ -15191,15 +15442,22 @@ export namespace Prisma {
     not?: NestedEnumGrantOpenDateTypeNullableFilter<$PrismaModel> | $Enums.GrantOpenDateType | null
   }
 
-  export type NestedBigIntFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+  export type NestedBigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
     lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntFilter<$PrismaModel> | bigint | number
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type NestedEnumGrantSourceFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantSourceFilter<$PrismaModel> | $Enums.GrantSource
   }
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
@@ -15247,31 +15505,53 @@ export namespace Prisma {
     _max?: NestedEnumGrantOpenDateTypeNullableFilter<$PrismaModel>
   }
 
-  export type NestedBigIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
-    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel>
+  export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
+    notIn?: bigint[] | number[] | ListBigIntFieldRefInput<$PrismaModel> | null
     lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntWithAggregatesFilter<$PrismaModel> | bigint | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedBigIntFilter<$PrismaModel>
-    _min?: NestedBigIntFilter<$PrismaModel>
-    _max?: NestedBigIntFilter<$PrismaModel>
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
+  export type NestedEnumGrantSourceWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantSourceWithAggregatesFilter<$PrismaModel> | $Enums.GrantSource
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantSourceFilter<$PrismaModel>
+    _max?: NestedEnumGrantSourceFilter<$PrismaModel>
+  }
+  export type NestedJsonNullableFilter<$PrismaModel = never> =
+    | PatchUndefined<
+        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
+        Required<NestedJsonNullableFilterBase<$PrismaModel>>
+      >
+    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
+
+  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
+    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
+    path?: string[]
+    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
+    string_contains?: string | StringFieldRefInput<$PrismaModel>
+    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
+    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
+    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
+    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
+    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -15286,22 +15566,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
-  }
-
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
   export type NestedJsonFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -15526,22 +15790,28 @@ export namespace Prisma {
     id?: string
     url: string
     title: string
+    number?: string | null
     deadline?: Date | string | null
     deadlineType?: $Enums.GrantDeadlineType | null
     openDate?: Date | string | null
     openDateType?: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint | number
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date | string
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15550,22 +15820,28 @@ export namespace Prisma {
     id?: string
     url: string
     title: string
+    number?: string | null
     deadline?: Date | string | null
     deadlineType?: $Enums.GrantDeadlineType | null
     openDate?: Date | string | null
     openDateType?: $Enums.GrantOpenDateType | null
-    stateAgency: string
-    matchFunding: string
-    estimatedTotalFunding: bigint | number
-    estimatedAwardAmounts: string
-    fundsDisbursment: string
-    currentAsOf: Date | string
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
     grantor: string
-    portalId: number
-    opportunityType: string
-    purpose: string
-    eligibleApplicants: string
-    eligibleGeographies: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -15590,22 +15866,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -15614,22 +15896,28 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     url?: StringFieldUpdateOperationsInput | string
     title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
     deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
     openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
-    stateAgency?: StringFieldUpdateOperationsInput | string
-    matchFunding?: StringFieldUpdateOperationsInput | string
-    estimatedTotalFunding?: BigIntFieldUpdateOperationsInput | bigint | number
-    estimatedAwardAmounts?: StringFieldUpdateOperationsInput | string
-    fundsDisbursment?: StringFieldUpdateOperationsInput | string
-    currentAsOf?: DateTimeFieldUpdateOperationsInput | Date | string
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantor?: StringFieldUpdateOperationsInput | string
-    portalId?: IntFieldUpdateOperationsInput | number
-    opportunityType?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    eligibleApplicants?: StringFieldUpdateOperationsInput | string
-    eligibleGeographies?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }

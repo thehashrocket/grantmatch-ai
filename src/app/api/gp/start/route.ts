@@ -46,13 +46,34 @@ export async function POST(req: Request) {
     });
 
     // 2. kick n8n
-    await fetch(process.env.NEXT_PUBLIC_N8N_GRANT_WEBHOOK_URL!, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ runId: run.id, dateStart, dateEnd }),
-    });
-    console.log('n8n url', process.env.NEXT_PUBLIC_N8N_GRANT_WEBHOOK_URL);
-    console.log('n8n kicked');
+    const webhookUrl = process.env.N8N_GRANT_WEBHOOK_URL;
+    if (!webhookUrl) {
+      return new Response(JSON.stringify({ error: 'N8N webhook URL not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    console.log('Attempting to call webhook:', webhookUrl);
+    
+    try {
+      const response = await fetch(webhookUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ runId: run.id, dateStart, dateEnd }),
+      });
+      
+      if (!response.ok) {
+        console.error('Webhook call failed with status:', response.status, response.statusText);
+        // Continue execution - don't fail the API call if webhook fails
+      } else {
+        console.log('Webhook called successfully');
+      }
+    } catch (webhookError) {
+      console.error('Failed to call webhook:', webhookError);
+      // Don't fail the entire API call if the webhook fails
+      // Log the error but continue with the response
+    }
 
     return new Response(JSON.stringify({ runId: run.id }), {
       status: 202,

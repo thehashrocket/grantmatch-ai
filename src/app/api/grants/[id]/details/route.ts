@@ -37,7 +37,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   }
 
   // 3. Prepare webhook payload
-  const webhookUrl = process.env.NEXT_PUBLIC_GRANT_DETAILS_WEBHOOK_URL;
+  const webhookUrl = process.env.N8N_GRANT_DETAILS_WEBHOOK_URL;
   if (!webhookUrl) {
     return new Response('Webhook URL not configured', { status: 500 });
   }

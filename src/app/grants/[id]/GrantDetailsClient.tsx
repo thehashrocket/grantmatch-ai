@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
+import GrantDetailedDescription from "@/components/grants/GrantDetailedDescription";
 
 interface GrantDetailsClientProps {
   grantId: string;
@@ -135,7 +136,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
                 <CardTitle>Detailed Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">{grant.details.description}</p>
+                <GrantDetailedDescription description={grant.details.description} />
               </CardContent>
             </Card>
 

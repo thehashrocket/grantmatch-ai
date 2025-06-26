@@ -12618,7 +12618,7 @@ export namespace Prisma {
   export type GrantWhereUniqueInput = Prisma.AtLeast<{
     id?: string
     number?: string
-    portalId?: number
+    portalId_source?: GrantPortalIdSourceCompoundUniqueInput
     AND?: GrantWhereInput | GrantWhereInput[]
     OR?: GrantWhereInput[]
     NOT?: GrantWhereInput | GrantWhereInput[]
@@ -12637,6 +12637,7 @@ export namespace Prisma {
     fundsDisbursment?: StringNullableFilter<"Grant"> | string | null
     currentAsOf?: DateTimeNullableFilter<"Grant"> | Date | string | null
     grantor?: StringFilter<"Grant"> | string
+    portalId?: IntNullableFilter<"Grant"> | number | null
     opportunityType?: StringNullableFilter<"Grant"> | string | null
     purpose?: StringNullableFilter<"Grant"> | string | null
     eligibleApplicants?: StringNullableFilter<"Grant"> | string | null
@@ -12647,7 +12648,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
-  }, "id" | "number" | "portalId">
+  }, "id" | "number" | "portalId_source">
 
   export type GrantOrderByWithAggregationInput = {
     id?: SortOrder
@@ -14307,6 +14308,11 @@ export namespace Prisma {
   export type GrantDetailNullableScalarRelationFilter = {
     is?: GrantDetailWhereInput | null
     isNot?: GrantDetailWhereInput | null
+  }
+
+  export type GrantPortalIdSourceCompoundUniqueInput = {
+    portalId: number
+    source: $Enums.GrantSource
   }
 
   export type GrantCountOrderByAggregateInput = {

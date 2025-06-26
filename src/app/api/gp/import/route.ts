@@ -65,7 +65,8 @@ const baseGrantSchema = z.object({
 });
 
 // California-specific schema
-const californiaGrantSchema = baseGrantSchema.extend({
+const californiaGrantSchema = z.object({
+  runId: commonSchemas.requiredString("Run ID"),
   output: z.object({
     url: commonSchemas.url,
     title: commonSchemas.requiredString("Title"),
@@ -86,12 +87,14 @@ const californiaGrantSchema = baseGrantSchema.extend({
     opportunity_type: commonSchemas.requiredString("Opportunity type"),
     purpose: commonSchemas.requiredString("Purpose"),
     eligible_applicants: commonSchemas.requiredArray("eligible applicant type"),
-    eligible_geographies: commonSchemas.requiredString("Eligible geographies"),
+    eligible_geographies: z.string().optional(),
+    source: z.literal('CALIFORNIA'),
   }),
 });
 
 // Federal-specific schema
-const federalGrantSchema = baseGrantSchema.extend({
+const federalGrantSchema = z.object({
+  runId: commonSchemas.requiredString("Run ID"),
   output: z.object({
     url: commonSchemas.url,
     title: commonSchemas.requiredString("Title"),
@@ -117,14 +120,12 @@ const federalGrantSchema = baseGrantSchema.extend({
     awardFloor: commonSchemas.requiredNumber("Award floor"),
     awardCeiling: commonSchemas.requiredNumber("Award ceiling"),
     grantor: commonSchemas.requiredString("Grantor"),
+    source: z.literal('FEDERAL'),
   }),
 });
 
-// Combined schema that checks for either California or Federal format
-const schema = z.discriminatedUnion('source', [
-  z.object({ source: z.literal('CALIFORNIA'), ...californiaGrantSchema.shape }),
-  z.object({ source: z.literal('FEDERAL'), ...federalGrantSchema.shape }),
-]);
+// Combined schema using union
+const schema = z.union([californiaGrantSchema, federalGrantSchema]);
 
 // Helper to map string to enum
 function mapToEnumType(value: string, validTypes: string[]): string {
@@ -149,10 +150,10 @@ export async function POST(req: Request) {
     });
 
     // 2. create the grant based on source
-    if (parsed.source === 'CALIFORNIA') {
-      await handleCaliforniaGrant(parsed);
+    if (parsed.output.source === 'CALIFORNIA') {
+      await handleCaliforniaGrant(parsed as z.infer<typeof californiaGrantSchema>);
     } else {
-      await handleFederalGrant(parsed);
+      await handleFederalGrant(parsed as z.infer<typeof federalGrantSchema>);
     }
 
     return new Response(JSON.stringify({ message: 'Grant imported successfully' }), { status: 200 });
@@ -165,7 +166,7 @@ export async function POST(req: Request) {
   }
 }
 
-async function handleCaliforniaGrant(parsed: z.infer<typeof californiaGrantSchema> & { source: 'CALIFORNIA' }) {
+async function handleCaliforniaGrant(parsed: z.infer<typeof californiaGrantSchema>) {
   const deadlineDate = parseDateFlexible(parsed.output.deadline);
   let deadlineType: $Enums.GrantDeadlineType | null = null;
   if (deadlineDate) {
@@ -212,13 +213,18 @@ async function handleCaliforniaGrant(parsed: z.infer<typeof californiaGrantSchem
   };
 
   await db.grant.upsert({
-    where: { portalId: grantData.portalId },
+    where: { 
+      portalId_source: {
+        portalId: grantData.portalId,
+        source: grantData.source
+      }
+    },
     create: grantData,
     update: grantData,
   });
 }
 
-async function handleFederalGrant(parsed: z.infer<typeof federalGrantSchema> & { source: 'FEDERAL' }) {
+async function handleFederalGrant(parsed: z.infer<typeof federalGrantSchema>) {
   const openDate = parseDateFlexible(parsed.output.openDate);
   const closeDate = parseDateFlexible(parsed.output.closeDate);
 

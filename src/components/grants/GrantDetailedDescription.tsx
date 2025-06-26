@@ -35,11 +35,6 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
             setIsJson(true);
             setParsedData(data);
             
-            console.log('Parsed JSON data:', data);
-            console.log('Data type:', typeof data);
-            console.log('Is array:', Array.isArray(data));
-            console.log('Object keys:', typeof data === 'object' ? Object.keys(data) : 'N/A');
-            
             // Determine the type of JSON structure
             if (Array.isArray(data)) {
                 setDataType('array');
@@ -63,15 +58,12 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
                 setDataType('plain');
             }
         } catch (error) {
-            console.log('JSON parse error:', error);
-            console.log('Raw description:', description);
             
             // Try to handle potential malformed JSON that might be an array disguised as object
             try {
                 // Check if it looks like an array but with wrong brackets
                 if (description.startsWith('{') && description.endsWith('}') && description.includes('","')) {
                     const attemptArrayParse = description.replace(/^{/, '[').replace(/}$/, ']');
-                    console.log('Attempting to parse as array:', attemptArrayParse);
                     const arrayData = JSON.parse(attemptArrayParse);
                     if (Array.isArray(arrayData)) {
                         setIsJson(true);
@@ -81,7 +73,7 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
                     }
                 }
             } catch (secondError) {
-                console.log('Second parse attempt failed:', secondError);
+                // console.log('Second parse attempt failed:', secondError);
             }
             
             setIsJson(false);

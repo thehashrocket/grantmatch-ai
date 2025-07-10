@@ -1,4 +1,4 @@
-import { type Prisma } from '@prisma/client';
+// import { type Prisma } from '@prisma/client';
 
 interface ScoringFactors {
   deadlineWeight: number;
@@ -31,7 +31,9 @@ function calculateDeadlineScore(deadline: Date | null): number {
   return 0.5; // Very far in the future
 }
 
-function calculateFundingScore(amount: number | bigint): number {
+function calculateFundingScore(amount: number | bigint | null): number {
+  if (amount === null) return 0.5; // Unknown amount
+  
   // Convert to number if it's a bigint
   const fundingAmount = typeof amount === 'bigint' ? Number(amount) : amount;
   if (fundingAmount <= 0) return 0.5; // Unknown amount
@@ -45,7 +47,9 @@ function calculateFundingScore(amount: number | bigint): number {
   return 0.7; // Very large grants might be more competitive
 }
 
-function calculateEligibilityScore(eligibleApplicants: string): number {
+function calculateEligibilityScore(eligibleApplicants: string | null): number {
+  if (!eligibleApplicants) return 0.5; // Default score for null/empty values
+  
   const applicants = eligibleApplicants.toLowerCase();
   
   // Higher score for nonprofit-specific grants
@@ -61,7 +65,9 @@ function calculateEligibilityScore(eligibleApplicants: string): number {
   return 0.5; // Default score for other types
 }
 
-function calculateGeographyScore(eligibleGeographies: string): number {
+function calculateGeographyScore(eligibleGeographies: string | null): number {
+  if (!eligibleGeographies) return 0.6; // Default score for null/empty values
+  
   const geography = eligibleGeographies.toLowerCase();
   
   // Prefer grants with broader geographic eligibility
@@ -78,20 +84,21 @@ function calculateGeographyScore(eligibleGeographies: string): number {
   return 0.6; // Default score for other geographic restrictions
 }
 
-function calculatePurposeScore(purpose: string): number {
+function calculatePurposeScore(purpose: string | null): number {
   // This is a placeholder - in a real implementation, you would:
   // 1. Compare against organization's mission and focus areas
   // 2. Use NLP to calculate semantic similarity
   // 3. Check for keyword matches in priority areas
+  if (!purpose) return 0.5; // Default score for null/empty values
   return 0.8;
 }
 
 type GrantWithRequiredFields = {
   deadline: Date | null;
-  estimatedTotalFunding: bigint | number;
-  eligibleApplicants: string;
-  eligibleGeographies: string;
-  purpose: string;
+  estimatedTotalFunding: bigint | number | null;
+  eligibleApplicants: string | null;
+  eligibleGeographies: string | null;
+  purpose: string | null;
 };
 
 export function calculateGrantFitScore(
@@ -100,7 +107,7 @@ export function calculateGrantFitScore(
 ): number {
   const scores = {
     deadline: calculateDeadlineScore(grant.deadline) * factors.deadlineWeight,
-    funding: calculateFundingScore(grant.estimatedTotalFunding) * factors.fundingWeight,
+    funding: calculateFundingScore(grant.estimatedTotalFunding || 0) * factors.fundingWeight,
     eligibility: calculateEligibilityScore(grant.eligibleApplicants) * factors.eligibilityWeight,
     geography: calculateGeographyScore(grant.eligibleGeographies) * factors.geographyWeight,
     purpose: calculatePurposeScore(grant.purpose) * factors.purposeWeight,

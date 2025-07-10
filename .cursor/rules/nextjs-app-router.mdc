@@ -217,6 +217,7 @@ export const fetchDashboardStats = cache(async () => {
 - Add 'use client' only when necessary
 - Use "use client" on the top of the file when using client-side states like useState, useEffect, etc.
 - Implement proper loading and error states
+- Follow SOLID development principles
 
 ### Performance
 - Minimize client-side JavaScript

@@ -1,28 +1,14 @@
 'use client';
 
-import Link from 'next/link';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { trpc } from '@/lib/trpc/client';
-import { getFitScoreCategory, getFitScoreColor, type GrantMatch } from '@/lib/types/grant';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useSession } from 'next-auth/react';
-import { ExternalLink } from 'lucide-react';
+import { GrantSearchForm } from '@/components/grants/GrantSearchForm';
+import { GrantCard } from '@/components/grants/GrantCard';
+import { GrantSearchErrorBoundary } from '@/components/grants/GrantSearchErrorBoundary';
+import { useGrantSearch } from '@/lib/hooks/useGrantSearch';
+import { ActiveFilters } from '@/components/grants/ActiveFilters';
 
-function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    maximumFractionDigits: 0,
-  }).format(amount);
-}
-
-function formatDate(dateString: string): string {
-  return new Date(dateString).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  });
-}
 
 // Make a fetch grants button
 // Makes a request to the /api/gp/start route
@@ -43,23 +29,32 @@ const fetchGrants = async (session: any) => {
 
 export default function DashboardPage() {
   const { data: session } = useSession();
-  const { data: grants, isLoading, error } = trpc.grants.getMatches.useQuery();
+  const {
+    grants,
+    isLoading,
+    error,
+    handleSearch,
+    handleClearSearch,
+    updateFilter,
+    searchFilters,
+    resultsCount,
+  } = useGrantSearch();
+
+  // Handler for removing a single filter
+  const handleRemoveFilter = (field: keyof typeof searchFilters, value?: string) => {
+    if (field === 'source') {
+      updateFilter(field, value || 'ALL');
+    } else {
+      updateFilter(field, '');
+    }
+    handleSearch({ ...searchFilters, [field]: field === 'source' ? (value || 'ALL') : '' });
+  };
 
   if (isLoading) {
     return (
       <div className="space-y-4">
         <h1 className="text-3xl font-bold">Grant Matches</h1>
         <p className="text-muted-foreground">Loading...</p>
-        <div className="flex justify-center items-center">
-          <Button 
-            variant="outline" 
-            size="sm" 
-            className="gap-2"
-            onClick={() => {
-              fetchGrants(session);
-            }}
-          >Fetch Grants</Button>
-        </div>
         <div className="grid gap-4 md:grid-cols-2">
           {[1, 2, 3, 4].map((i) => (
             <Card key={i} className="animate-pulse">
@@ -87,57 +82,32 @@ export default function DashboardPage() {
     );
   }
 
+
+
   return (
     <div className="container mx-auto space-y-4">
       <h1 className="text-3xl font-bold">Grant Matches</h1>
-      <div className="grid gap-4 md:grid-cols-2">
-        {grants?.map((grant: GrantMatch) => {
-          const category = getFitScoreCategory(grant.fitScore);
-          const colorClasses = getFitScoreColor(category);
-          
-          return (
-            <Card key={grant.id} className="transition-shadow hover:shadow-lg">
-              <CardHeader>
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1.5">
-                    <CardTitle className="text-xl">
-                      <Link 
-                        href={grant.internalUrl}
-                        className="hover:underline"
-                      >
-                        {grant.title}
-                      </Link>
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-2">
-                      <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
-                        Fit Score: {grant.fitScore.toFixed(1)}
-                      </span>
-                      <a
-                        href={grant.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                      >
-                        <ExternalLink className="h-3 w-3" />
-                        <span>View Original</span>
-                      </a>
-                    </CardDescription>
-                  </div>
-                  <div className="text-right">
-                    <div className="font-semibold">{formatCurrency(grant.fundingAmount)}</div>
-                    <div className="text-sm text-muted-foreground">
-                      Due {formatDate(grant.deadline)}
-                    </div>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">{grant.explanation}</p>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      
+      <GrantSearchForm 
+        onSearch={handleSearch}
+        onClear={handleClearSearch}
+        isLoading={isLoading}
+      />
+      <ActiveFilters filters={searchFilters} onRemove={handleRemoveFilter} />
+      
+      {grants && (
+        <div className="text-sm text-muted-foreground">
+          {resultsCount} grant{resultsCount !== 1 ? 's' : ''} found
+        </div>
+      )}
+      
+      <GrantSearchErrorBoundary>
+        <div className="grid gap-4 md:grid-cols-2">
+          {grants?.map((grant: any) => (
+            <GrantCard key={grant.id} grant={grant} />
+          ))}
+        </div>
+      </GrantSearchErrorBoundary>
     </div>
   );
 } 

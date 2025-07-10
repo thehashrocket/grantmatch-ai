@@ -28,6 +28,7 @@ export class GrantServiceImpl implements GrantService {
         explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
         fundingAmount: grant.estimatedTotalFunding ? Number(grant.estimatedTotalFunding) : 0,
         deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
+        source: grant.source,
       } satisfies GrantMatch;
     });
 
@@ -64,6 +65,7 @@ export class GrantServiceImpl implements GrantService {
       explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
       fundingAmount: grant.estimatedTotalFunding ? Number(grant.estimatedTotalFunding) : 0,
       deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
+      source: grant.source,
     } satisfies GrantMatch;
   }
 } 

@@ -7,6 +7,7 @@ export interface GrantMatch {
   explanation: string;
   fundingAmount: number;
   deadline: string;
+  source: string; // State name or 'Federal'
 }
 
 export type FitScoreCategory = 'high' | 'medium' | 'low';

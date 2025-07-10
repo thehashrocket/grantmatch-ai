@@ -77,6 +77,7 @@ export class PrismaGrantRepository implements GrantRepository {
         eligibleGeographies: true,
         createdAt: true,
         updatedAt: true,
+        source: true,
       },
     });
   }

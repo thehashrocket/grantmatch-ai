@@ -46,7 +46,7 @@ export function GrantCard({ grant }: GrantCardProps) {
                     alt={flagInfo.label + ' flag'}
                     width={20}
                     height={14}
-                    className="rounded-sm"
+                    className=""
                   />
                 )}
                 <Link href={grant.internalUrl} className="hover:underline">

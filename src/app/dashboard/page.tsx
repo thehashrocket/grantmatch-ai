@@ -1,13 +1,10 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { useSession } from 'next-auth/react';
 import { GrantSearchForm } from '@/components/grants/GrantSearchForm';
-import { GrantCard } from '@/components/grants/GrantCard';
-import { GrantSearchErrorBoundary } from '@/components/grants/GrantSearchErrorBoundary';
 import { useGrantSearch } from '@/lib/hooks/useGrantSearch';
 import { ActiveFilters } from '@/components/grants/ActiveFilters';
+import { GrantResults } from '@/components/grants/GrantResults';
 
 
 // Make a fetch grants button
@@ -50,40 +47,6 @@ export default function DashboardPage() {
     handleSearch({ ...searchFilters, [field]: field === 'source' ? (value || 'ALL') : '' });
   };
 
-  if (isLoading) {
-    return (
-      <div className="space-y-4">
-        <h1 className="text-3xl font-bold">Grant Matches</h1>
-        <p className="text-muted-foreground">Loading...</p>
-        <div className="grid gap-4 md:grid-cols-2">
-          {[1, 2, 3, 4].map((i) => (
-            <Card key={i} className="animate-pulse">
-              <CardHeader className="space-y-2">
-                <div className="h-4 w-2/3 bg-muted rounded" />
-                <div className="h-3 w-1/4 bg-muted rounded" />
-              </CardHeader>
-              <CardContent className="space-y-2">
-                <div className="h-20 bg-muted rounded" />
-                <div className="h-4 w-1/2 bg-muted rounded" />
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-center py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Error Loading Grants</h1>
-        <p className="text-gray-600">{error.message}</p>
-      </div>
-    );
-  }
-
-
-
   return (
     <div className="container mx-auto space-y-4">
       <h1 className="text-3xl font-bold">Grant Matches</h1>
@@ -101,13 +64,7 @@ export default function DashboardPage() {
         </div>
       )}
       
-      <GrantSearchErrorBoundary>
-        <div className="grid gap-4 md:grid-cols-2">
-          {grants?.map((grant: any) => (
-            <GrantCard key={grant.id} grant={grant} />
-          ))}
-        </div>
-      </GrantSearchErrorBoundary>
+      <GrantResults grants={grants} isLoading={isLoading} error={error} />
     </div>
   );
 } 

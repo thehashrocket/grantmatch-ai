@@ -3,12 +3,53 @@ import { type GrantSearchFilters } from '@/components/grants/GrantSearchForm';
 
 export interface GrantRepository {
   findWithFilters(filters: GrantSearchFilters): Promise<any[]>;
+  findWithFiltersPaginated(filters: GrantSearchFilters, page: number, pageSize: number): Promise<{ grants: any[], total: number }>;
   findById(id: string): Promise<any | null>;
 }
 
 export class PrismaGrantRepository implements GrantRepository {
   async findWithFilters(filters: GrantSearchFilters): Promise<any[]> {
-    // Build where conditions based on input filters
+    const whereConditions = this.buildWhereConditions(filters);
+
+    return db.grant.findMany({
+      where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      select: this.getGrantSelect(),
+    });
+  }
+
+  async findWithFiltersPaginated(filters: GrantSearchFilters, page: number, pageSize: number): Promise<{ grants: any[], total: number }> {
+    const whereConditions = this.buildWhereConditions(filters);
+    const skip = (page - 1) * pageSize;
+
+    const [grants, total] = await Promise.all([
+      db.grant.findMany({
+        where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+        orderBy: {
+          createdAt: 'desc',
+        },
+        select: this.getGrantSelect(),
+        skip,
+        take: pageSize,
+      }),
+      db.grant.count({
+        where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
+      }),
+    ]);
+
+    return { grants, total };
+  }
+
+  async findById(id: string): Promise<any | null> {
+    return db.grant.findUnique({
+      where: { id },
+      select: this.getGrantSelect(),
+    });
+  }
+
+  private buildWhereConditions(filters: GrantSearchFilters): any {
     const whereConditions: any = {};
     
     if (filters.textSearch) {
@@ -99,64 +140,33 @@ export class PrismaGrantRepository implements GrantRepository {
       whereConditions.source = filters.source;
     }
 
-    return db.grant.findMany({
-      where: Object.keys(whereConditions).length > 0 ? whereConditions : undefined,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      select: {
-        id: true,
-        title: true,
-        url: true,
-        deadline: true,
-        deadlineType: true,
-        openDate: true,
-        openDateType: true,
-        stateAgency: true,
-        matchFunding: true,
-        estimatedTotalFunding: true,
-        estimatedAwardAmounts: true,
-        fundsDisbursment: true,
-        currentAsOf: true,
-        grantor: true,
-        portalId: true,
-        opportunityType: true,
-        purpose: true,
-        eligibleApplicants: true,
-        eligibleGeographies: true,
-        createdAt: true,
-        updatedAt: true,
-        source: true,
-      },
-    });
+    return whereConditions;
   }
 
-  async findById(id: string): Promise<any | null> {
-    return db.grant.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        title: true,
-        url: true,
-        deadline: true,
-        deadlineType: true,
-        openDate: true,
-        openDateType: true,
-        stateAgency: true,
-        matchFunding: true,
-        estimatedTotalFunding: true,
-        estimatedAwardAmounts: true,
-        fundsDisbursment: true,
-        currentAsOf: true,
-        grantor: true,
-        portalId: true,
-        opportunityType: true,
-        purpose: true,
-        eligibleApplicants: true,
-        eligibleGeographies: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-    });
+  private getGrantSelect() {
+    return {
+      id: true,
+      title: true,
+      url: true,
+      deadline: true,
+      deadlineType: true,
+      openDate: true,
+      openDateType: true,
+      stateAgency: true,
+      matchFunding: true,
+      estimatedTotalFunding: true,
+      estimatedAwardAmounts: true,
+      fundsDisbursment: true,
+      currentAsOf: true,
+      grantor: true,
+      portalId: true,
+      opportunityType: true,
+      purpose: true,
+      eligibleApplicants: true,
+      eligibleGeographies: true,
+      createdAt: true,
+      updatedAt: true,
+      source: true,
+    };
   }
 } 

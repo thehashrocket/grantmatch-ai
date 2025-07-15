@@ -10,6 +10,16 @@ export interface GrantMatch {
   source: string; // State name or 'Federal'
 }
 
+export interface PaginatedGrantMatches {
+  grants: GrantMatch[];
+  pagination: {
+    page: number;
+    pageSize: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
 export type FitScoreCategory = 'high' | 'medium' | 'low';
 
 export const getFitScoreCategory = (score: number): FitScoreCategory => {

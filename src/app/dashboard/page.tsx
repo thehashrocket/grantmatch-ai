@@ -6,7 +6,6 @@ import { useGrantSearch } from '@/lib/hooks/useGrantSearch';
 import { ActiveFilters } from '@/components/grants/ActiveFilters';
 import { GrantResults } from '@/components/grants/GrantResults';
 
-
 // Make a fetch grants button
 // Makes a request to the /api/gp/start route
 // Redirects to the /dashboard page
@@ -26,6 +25,7 @@ const fetchGrants = async (session: any) => {
 
 export default function DashboardPage() {
   const { data: session } = useSession();
+  
   const {
     grants,
     isLoading,
@@ -35,6 +35,9 @@ export default function DashboardPage() {
     updateFilter,
     searchFilters,
     resultsCount,
+    currentPage,
+    pageSize,
+    handlePageChange,
   } = useGrantSearch();
 
   // Handler for removing a single filter
@@ -44,7 +47,14 @@ export default function DashboardPage() {
     } else {
       updateFilter(field, '');
     }
-    handleSearch({ ...searchFilters, [field]: field === 'source' ? (value || 'ALL') : '' });
+    const newFilters = { ...searchFilters, [field]: field === 'source' ? (value || 'ALL') : '' };
+    handleSearch(newFilters);
+  };
+
+  // Retry handler
+  const handleRetry = () => {
+    // Refetch the current search
+    handleSearch(searchFilters);
   };
 
   return (
@@ -64,7 +74,16 @@ export default function DashboardPage() {
         </div>
       )}
       
-      <GrantResults grants={grants} isLoading={isLoading} error={error} />
+      <GrantResults 
+        grants={grants} 
+        isLoading={isLoading} 
+        error={error}
+        onRetry={handleRetry}
+        page={currentPage}
+        pageSize={pageSize}
+        total={resultsCount}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 } 

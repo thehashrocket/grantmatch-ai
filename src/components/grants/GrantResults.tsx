@@ -1,55 +1,60 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
+import { GrantResultsSkeleton } from './GrantResultsSkeleton';
+import { GrantResultsError } from './GrantResultsError';
 import { GrantCard } from './GrantCard';
+import { Pagination } from './Pagination';
 import React from 'react';
+import type { GrantMatch } from '@/lib/types/grant';
 
 interface GrantResultsProps {
-  grants: any[] | undefined;
+  grants: GrantMatch[] | undefined;
   isLoading: boolean;
   error: any;
+  onRetry?: () => void;
+  page?: number;
+  pageSize?: number;
+  total?: number;
+  onPageChange?: (page: number) => void;
 }
 
-export function GrantResults({ grants, isLoading, error }: GrantResultsProps) {
+export function GrantResults({ 
+  grants, 
+  isLoading, 
+  error, 
+  onRetry = () => {}, 
+  page = 1, 
+  pageSize = 10, 
+  total, 
+  onPageChange 
+}: GrantResultsProps) {
   if (isLoading) {
-    return (
-      <div className="grid gap-4 md:grid-cols-2">
-        {[1, 2, 3, 4].map((i) => (
-          <Card key={i} className="animate-pulse">
-            <CardHeader className="space-y-2">
-              <div className="h-4 w-2/3 bg-muted rounded" />
-              <div className="h-3 w-1/4 bg-muted rounded" />
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <div className="h-20 bg-muted rounded" />
-              <div className="h-4 w-1/2 bg-muted rounded" />
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    );
+    return <GrantResultsSkeleton />;
   }
 
   if (error) {
-    return (
-      <div className="text-center py-12">
-        <h1 className="text-3xl font-bold text-gray-900 mb-4">Error Loading Grants</h1>
-        <p className="text-gray-600">{error.message}</p>
-      </div>
-    );
+    return <GrantResultsError error={error} onRetry={onRetry} />;
   }
 
   if (!grants || grants.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground">
+      <div className="text-center py-12 text-muted-foreground" role="status" aria-live="polite">
         No grants found.
       </div>
     );
   }
 
+  // Use total from props or fall back to grants length
+  const totalCount = total ?? grants.length;
+
   return (
-    <div className="grid gap-4 md:grid-cols-2">
-      {grants.map((grant) => (
-        <GrantCard key={grant.id} grant={grant} />
-      ))}
-    </div>
+    <>
+      <div className="grid gap-4 md:grid-cols-2">
+        {grants.map((grant) => (
+          <GrantCard key={grant.id} grant={grant} />
+        ))}
+      </div>
+      {onPageChange && (
+        <Pagination page={page} pageSize={pageSize} total={totalCount} onPageChange={onPageChange} />
+      )}
+    </>
   );
 } 

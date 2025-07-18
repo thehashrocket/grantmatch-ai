@@ -66,7 +66,15 @@ export function useGrantSearch() {
     handlePageChange,
     
     // Computed
-    hasActiveFilters: Object.values(searchFilters).some(value => value !== ''),
+    hasActiveFilters:
+      searchFilters.textSearch !== '' ||
+      searchFilters.minFunding !== '' ||
+      searchFilters.maxFunding !== '' ||
+      searchFilters.minDeadline !== '' ||
+      searchFilters.maxDeadline !== '' ||
+      searchFilters.minFitScore !== '' ||
+      searchFilters.maxFitScore !== '' ||
+      (searchFilters.source && searchFilters.source !== 'ALL'),
     resultsCount: pagination?.total ?? 0,
     pagination,
   };

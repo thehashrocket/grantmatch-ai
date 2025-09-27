@@ -1,36 +1,35 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# GrantMatch AI
 
-## Getting Started
+GrantMatch AI is a Next.js 15 + React 19 platform that guides nonprofits to the right grants through an App Router UI backed by tRPC, Prisma, NextAuth, and Tailwind.
 
-First, run the development server:
+## Quick Start
+- Install deps: `pnpm install`.
+- Copy `.env.example` to `.env`, set `DATABASE_URL`, and align `NEXTAUTH_URL` + `NEXT_PUBLIC_APP_URL` to `http://localhost:3005`.
+- Provision Postgres with `./start-database.sh` (regenerates the local password).
+- Run `pnpm dev` to start Turbopack on port 3005; visit the same URL in your browser.
+- After schema updates run `pnpm prisma migrate dev` then `pnpm prisma generate`.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Application Structure
+- `src/app` — App Router layouts and routes: `(auth)` onboarding, `login`, `dashboard`, `grants`, `org`, `profile`, `verify-email`, plus API handlers in `api/`.
+- `src/components` — Reusable primitives in `ui/` and domain bundles for auth, grants, onboarding, profile, and layout providers.
+- `src/lib` — Client helpers (tRPC client, auth utilities, formatting).
+- `src/server` — Server-only tRPC routers and procedure composition (`api.ts`, `routers/`).
+- `prisma` — Schema, migrations, seeds; `source_files/` for ingest data; `public/` for static assets.
+- `scripts/` — Tooling such as `generate-password.ts` for seeded user hashes.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Development & Testing
+- `pnpm lint` enforces the Next.js ESLint config with Prettier + Tailwind; keep output clean before committing.
+- Add Vitest or Playwright coverage where relevant; colocate specs as `*.test.ts` or `*.spec.tsx`.
+- Cover critical tRPC procedures and Prisma flows, and note manual QA in PR descriptions.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## SOLID Practices
+- **Single Responsibility**: Keep feature logic inside its route folder and move shared UI into `src/components/ui`.
+- **Open/Closed**: Extend via new components or tRPC procedures instead of modifying stable code.
+- **Liskov Substitution**: Define clear prop types and router contracts so alternatives drop in safely.
+- **Interface Segregation**: Expose focused hooks/services rather than broad utility objects.
+- **Dependency Inversion**: Have UI layers consume abstractions (tRPC calls, auth helpers) instead of direct Prisma access.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Workflow & PRs
+- Use short, present-tense commits (`added search filters on dashboard`) and group related work; reference issues with `#id` when available.
+- PRs need a concise summary, visuals for UI work, and explicit notes on schema or env changes with confirmation that `pnpm lint` and required Prisma commands ran.
+- See `AGENTS.md` for deeper contributor guidance.

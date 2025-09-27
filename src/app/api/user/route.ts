@@ -16,7 +16,7 @@ export async function PATCH(req: Request) {
     }
 
     const json = await req.json()
-    const body = userUpdateSchema.parse(json)
+    userUpdateSchema.parse(json)
 
     // TODO: Update user in your database
     // This is where you would update the user's information in your database

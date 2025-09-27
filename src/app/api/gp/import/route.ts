@@ -1,7 +1,7 @@
 import { db } from "@/lib/db";
 import { z } from "zod";
 import { parseDateFlexible, parseFundingAmount, toSmartTitleCase } from "@/lib/utils";
-import { Prisma, $Enums } from "@/prisma/generated/client";
+import { $Enums } from "@/prisma/generated/client";
 // import { GrantDeadlineType, GrantOpenDateType } from "@/prisma/generated/client";
 
 // Validation helper functions
@@ -53,16 +53,6 @@ const commonSchemas = {
   requiredArray: (fieldName: string) => z.array(z.string())
     .min(1, `At least one ${fieldName} is required`),
 };
-
-// Base schema for common fields
-const baseGrantSchema = z.object({
-  runId: commonSchemas.requiredString("Run ID"),
-  output: z.object({
-    url: commonSchemas.url,
-    title: commonSchemas.requiredString("Title"),
-    grantor: commonSchemas.requiredString("Grantor"),
-  }),
-});
 
 // California-specific schema
 const californiaGrantSchema = z.object({

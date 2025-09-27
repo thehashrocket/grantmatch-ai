@@ -31,7 +31,7 @@ export default function LoginPage() {
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-6">
             <p className="text-xl leading-relaxed">
-              "AI GrantMatch has revolutionized how we find and apply for grants. It's an invaluable tool that has helped us secure funding to make a real difference in our community."
+              &ldquo;AI GrantMatch has revolutionized how we find and apply for grants. It&apos;s an invaluable tool that has helped us secure funding to make a real difference in our community.&rdquo;
             </p>
             <footer className="text-sm">
               <p className="font-semibold">Sofia Davis</p>

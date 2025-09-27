@@ -3,11 +3,12 @@ import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id } = await context.params;
     const grant = await prisma.grant.findUnique({
-      where: { id: params.id },
+      where: { id },
       include: { details: true },
     });
 
@@ -16,7 +17,7 @@ export async function GET(
     }
 
     return NextResponse.json(grant);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }

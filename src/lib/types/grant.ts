@@ -20,6 +20,17 @@ export interface PaginatedGrantMatches {
   };
 }
 
+export interface GrantSearchFilters {
+  textSearch: string;
+  minFunding: string;
+  maxFunding: string;
+  minDeadline: string;
+  maxDeadline: string;
+  minFitScore: string;
+  maxFitScore: string;
+  source: string;
+}
+
 export type FitScoreCategory = 'high' | 'medium' | 'low';
 
 export const getFitScoreCategory = (score: number): FitScoreCategory => {

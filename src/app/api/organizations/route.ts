@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth'
 import { z } from 'zod'
 import { db } from '@/lib/db'
 import { authOptions } from '@/lib/auth'
-import { createAPIError, handleAPIError, API_ERROR_CODES } from '@/lib/errors'
+import { createAPIError, API_ERROR_CODES } from '@/lib/errors'
 
 const organizationSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

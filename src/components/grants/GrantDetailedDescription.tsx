@@ -57,7 +57,7 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
             } else {
                 setDataType('plain');
             }
-        } catch (error) {
+        } catch {
             
             // Try to handle potential malformed JSON that might be an array disguised as object
             try {
@@ -72,7 +72,7 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
                         return;
                     }
                 }
-            } catch (secondError) {
+            } catch {
                 // console.log('Second parse attempt failed:', secondError);
             }
             
@@ -85,7 +85,7 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
     const parseNestedJson = (jsonString: string): Record<string, string> | null => {
         try {
             return JSON.parse(jsonString);
-        } catch (error) {
+        } catch {
             return null;
         }
     };

@@ -54,7 +54,7 @@ export function LoginForm() {
         router.refresh()
         router.push('/')
         toast.success('Logged in successfully')
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.')
       }
     })

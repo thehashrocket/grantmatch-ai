@@ -1,14 +1,15 @@
-import { PrismaGrantRepository } from '@/lib/repositories/GrantRepository';
-import { GrantServiceImpl } from '@/lib/services/GrantService';
+import { PrismaGrantRepository, type GrantRepository } from '@/lib/repositories/GrantRepository';
+import { GrantServiceImpl, type GrantService } from '@/lib/services/GrantService';
 
 // Dependency injection container
 class Container {
   private static instance: Container;
-  private repositories: Map<string, any> = new Map();
-  private services: Map<string, any> = new Map();
+  private readonly grantRepository: GrantRepository;
+  private readonly grantService: GrantService;
 
   private constructor() {
-    this.initializeDependencies();
+    this.grantRepository = new PrismaGrantRepository();
+    this.grantService = new GrantServiceImpl(this.grantRepository);
   }
 
   static getInstance(): Container {
@@ -18,21 +19,12 @@ class Container {
     return Container.instance;
   }
 
-  private initializeDependencies() {
-    // Initialize repositories
-    this.repositories.set('GrantRepository', new PrismaGrantRepository());
-    
-    // Initialize services with their dependencies
-    const grantRepository = this.repositories.get('GrantRepository');
-    this.services.set('GrantService', new GrantServiceImpl(grantRepository));
+  getGrantRepository(): GrantRepository {
+    return this.grantRepository;
   }
 
-  getGrantRepository() {
-    return this.repositories.get('GrantRepository');
-  }
-
-  getGrantService() {
-    return this.services.get('GrantService');
+  getGrantService(): GrantService {
+    return this.grantService;
   }
 }
 

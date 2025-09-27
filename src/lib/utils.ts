@@ -19,7 +19,7 @@ export function parseDateFlexible(dateStr: string): Date | null {
   // Try MM/DD/YY or MM/DD/YYYY
   const usMatch = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{2}:\d{2}))?$/);
   if (usMatch) {
-    const [_, month, day, year, time] = usMatch;
+    const [, month, day, year, time] = usMatch;
     const fullYear = year.length === 2 ? '20' + year : year;
     const dateStrIso = `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}${time ? 'T' + time + ':00' : ''}`;
     const d = new Date(dateStrIso);
@@ -29,7 +29,7 @@ export function parseDateFlexible(dateStr: string): Date | null {
   // Try written format: 'MMM DD, YYYY' (e.g., 'Mar 24, 2025')
   const writtenMatch = dateStr.match(/^(\w{3,})\s+(\d{1,2}),\s*(\d{4})$/);
   if (writtenMatch) {
-    const [_, month, day, year] = writtenMatch;
+    const [, month, day, year] = writtenMatch;
     const d = new Date(`${month} ${day}, ${year}`);
     if (!isNaN(d.getTime())) return d;
   }

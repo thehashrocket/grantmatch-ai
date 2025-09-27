@@ -8,7 +8,7 @@ import type { GrantMatch } from '@/lib/types/grant';
 interface GrantResultsProps {
   grants: GrantMatch[] | undefined;
   isLoading: boolean;
-  error: any;
+  error?: unknown;
   onRetry?: () => void;
   page?: number;
   pageSize?: number;
@@ -30,7 +30,7 @@ export function GrantResults({
     return <GrantResultsSkeleton />;
   }
 
-  if (error) {
+  if (error !== undefined && error !== null) {
     return <GrantResultsError error={error} onRetry={onRetry} />;
   }
 

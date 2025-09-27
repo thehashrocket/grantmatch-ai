@@ -91,7 +91,7 @@ export function RegisterForm() {
 
         toast.success('Registration successful! Please check your email to verify your account.')
         router.push('/login')
-      } catch (error) {
+      } catch {
         toast.error('Something went wrong. Please try again.')
       }
     })

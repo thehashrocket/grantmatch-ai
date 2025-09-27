@@ -37,10 +37,10 @@ async function verifyEmail(token: string) {
 export default async function VerifyEmailPage({
   searchParams,
 }: {
-  searchParams: { token?: string }
+  searchParams: Promise<{ token?: string }>
 }) {
   // Ensure searchParams is resolved before accessing properties
-  const params = await Promise.resolve(searchParams)
+  const params = await searchParams
   const token = params.token
 
   if (!token) {

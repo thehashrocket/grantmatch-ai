@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import GrantDetailsClient from './GrantDetailsClient';
 import { db } from '@/lib/db';
 
-export default async function GrantDetailsPage({ params }: { params: { id: string } }) {
+export default async function GrantDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   // Fetch the basic grant info (with details if present)
   const grant = await db.grant.findUnique({
@@ -22,4 +22,3 @@ export default async function GrantDetailsPage({ params }: { params: { id: strin
     </main>
   );
 }
-

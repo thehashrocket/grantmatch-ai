@@ -1,24 +1,36 @@
 import { prisma } from '@/lib/prisma'
+import type { Prisma } from '@/prisma/generated/client'
+
+type JsonLike = Record<string, unknown> | Array<unknown> | string | number | boolean | null;
 
 // Utility to recursively convert BigInt values to strings
-function convertBigIntToString(obj: any): any {
-  if (Array.isArray(obj)) {
-    return obj.map(convertBigIntToString);
-  } else if (obj && typeof obj === 'object') {
-    return Object.fromEntries(
-      Object.entries(obj).map(([key, value]) => [key, convertBigIntToString(value)])
-    );
-  } else if (typeof obj === 'bigint') {
-    return obj.toString();
+function convertBigIntToString(value: unknown): JsonLike {
+  if (Array.isArray(value)) {
+    return value.map(convertBigIntToString);
   }
-  return obj;
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value).map(([key, nestedValue]) => [key, convertBigIntToString(nestedValue)])
+    );
+  }
+  if (typeof value === 'bigint') {
+    return value.toString();
+  }
+  return value as JsonLike;
 }
 
-export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const grantId = (await params).id;
+type WebhookData = {
+  purpose?: string;
+  description?: unknown;
+  eligibilityRequirements?: Record<string, unknown>;
+  fundingDetails?: Record<string, unknown>;
+};
+
+export async function GET(request: Request, context: { params: Promise<{ id: string }> }) {
+  const { id: grantId } = await context.params;
 
   // 1. Check for existing GrantDetail
-  let existingDetail = await prisma.grantDetail.findUnique({
+  const existingDetail = await prisma.grantDetail.findUnique({
     where: { grantId },
   });
 
@@ -50,7 +62,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
   };
 
   // 4. POST to n8n webhook
-  let webhookData;
+  let webhookData: WebhookData | undefined;
   try {
     const webhookRes = await fetch(webhookUrl, {
       method: 'POST',
@@ -70,9 +82,13 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     if (!jsonMatch) {
       return new Response('Could not parse webhook output', { status: 502 });
     }
-    webhookData = JSON.parse(jsonMatch[1]);
-  } catch (err) {
+    webhookData = JSON.parse(jsonMatch[1]) as WebhookData;
+  } catch {
     return new Response('Error contacting or parsing webhook', { status: 502 });
+  }
+
+  if (!webhookData) {
+    return new Response('Webhook data missing', { status: 502 });
   }
 
   // 5. Save new GrantDetail
@@ -81,10 +97,10 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       data: {
         grantId: grantId,
         title: grant.title, // n8n does not return title
-        purpose: webhookData.purpose || grant.purpose,
+        purpose: webhookData.purpose ?? grant.purpose ?? '',
         description: typeof webhookData.description === 'string' ? webhookData.description : JSON.stringify(webhookData.description),
-        eligibilityRequirements: webhookData.eligibilityRequirements || {},
-        fundingDetails: webhookData.fundingDetails || {},
+        eligibilityRequirements: (webhookData.eligibilityRequirements ?? {}) as Prisma.InputJsonValue,
+        fundingDetails: (webhookData.fundingDetails ?? {}) as Prisma.InputJsonValue,
       },
     });
     // Refetch the grant with details
@@ -93,7 +109,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       include: { details: true },
     });
     return Response.json(convertBigIntToString(updatedGrant));
-  } catch (err) {
+  } catch {
     return new Response('Failed to save GrantDetail', { status: 500 });
   }
 }

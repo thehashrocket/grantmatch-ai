@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { trpc } from '@/lib/trpc/client';
-import { type GrantSearchFilters } from '@/components/grants/GrantSearchForm';
+import type { GrantSearchFilters } from '@/lib/types/grant';
 
 const initialFilters: GrantSearchFilters = {
   textSearch: '',
@@ -16,7 +16,7 @@ const initialFilters: GrantSearchFilters = {
 export function useGrantSearch() {
   const [searchFilters, setSearchFilters] = useState<GrantSearchFilters>(initialFilters);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
+  const pageSize = 10;
 
   const { data: paginatedData, isLoading, error } = trpc.grants.getMatchesPaginated.useQuery({
     ...searchFilters,

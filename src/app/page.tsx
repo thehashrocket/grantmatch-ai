@@ -47,7 +47,7 @@ export default function Home() {
             <div className="relative h-full rounded-2xl border border-gray-200 bg-white/90 p-8 dark:border-gray-800 dark:bg-gray-950/90 backdrop-blur">
               <div className="absolute top-0 right-0 -mt-4 -mr-4 h-16 w-16 bg-blue-500/10 rounded-full blur-2xl group-hover:bg-blue-500/20 transition-all duration-500" />
               <h3 className="text-xl font-bold text-blue-600 dark:text-blue-400 mb-4">Smart Matching</h3>
-              <p className="text-gray-600 dark:text-gray-300">AI-powered grant recommendations tailored to your organization's mission and needs.</p>
+              <p className="text-gray-600 dark:text-gray-300">AI-powered grant recommendations tailored to your organization&apos;s mission and needs.</p>
             </div>
           </div>
           
@@ -65,7 +65,7 @@ export default function Home() {
             <div className="relative h-full rounded-2xl border border-gray-200 bg-white/90 p-8 dark:border-gray-800 dark:bg-gray-950/90 backdrop-blur">
               <div className="absolute top-0 right-0 -mt-4 -mr-4 h-16 w-16 bg-purple-500/10 rounded-full blur-2xl group-hover:bg-purple-500/20 transition-all duration-500" />
               <h3 className="text-xl font-bold text-purple-600 dark:text-purple-400 mb-4">Impact Tracking</h3>
-              <p className="text-gray-600 dark:text-gray-300">Measure and showcase your organization's impact with powerful analytics tools.</p>
+              <p className="text-gray-600 dark:text-gray-300">Measure and showcase your organization&apos;s impact with powerful analytics tools.</p>
             </div>
           </div>
         </div>

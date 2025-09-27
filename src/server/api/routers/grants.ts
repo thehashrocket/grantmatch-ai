@@ -1,6 +1,7 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import { container } from '@/lib/container';
+import type { GrantSearchFilters } from '@/lib/types/grant';
 
 export const grantsRouter = router({
   getMatches: publicProcedure
@@ -17,8 +18,18 @@ export const grantsRouter = router({
     .query(async ({ input }) => {
       const grantService = container.getGrantService();
       const filters = input || {};
-      
-      return grantService.searchGrants(filters);
+      const normalizedFilters: GrantSearchFilters = {
+        textSearch: filters.textSearch ?? '',
+        minFunding: filters.minFunding ?? '',
+        maxFunding: filters.maxFunding ?? '',
+        minDeadline: filters.minDeadline ?? '',
+        maxDeadline: filters.maxDeadline ?? '',
+        minFitScore: filters.minFitScore ?? '',
+        maxFitScore: filters.maxFitScore ?? '',
+        source: filters.source ?? 'ALL',
+      };
+
+      return grantService.searchGrants(normalizedFilters);
     }),
 
   getMatchesPaginated: publicProcedure
@@ -37,7 +48,17 @@ export const grantsRouter = router({
     .query(async ({ input }) => {
       const grantService = container.getGrantService();
       const { page, pageSize, ...filters } = input;
-      
-      return grantService.searchGrantsPaginated(filters, page, pageSize);
+      const normalizedFilters: GrantSearchFilters = {
+        textSearch: filters.textSearch ?? '',
+        minFunding: filters.minFunding ?? '',
+        maxFunding: filters.maxFunding ?? '',
+        minDeadline: filters.minDeadline ?? '',
+        maxDeadline: filters.maxDeadline ?? '',
+        minFitScore: filters.minFitScore ?? '',
+        maxFitScore: filters.maxFitScore ?? '',
+        source: filters.source ?? 'ALL',
+      };
+
+      return grantService.searchGrantsPaginated(normalizedFilters, page, pageSize);
     }),
 }); 

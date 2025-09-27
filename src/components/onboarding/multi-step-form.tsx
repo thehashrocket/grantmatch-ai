@@ -6,7 +6,7 @@ import { PersonalInfoForm } from './personal-info-form';
 import { CompanyInfoForm } from './company-info-form';
 import { TeamInviteForm } from './team-invite-form';
 import { toast } from 'sonner';
-import { signIn, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
 
 type OnboardingStep = 'personal' | 'company' | 'team';
 

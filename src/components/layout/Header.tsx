@@ -24,9 +24,9 @@ export function Header({ user }: HeaderProps) {
         </div>
         <MainNav className="hidden md:flex" />
         <div className="flex flex-1 items-center justify-end space-x-4">
-          <UserNav user={user} />
+          <UserNav />
         </div>
       </div>
     </header>
   )
-} 
+}

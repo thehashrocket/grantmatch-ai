@@ -1,13 +1,90 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import GrantDetailedDescription from "@/components/grants/GrantDetailedDescription";
+import type { Prisma } from '@/prisma/generated/client';
+
+type EligibilityRequirements = {
+  requirements?: string;
+  eligibleApplicants?: string[];
+  eligibleGeographies?: string;
+};
+
+type FundingDetails = {
+  fundingMethod?: string;
+  fundingMethodNotes?: string;
+  matchingFunds?: string;
+  matchRequirement?: string;
+  fundingSource?: string;
+  fundingSourceNotes?: string;
+  totalEstimatedFunding?: string;
+  expectedNumberOfAwards?: string;
+  estimatedAmountPerAward?: string;
+  letterOfIntentRequired?: string;
+  requiresMatchedFunding?: string;
+};
+
+type GrantData = Prisma.GrantGetPayload<{ include: { details: true } }>;
 
 interface GrantDetailsClientProps {
   grantId: string;
-  initialGrant: any;
+  initialGrant: GrantData;
+}
+
+const isJsonObject = (value: unknown): value is Record<string, unknown> => (
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+);
+
+function parseEligibilityRequirements(value: unknown): EligibilityRequirements | undefined {
+  if (!isJsonObject(value)) return undefined;
+
+  const requirements = typeof value.requirements === 'string' ? value.requirements : undefined;
+  const eligibleApplicants = Array.isArray(value.eligibleApplicants)
+    ? value.eligibleApplicants.filter((item): item is string => typeof item === 'string')
+    : undefined;
+  const eligibleGeographies = typeof value.eligibleGeographies === 'string' ? value.eligibleGeographies : undefined;
+
+  if (!requirements && !eligibleApplicants && !eligibleGeographies) {
+    return undefined;
+  }
+
+  return {
+    requirements,
+    eligibleApplicants,
+    eligibleGeographies,
+  };
+}
+
+function parseFundingDetails(value: unknown): FundingDetails | undefined {
+  if (!isJsonObject(value)) return undefined;
+
+  const entries: Array<[keyof FundingDetails, unknown]> = [
+    ['fundingMethod', value.fundingMethod],
+    ['fundingMethodNotes', value.fundingMethodNotes],
+    ['matchingFunds', value.matchingFunds],
+    ['matchRequirement', value.matchRequirement],
+    ['fundingSource', value.fundingSource],
+    ['fundingSourceNotes', value.fundingSourceNotes],
+    ['totalEstimatedFunding', value.totalEstimatedFunding],
+    ['expectedNumberOfAwards', value.expectedNumberOfAwards],
+    ['estimatedAmountPerAward', value.estimatedAmountPerAward],
+    ['letterOfIntentRequired', value.letterOfIntentRequired],
+    ['requiresMatchedFunding', value.requiresMatchedFunding],
+  ];
+
+  const normalized: FundingDetails = {};
+  let hasValue = false;
+
+  for (const [key, raw] of entries) {
+    if (typeof raw === 'string' && raw.trim() !== '') {
+      normalized[key] = raw;
+      hasValue = true;
+    }
+  }
+
+  return hasValue ? normalized : undefined;
 }
 
 function GrantDetailsSkeleton() {
@@ -26,9 +103,19 @@ function GrantDetailsSkeleton() {
 }
 
 export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetailsClientProps) {
-  const [grant, setGrant] = useState(initialGrant);
+  const [grant, setGrant] = useState<GrantData>(initialGrant);
   const [loading, setLoading] = useState(!initialGrant.details);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const eligibilityRequirements = useMemo(
+    () => parseEligibilityRequirements(grant.details?.eligibilityRequirements),
+    [grant.details?.eligibilityRequirements]
+  );
+
+  const fundingDetails = useMemo(
+    () => parseFundingDetails(grant.details?.fundingDetails),
+    [grant.details?.fundingDetails]
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -39,7 +126,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
           headers: { 'Content-Type': 'application/json' },
         });
         if (!res.ok) return;
-        const data = await res.json();
+        const data = await res.json() as GrantData;
         if (!cancelled) {
           setGrant(data);
           if (data.details) {
@@ -47,7 +134,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
             if (intervalRef.current) clearInterval(intervalRef.current);
           }
         }
-      } catch (e) {
+      } catch {
         // Optionally handle error
       }
     }
@@ -111,7 +198,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
             <div>
               <h3 className="font-medium">Estimated Total Funding</h3>
               <p className="text-sm text-muted-foreground">
-                ${Number(grant.estimatedTotalFunding).toLocaleString()}
+                ${Number(grant.estimatedTotalFunding ?? 0).toLocaleString()}
               </p>
             </div>
             <div>
@@ -154,28 +241,28 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
                     <h3 className="font-medium">Eligible Geographies</h3>
                     <p className="text-sm text-muted-foreground">{grant.eligibleGeographies}</p>
                   </div>
-                  {grant.details.eligibilityRequirements && (
+                  {eligibilityRequirements && (
                     <div>
                       <h3 className="font-medium">Additional Requirements</h3>
                       <div className="mt-2 space-y-2">
-                        {grant.details.eligibilityRequirements.requirements && (
+                        {eligibilityRequirements.requirements && (
                           <p className="text-sm text-muted-foreground">
-                            {grant.details.eligibilityRequirements.requirements}
+                            {eligibilityRequirements.requirements}
                           </p>
                         )}
-                        {grant.details.eligibilityRequirements.eligibleApplicants && Array.isArray(grant.details.eligibilityRequirements.eligibleApplicants) && (
+                        {eligibilityRequirements.eligibleApplicants && (
                           <div>
                             <span className="font-medium">Eligible Applicants: </span>
                             <span className="text-sm text-muted-foreground">
-                              {grant.details.eligibilityRequirements.eligibleApplicants.join(', ')}
+                              {eligibilityRequirements.eligibleApplicants.join(', ')}
                             </span>
                           </div>
                         )}
-                        {grant.details.eligibilityRequirements.eligibleGeographies && (
+                        {eligibilityRequirements.eligibleGeographies && (
                           <div>
                             <span className="font-medium">Eligible Geographies: </span>
                             <span className="text-sm text-muted-foreground">
-                              {grant.details.eligibilityRequirements.eligibleGeographies}
+                              {eligibilityRequirements.eligibleGeographies}
                             </span>
                           </div>
                         )}
@@ -191,54 +278,54 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
                 <CardTitle>Additional Funding Details</CardTitle>
               </CardHeader>
               <CardContent>
-                {grant.details.fundingDetails && (
+                {fundingDetails && (
                   <div className="space-y-2">
-                    {grant.details.fundingDetails.fundingMethod && (
+                    {fundingDetails.fundingMethod && (
                       <div>
                         <span className="font-medium">Funding Method: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.fundingMethod}</span>
-                        {grant.details.fundingDetails.fundingMethodNotes && (
-                          <p className="text-xs text-muted-foreground mt-1">{grant.details.fundingDetails.fundingMethodNotes}</p>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.fundingMethod}</span>
+                        {fundingDetails.fundingMethodNotes && (
+                          <p className="text-xs text-muted-foreground mt-1">{fundingDetails.fundingMethodNotes}</p>
                         )}
                       </div>
                     )}
-                    {grant.details.fundingDetails.fundingSource && (
+                    {fundingDetails.fundingSource && (
                       <div>
                         <span className="font-medium">Funding Source: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.fundingSource}</span>
-                        {grant.details.fundingDetails.fundingSourceNotes && (
-                          <p className="text-xs text-muted-foreground mt-1">{grant.details.fundingDetails.fundingSourceNotes}</p>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.fundingSource}</span>
+                        {fundingDetails.fundingSourceNotes && (
+                          <p className="text-xs text-muted-foreground mt-1">{fundingDetails.fundingSourceNotes}</p>
                         )}
                       </div>
                     )}
-                    {grant.details.fundingDetails.totalEstimatedFunding && (
+                    {fundingDetails.totalEstimatedFunding && (
                       <div>
                         <span className="font-medium">Total Estimated Funding: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.totalEstimatedFunding}</span>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.totalEstimatedFunding}</span>
                       </div>
                     )}
-                    {grant.details.fundingDetails.expectedNumberOfAwards && (
+                    {fundingDetails.expectedNumberOfAwards && (
                       <div>
                         <span className="font-medium">Expected Number of Awards: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.expectedNumberOfAwards}</span>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.expectedNumberOfAwards}</span>
                       </div>
                     )}
-                    {grant.details.fundingDetails.estimatedAmountPerAward && (
+                    {fundingDetails.estimatedAmountPerAward && (
                       <div>
                         <span className="font-medium">Estimated Amount Per Award: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.estimatedAmountPerAward}</span>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.estimatedAmountPerAward}</span>
                       </div>
                     )}
-                    {grant.details.fundingDetails.letterOfIntentRequired && (
+                    {fundingDetails.letterOfIntentRequired && (
                       <div>
                         <span className="font-medium">Letter of Intent Required: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.letterOfIntentRequired}</span>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.letterOfIntentRequired}</span>
                       </div>
                     )}
-                    {grant.details.fundingDetails.requiresMatchedFunding && (
+                    {fundingDetails.requiresMatchedFunding && (
                       <div>
                         <span className="font-medium">Requires Matched Funding: </span>
-                        <span className="text-sm text-muted-foreground">{grant.details.fundingDetails.requiresMatchedFunding}</span>
+                        <span className="text-sm text-muted-foreground">{fundingDetails.requiresMatchedFunding}</span>
                       </div>
                     )}
                   </div>

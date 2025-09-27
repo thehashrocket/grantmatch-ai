@@ -13,7 +13,7 @@ export async function POST(req: Request) {
     try {
       body = await req.json();
       console.log('body', body);
-    } catch (err) {
+    } catch {
       return new Response(JSON.stringify({ error: 'Invalid or missing JSON body.' }), {
         status: 400,
         headers: { 'Content-Type': 'application/json' },

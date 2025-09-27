@@ -7,17 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Search, Filter, X } from 'lucide-react';
-
-export interface GrantSearchFilters {
-  textSearch: string;
-  minFunding: string;
-  maxFunding: string;
-  minDeadline: string;
-  maxDeadline: string;
-  minFitScore: string;
-  maxFitScore: string;
-  source: string;
-}
+import type { GrantSearchFilters } from '@/lib/types/grant';
 
 interface GrantSearchFormProps {
   onSearch: (filters: GrantSearchFilters) => void;
@@ -216,7 +206,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
             <div className="flex flex-wrap gap-2">
               {filters.textSearch && (
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
-                  Search: "{filters.textSearch}"
+                  Search: &ldquo;{filters.textSearch}&rdquo;
                   <button
                     onClick={() => handleInputChange('textSearch', '')}
                     className="ml-1 hover:text-blue-600"

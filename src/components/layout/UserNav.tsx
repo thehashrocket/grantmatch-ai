@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { signOut } from 'next-auth/react'
 import {
   DropdownMenu,
@@ -14,15 +15,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { User, LogIn, LogOut, UserCircle } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 
-interface UserNavProps {
-  user?: {
-    name?: string | null
-    email?: string | null
-    image?: string | null
-  } | null
-}
-
-export function UserNav({ user }: UserNavProps) {
+export function UserNav() {
   const { data: session } = useSession()
   if (!session) {
     return (
@@ -41,10 +34,12 @@ export function UserNav({ user }: UserNavProps) {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             {session?.user?.image ? (
-              <img
+              <Image
                 src={session.user.image}
                 alt={session.user.name || 'User avatar'}
-                className="h-8 w-8 rounded-full"
+                width={32}
+                height={32}
+                className="h-8 w-8 rounded-full object-cover"
               />
             ) : (
               <AvatarFallback>

@@ -72,7 +72,7 @@ export function getFlagInfo(source: string) {
   if (!source) return null;
   
   // Normalize source to title case
-  let normalizedSource = toTitleCase(source.trim());
+  const normalizedSource = toTitleCase(source.trim());
   
   // Handle United States/Federal cases
   if (normalizedSource === 'United States' || normalizedSource === 'Federal') {

@@ -302,7 +302,9 @@ describe('ensureGrantDetail concurrency guards', () => {
 		const prisma = createPrismaMock(grant);
 
 		const queryRawSpy = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-		queryRawSpy.mockImplementationOnce(async () => [{ id: grant.id, prevStatus: grant.detailsStatus }]);
+		queryRawSpy.mockImplementationOnce(async () => [
+			{ id: grant.id, prevStatus: grant.detailsStatus },
+		]);
 		queryRawSpy.mockImplementationOnce(async () => []);
 
 		const [resultA, resultB] = await Promise.all([
@@ -317,7 +319,9 @@ describe('ensureGrantDetail concurrency guards', () => {
 
 		const infoLogs = parseCalls(infoSpy);
 		const warnLogs = parseCalls(warnSpy);
-		expect(infoLogs.filter((l) => l.decision === 'claim_success')).toHaveLength(1);
+		expect(infoLogs.filter((l) => l.decision === 'claim_success')).toHaveLength(
+			1,
+		);
 		expect(warnLogs.filter((l) => l.decision === 'claim_miss')).toHaveLength(1);
 	});
 
@@ -325,7 +329,9 @@ describe('ensureGrantDetail concurrency guards', () => {
 		const grant = baseGrant();
 		const prisma = createPrismaMock(grant);
 		const queryRawSpy = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-		queryRawSpy.mockImplementation(async () => [{ id: grant.id, prevStatus: 'FETCHING' }]);
+		queryRawSpy.mockImplementation(async () => [
+			{ id: grant.id, prevStatus: 'FETCHING' },
+		]);
 		fetchMock.mockRejectedValueOnce(new Error('network fail'));
 
 		await ensureGrantDetail(prisma, grant.id);

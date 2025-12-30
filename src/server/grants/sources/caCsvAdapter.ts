@@ -153,11 +153,15 @@ export const caCsvAdapter: GrantSourceAdapter = {
 		const letterOfIntentRequired = normalizeString(
 			pickField(record, candidates.letterOfIntentRequired),
 		);
-		const awardPeriod = normalizeString(pickField(record, candidates.awardPeriod));
+		const awardPeriod = normalizeString(
+			pickField(record, candidates.awardPeriod),
+		);
 		const expectedAwardDate = normalizeString(
 			pickField(record, candidates.expectedAwardDate),
 		);
-		const awardStats = normalizeString(pickField(record, candidates.awardStats));
+		const awardStats = normalizeString(
+			pickField(record, candidates.awardStats),
+		);
 
 		const portalIdCandidate = normalizeString(
 			pickField(record, ['PortalID', 'portal_id', 'portalId']),
@@ -401,7 +405,7 @@ function buildDetails({
 
 function parseCurrency(value: unknown): number | null {
 	if (value === undefined || value === null) return null;
-	const str = String(value).replace(/[\$,]/g, '').trim();
+	const str = String(value).replace(/[$,]/g, '').trim();
 	if (!str) return null;
 	const num = Number(str);
 	return Number.isFinite(num) ? num : null;

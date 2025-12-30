@@ -48,7 +48,9 @@ async function atomicClaimGrantDetailFetch(
 	failedRetryBoundary: Date,
 ): Promise<{ claimed: boolean; prevStatus: string | null }> {
 	// CTE locks eligible row; SKIP LOCKED ensures concurrent callers don’t block and only one claims.
-	const rows = await prisma.$queryRaw<{ id: string; prevStatus: string | null }[]>(Prisma.sql`
+	const rows = await prisma.$queryRaw<
+		{ id: string; prevStatus: string | null }[]
+	>(Prisma.sql`
     WITH eligible AS (
       SELECT "id", "detailsStatus" AS "prevStatus"
       FROM "Grant"
@@ -450,18 +452,18 @@ export async function ensureGrantDetail(
 			reason: 'ok',
 			status: grant.detailsStatus ?? null,
 			prevStatus,
-			detailsFetchedAt: (
-				detailData.fetchedAt instanceof Date
-					? detailData.fetchedAt
-					: new Date(detailData.fetchedAt ?? observedAt)
+			detailsFetchedAt: (detailData.fetchedAt instanceof Date
+				? detailData.fetchedAt
+				: new Date(detailData.fetchedAt ?? observedAt)
 			).toISOString(),
 			detailsErrorAt: null,
 			force,
 			fetchMs,
 			totalMs,
 			attachmentsCount: result.attachments.length,
-			hasGrantPatch:
-				!!(result.grantPatch && Object.keys(result.grantPatch).length),
+			hasGrantPatch: !!(
+				result.grantPatch && Object.keys(result.grantPatch).length
+			),
 		});
 
 		return { fetched: true };

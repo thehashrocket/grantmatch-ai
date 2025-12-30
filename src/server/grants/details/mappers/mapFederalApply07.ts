@@ -5,9 +5,13 @@ import {
 } from '@/server/grants/sources/federalClient';
 
 export type FederalSynopsis = {
+	opportunityId?: string | number;
 	opportunityTitle?: string;
+	agencyCode?: string;
+	agencyName?: string;
 	opportunityCategory?: { description?: string };
 	synopsisDesc?: string;
+	version?: string | number;
 	applicantTypes?: unknown;
 	applicantEligibilityDesc?: string;
 	eligibilityDescription?: string;
@@ -27,6 +31,7 @@ export type FederalSynopsis = {
 	lastUpdatedDate?: string;
 	closeDate?: string;
 	oppStatus?: string;
+	[key: string]: unknown;
 };
 
 export type FederalDetails = {

@@ -1,8 +1,8 @@
-import { PrismaClient, type Grant, type GrantChange, type GrantSyncRun, $Enums } from '@/prisma/generated/client';
+import { PrismaClient, type Grant, type GrantChange, type GrantSyncRun, type GrantDetail, $Enums } from '@/prisma/generated/client';
 import { diffObjects } from '@/server/grants/ingest/normalize';
-import { type NormalizedGrantInput, type UpsertResult } from '@/server/grants/ingest/types';
+import { type NormalizedGrantInput, type NormalizedGrantDetail, type UpsertResult } from '@/server/grants/ingest/types';
 
-type PrismaLike = Pick<PrismaClient, 'grant' | 'grantChange'>;
+type PrismaLike = Pick<PrismaClient, 'grant' | 'grantChange' | 'grantDetail'>;
 
 export async function upsertGrantFromNormalized(
   prisma: PrismaLike,
@@ -16,6 +16,9 @@ export async function upsertGrantFromNormalized(
     const created = await prisma.grant.create({
       data: toGrantData(normalized),
     });
+    if (normalized.details) {
+      await upsertGrantDetail(prisma, created.id, normalized.details, created.title);
+    }
     await prisma.grantChange.create({
       data: {
         grantId: created.id,
@@ -46,15 +49,41 @@ export async function upsertGrantFromNormalized(
   updateData.closedAt = normalized.closedAt ?? statusTransition.closedAt ?? existing.closedAt;
   updateData.status = statusTransition.nextStatus ?? normalized.status;
 
+  const beforeDetail = normalized.details ? await prisma.grantDetail.findUnique({ where: { grantId: existing.id } }) : null;
+
   const updated = await prisma.grant.update({
     where: { id: existing.id },
     data: updateData,
   });
 
-  const diff = diffObjects(
-    mapGrantToComparable(existing),
-    mapGrantToComparable(updated)
+  let afterDetailComparable: Record<string, unknown> | null = null;
+  if (normalized.details) {
+    const detail = await upsertGrantDetail(prisma, existing.id, normalized.details, updated.title);
+    afterDetailComparable = detail
+      ? {
+          description: detail.description,
+          eligibilityRequirements: detail.eligibilityRequirements,
+          fundingDetails: detail.fundingDetails,
+          purpose: detail.purpose,
+        }
+      : null;
+  }
+
+  const diff = diffObjects(mapGrantToComparable(existing), mapGrantToComparable(updated));
+  const detailDiff = diffObjects(
+    beforeDetail
+      ? {
+          description: beforeDetail.description,
+          eligibilityRequirements: beforeDetail.eligibilityRequirements,
+          fundingDetails: beforeDetail.fundingDetails,
+          purpose: beforeDetail.purpose,
+        }
+      : null,
+    afterDetailComparable ?? {}
   );
+
+  const mergedDiff =
+    detailDiff && diff ? { ...diff, details: detailDiff } : detailDiff ? { details: detailDiff } : diff;
 
   const changeType =
     statusTransition.type ??
@@ -67,7 +96,7 @@ export async function upsertGrantFromNormalized(
       changeType,
       oldHash: existing.contentHash ?? undefined,
       newHash: normalized.contentHash,
-      diffJson: diff,
+      diffJson: mergedDiff,
       observedAt: now,
     },
   });
@@ -194,4 +223,35 @@ function mapGrantToComparable(grant: Grant) {
     status: grant.status,
     closedAt: grant.closedAt?.toISOString() ?? null,
   };
+}
+
+async function upsertGrantDetail(
+  prisma: PrismaLike,
+  grantId: string,
+  details: NormalizedGrantDetail,
+  fallbackTitle: string
+): Promise<GrantDetail | null> {
+  const existing = await prisma.grantDetail.findUnique({ where: { grantId } });
+  if (existing) {
+    return prisma.grantDetail.update({
+      where: { grantId },
+      data: {
+        title: details.title ?? existing.title ?? fallbackTitle,
+        purpose: details.purpose ?? existing.purpose ?? fallbackTitle,
+        description: details.description ?? existing.description ?? '',
+        eligibilityRequirements: details.eligibilityRequirements ?? existing.eligibilityRequirements,
+        fundingDetails: details.fundingDetails ?? existing.fundingDetails,
+      },
+    });
+  }
+  return prisma.grantDetail.create({
+    data: {
+      grantId,
+      title: details.title ?? fallbackTitle,
+      purpose: details.purpose ?? details.title ?? fallbackTitle,
+      description: details.description ?? '',
+      eligibilityRequirements: details.eligibilityRequirements ?? {},
+      fundingDetails: details.fundingDetails ?? {},
+    },
+  });
 }

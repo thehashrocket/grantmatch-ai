@@ -120,6 +120,14 @@ export const caCsvAdapter: GrantSourceAdapter = {
       closedAt,
       contentHash,
       lastSeenAt: new Date(),
+      details: buildDetails({
+        title,
+        purpose,
+        description,
+        eligibleApplicants,
+        eligibleGeographies,
+        record,
+      }),
     };
   },
 };
@@ -174,4 +182,60 @@ function parseCsv(content: string): string[][] {
   }
 
   return rows;
+}
+
+function buildDetails({
+  title,
+  purpose,
+  description,
+  eligibleApplicants,
+  eligibleGeographies,
+  record,
+}: {
+  title: string;
+  purpose?: string;
+  description?: string;
+  eligibleApplicants?: string[];
+  eligibleGeographies?: string;
+  record: Record<string, unknown>;
+}) {
+  const applicantTypeNotes = normalizeString(record.ApplicantTypeNotes);
+  const matchFunding = normalizeString(record.MatchingFunds);
+  const matchFundingNotes = normalizeString(record.MatchingFundsNotes);
+  const fundsDisbursement = normalizeString(record.FundingMethod);
+  const fundsDisbursementNotes = normalizeString(record.FundingMethodNotes);
+  const estimatedTotalFunding = normalizeString(record.EstAvailFunds);
+  const estimatedAwardAmounts = normalizeString(record.EstAmounts ?? record.EstAwards);
+  const grantEventsUrl = normalizeString(record.GrantEventsURL);
+  const contactInfo = normalizeString(record.ContactInfo);
+  const applicationUrl = normalizeString(record.GrantURL);
+  const agencyUrl = normalizeString(record.AgencyURL);
+
+  const eligibilityRequirements = {
+    eligibleApplicants,
+    eligibleGeographies,
+    applicantTypeNotes,
+    eligibilityText: normalizeString(record.Eligibility) ?? normalizeString(record.Description),
+  };
+
+  const fundingDetails = {
+    estimatedTotalFunding,
+    estimatedAwardAmounts,
+    matchFunding,
+    matchFundingNotes,
+    fundsDisbursement,
+    fundsDisbursementNotes,
+    grantEventsUrl,
+    contactInfo,
+    applicationUrl,
+    agencyUrl,
+  };
+
+  return {
+    title,
+    purpose: purpose ?? title,
+    description: description ?? '',
+    eligibilityRequirements,
+    fundingDetails,
+  };
 }

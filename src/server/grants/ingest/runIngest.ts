@@ -41,6 +41,15 @@ const normalizedGrantSchema = z.object({
   closedAt: z.date().nullable().optional(),
   contentHash: z.string(),
   lastSeenAt: z.date(),
+  details: z
+    .object({
+      title: z.string().optional(),
+      purpose: z.string().optional(),
+      description: z.string().optional(),
+      eligibilityRequirements: z.unknown().optional(),
+      fundingDetails: z.unknown().optional(),
+    })
+    .optional(),
 });
 
 export async function runIngest(adapter: GrantSourceAdapter): Promise<{ runId: string }> {

@@ -45,16 +45,16 @@ const normalizeApplicants = (
 			.filter((item): item is string => !!item);
 		if (normalized.length) return Array.from(new Set(normalized));
 	}
-	const splitFallback = toNonEmptyString(fallback)?.split(',').map((s) => s.trim());
-	if (splitFallback && splitFallback.length) {
+	const splitFallback = toNonEmptyString(fallback)
+		?.split(',')
+		.map((s) => s.trim());
+	if (splitFallback?.length) {
 		return Array.from(new Set(splitFallback.filter(Boolean)));
 	}
 	return undefined;
 };
 
-function parseEligibility(
-	grant: GrantWithDetails,
-): {
+function parseEligibility(grant: GrantWithDetails): {
 	summary?: string;
 	applicantTypeNotes?: string;
 	eligibleApplicants?: string[];

@@ -48,7 +48,9 @@ export function GrantBasicInfoCard({ grant }: { grant: GrantWithDetails }) {
 						</div>
 					))}
 				{info.every(([, value]) => !value) && (
-					<p className="text-sm text-muted-foreground">No basic info provided.</p>
+					<p className="text-sm text-muted-foreground">
+						No basic info provided.
+					</p>
 				)}
 			</CardContent>
 		</Card>

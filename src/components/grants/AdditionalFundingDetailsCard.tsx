@@ -30,18 +30,32 @@ function normalizeFundingDetails(
 	if (!isObject(funding)) return undefined;
 
 	const entries: Array<[string, unknown]> = [
-		['Estimated Total Funding', funding.estimatedFunding ?? funding.totalEstimatedFunding ?? baseGrant.estimatedTotalFunding],
+		[
+			'Estimated Total Funding',
+			funding.estimatedFunding ??
+				funding.totalEstimatedFunding ??
+				baseGrant.estimatedTotalFunding,
+		],
 		['Award Ceiling', funding.awardCeiling],
 		['Award Floor', funding.awardFloor],
-		['Number of Awards', funding.numberOfAwards ?? funding.expectedNumberOfAwards],
-		['Estimated Amount Per Award', funding.estimatedAmountPerAward ?? funding.estimatedAwardAmounts],
+		[
+			'Number of Awards',
+			funding.numberOfAwards ?? funding.expectedNumberOfAwards,
+		],
+		[
+			'Estimated Amount Per Award',
+			funding.estimatedAmountPerAward ?? funding.estimatedAwardAmounts,
+		],
 		['Cost Sharing', funding.costSharing],
 		['Funding Instruments', funding.fundingInstruments],
 		['Funding Categories', funding.fundingActivityCategories],
 		['Funding Method', funding.fundingMethod],
 		['Funding Source', funding.fundingSource],
 		['Funding Source Notes', funding.fundingSourceNotes],
-		['Funding Desc Link', funding.fundingDescLinkUrl ?? funding.fundingDescLinkDesc],
+		[
+			'Funding Desc Link',
+			funding.fundingDescLinkUrl ?? funding.fundingDescLinkDesc,
+		],
 		['Response Date Description', funding.responseDateDesc],
 		['Original Due Date Description', funding.originalDueDateDesc],
 		['Archive Date', funding.archiveDate],
@@ -90,7 +104,8 @@ export function AdditionalFundingDetailsCard({
 }) {
 	const details = useMemo(() => {
 		const rawFunding =
-			grant.details?.fundingDetails && typeof grant.details.fundingDetails === 'object'
+			grant.details?.fundingDetails &&
+			typeof grant.details.fundingDetails === 'object'
 				? (grant.details.fundingDetails as FundingValue)
 				: undefined;
 		return normalizeFundingDetails(grant, rawFunding);

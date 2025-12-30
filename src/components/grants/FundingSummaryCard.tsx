@@ -32,11 +32,13 @@ export function FundingSummaryCard({ grant }: { grant: GrantWithDetails }) {
 				});
 
 			if (currencyLabels.has(label)) {
-				if (typeof value === 'number') return [label, formatCurrency(value)] as const;
+				if (typeof value === 'number')
+					return [label, formatCurrency(value)] as const;
 				if (typeof value === 'bigint')
 					return [label, formatCurrency(Number(value))] as const;
 				const parsed = Number(value);
-				if (Number.isFinite(parsed)) return [label, formatCurrency(parsed)] as const;
+				if (Number.isFinite(parsed))
+					return [label, formatCurrency(parsed)] as const;
 			}
 
 			if (typeof value === 'bigint') {

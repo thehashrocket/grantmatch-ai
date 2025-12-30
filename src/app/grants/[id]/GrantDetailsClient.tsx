@@ -1,31 +1,14 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import DetailsStatusBadge from '@/components/grants/DetailsStatusBadge';
 import GrantDetailedDescription from '@/components/grants/GrantDetailedDescription';
+import { EligibilityRequirementsCard } from '@/components/grants/EligibilityRequirementsCard';
+import { AdditionalFundingDetailsCard } from '@/components/grants/AdditionalFundingDetailsCard';
+import { GrantBasicInfoCard } from '@/components/grants/GrantBasicInfoCard';
+import { FundingSummaryCard } from '@/components/grants/FundingSummaryCard';
 import type { Prisma } from '@/prisma/generated/client';
 import type { GrantMatch } from '@/lib/types/grant';
-
-type EligibilityRequirements = {
-	requirements?: string;
-	eligibleApplicants?: string[];
-	eligibleGeographies?: string;
-};
-
-type FundingDetails = {
-	fundingMethod?: string;
-	fundingMethodNotes?: string;
-	matchingFunds?: string;
-	matchRequirement?: string;
-	fundingSource?: string;
-	fundingSourceNotes?: string;
-	totalEstimatedFunding?: string;
-	expectedNumberOfAwards?: string;
-	estimatedAmountPerAward?: string;
-	letterOfIntentRequired?: string;
-	requiresMatchedFunding?: string;
-};
 
 type GrantData = Prisma.GrantGetPayload<{
 	include: { details: true; attachments: true };
@@ -36,81 +19,10 @@ interface GrantDetailsClientProps {
 	initialGrant: GrantData;
 }
 
-const isJsonObject = (value: unknown): value is Record<string, unknown> =>
-	typeof value === 'object' && value !== null && !Array.isArray(value);
-
-function parseEligibilityRequirements(
-	value: unknown,
-): EligibilityRequirements | undefined {
-	if (!isJsonObject(value)) return undefined;
-
-	const requirements =
-		typeof value.requirements === 'string' ? value.requirements : undefined;
-	const eligibleApplicants = Array.isArray(value.eligibleApplicants)
-		? value.eligibleApplicants.filter(
-				(item): item is string => typeof item === 'string',
-			)
-		: undefined;
-	const eligibleGeographies =
-		typeof value.eligibleGeographies === 'string'
-			? value.eligibleGeographies
-			: undefined;
-
-	if (!requirements && !eligibleApplicants && !eligibleGeographies) {
-		return undefined;
-	}
-
-	return {
-		requirements,
-		eligibleApplicants,
-		eligibleGeographies,
-	};
-}
-
-function parseFundingDetails(value: unknown): FundingDetails | undefined {
-	if (!isJsonObject(value)) return undefined;
-
-	const entries: Array<[keyof FundingDetails, unknown]> = [
-		['fundingMethod', value.fundingMethod],
-		['fundingMethodNotes', value.fundingMethodNotes],
-		['matchingFunds', value.matchingFunds],
-		['matchRequirement', value.matchRequirement],
-		['fundingSource', value.fundingSource],
-		['fundingSourceNotes', value.fundingSourceNotes],
-		['totalEstimatedFunding', value.totalEstimatedFunding],
-		['expectedNumberOfAwards', value.expectedNumberOfAwards],
-		['estimatedAmountPerAward', value.estimatedAmountPerAward],
-		['letterOfIntentRequired', value.letterOfIntentRequired],
-		['requiresMatchedFunding', value.requiresMatchedFunding],
-	];
-
-	const normalized: FundingDetails = {};
-	let hasValue = false;
-
-	for (const [key, raw] of entries) {
-		if (typeof raw === 'string' && raw.trim() !== '') {
-			normalized[key] = raw;
-			hasValue = true;
-		}
-	}
-
-	return hasValue ? normalized : undefined;
-}
-
 export default function GrantDetailsClient({
 	initialGrant,
 }: GrantDetailsClientProps) {
 	const grant = initialGrant;
-
-	const eligibilityRequirements = useMemo(
-		() => parseEligibilityRequirements(grant.details?.eligibilityRequirements),
-		[grant.details?.eligibilityRequirements],
-	);
-
-	const fundingDetails = useMemo(
-		() => parseFundingDetails(grant.details?.fundingDetails),
-		[grant.details?.fundingDetails],
-	);
 
 	return (
 		<div className="space-y-6">
@@ -130,65 +42,9 @@ export default function GrantDetailsClient({
 			</div>
 
 			<div className="grid gap-6 md:grid-cols-2">
-				<Card>
-					<CardHeader>
-						<CardTitle>Basic Information</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div>
-							<h3 className="font-medium">Purpose</h3>
-							<p className="text-sm text-muted-foreground">{grant.purpose}</p>
-						</div>
-						<div>
-							<h3 className="font-medium">State Agency</h3>
-							<p className="text-sm text-muted-foreground">
-								{grant.stateAgency}
-							</p>
-						</div>
-						<div>
-							<h3 className="font-medium">Grantor</h3>
-							<p className="text-sm text-muted-foreground">{grant.grantor}</p>
-						</div>
-						<div>
-							<h3 className="font-medium">Opportunity Type</h3>
-							<p className="text-sm text-muted-foreground">
-								{grant.opportunityType}
-							</p>
-						</div>
-					</CardContent>
-				</Card>
+				<GrantBasicInfoCard grant={grant} />
 
-				<Card>
-					<CardHeader>
-						<CardTitle>Funding Details</CardTitle>
-					</CardHeader>
-					<CardContent className="space-y-4">
-						<div>
-							<h3 className="font-medium">Estimated Total Funding</h3>
-							<p className="text-sm text-muted-foreground">
-								${Number(grant.estimatedTotalFunding ?? 0).toLocaleString()}
-							</p>
-						</div>
-						<div>
-							<h3 className="font-medium">Award Amounts</h3>
-							<p className="text-sm text-muted-foreground">
-								{grant.estimatedAwardAmounts}
-							</p>
-						</div>
-						<div>
-							<h3 className="font-medium">Match Funding</h3>
-							<p className="text-sm text-muted-foreground">
-								{grant.matchFunding}
-							</p>
-						</div>
-						<div>
-							<h3 className="font-medium">Funds Disbursement</h3>
-							<p className="text-sm text-muted-foreground">
-								{grant.fundsDisbursment}
-							</p>
-						</div>
-					</CardContent>
-				</Card>
+				<FundingSummaryCard grant={grant} />
 
 				{grant.details && (
 					<>
@@ -205,149 +61,9 @@ export default function GrantDetailsClient({
 							</CardContent>
 						</Card>
 
-						<Card>
-							<CardHeader>
-								<CardTitle>Eligibility Requirements</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<div className="space-y-4">
-									<div>
-										<h3 className="font-medium">Eligible Applicants</h3>
-										<p className="text-sm text-muted-foreground">
-											{grant.eligibleApplicants}
-										</p>
-									</div>
-									<div>
-										<h3 className="font-medium">Eligible Geographies</h3>
-										<p className="text-sm text-muted-foreground">
-											{grant.eligibleGeographies}
-										</p>
-									</div>
-									{eligibilityRequirements && (
-										<div>
-											<h3 className="font-medium">Additional Requirements</h3>
-											<div className="mt-2 space-y-2">
-												{eligibilityRequirements.requirements && (
-													<p className="text-sm text-muted-foreground">
-														{eligibilityRequirements.requirements}
-													</p>
-												)}
-												{eligibilityRequirements.eligibleApplicants && (
-													<div>
-														<span className="font-medium">
-															Eligible Applicants:{' '}
-														</span>
-														<span className="text-sm text-muted-foreground">
-															{eligibilityRequirements.eligibleApplicants.join(
-																', ',
-															)}
-														</span>
-													</div>
-												)}
-												{eligibilityRequirements.eligibleGeographies && (
-													<div>
-														<span className="font-medium">
-															Eligible Geographies:{' '}
-														</span>
-														<span className="text-sm text-muted-foreground">
-															{eligibilityRequirements.eligibleGeographies}
-														</span>
-													</div>
-												)}
-											</div>
-										</div>
-									)}
-								</div>
-							</CardContent>
-						</Card>
+						<EligibilityRequirementsCard grant={grant} />
 
-						<Card>
-							<CardHeader>
-								<CardTitle>Additional Funding Details</CardTitle>
-							</CardHeader>
-							<CardContent>
-								{fundingDetails && (
-									<div className="space-y-2">
-										{fundingDetails.fundingMethod && (
-											<div>
-												<span className="font-medium">Funding Method: </span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.fundingMethod}
-												</span>
-												{fundingDetails.fundingMethodNotes && (
-													<p className="text-xs text-muted-foreground mt-1">
-														{fundingDetails.fundingMethodNotes}
-													</p>
-												)}
-											</div>
-										)}
-										{fundingDetails.fundingSource && (
-											<div>
-												<span className="font-medium">Funding Source: </span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.fundingSource}
-												</span>
-												{fundingDetails.fundingSourceNotes && (
-													<p className="text-xs text-muted-foreground mt-1">
-														{fundingDetails.fundingSourceNotes}
-													</p>
-												)}
-											</div>
-										)}
-										{fundingDetails.totalEstimatedFunding && (
-											<div>
-												<span className="font-medium">
-													Total Estimated Funding:{' '}
-												</span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.totalEstimatedFunding}
-												</span>
-											</div>
-										)}
-										{fundingDetails.expectedNumberOfAwards && (
-											<div>
-												<span className="font-medium">
-													Expected Number of Awards:{' '}
-												</span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.expectedNumberOfAwards}
-												</span>
-											</div>
-										)}
-										{fundingDetails.estimatedAmountPerAward && (
-											<div>
-												<span className="font-medium">
-													Estimated Amount Per Award:{' '}
-												</span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.estimatedAmountPerAward}
-												</span>
-											</div>
-										)}
-										{fundingDetails.letterOfIntentRequired && (
-											<div>
-												<span className="font-medium">
-													Letter of Intent Required:{' '}
-												</span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.letterOfIntentRequired}
-												</span>
-											</div>
-										)}
-										{fundingDetails.requiresMatchedFunding && (
-											<div>
-												<span className="font-medium">
-													Requires Matched Funding:{' '}
-												</span>
-												<span className="text-sm text-muted-foreground">
-													{fundingDetails.requiresMatchedFunding}
-												</span>
-											</div>
-										)}
-									</div>
-								)}
-							</CardContent>
-						</Card>
+						<AdditionalFundingDetailsCard grant={grant} />
 					</>
 				)}
 			</div>

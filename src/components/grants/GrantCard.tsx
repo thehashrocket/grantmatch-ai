@@ -8,6 +8,7 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import {
 	getFitScoreCategory,
 	getFitScoreColor,
@@ -64,11 +65,9 @@ export function GrantCard({ grant }: GrantCardProps) {
 								</Link>
 							</CardTitle>
 							<CardDescription className="flex flex-wrap items-center gap-2">
-								<span
-									className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}
-								>
+								<Badge className={colorClasses}>
 									Fit Score: {grant.fitScore.toFixed(1)}
-								</span>
+								</Badge>
 								<DetailsStatusBadge status={grant.detailsStatus} />
 								<a
 									href={grant.url}

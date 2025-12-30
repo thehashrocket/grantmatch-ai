@@ -1,3 +1,4 @@
+import { Badge } from '@/components/ui/badge';
 import type { GrantMatch } from '@/lib/types/grant';
 
 type DetailsStatus = NonNullable<GrantMatch['detailsStatus']>;
@@ -39,11 +40,8 @@ export default function DetailsStatusBadge({
 	const title = status === 'FAILED' ? 'Try again later.' : undefined;
 
 	return (
-		<span
-			className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${className}`}
-			title={title}
-		>
+		<Badge variant="secondary" className={className} title={title}>
 			{label}
-		</span>
+		</Badge>
 	);
 }

@@ -10,7 +10,7 @@ import {
   parseDateLoose,
   pickField,
 } from '@/server/grants/ingest/normalize';
-import { type GrantSourceAdapter } from '@/server/grants/ingest/types';
+import type { GrantSourceAdapter } from '@/server/grants/ingest/types';
 import { $Enums } from '@/prisma/generated/client';
 
 const FILE_NAME = 'california-grants-portal-data.csv';

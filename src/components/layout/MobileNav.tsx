@@ -68,6 +68,7 @@ export function MobileNav({ user }: MobileNavProps) {
                 Profile
               </Link>
               <button
+                type="button"
                 onClick={() => {
                   setOpen(false)
                   signOut({ callbackUrl: '/' })

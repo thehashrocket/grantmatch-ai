@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { toast } from 'sonner'
-import { User } from 'next-auth'
+import type { User } from 'next-auth'
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),

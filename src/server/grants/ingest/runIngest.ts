@@ -1,11 +1,11 @@
 import { db } from '@/lib/db';
 import { upsertGrantFromNormalized } from '@/server/grants/ingest/upsertGrant';
-import {
-  type GrantSourceAdapter,
-  type NormalizedGrantInput,
-  type RunCounters,
+import type {
+  GrantSourceAdapter,
+  NormalizedGrantInput,
+  RunCounters,
 } from '@/server/grants/ingest/types';
-import { $Enums } from '@/prisma/generated/client';
+import { Prisma, $Enums } from '@/prisma/generated/client';
 import { z } from 'zod';
 
 const CONCURRENCY = 15;
@@ -74,7 +74,8 @@ export async function runIngest(adapter: GrantSourceAdapter): Promise<{ runId: s
     if (adapter.getSchema) {
       try {
         const schema = await adapter.getSchema();
-        await db.grantSyncRun.update({ where: { id: run.id }, data: { schemaJson: schema } });
+        const schemaJson = (schema ?? Prisma.JsonNull) as Prisma.InputJsonValue;
+        await db.grantSyncRun.update({ where: { id: run.id }, data: { schemaJson } });
       } catch (err) {
         addError(errors, formatError(err));
         // Continue without schema; do not fail the run.
@@ -108,7 +109,9 @@ export async function runIngest(adapter: GrantSourceAdapter): Promise<{ runId: s
         unchangedCount: runCounters.unchangedCount,
         closedCount: runCounters.closedCount,
         reopenedCount: runCounters.reopenedCount,
-        errorsJson: errors.length ? errors.slice(0, MAX_ERRORS) : null,
+        errorsJson: errors.length
+          ? (errors.slice(0, MAX_ERRORS) as Prisma.InputJsonValue)
+          : Prisma.JsonNull,
       },
     });
   } catch (err) {
@@ -118,7 +121,7 @@ export async function runIngest(adapter: GrantSourceAdapter): Promise<{ runId: s
       data: {
         status: $Enums.ImportStatus.FAILED,
         finishedAt: new Date(),
-        errorsJson: errors.slice(0, MAX_ERRORS),
+        errorsJson: errors.slice(0, MAX_ERRORS) as Prisma.InputJsonValue,
         recordsFetched: runCounters.recordsFetched,
         createdCount: runCounters.createdCount,
         updatedCount: runCounters.updatedCount,

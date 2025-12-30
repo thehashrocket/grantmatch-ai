@@ -76,7 +76,7 @@ async function postWithRetry<T>(url: string, body: string, opts: FetchOptions): 
 }
 
 function computeBackoff(attempt: number, retryAfter?: string | null): number {
-  const base = BASE_BACKOFF_MS * Math.pow(2, attempt);
+  const base = BASE_BACKOFF_MS * 2 ** attempt;
   const jitter = Math.random() * BASE_BACKOFF_MS;
   const retryAfterMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : 0;
   return Math.max(base + jitter, retryAfterMs || 0);
@@ -91,10 +91,10 @@ export function parseFederalDateMMDDYYYY(value: string | null | undefined): Date
     const [, m, d, y] = match;
     const iso = `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`;
     const parsed = new Date(iso);
-    return isNaN(parsed.getTime()) ? null : parsed;
+    return Number.isNaN(parsed.getTime()) ? null : parsed;
   }
   const isoDate = new Date(str);
-  return isNaN(isoDate.getTime()) ? null : isoDate;
+  return Number.isNaN(isoDate.getTime()) ? null : isoDate;
 }
 
 export function normalizeOppStatusToGrantStatus(

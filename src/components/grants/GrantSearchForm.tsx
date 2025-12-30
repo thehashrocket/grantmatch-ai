@@ -208,6 +208,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">
                   Search: &ldquo;{filters.textSearch}&rdquo;
                   <button
+                    type="button"
                     onClick={() => handleInputChange('textSearch', '')}
                     className="ml-1 hover:text-blue-600"
                   >
@@ -219,6 +220,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
                   Min: ${filters.minFunding}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('minFunding', '')}
                     className="ml-1 hover:text-green-600"
                   >
@@ -230,6 +232,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-green-100 text-green-800 rounded">
                   Max: ${filters.maxFunding}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('maxFunding', '')}
                     className="ml-1 hover:text-green-600"
                   >
@@ -241,6 +244,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded">
                   From: {new Date(filters.minDeadline).toLocaleDateString()}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('minDeadline', '')}
                     className="ml-1 hover:text-orange-600"
                   >
@@ -252,6 +256,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded">
                   To: {new Date(filters.maxDeadline).toLocaleDateString()}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('maxDeadline', '')}
                     className="ml-1 hover:text-orange-600"
                   >
@@ -263,6 +268,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-indigo-100 text-indigo-800 rounded">
                   Min Score: {filters.minFitScore}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('minFitScore', '')}
                     className="ml-1 hover:text-indigo-600"
                   >
@@ -274,6 +280,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-indigo-100 text-indigo-800 rounded">
                   Max Score: {filters.maxFitScore}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('maxFitScore', '')}
                     className="ml-1 hover:text-indigo-600"
                   >
@@ -285,6 +292,7 @@ export function GrantSearchForm({ onSearch, onClear, isLoading }: GrantSearchFor
                 <span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-purple-100 text-purple-800 rounded">
                   Source: {filters.source}
                   <button
+                    type="button"
                     onClick={() => handleInputChange('source', 'ALL')}
                     className="ml-1 hover:text-purple-600"
                   >

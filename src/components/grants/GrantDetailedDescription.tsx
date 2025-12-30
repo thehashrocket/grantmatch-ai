@@ -46,7 +46,7 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
                 if (isArrayLike) {
                     // Convert object with numeric keys to array
                     const arrayData = keys
-                        .map(key => parseInt(key))
+                        .map((key) => parseInt(key, 10))
                         .sort((a, b) => a - b)
                         .map(index => data[index.toString()]);
                     setParsedData(arrayData);

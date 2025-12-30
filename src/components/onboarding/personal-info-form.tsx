@@ -6,7 +6,7 @@ import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FormData } from './multi-step-form';
+import type { FormData } from './multi-step-form';
 
 const personalInfoSchema = z.object({
   firstName: z.string().min(1, 'First name is required'),

@@ -1,8 +1,7 @@
-import { GrantResultsSkeleton } from './GrantResultsSkeleton';
-import { GrantResultsError } from './GrantResultsError';
 import { GrantCard } from './GrantCard';
+import { GrantResultsError } from './GrantResultsError';
+import { GrantResultsSkeleton } from './GrantResultsSkeleton';
 import { Pagination } from './Pagination';
-import React from 'react';
 import type { GrantMatch } from '@/lib/types/grant';
 
 interface GrantResultsProps {
@@ -36,9 +35,9 @@ export function GrantResults({
 
   if (!grants || grants.length === 0) {
     return (
-      <div className="text-center py-12 text-muted-foreground" role="status" aria-live="polite">
+      <p className="text-center py-12 text-muted-foreground" aria-live="polite">
         No grants found.
-      </div>
+      </p>
     );
   }
 

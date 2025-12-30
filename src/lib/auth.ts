@@ -1,10 +1,10 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
-import { NextAuthOptions } from "next-auth"
+import type { NextAuthOptions } from "next-auth"
 import { db } from "@/lib/db"
 import GoogleProvider from "next-auth/providers/google"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { compare } from "bcryptjs"
-import { Prisma } from "@/prisma/generated/client"
+import type { Prisma } from "@/prisma/generated/client"
 
 type UserWithRole = Prisma.UserGetPayload<{
   select: {
@@ -33,6 +33,13 @@ declare module "next-auth/jwt" {
     organizationId?: string | null
     sub?: string
   }
+}
+
+const googleClientId = process.env.GOOGLE_CLIENT_ID;
+const googleClientSecret = process.env.GOOGLE_CLIENT_SECRET;
+
+if (!googleClientId || !googleClientSecret) {
+  throw new Error("Missing Google OAuth environment variables");
 }
 
 export const authOptions: NextAuthOptions = {
@@ -90,8 +97,8 @@ export const authOptions: NextAuthOptions = {
       }
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
       profile(profile) {
         // Split the name into firstName and lastName
         const [firstName = '', lastName = ''] = (profile.name ?? '').split(' ')

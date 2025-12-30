@@ -1,4 +1,4 @@
-import { $Enums } from '@/prisma/generated/client';
+import type { $Enums } from '@/prisma/generated/client';
 
 export type NormalizedGrantDetail = {
   title?: string;

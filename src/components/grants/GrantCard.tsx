@@ -43,7 +43,7 @@ export function GrantCard({ grant }: GrantCardProps) {
                 {flagInfo && (
                   <Image
                     src={flagInfo.flagPath}
-                    alt={flagInfo.label + ' flag'}
+                    alt={`${flagInfo.label} flag`}
                     width={20}
                     height={14}
                     className=""

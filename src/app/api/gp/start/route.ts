@@ -20,7 +20,7 @@ export async function POST(req: Request) {
       });
     }
 
-    let parsed;
+    let parsed: z.infer<typeof bodySchema>;
     try {
       parsed = bodySchema.parse(body);
       console.log('parsed', parsed);

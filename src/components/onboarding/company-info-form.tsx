@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { FormData } from './multi-step-form';
+import type { FormData } from './multi-step-form';
 
 const companyInfoSchema = z.object({
   companyName: z.string().min(1, 'Company name is required'),

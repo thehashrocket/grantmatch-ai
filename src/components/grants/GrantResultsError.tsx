@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface GrantResultsErrorProps {
   error: unknown;
   onRetry: () => void;

@@ -14,16 +14,16 @@ export function parseDateFlexible(dateStr: string): Date | null {
 
   // Try native Date parsing first (handles ISO and some written formats)
   const native = new Date(dateStr);
-  if (!isNaN(native.getTime())) return native;
+  if (!Number.isNaN(native.getTime())) return native;
 
   // Try MM/DD/YY or MM/DD/YYYY
   const usMatch = dateStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:\s+(\d{2}:\d{2}))?$/);
   if (usMatch) {
     const [, month, day, year, time] = usMatch;
-    const fullYear = year.length === 2 ? '20' + year : year;
-    const dateStrIso = `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}${time ? 'T' + time + ':00' : ''}`;
+    const fullYear = year.length === 2 ? `20${year}` : year;
+    const dateStrIso = `${fullYear}-${month.padStart(2, '0')}-${day.padStart(2, '0')}${time ? `T${time}:00` : ''}`;
     const d = new Date(dateStrIso);
-    if (!isNaN(d.getTime())) return d;
+    if (!Number.isNaN(d.getTime())) return d;
   }
 
   // Try written format: 'MMM DD, YYYY' (e.g., 'Mar 24, 2025')
@@ -31,7 +31,7 @@ export function parseDateFlexible(dateStr: string): Date | null {
   if (writtenMatch) {
     const [, month, day, year] = writtenMatch;
     const d = new Date(`${month} ${day}, ${year}`);
-    if (!isNaN(d.getTime())) return d;
+    if (!Number.isNaN(d.getTime())) return d;
   }
 
   // Add more formats as needed
@@ -48,7 +48,7 @@ export function parseFundingAmount(amount: string): number {
   // Remove $, commas, and whitespace
   const cleaned = amount.replace(/[$,\s]/g, '');
   const num = parseInt(cleaned, 10);
-  return isNaN(num) ? 0 : num;
+  return Number.isNaN(num) ? 0 : num;
 }
 
 /**

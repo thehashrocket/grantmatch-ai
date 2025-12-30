@@ -1,5 +1,5 @@
-import { type GrantRepository } from '@/lib/repositories/GrantRepository';
-import { type GrantSearchFilters, type GrantMatch, type PaginatedGrantMatches } from '@/lib/types/grant';
+import type { GrantRepository } from '@/lib/repositories/GrantRepository';
+import type { GrantMatch, GrantSearchFilters, PaginatedGrantMatches } from '@/lib/types/grant';
 import { calculateGrantFitScore } from '@/lib/utils/grant-scoring';
 
 export interface GrantService {

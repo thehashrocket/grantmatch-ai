@@ -1,6 +1,6 @@
-import { Metadata } from 'next'
-import Link from 'next/link'
-import { RegisterForm } from '@/components/auth/register-form'
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { RegisterForm } from '@/components/auth/register-form';
 
 export const metadata: Metadata = {
   title: 'Create Account - AI GrantMatch',

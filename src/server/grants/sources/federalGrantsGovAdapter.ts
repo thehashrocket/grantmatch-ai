@@ -2,7 +2,7 @@ import {
   computeContentHash,
   normalizeString,
 } from '@/server/grants/ingest/normalize';
-import { type GrantSourceAdapter } from '@/server/grants/ingest/types';
+import type { GrantSourceAdapter } from '@/server/grants/ingest/types';
 import {
   normalizeOppStatusToGrantStatus,
   parseFederalDateMMDDYYYY,
@@ -111,8 +111,8 @@ export const federalGrantsGovAdapter: GrantSourceAdapter = {
       title,
       grantor: agency,
       agencyCode: agencyCode ?? undefined,
-      openDate,
-      deadline,
+      openDate: openDate ?? undefined,
+      deadline: deadline ?? undefined,
       cfdaList: hit.cfdaList ?? undefined,
       awardFloor: awardFloor ?? undefined,
       awardCeiling: awardCeiling ?? undefined,

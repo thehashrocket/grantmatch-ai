@@ -1,6 +1,6 @@
-import { Metadata } from 'next'
-import { getServerSession } from 'next-auth'
-import { redirect } from 'next/navigation'
+import type { Metadata } from 'next';
+import { getServerSession } from 'next-auth';
+import { redirect } from 'next/navigation';
 import { ProfileForm } from '@/components/profile/profile-form'
 
 export const metadata: Metadata = {

@@ -151,8 +151,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
       cancelled = true;
       if (intervalRef.current) clearInterval(intervalRef.current);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [grantId]);
+  }, [grantId, grant.details]);
 
   if (loading) return <GrantDetailsSkeleton />;
 

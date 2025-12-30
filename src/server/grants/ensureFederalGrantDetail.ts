@@ -1,9 +1,45 @@
 import { diffObjects } from '@/server/grants/ingest/normalize';
 import { normalizeOppStatusToGrantStatus, parseFederalDateMMDDYYYY, postFormWithRetry } from '@/server/grants/sources/federalClient';
-import type { PrismaClient } from '@/prisma/generated/client';
+import { Prisma, type PrismaClient } from '@/prisma/generated/client';
 import { $Enums } from '@/prisma/generated/client';
 
 const FEDERAL_DETAILS_URL = 'https://apply07.grants.gov/grantsws/rest/opportunity/details';
+type FederalSynopsis = {
+  opportunityTitle?: string;
+  opportunityCategory?: { description?: string };
+  synopsisDesc?: string;
+  applicantTypes?: unknown;
+  applicantEligibilityDesc?: string;
+  eligibilityDescription?: string;
+  estimatedFunding?: unknown;
+  estFunding?: unknown;
+  numberOfAwards?: unknown;
+  fundingActivityCategories?: unknown;
+  fundingActivityCategory?: { description?: string };
+  fundingInstruments?: unknown;
+  fundingDescLinkUrl?: string;
+  synopsisURL?: string;
+  fundingDescLinkDesc?: string;
+  synopsisAttachmentFolders?: unknown;
+  responseDateDesc?: string;
+  postingDate?: string;
+  archiveDate?: string;
+  lastUpdatedDate?: string;
+  closeDate?: string;
+  oppStatus?: string;
+};
+
+type FederalDetails = {
+  synopsis?: FederalSynopsis;
+  opportunity?: FederalSynopsis;
+  opportunityTitle?: string;
+  applicantTypes?: unknown;
+  applicantEligibilityDesc?: string;
+  eligibilityDescription?: string;
+  fundingActivityCategory?: { description?: string };
+  fundingDescLinkUrl?: string;
+  synopsisURL?: string;
+};
 
 type EnsureOpts = { timeoutMs?: number };
 
@@ -37,7 +73,7 @@ export async function ensureFederalGrantDetail(
 
   try {
     const body = `oppId=${encodeURIComponent(grant.sourceRecordId)}`;
-    const details = await postFormWithRetry<any>(FEDERAL_DETAILS_URL, body, {
+    const details = await postFormWithRetry<FederalDetails>(FEDERAL_DETAILS_URL, body, {
       timeoutMs: opts.timeoutMs ?? 8000,
     });
 
@@ -47,11 +83,11 @@ export async function ensureFederalGrantDetail(
     const description = synopsis.synopsisDesc ?? '';
 
     const eligibilityRequirements = {
-      applicantTypes: synopsis.applicantTypes ?? details?.applicantTypes,
+      applicantTypes: synopsis.applicantTypes ?? details?.applicantTypes ?? null,
       applicantEligibilityDesc: synopsis.applicantEligibilityDesc ?? synopsis.eligibilityDescription ?? '',
-    };
+    } as Prisma.InputJsonValue;
 
-    const fundingDetails = {
+    const fundingDetails: Prisma.InputJsonValue = {
       estimatedFunding: synopsis.estimatedFunding ?? synopsis.estFunding ?? null,
       numberOfAwards: synopsis.numberOfAwards ?? null,
       fundingActivityCategories: synopsis.fundingActivityCategories ?? synopsis.fundingActivityCategory?.description ?? null,
@@ -69,13 +105,7 @@ export async function ensureFederalGrantDetail(
     const closeDate = parseFederalDateMMDDYYYY(synopsis.closeDate);
     const { status, closedAt } = normalizeOppStatusToGrantStatus(synopsis.oppStatus, closeDate, new Date());
 
-    const beforeDetails = grant.details
-      ? {
-          description: grant.details.description,
-          eligibilityRequirements: grant.details.eligibilityRequirements,
-          fundingDetails: grant.details.fundingDetails,
-        }
-      : null;
+    const beforeDetails = null;
 
     await prisma.$transaction(async (tx) => {
       if (grant.details) {
@@ -132,7 +162,7 @@ export async function ensureFederalGrantDetail(
         changeType: 'DETAILS_FETCHED',
         oldHash: grant.contentHash ?? undefined,
         newHash: grant.contentHash ?? undefined,
-        diffJson: Object.keys(diff).length ? diff : null,
+        diffJson: Object.keys(diff).length ? (diff as Prisma.InputJsonValue) : Prisma.JsonNull,
         observedAt: new Date(),
       },
     });
@@ -148,15 +178,16 @@ export async function ensureFederalGrantDetail(
     });
 
     return { fetched: true };
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
     await prisma.grantSyncRun.update({
       where: { id: run.id },
       data: {
         status: $Enums.ImportStatus.FAILED,
         finishedAt: new Date(),
-        errorsJson: [{ message: String(error?.message ?? error) }],
+        errorsJson: [{ message }] as Prisma.InputJsonValue,
       },
     });
-    return { fetched: false, error: error?.message ?? String(error) };
+    return { fetched: false, error: message };
   }
 }

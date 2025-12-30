@@ -32,7 +32,7 @@ async function fetchWithRetry(url: string, init?: RequestInit, attempt = 0): Pro
       return res;
     }
 
-    let backoff = INITIAL_BACKOFF_MS * Math.pow(2, attempt);
+    let backoff = INITIAL_BACKOFF_MS * 2 ** attempt;
     if (res.status === 429) {
       const retryAfter = res.headers.get('retry-after');
       const retryMs = retryAfter ? parseInt(retryAfter, 10) * 1000 : backoff;

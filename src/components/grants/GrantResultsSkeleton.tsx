@@ -1,5 +1,4 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import React from 'react';
 
 export function GrantResultsSkeleton({ count = 4 }: { count?: number }) {
   return (

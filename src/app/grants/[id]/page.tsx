@@ -9,8 +9,10 @@ import { ensureFederalGrantDetail } from '@/server/grants/ensureFederalGrantDeta
 
 const DETAIL_TIMEOUT_MS = 8_000;
 
-export default async function GrantDetailsPage({ params }: { params: { id: string } }) {
-  const { id } = params;
+type GrantPageParams = { id: string };
+
+export default async function GrantDetailsPage({ params }: { params: Promise<GrantPageParams> }) {
+  const { id } = await params;
   await withTimeout(ensureFederalGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
 
   const grant = await db.grant.findUnique({

@@ -1,6 +1,6 @@
-import { PrismaClient, type Grant, type GrantChange, type GrantSyncRun, type GrantDetail, $Enums } from '@/prisma/generated/client';
+import { Prisma, type PrismaClient, type Grant, type GrantChange, type GrantSyncRun, type GrantDetail, $Enums } from '@/prisma/generated/client';
 import { diffObjects } from '@/server/grants/ingest/normalize';
-import { type NormalizedGrantInput, type NormalizedGrantDetail, type UpsertResult } from '@/server/grants/ingest/types';
+import type { NormalizedGrantDetail, NormalizedGrantInput, UpsertResult } from '@/server/grants/ingest/types';
 
 type PrismaLike = Pick<PrismaClient, 'grant' | 'grantChange' | 'grantDetail'>;
 
@@ -96,7 +96,7 @@ export async function upsertGrantFromNormalized(
       changeType,
       oldHash: existing.contentHash ?? undefined,
       newHash: normalized.contentHash,
-      diffJson: mergedDiff,
+      diffJson: (mergedDiff ?? Prisma.JsonNull) as Prisma.InputJsonValue,
       observedAt: now,
     },
   });
@@ -154,6 +154,7 @@ function determineStatusTransition(
 }
 
 function toGrantData(normalized: NormalizedGrantInput, existing?: Grant) {
+  const cfdaList = normalized.cfdaList ?? (existing?.cfdaList as string[] | undefined);
   return {
     source: normalized.source,
     sourceRecordId: normalized.sourceRecordId,
@@ -178,7 +179,7 @@ function toGrantData(normalized: NormalizedGrantInput, existing?: Grant) {
     eligibleApplicants: normalized.eligibleApplicants?.join(', ') ?? null,
     eligibleGeographies: normalized.eligibleGeographies ?? null,
     agencyCode: normalized.agencyCode,
-    cfdaList: normalized.cfdaList ?? (existing?.cfdaList as string[] | null) ?? null,
+    cfdaList: cfdaList ?? undefined,
     contentHash: normalized.contentHash,
     lastSeenAt: normalized.lastSeenAt,
     status: normalized.status,
@@ -239,8 +240,9 @@ async function upsertGrantDetail(
         title: details.title ?? existing.title ?? fallbackTitle,
         purpose: details.purpose ?? existing.purpose ?? fallbackTitle,
         description: details.description ?? existing.description ?? '',
-        eligibilityRequirements: details.eligibilityRequirements ?? existing.eligibilityRequirements,
-        fundingDetails: details.fundingDetails ?? existing.fundingDetails,
+        eligibilityRequirements:
+          (details.eligibilityRequirements ?? existing.eligibilityRequirements ?? {}) as Prisma.InputJsonValue,
+        fundingDetails: (details.fundingDetails ?? existing.fundingDetails ?? {}) as Prisma.InputJsonValue,
       },
     });
   }
@@ -250,8 +252,8 @@ async function upsertGrantDetail(
       title: details.title ?? fallbackTitle,
       purpose: details.purpose ?? details.title ?? fallbackTitle,
       description: details.description ?? '',
-      eligibilityRequirements: details.eligibilityRequirements ?? {},
-      fundingDetails: details.fundingDetails ?? {},
+      eligibilityRequirements: (details.eligibilityRequirements ?? {}) as Prisma.InputJsonValue,
+      fundingDetails: (details.fundingDetails ?? {}) as Prisma.InputJsonValue,
     },
   });
 }

@@ -8,7 +8,7 @@ import {
   parseDateLoose,
   pickField,
 } from '@/server/grants/ingest/normalize';
-import { type GrantSourceAdapter } from '@/server/grants/ingest/types';
+import type { GrantSourceAdapter } from '@/server/grants/ingest/types';
 import { $Enums } from '@/prisma/generated/client';
 
 const RESOURCE_ID = '111c8c88-21f6-453c-ae2c-b4785a0624f5';

@@ -1,6 +1,6 @@
-import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import { db } from '@/lib/db'
+import type { Metadata } from 'next';
+import { redirect } from 'next/navigation';
+import { db } from '@/lib/db';
 
 export const metadata: Metadata = {
   title: 'Verify Email - AI GrantMatch',

@@ -1,7 +1,7 @@
 import { db } from '@/lib/db';
 import type { GrantSearchFilters } from '@/lib/types/grant';
 import type { Prisma } from '@/prisma/generated/client';
-import { $Enums } from '@/prisma/generated/client';
+import type { $Enums } from '@/prisma/generated/client';
 
 const grantSelect = {
   id: true,

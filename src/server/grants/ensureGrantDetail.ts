@@ -106,6 +106,9 @@ export async function ensureGrantDetail(
 
 	const now = new Date();
 	const force = opts.force ?? false;
+	const supportsDetailFetch =
+		grant.source === $Enums.GrantSource.FEDERAL ||
+		grant.source === $Enums.GrantSource.CALIFORNIA;
 
 	if (grant.detailsStatus === $Enums.GrantDetailsStatus.AVAILABLE) {
 		logEnsure('info', {
@@ -193,7 +196,7 @@ export async function ensureGrantDetail(
 		return { fetched: false };
 	}
 
-	if (grant.source !== $Enums.GrantSource.FEDERAL) {
+	if (!supportsDetailFetch) {
 		if (grant.details) {
 			await prisma.grant
 				.update({
@@ -208,11 +211,11 @@ export async function ensureGrantDetail(
 				.catch(() => {});
 			logEnsure('info', {
 				event: 'grant_details.ensure',
-				decision: 'skip_non_federal_mark_available',
+				decision: 'skip_unsupported_source_mark_available',
 				grantId,
 				source: grant.source,
 				now: now.toISOString(),
-				reason: 'non_federal_existing_details',
+				reason: 'unsupported_source_existing_details',
 				status: grant.detailsStatus ?? null,
 				prevStatus: grant.detailsStatus ?? null,
 				detailsFetchedAt: grant.details.fetchedAt?.toISOString() ?? null,
@@ -223,11 +226,11 @@ export async function ensureGrantDetail(
 		}
 		logEnsure('info', {
 			event: 'grant_details.ensure',
-			decision: 'skip_non_federal_no_details',
+			decision: 'skip_unsupported_source_no_details',
 			grantId,
 			source: grant.source,
 			now: now.toISOString(),
-			reason: 'non_federal_no_details',
+			reason: 'unsupported_source_no_details',
 			status: grant.detailsStatus ?? null,
 			prevStatus: grant.detailsStatus ?? null,
 			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
@@ -447,7 +450,11 @@ export async function ensureGrantDetail(
 			reason: 'ok',
 			status: grant.detailsStatus ?? null,
 			prevStatus,
-			detailsFetchedAt: (detailData.fetchedAt ?? observedAt).toISOString(),
+			detailsFetchedAt: (
+				detailData.fetchedAt instanceof Date
+					? detailData.fetchedAt
+					: new Date(detailData.fetchedAt ?? observedAt)
+			).toISOString(),
 			detailsErrorAt: null,
 			force,
 			fetchMs,

@@ -51,6 +51,7 @@ const normalizedGrantSchema = z.object({
 			description: z.string().optional(),
 			eligibilityRequirements: z.unknown().optional(),
 			fundingDetails: z.unknown().optional(),
+			fetchedAt: z.date().optional(),
 		})
 		.optional(),
 });

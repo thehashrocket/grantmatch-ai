@@ -25,8 +25,9 @@ export async function upsertGrantFromNormalized(
 	const now = new Date();
 
 	if (!existing) {
+		const detailMeta = buildDetailMeta(normalized, now);
 		const created = await prisma.grant.create({
-			data: toGrantData(normalized),
+			data: { ...toGrantData(normalized), ...detailMeta },
 		});
 		if (normalized.details) {
 			await upsertGrantDetail(
@@ -54,18 +55,29 @@ export async function upsertGrantFromNormalized(
 	);
 	const contentChanged = existing.contentHash !== normalized.contentHash;
 
+	const detailMeta = buildDetailMeta(normalized, now);
 	if (!contentChanged && !statusTransition.changed) {
+		if (normalized.details) {
+			await upsertGrantDetail(
+				prisma,
+				existing.id,
+				normalized.details,
+				existing.title,
+			);
+		}
+		const metaUpdate = detailMeta ?? {};
 		await prisma.grant.update({
 			where: { id: existing.id },
 			data: {
 				lastSeenAt: normalized.lastSeenAt,
 				currentAsOf: normalized.currentAsOf,
+				...metaUpdate,
 			},
 		});
 		return { unchanged: true };
 	}
 
-	const updateData = toGrantData(normalized, existing);
+	const updateData = { ...toGrantData(normalized, existing), ...detailMeta };
 	updateData.closedAt =
 		normalized.closedAt ?? statusTransition.closedAt ?? existing.closedAt;
 	updateData.status = statusTransition.nextStatus ?? normalized.status;
@@ -285,6 +297,31 @@ function mapGrantToComparable(grant: Grant) {
 	};
 }
 
+function buildDetailMeta(
+	normalized: NormalizedGrantInput,
+	now: Date,
+):
+	| {
+			detailsStatus: $Enums.GrantDetailsStatus;
+			detailsFetchedAt: Date;
+			detailsError: null;
+			detailsErrorAt: null;
+	  }
+	| undefined {
+	if (!normalized.details) return undefined;
+	const fetchedAt =
+		normalized.details.fetchedAt ??
+		normalized.currentAsOf ??
+		normalized.lastSeenAt ??
+		now;
+	return {
+		detailsStatus: $Enums.GrantDetailsStatus.AVAILABLE,
+		detailsFetchedAt: fetchedAt,
+		detailsError: null,
+		detailsErrorAt: null,
+	};
+}
+
 async function upsertGrantDetail(
 	prisma: PrismaLike,
 	grantId: string,
@@ -305,6 +342,10 @@ async function upsertGrantDetail(
 				fundingDetails: (details.fundingDetails ??
 					existing.fundingDetails ??
 					null) as Prisma.InputJsonValue,
+				fetchedAt:
+					details.fetchedAt ??
+					existing.fetchedAt ??
+					new Date(existing.updatedAt ?? Date.now()),
 			},
 		});
 	}
@@ -317,6 +358,7 @@ async function upsertGrantDetail(
 			eligibilityRequirements: (details.eligibilityRequirements ??
 				null) as Prisma.InputJsonValue,
 			fundingDetails: (details.fundingDetails ?? null) as Prisma.InputJsonValue,
+			fetchedAt: details.fetchedAt ?? new Date(),
 		},
 	});
 }

@@ -186,6 +186,30 @@ describe('ensureGrantDetail concurrency guards', () => {
 		expect(fetchMock).not.toHaveBeenCalled();
 	});
 
+	it('fetches details for supported non-federal sources (California)', async () => {
+		const grant = baseGrant();
+		grant.source = $Enums.GrantSource.CALIFORNIA;
+		grant.details = null;
+		const prisma = createPrismaMock(grant);
+
+		const result = await ensureGrantDetail(prisma, grant.id);
+
+		expect(result.fetched).toBe(true);
+		expect(fetchMock).toHaveBeenCalledTimes(1);
+	});
+
+	it('skips unsupported sources without details', async () => {
+		const grant = baseGrant();
+		grant.source = $Enums.GrantSource.OTHER;
+		grant.details = null;
+		const prisma = createPrismaMock(grant);
+
+		const result = await ensureGrantDetail(prisma, grant.id);
+
+		expect(result.fetched).toBe(false);
+		expect(fetchMock).not.toHaveBeenCalled();
+	});
+
 	it('fetches when status is FETCHING but stale', async () => {
 		const grant = baseGrant();
 		grant.detailsStatus = $Enums.GrantDetailsStatus.FETCHING;

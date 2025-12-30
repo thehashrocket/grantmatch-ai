@@ -6,6 +6,7 @@ export type NormalizedGrantDetail = {
 	description?: string;
 	eligibilityRequirements?: unknown;
 	fundingDetails?: unknown;
+	fetchedAt?: Date;
 };
 
 export type NormalizedGrantInput = {

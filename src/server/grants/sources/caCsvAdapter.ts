@@ -60,6 +60,19 @@ const candidates = {
 	opportunityType: ['Type', 'opportunity_type', 'type'],
 	currentAsOf: ['LastUpdated', 'last_updated', 'updated_at', 'current_as_of'],
 	status: ['Status', 'status', 'opportunity_status', 'grant_status'],
+	estimatedTotalFunding: ['EstAvailFunds', 'est_avail_funds'],
+	estimatedAwardAmounts: ['EstAmounts', 'est_amounts'],
+	expectedNumberOfAwards: ['EstAwards', 'est_awards'],
+	fundingMethod: ['FundingMethod', 'funding_method'],
+	fundingMethodNotes: ['FundingMethodNotes', 'funding_method_notes'],
+	matchFunding: ['MatchingFunds', 'matching_funds'],
+	matchFundingNotes: ['MatchingFundsNotes', 'matching_funds_notes'],
+	fundingSource: ['FundingSource', 'funding_source'],
+	fundingSourceNotes: ['FundingSourceNotes', 'funding_source_notes'],
+	letterOfIntentRequired: ['LOI', 'loi_required'],
+	awardPeriod: ['AwardPeriod', 'award_period'],
+	expectedAwardDate: ['ExpAwardDate', 'expected_award_date'],
+	awardStats: ['AwardStats', 'award_stats'],
 };
 
 export const caCsvAdapter: GrantSourceAdapter = {
@@ -110,6 +123,41 @@ export const caCsvAdapter: GrantSourceAdapter = {
 			pickField(record, candidates.currentAsOf),
 		);
 		const rawStatus = normalizeString(pickField(record, candidates.status));
+		const estimatedTotalFunding = parseCurrency(
+			pickField(record, candidates.estimatedTotalFunding),
+		);
+		const estimatedAwardAmounts = normalizeString(
+			pickField(record, candidates.estimatedAwardAmounts),
+		);
+		const expectedNumberOfAwards = parseCurrency(
+			pickField(record, candidates.expectedNumberOfAwards),
+		);
+		const matchFunding = normalizeString(
+			pickField(record, candidates.matchFunding),
+		);
+		const matchFundingNotes = normalizeString(
+			pickField(record, candidates.matchFundingNotes),
+		);
+		const fundsDisbursement = normalizeString(
+			pickField(record, candidates.fundingMethod),
+		);
+		const fundsDisbursementNotes = normalizeString(
+			pickField(record, candidates.fundingMethodNotes),
+		);
+		const fundingSource = normalizeString(
+			pickField(record, candidates.fundingSource),
+		);
+		const fundingSourceNotes = normalizeString(
+			pickField(record, candidates.fundingSourceNotes),
+		);
+		const letterOfIntentRequired = normalizeString(
+			pickField(record, candidates.letterOfIntentRequired),
+		);
+		const awardPeriod = normalizeString(pickField(record, candidates.awardPeriod));
+		const expectedAwardDate = normalizeString(
+			pickField(record, candidates.expectedAwardDate),
+		);
+		const awardStats = normalizeString(pickField(record, candidates.awardStats));
 
 		const portalIdCandidate = normalizeString(
 			pickField(record, ['PortalID', 'portal_id', 'portalId']),
@@ -142,6 +190,18 @@ export const caCsvAdapter: GrantSourceAdapter = {
 			description,
 			eligibleApplicants,
 			eligibleGeographies,
+			matchFunding,
+			estimatedTotalFunding,
+			estimatedAwardAmounts,
+			expectedNumberOfAwards,
+			fundingSource,
+			fundingSourceNotes,
+			fundsDisbursement,
+			fundsDisbursementNotes,
+			letterOfIntentRequired,
+			awardPeriod,
+			expectedAwardDate,
+			awardStats,
 			openDate: openDate?.toISOString() ?? null,
 			deadline: deadline?.toISOString() ?? null,
 			opportunityType,
@@ -164,6 +224,10 @@ export const caCsvAdapter: GrantSourceAdapter = {
 			opportunityType,
 			currentAsOf,
 			portalId,
+			matchFunding,
+			estimatedTotalFunding,
+			estimatedAwardAmounts,
+			fundsDisbursment: fundsDisbursement,
 			status,
 			closedAt,
 			contentHash,
@@ -174,6 +238,20 @@ export const caCsvAdapter: GrantSourceAdapter = {
 				description,
 				eligibleApplicants,
 				eligibleGeographies,
+				currentAsOf,
+				matchFunding,
+				matchFundingNotes,
+				fundsDisbursement,
+				fundsDisbursementNotes,
+				fundingSource,
+				fundingSourceNotes,
+				estimatedTotalFunding,
+				estimatedAwardAmounts,
+				expectedNumberOfAwards,
+				letterOfIntentRequired,
+				awardPeriod,
+				expectedAwardDate,
+				awardStats,
 				record,
 			}),
 		};
@@ -238,6 +316,20 @@ function buildDetails({
 	description,
 	eligibleApplicants,
 	eligibleGeographies,
+	currentAsOf,
+	matchFunding,
+	matchFundingNotes,
+	fundsDisbursement,
+	fundsDisbursementNotes,
+	fundingSource,
+	fundingSourceNotes,
+	estimatedTotalFunding,
+	estimatedAwardAmounts,
+	expectedNumberOfAwards,
+	letterOfIntentRequired,
+	awardPeriod,
+	expectedAwardDate,
+	awardStats,
 	record,
 }: {
 	title: string;
@@ -245,17 +337,23 @@ function buildDetails({
 	description?: string;
 	eligibleApplicants?: string[];
 	eligibleGeographies?: string;
+	currentAsOf?: Date | null;
+	matchFunding?: string;
+	matchFundingNotes?: string;
+	fundsDisbursement?: string;
+	fundsDisbursementNotes?: string;
+	fundingSource?: string;
+	fundingSourceNotes?: string;
+	estimatedTotalFunding?: number | null;
+	estimatedAwardAmounts?: string;
+	expectedNumberOfAwards?: number | null;
+	letterOfIntentRequired?: string;
+	awardPeriod?: string;
+	expectedAwardDate?: string;
+	awardStats?: string;
 	record: Record<string, unknown>;
 }) {
 	const applicantTypeNotes = normalizeString(record.ApplicantTypeNotes);
-	const matchFunding = normalizeString(record.MatchingFunds);
-	const matchFundingNotes = normalizeString(record.MatchingFundsNotes);
-	const fundsDisbursement = normalizeString(record.FundingMethod);
-	const fundsDisbursementNotes = normalizeString(record.FundingMethodNotes);
-	const estimatedTotalFunding = normalizeString(record.EstAvailFunds);
-	const estimatedAwardAmounts = normalizeString(
-		record.EstAmounts ?? record.EstAwards,
-	);
 	const grantEventsUrl = normalizeString(record.GrantEventsURL);
 	const contactInfo = normalizeString(record.ContactInfo);
 	const applicationUrl = normalizeString(record.GrantURL);
@@ -271,16 +369,24 @@ function buildDetails({
 	};
 
 	const fundingDetails = {
+		fundingSource,
+		fundingSourceNotes,
 		estimatedTotalFunding,
 		estimatedAwardAmounts,
 		matchFunding,
 		matchFundingNotes,
+		expectedNumberOfAwards:
+			expectedNumberOfAwards !== null ? expectedNumberOfAwards : undefined,
 		fundsDisbursement,
 		fundsDisbursementNotes,
 		grantEventsUrl,
 		contactInfo,
 		applicationUrl,
 		agencyUrl,
+		letterOfIntentRequired,
+		awardPeriod,
+		expectedAwardDate,
+		awardStats,
 	};
 
 	return {
@@ -289,5 +395,14 @@ function buildDetails({
 		description: description ?? '',
 		eligibilityRequirements,
 		fundingDetails,
+		fetchedAt: currentAsOf ?? new Date(),
 	};
+}
+
+function parseCurrency(value: unknown): number | null {
+	if (value === undefined || value === null) return null;
+	const str = String(value).replace(/[\$,]/g, '').trim();
+	if (!str) return null;
+	const num = Number(str);
+	return Number.isFinite(num) ? num : null;
 }

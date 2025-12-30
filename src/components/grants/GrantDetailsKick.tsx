@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import type { GrantMatch } from '@/lib/types/grant';
 
 interface GrantDetailsKickProps {
@@ -12,11 +12,8 @@ export default function GrantDetailsKick({
 	grantId,
 	detailsStatus,
 }: GrantDetailsKickProps) {
-	const hasKickedRef = useRef(false);
-
 	useEffect(() => {
-		if (detailsStatus === 'AVAILABLE' || hasKickedRef.current) return;
-		hasKickedRef.current = true;
+		if (detailsStatus === 'AVAILABLE') return;
 
 		const controller = new AbortController();
 

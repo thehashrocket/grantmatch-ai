@@ -6,33 +6,41 @@ import { notFound } from 'next/navigation';
 import GrantDetailsClient from './GrantDetailsClient';
 import { db } from '@/lib/db';
 import { ensureGrantDetail } from '@/server/grants/ensureGrantDetail';
+import GrantDetailsKick from '@/components/grants/GrantDetailsKick';
 
 const DETAIL_TIMEOUT_MS = 8_000;
 
 type GrantPageParams = { id: string };
 
-export default async function GrantDetailsPage({ params }: { params: Promise<GrantPageParams> }) {
-  const { id } = await params;
-  await withTimeout(ensureGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
+export default async function GrantDetailsPage({
+	params,
+}: {
+	params: Promise<GrantPageParams>;
+}) {
+	const { id } = await params;
+	await withTimeout(ensureGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(
+		() => {},
+	);
 
-  const grant = await db.grant.findUnique({
-    where: { id },
-    include: { details: true, attachments: true }
-  });
+	const grant = await db.grant.findUnique({
+		where: { id },
+		include: { details: true, attachments: true },
+	});
 
-  if (!grant) notFound();
+	if (!grant) notFound();
 
-  return (
-    <main className="container mx-auto p-6">
-      <GrantDetailsClient grantId={id} initialGrant={grant} />
-    </main>
-  );
+	return (
+		<main className="container mx-auto p-6">
+			<GrantDetailsKick grantId={id} detailsStatus={grant.detailsStatus} />
+			<GrantDetailsClient grantId={id} initialGrant={grant} />
+		</main>
+	);
 }
 
 async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
-  let timeout: NodeJS.Timeout;
-  const timed = new Promise<never>((_, reject) => {
-    timeout = setTimeout(() => reject(new Error('Timed out')), ms);
-  });
-  return Promise.race([promise, timed]).finally(() => clearTimeout(timeout));
+	let timeout: NodeJS.Timeout;
+	const timed = new Promise<never>((_, reject) => {
+		timeout = setTimeout(() => reject(new Error('Timed out')), ms);
+	});
+	return Promise.race([promise, timed]).finally(() => clearTimeout(timeout));
 }

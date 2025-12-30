@@ -75,6 +75,13 @@ enum GrantStatus {
   UNKNOWN
 }
 
+enum GrantDetailsStatus {
+  UNKNOWN
+  FETCHING
+  AVAILABLE
+  FAILED
+}
+
 model Grant {
   id                    String       @id @default(cuid())
   url                   String
@@ -99,6 +106,10 @@ model Grant {
   eligibleApplicants    String?
   eligibleGeographies   String?
   details               GrantDetail?
+  detailsStatus         GrantDetailsStatus @default(UNKNOWN)
+  detailsFetchedAt      DateTime?
+  detailsError          String?            @db.VarChar(500)
+  detailsErrorAt        DateTime?
   attachments           GrantAttachment[]
   source                GrantSource   @default(CALIFORNIA)
   agencyCode            String?       // For Federal grants

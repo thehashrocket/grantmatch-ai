@@ -1,23 +1,25 @@
-import { Resend } from 'resend'
+import { Resend } from 'resend';
 
 if (!process.env.RESEND_API_KEY) {
-  throw new Error('RESEND_API_KEY is not set')
+	throw new Error('RESEND_API_KEY is not set');
 }
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function sendVerificationEmail(email: string, token: string) {
-  const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`
-  
-  console.log('Attempting to send verification email to:', email)
-  console.log('Using verification URL:', verificationUrl)
+	const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-email?token=${token}`;
 
-  try {
-    const data = await resend.emails.send({
-      from: process.env.RESEND_FROM_EMAIL || 'AI GrantMatch <noreply@aigrantmatch.com>',
-      to: email,
-      subject: 'Verify your AI GrantMatch account',
-      html: `
+	console.log('Attempting to send verification email to:', email);
+	console.log('Using verification URL:', verificationUrl);
+
+	try {
+		const data = await resend.emails.send({
+			from:
+				process.env.RESEND_FROM_EMAIL ||
+				'AI GrantMatch <noreply@aigrantmatch.com>',
+			to: email,
+			subject: 'Verify your AI GrantMatch account',
+			html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
           <h1 style="color: #0066cc;">Welcome to AI GrantMatch!</h1>
           <p>Thank you for signing up. Please verify your email address to get started.</p>
@@ -37,15 +39,15 @@ export async function sendVerificationEmail(email: string, token: string) {
             ${verificationUrl}
           </p>
         </div>
-      `
-    })
-    console.log('Email sent successfully:', data)
-  } catch (error) {
-    console.error('Error sending verification email:', error)
-    if (error instanceof Error) {
-      console.error('Error details:', error.message)
-      console.error('Error stack:', error.stack)
-    }
-    throw new Error('Failed to send verification email')
-  }
-} 
+      `,
+		});
+		console.log('Email sent successfully:', data);
+	} catch (error) {
+		console.error('Error sending verification email:', error);
+		if (error instanceof Error) {
+			console.error('Error details:', error.message);
+			console.error('Error stack:', error.stack);
+		}
+		throw new Error('Failed to send verification email');
+	}
+}

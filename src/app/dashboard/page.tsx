@@ -11,64 +11,70 @@ import type { GrantSearchFilters } from '@/lib/types/grant';
 // Redirects to the /dashboard page
 
 export default function DashboardPage() {
-  const {
-    grants,
-    isLoading,
-    error,
-    handleSearch,
-    handleClearSearch,
-    updateFilter,
-    searchFilters,
-    resultsCount,
-    currentPage,
-    pageSize,
-    handlePageChange,
-  } = useGrantSearch();
+	const {
+		grants,
+		isLoading,
+		error,
+		handleSearch,
+		handleClearSearch,
+		updateFilter,
+		searchFilters,
+		resultsCount,
+		currentPage,
+		pageSize,
+		handlePageChange,
+	} = useGrantSearch();
 
-  // Handler for removing a single filter
-  const handleRemoveFilter = (field: keyof GrantSearchFilters, value?: string) => {
-    if (field === 'source') {
-      updateFilter(field, value || 'ALL');
-    } else {
-      updateFilter(field, '');
-    }
-    const newFilters = { ...searchFilters, [field]: field === 'source' ? (value || 'ALL') : '' };
-    handleSearch(newFilters);
-  };
+	// Handler for removing a single filter
+	const handleRemoveFilter = (
+		field: keyof GrantSearchFilters,
+		value?: string,
+	) => {
+		if (field === 'source') {
+			updateFilter(field, value || 'ALL');
+		} else {
+			updateFilter(field, '');
+		}
+		const newFilters = {
+			...searchFilters,
+			[field]: field === 'source' ? value || 'ALL' : '',
+		};
+		handleSearch(newFilters);
+	};
 
-  // Retry handler
-  const handleRetry = () => {
-    // Refetch the current search
-    handleSearch(searchFilters);
-  };
+	// Retry handler
+	const handleRetry = () => {
+		// Refetch the current search
+		handleSearch(searchFilters);
+	};
 
-  return (
-    <div className="container mx-auto space-y-4">
-      <h1 className="text-3xl font-bold">Grant Matches</h1>
-      
-      <GrantSearchForm 
-        onSearch={handleSearch}
-        onClear={handleClearSearch}
-        isLoading={isLoading}
-      />
-      <ActiveFilters filters={searchFilters} onRemove={handleRemoveFilter} />
-      
-      {grants && (
-        <div className="text-sm text-muted-foreground">
-          {resultsCount} grant{resultsCount !== 1 ? 's' : ''} found
-        </div>
-      )}
-      
-      <GrantResults 
-        grants={grants} 
-        isLoading={isLoading} 
-        error={error}
-        onRetry={handleRetry}
-        page={currentPage}
-        pageSize={pageSize}
-        total={resultsCount}
-        onPageChange={handlePageChange}
-      />
-    </div>
-  );
-} 
+	return (
+		<div className="container mx-auto space-y-4">
+			<h1 className="text-3xl font-bold">Grant Matches</h1>
+
+			<GrantSearchForm
+				onSearch={handleSearch}
+				onClear={handleClearSearch}
+				isLoading={isLoading}
+			/>
+			<ActiveFilters filters={searchFilters} onRemove={handleRemoveFilter} />
+
+			{grants && (
+				<div className="text-sm text-muted-foreground">
+					{resultsCount} grant{resultsCount !== 1 ? 's' : ''} found
+				</div>
+			)}
+
+			<GrantResults
+				grants={grants}
+				isLoading={isLoading}
+				error={error}
+				onRetry={handleRetry}
+				page={currentPage}
+				pageSize={pageSize}
+				total={resultsCount}
+				onPageChange={handlePageChange}
+			/>
+		</div>
+	);
+}

@@ -139,6 +139,16 @@ export const GrantStatus: {
 export type GrantStatus = (typeof GrantStatus)[keyof typeof GrantStatus]
 
 
+export const GrantDetailsStatus: {
+  UNKNOWN: 'UNKNOWN',
+  FETCHING: 'FETCHING',
+  AVAILABLE: 'AVAILABLE',
+  FAILED: 'FAILED'
+};
+
+export type GrantDetailsStatus = (typeof GrantDetailsStatus)[keyof typeof GrantDetailsStatus]
+
+
 export const InvitationStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -172,6 +182,10 @@ export const GrantSource: typeof $Enums.GrantSource
 export type GrantStatus = $Enums.GrantStatus
 
 export const GrantStatus: typeof $Enums.GrantStatus
+
+export type GrantDetailsStatus = $Enums.GrantDetailsStatus
+
+export const GrantDetailsStatus: typeof $Enums.GrantDetailsStatus
 
 export type InvitationStatus = $Enums.InvitationStatus
 
@@ -3357,6 +3371,10 @@ export namespace Prisma {
     purpose: string | null
     eligibleApplicants: string | null
     eligibleGeographies: string | null
+    detailsStatus: $Enums.GrantDetailsStatus | null
+    detailsFetchedAt: Date | null
+    detailsError: string | null
+    detailsErrorAt: Date | null
     source: $Enums.GrantSource | null
     agencyCode: string | null
     sourceRecordId: string | null
@@ -3392,6 +3410,10 @@ export namespace Prisma {
     purpose: string | null
     eligibleApplicants: string | null
     eligibleGeographies: string | null
+    detailsStatus: $Enums.GrantDetailsStatus | null
+    detailsFetchedAt: Date | null
+    detailsError: string | null
+    detailsErrorAt: Date | null
     source: $Enums.GrantSource | null
     agencyCode: string | null
     sourceRecordId: string | null
@@ -3427,6 +3449,10 @@ export namespace Prisma {
     purpose: number
     eligibleApplicants: number
     eligibleGeographies: number
+    detailsStatus: number
+    detailsFetchedAt: number
+    detailsError: number
+    detailsErrorAt: number
     source: number
     agencyCode: number
     cfdaList: number
@@ -3479,6 +3505,10 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    detailsStatus?: true
+    detailsFetchedAt?: true
+    detailsError?: true
+    detailsErrorAt?: true
     source?: true
     agencyCode?: true
     sourceRecordId?: true
@@ -3514,6 +3544,10 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    detailsStatus?: true
+    detailsFetchedAt?: true
+    detailsError?: true
+    detailsErrorAt?: true
     source?: true
     agencyCode?: true
     sourceRecordId?: true
@@ -3549,6 +3583,10 @@ export namespace Prisma {
     purpose?: true
     eligibleApplicants?: true
     eligibleGeographies?: true
+    detailsStatus?: true
+    detailsFetchedAt?: true
+    detailsError?: true
+    detailsErrorAt?: true
     source?: true
     agencyCode?: true
     cfdaList?: true
@@ -3672,6 +3710,10 @@ export namespace Prisma {
     purpose: string | null
     eligibleApplicants: string | null
     eligibleGeographies: string | null
+    detailsStatus: $Enums.GrantDetailsStatus
+    detailsFetchedAt: Date | null
+    detailsError: string | null
+    detailsErrorAt: Date | null
     source: $Enums.GrantSource
     agencyCode: string | null
     cfdaList: JsonValue | null
@@ -3727,6 +3769,10 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    detailsStatus?: boolean
+    detailsFetchedAt?: boolean
+    detailsError?: boolean
+    detailsErrorAt?: boolean
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
@@ -3767,6 +3813,10 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    detailsStatus?: boolean
+    detailsFetchedAt?: boolean
+    detailsError?: boolean
+    detailsErrorAt?: boolean
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
@@ -3803,6 +3853,10 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    detailsStatus?: boolean
+    detailsFetchedAt?: boolean
+    detailsError?: boolean
+    detailsErrorAt?: boolean
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
@@ -3839,6 +3893,10 @@ export namespace Prisma {
     purpose?: boolean
     eligibleApplicants?: boolean
     eligibleGeographies?: boolean
+    detailsStatus?: boolean
+    detailsFetchedAt?: boolean
+    detailsError?: boolean
+    detailsErrorAt?: boolean
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
@@ -3852,7 +3910,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
+  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "detailsStatus" | "detailsFetchedAt" | "detailsError" | "detailsErrorAt" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
   export type GrantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     details?: boolean | Grant$detailsArgs<ExtArgs>
     attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
@@ -3892,6 +3950,10 @@ export namespace Prisma {
       purpose: string | null
       eligibleApplicants: string | null
       eligibleGeographies: string | null
+      detailsStatus: $Enums.GrantDetailsStatus
+      detailsFetchedAt: Date | null
+      detailsError: string | null
+      detailsErrorAt: Date | null
       source: $Enums.GrantSource
       agencyCode: string | null
       cfdaList: Prisma.JsonValue | null
@@ -4351,6 +4413,10 @@ export namespace Prisma {
     readonly purpose: FieldRef<"Grant", 'String'>
     readonly eligibleApplicants: FieldRef<"Grant", 'String'>
     readonly eligibleGeographies: FieldRef<"Grant", 'String'>
+    readonly detailsStatus: FieldRef<"Grant", 'GrantDetailsStatus'>
+    readonly detailsFetchedAt: FieldRef<"Grant", 'DateTime'>
+    readonly detailsError: FieldRef<"Grant", 'String'>
+    readonly detailsErrorAt: FieldRef<"Grant", 'DateTime'>
     readonly source: FieldRef<"Grant", 'GrantSource'>
     readonly agencyCode: FieldRef<"Grant", 'String'>
     readonly cfdaList: FieldRef<"Grant", 'Json'>
@@ -16152,6 +16218,10 @@ export namespace Prisma {
     purpose: 'purpose',
     eligibleApplicants: 'eligibleApplicants',
     eligibleGeographies: 'eligibleGeographies',
+    detailsStatus: 'detailsStatus',
+    detailsFetchedAt: 'detailsFetchedAt',
+    detailsError: 'detailsError',
+    detailsErrorAt: 'detailsErrorAt',
     source: 'source',
     agencyCode: 'agencyCode',
     cfdaList: 'cfdaList',
@@ -16449,6 +16519,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'GrantDetailsStatus'
+   */
+  export type EnumGrantDetailsStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantDetailsStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GrantDetailsStatus[]'
+   */
+  export type ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantDetailsStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'GrantSource'
    */
   export type EnumGrantSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantSource'>
@@ -16668,6 +16752,10 @@ export namespace Prisma {
     purpose?: StringNullableFilter<"Grant"> | string | null
     eligibleApplicants?: StringNullableFilter<"Grant"> | string | null
     eligibleGeographies?: StringNullableFilter<"Grant"> | string | null
+    detailsStatus?: EnumGrantDetailsStatusFilter<"Grant"> | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
+    detailsError?: StringNullableFilter<"Grant"> | string | null
+    detailsErrorAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableFilter<"Grant"> | string | null
     cfdaList?: JsonNullableFilter<"Grant">
@@ -16707,6 +16795,10 @@ export namespace Prisma {
     purpose?: SortOrderInput | SortOrder
     eligibleApplicants?: SortOrderInput | SortOrder
     eligibleGeographies?: SortOrderInput | SortOrder
+    detailsStatus?: SortOrder
+    detailsFetchedAt?: SortOrderInput | SortOrder
+    detailsError?: SortOrderInput | SortOrder
+    detailsErrorAt?: SortOrderInput | SortOrder
     source?: SortOrder
     agencyCode?: SortOrderInput | SortOrder
     cfdaList?: SortOrderInput | SortOrder
@@ -16752,6 +16844,10 @@ export namespace Prisma {
     purpose?: StringNullableFilter<"Grant"> | string | null
     eligibleApplicants?: StringNullableFilter<"Grant"> | string | null
     eligibleGeographies?: StringNullableFilter<"Grant"> | string | null
+    detailsStatus?: EnumGrantDetailsStatusFilter<"Grant"> | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
+    detailsError?: StringNullableFilter<"Grant"> | string | null
+    detailsErrorAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableFilter<"Grant"> | string | null
     cfdaList?: JsonNullableFilter<"Grant">
@@ -16791,6 +16887,10 @@ export namespace Prisma {
     purpose?: SortOrderInput | SortOrder
     eligibleApplicants?: SortOrderInput | SortOrder
     eligibleGeographies?: SortOrderInput | SortOrder
+    detailsStatus?: SortOrder
+    detailsFetchedAt?: SortOrderInput | SortOrder
+    detailsError?: SortOrderInput | SortOrder
+    detailsErrorAt?: SortOrderInput | SortOrder
     source?: SortOrder
     agencyCode?: SortOrderInput | SortOrder
     cfdaList?: SortOrderInput | SortOrder
@@ -16835,6 +16935,10 @@ export namespace Prisma {
     purpose?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     eligibleApplicants?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     eligibleGeographies?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    detailsStatus?: EnumGrantDetailsStatusWithAggregatesFilter<"Grant"> | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
+    detailsError?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    detailsErrorAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     source?: EnumGrantSourceWithAggregatesFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     cfdaList?: JsonNullableWithAggregatesFilter<"Grant">
@@ -17744,6 +17848,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17783,6 +17891,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17822,6 +17934,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17861,6 +17977,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17900,6 +18020,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17936,6 +18060,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -17972,6 +18100,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -19038,6 +19170,13 @@ export namespace Prisma {
     not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
+  export type EnumGrantDetailsStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantDetailsStatus | EnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantDetailsStatusFilter<$PrismaModel> | $Enums.GrantDetailsStatus
+  }
+
   export type EnumGrantSourceFilter<$PrismaModel = never> = {
     equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
     in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
@@ -19149,6 +19288,10 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    detailsStatus?: SortOrder
+    detailsFetchedAt?: SortOrder
+    detailsError?: SortOrder
+    detailsErrorAt?: SortOrder
     source?: SortOrder
     agencyCode?: SortOrder
     cfdaList?: SortOrder
@@ -19192,6 +19335,10 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    detailsStatus?: SortOrder
+    detailsFetchedAt?: SortOrder
+    detailsError?: SortOrder
+    detailsErrorAt?: SortOrder
     source?: SortOrder
     agencyCode?: SortOrder
     sourceRecordId?: SortOrder
@@ -19227,6 +19374,10 @@ export namespace Prisma {
     purpose?: SortOrder
     eligibleApplicants?: SortOrder
     eligibleGeographies?: SortOrder
+    detailsStatus?: SortOrder
+    detailsFetchedAt?: SortOrder
+    detailsError?: SortOrder
+    detailsErrorAt?: SortOrder
     source?: SortOrder
     agencyCode?: SortOrder
     sourceRecordId?: SortOrder
@@ -19294,6 +19445,16 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type EnumGrantDetailsStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantDetailsStatus | EnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantDetailsStatusWithAggregatesFilter<$PrismaModel> | $Enums.GrantDetailsStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantDetailsStatusFilter<$PrismaModel>
+    _max?: NestedEnumGrantDetailsStatusFilter<$PrismaModel>
   }
 
   export type EnumGrantSourceWithAggregatesFilter<$PrismaModel = never> = {
@@ -19989,6 +20150,10 @@ export namespace Prisma {
     divide?: bigint | number
   }
 
+  export type EnumGrantDetailsStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GrantDetailsStatus
+  }
+
   export type EnumGrantSourceFieldUpdateOperationsInput = {
     set?: $Enums.GrantSource
   }
@@ -20619,6 +20784,13 @@ export namespace Prisma {
     not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
   }
 
+  export type NestedEnumGrantDetailsStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantDetailsStatus | EnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantDetailsStatusFilter<$PrismaModel> | $Enums.GrantDetailsStatus
+  }
+
   export type NestedEnumGrantSourceFilter<$PrismaModel = never> = {
     equals?: $Enums.GrantSource | EnumGrantSourceFieldRefInput<$PrismaModel>
     in?: $Enums.GrantSource[] | ListEnumGrantSourceFieldRefInput<$PrismaModel>
@@ -20692,6 +20864,16 @@ export namespace Prisma {
     _sum?: NestedBigIntNullableFilter<$PrismaModel>
     _min?: NestedBigIntNullableFilter<$PrismaModel>
     _max?: NestedBigIntNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumGrantDetailsStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantDetailsStatus | EnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantDetailsStatus[] | ListEnumGrantDetailsStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantDetailsStatusWithAggregatesFilter<$PrismaModel> | $Enums.GrantDetailsStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantDetailsStatusFilter<$PrismaModel>
+    _max?: NestedEnumGrantDetailsStatusFilter<$PrismaModel>
   }
 
   export type NestedEnumGrantSourceWithAggregatesFilter<$PrismaModel = never> = {
@@ -21143,6 +21325,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21181,6 +21367,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21235,6 +21425,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21273,6 +21467,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21311,6 +21509,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21349,6 +21551,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21403,6 +21609,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -21441,6 +21651,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -22165,6 +22379,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -22203,6 +22421,10 @@ export namespace Prisma {
     purpose?: string | null
     eligibleApplicants?: string | null
     eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -22294,6 +22516,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
@@ -22332,6 +22558,10 @@ export namespace Prisma {
     purpose?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
     eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue

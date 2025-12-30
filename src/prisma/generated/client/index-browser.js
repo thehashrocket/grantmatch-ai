@@ -158,6 +158,10 @@ exports.Prisma.GrantScalarFieldEnum = {
   purpose: 'purpose',
   eligibleApplicants: 'eligibleApplicants',
   eligibleGeographies: 'eligibleGeographies',
+  detailsStatus: 'detailsStatus',
+  detailsFetchedAt: 'detailsFetchedAt',
+  detailsError: 'detailsError',
+  detailsErrorAt: 'detailsErrorAt',
   source: 'source',
   agencyCode: 'agencyCode',
   cfdaList: 'cfdaList',
@@ -332,6 +336,13 @@ exports.GrantOpenDateType = exports.$Enums.GrantOpenDateType = {
   ROLLING: 'ROLLING',
   TBD: 'TBD',
   UNKNOWN: 'UNKNOWN'
+};
+
+exports.GrantDetailsStatus = exports.$Enums.GrantDetailsStatus = {
+  UNKNOWN: 'UNKNOWN',
+  FETCHING: 'FETCHING',
+  AVAILABLE: 'AVAILABLE',
+  FAILED: 'FAILED'
 };
 
 exports.GrantSource = exports.$Enums.GrantSource = {

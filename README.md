@@ -103,7 +103,32 @@ GrantMatch AI streamlines the grant discovery process by:
 - **Database setup**: `./start-database.sh` - Provisions local PostgreSQL
 - **Migrations**: `pnpm prisma migrate dev` - Apply schema changes to database
 - **Generate client**: `pnpm prisma generate` - Regenerate Prisma client after schema changes
+- **Import California grants**: `pnpm import:california` - Parse `source_files/california-grants-portal-data.csv` via the unified ingestion core
+- **Sync CA grants (CKAN)**: `pnpm sync:ca-grants` - Runs the CKAN-based nightly sync locally (uses unified ingestion core)
+- **Sync Federal grants (index)**: `pnpm sync:federal-grants` - Runs the Grants.gov index ingest (no detail fetch; details are on-demand)
 - **Prisma Studio**: `pnpm prisma studio` - Visual database browser
+
+## Grant sync & identity model
+- **Sources**: Supports multiple sources (California CKAN and CSV, Federal index live; future-ready for others).
+- **Identity**: Each grant carries `source`, `sourceRecordId` (preferred upstream id), `sourceKey` (hash fallback), and `number` (unique per-source). Portal IDs are deprecated for uniqueness.
+- **Change detection**: `contentHash` detects field changes; `status` (`OPEN`/`CLOSED`/`UNKNOWN`) and `closedAt` track deadline/explicit closures; `lastSeenAt` marks sync freshness.
+- **Run logging**: `GrantSyncRun` records each ingest with counters and schema snapshot; `GrantChange` logs CREATED/UPDATED/CLOSED/REOPENED/STATUS_CHANGED (plus `DETAILS_FETCHED` for on-demand detail pulls) with hashes and diffs.
+
+## Running the California CKAN sync
+1. Ensure `.env` has `DATABASE_URL`; set `TZ=America/Los_Angeles` in your environment if scheduling.
+2. Run locally: `pnpm sync:ca-grants`.
+3. Output: `GrantSyncRun` + `GrantChange` rows capture counts/errors; `Grant` rows are upserted idempotently.
+
+## California CSV (legacy) import
+- `pnpm import:california` uses the same unified ingestion core as CKAN, so identity/contentHash/status handling and logging are consistent.
+
+## Federal ingestion & details
+- Nightly index ingest (no full details): `pnpm sync:federal-grants` (envs: `FEDERAL_GRANTS_ELIGIBILITIES` default `12|13`; `FEDERAL_GRANTS_ROWS` default `500`; `FEDERAL_GRANTS_OPP_STATUSES` default `posted|forecasted|closed|archived`).
+- Grant details are fetched on-demand when viewing a grant page or hitting `/api/grants/[id]/details`; failures don’t block page rendering. On-demand detail fetch logs a `GrantChange` with changeType `DETAILS_FETCHED`.
+
+## Migrations (dev)
+- Apply schema changes: `pnpm prisma migrate dev` (or `pnpm prisma migrate reset` to wipe dev data).
+- Regenerate client after schema updates: `pnpm prisma generate`.
 
 ## Development & Testing
 - `pnpm lint` enforces the Next.js ESLint config with Prettier + Tailwind; keep output clean before committing

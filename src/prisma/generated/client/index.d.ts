@@ -58,6 +58,16 @@ export type Organization = $Result.DefaultSelection<Prisma.$OrganizationPayload>
  * 
  */
 export type Invitation = $Result.DefaultSelection<Prisma.$InvitationPayload>
+/**
+ * Model GrantSyncRun
+ * 
+ */
+export type GrantSyncRun = $Result.DefaultSelection<Prisma.$GrantSyncRunPayload>
+/**
+ * Model GrantChange
+ * 
+ */
+export type GrantChange = $Result.DefaultSelection<Prisma.$GrantChangePayload>
 
 /**
  * Enums
@@ -115,6 +125,15 @@ export const GrantSource: {
 export type GrantSource = (typeof GrantSource)[keyof typeof GrantSource]
 
 
+export const GrantStatus: {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  UNKNOWN: 'UNKNOWN'
+};
+
+export type GrantStatus = (typeof GrantStatus)[keyof typeof GrantStatus]
+
+
 export const InvitationStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -144,6 +163,10 @@ export const GrantOpenDateType: typeof $Enums.GrantOpenDateType
 export type GrantSource = $Enums.GrantSource
 
 export const GrantSource: typeof $Enums.GrantSource
+
+export type GrantStatus = $Enums.GrantStatus
+
+export const GrantStatus: typeof $Enums.GrantStatus
 
 export type InvitationStatus = $Enums.InvitationStatus
 
@@ -363,6 +386,26 @@ export class PrismaClient<
     * ```
     */
   get invitation(): Prisma.InvitationDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.grantSyncRun`: Exposes CRUD operations for the **GrantSyncRun** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GrantSyncRuns
+    * const grantSyncRuns = await prisma.grantSyncRun.findMany()
+    * ```
+    */
+  get grantSyncRun(): Prisma.GrantSyncRunDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.grantChange`: Exposes CRUD operations for the **GrantChange** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GrantChanges
+    * const grantChanges = await prisma.grantChange.findMany()
+    * ```
+    */
+  get grantChange(): Prisma.GrantChangeDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -811,7 +854,9 @@ export namespace Prisma {
     User: 'User',
     VerificationToken: 'VerificationToken',
     Organization: 'Organization',
-    Invitation: 'Invitation'
+    Invitation: 'Invitation',
+    GrantSyncRun: 'GrantSyncRun',
+    GrantChange: 'GrantChange'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -830,7 +875,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "grant" | "grantDetail" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation"
+      modelProps: "account" | "grant" | "grantDetail" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1500,6 +1545,154 @@ export namespace Prisma {
           }
         }
       }
+      GrantSyncRun: {
+        payload: Prisma.$GrantSyncRunPayload<ExtArgs>
+        fields: Prisma.GrantSyncRunFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GrantSyncRunFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GrantSyncRunFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          findFirst: {
+            args: Prisma.GrantSyncRunFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GrantSyncRunFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          findMany: {
+            args: Prisma.GrantSyncRunFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>[]
+          }
+          create: {
+            args: Prisma.GrantSyncRunCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          createMany: {
+            args: Prisma.GrantSyncRunCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GrantSyncRunCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>[]
+          }
+          delete: {
+            args: Prisma.GrantSyncRunDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          update: {
+            args: Prisma.GrantSyncRunUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          deleteMany: {
+            args: Prisma.GrantSyncRunDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GrantSyncRunUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GrantSyncRunUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>[]
+          }
+          upsert: {
+            args: Prisma.GrantSyncRunUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantSyncRunPayload>
+          }
+          aggregate: {
+            args: Prisma.GrantSyncRunAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGrantSyncRun>
+          }
+          groupBy: {
+            args: Prisma.GrantSyncRunGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GrantSyncRunGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GrantSyncRunCountArgs<ExtArgs>
+            result: $Utils.Optional<GrantSyncRunCountAggregateOutputType> | number
+          }
+        }
+      }
+      GrantChange: {
+        payload: Prisma.$GrantChangePayload<ExtArgs>
+        fields: Prisma.GrantChangeFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GrantChangeFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GrantChangeFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          findFirst: {
+            args: Prisma.GrantChangeFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GrantChangeFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          findMany: {
+            args: Prisma.GrantChangeFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>[]
+          }
+          create: {
+            args: Prisma.GrantChangeCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          createMany: {
+            args: Prisma.GrantChangeCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GrantChangeCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>[]
+          }
+          delete: {
+            args: Prisma.GrantChangeDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          update: {
+            args: Prisma.GrantChangeUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          deleteMany: {
+            args: Prisma.GrantChangeDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GrantChangeUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GrantChangeUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>[]
+          }
+          upsert: {
+            args: Prisma.GrantChangeUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantChangePayload>
+          }
+          aggregate: {
+            args: Prisma.GrantChangeAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGrantChange>
+          }
+          groupBy: {
+            args: Prisma.GrantChangeGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GrantChangeGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GrantChangeCountArgs<ExtArgs>
+            result: $Utils.Optional<GrantChangeCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1601,6 +1794,8 @@ export namespace Prisma {
     verificationToken?: VerificationTokenOmit
     organization?: OrganizationOmit
     invitation?: InvitationOmit
+    grantSyncRun?: GrantSyncRunOmit
+    grantChange?: GrantChangeOmit
   }
 
   /* Types for Logging */
@@ -1696,6 +1891,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type GrantCountOutputType
+   */
+
+  export type GrantCountOutputType = {
+    changes: number
+  }
+
+  export type GrantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changes?: boolean | GrantCountOutputTypeCountChangesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GrantCountOutputType without action
+   */
+  export type GrantCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantCountOutputType
+     */
+    select?: GrantCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GrantCountOutputType without action
+   */
+  export type GrantCountOutputTypeCountChangesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantChangeWhereInput
+  }
+
+
+  /**
    * Count Type UserCountOutputType
    */
 
@@ -1781,6 +2007,37 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvitationWhereInput
+  }
+
+
+  /**
+   * Count Type GrantSyncRunCountOutputType
+   */
+
+  export type GrantSyncRunCountOutputType = {
+    changes: number
+  }
+
+  export type GrantSyncRunCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changes?: boolean | GrantSyncRunCountOutputTypeCountChangesArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * GrantSyncRunCountOutputType without action
+   */
+  export type GrantSyncRunCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRunCountOutputType
+     */
+    select?: GrantSyncRunCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GrantSyncRunCountOutputType without action
+   */
+  export type GrantSyncRunCountOutputTypeCountChangesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantChangeWhereInput
   }
 
 
@@ -3022,6 +3279,12 @@ export namespace Prisma {
     eligibleGeographies: string | null
     source: $Enums.GrantSource | null
     agencyCode: string | null
+    sourceRecordId: string | null
+    sourceKey: string | null
+    contentHash: string | null
+    lastSeenAt: Date | null
+    status: $Enums.GrantStatus | null
+    closedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3051,6 +3314,12 @@ export namespace Prisma {
     eligibleGeographies: string | null
     source: $Enums.GrantSource | null
     agencyCode: string | null
+    sourceRecordId: string | null
+    sourceKey: string | null
+    contentHash: string | null
+    lastSeenAt: Date | null
+    status: $Enums.GrantStatus | null
+    closedAt: Date | null
     createdAt: Date | null
     updatedAt: Date | null
   }
@@ -3081,6 +3350,12 @@ export namespace Prisma {
     source: number
     agencyCode: number
     cfdaList: number
+    sourceRecordId: number
+    sourceKey: number
+    contentHash: number
+    lastSeenAt: number
+    status: number
+    closedAt: number
     createdAt: number
     updatedAt: number
     _all: number
@@ -3126,6 +3401,12 @@ export namespace Prisma {
     eligibleGeographies?: true
     source?: true
     agencyCode?: true
+    sourceRecordId?: true
+    sourceKey?: true
+    contentHash?: true
+    lastSeenAt?: true
+    status?: true
+    closedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3155,6 +3436,12 @@ export namespace Prisma {
     eligibleGeographies?: true
     source?: true
     agencyCode?: true
+    sourceRecordId?: true
+    sourceKey?: true
+    contentHash?: true
+    lastSeenAt?: true
+    status?: true
+    closedAt?: true
     createdAt?: true
     updatedAt?: true
   }
@@ -3185,6 +3472,12 @@ export namespace Prisma {
     source?: true
     agencyCode?: true
     cfdaList?: true
+    sourceRecordId?: true
+    sourceKey?: true
+    contentHash?: true
+    lastSeenAt?: true
+    status?: true
+    closedAt?: true
     createdAt?: true
     updatedAt?: true
     _all?: true
@@ -3302,6 +3595,12 @@ export namespace Prisma {
     source: $Enums.GrantSource
     agencyCode: string | null
     cfdaList: JsonValue | null
+    sourceRecordId: string | null
+    sourceKey: string | null
+    contentHash: string | null
+    lastSeenAt: Date | null
+    status: $Enums.GrantStatus
+    closedAt: Date | null
     createdAt: Date
     updatedAt: Date
     _count: GrantCountAggregateOutputType | null
@@ -3351,9 +3650,17 @@ export namespace Prisma {
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
+    sourceRecordId?: boolean
+    sourceKey?: boolean
+    contentHash?: boolean
+    lastSeenAt?: boolean
+    status?: boolean
+    closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
     details?: boolean | Grant$detailsArgs<ExtArgs>
+    changes?: boolean | Grant$changesArgs<ExtArgs>
+    _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["grant"]>
 
   export type GrantSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -3382,6 +3689,12 @@ export namespace Prisma {
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
+    sourceRecordId?: boolean
+    sourceKey?: boolean
+    contentHash?: boolean
+    lastSeenAt?: boolean
+    status?: boolean
+    closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["grant"]>
@@ -3412,6 +3725,12 @@ export namespace Prisma {
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
+    sourceRecordId?: boolean
+    sourceKey?: boolean
+    contentHash?: boolean
+    lastSeenAt?: boolean
+    status?: boolean
+    closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }, ExtArgs["result"]["grant"]>
@@ -3442,13 +3761,21 @@ export namespace Prisma {
     source?: boolean
     agencyCode?: boolean
     cfdaList?: boolean
+    sourceRecordId?: boolean
+    sourceKey?: boolean
+    contentHash?: boolean
+    lastSeenAt?: boolean
+    status?: boolean
+    closedAt?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "source" | "agencyCode" | "cfdaList" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
+  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
   export type GrantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     details?: boolean | Grant$detailsArgs<ExtArgs>
+    changes?: boolean | Grant$changesArgs<ExtArgs>
+    _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GrantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
   export type GrantIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3457,6 +3784,7 @@ export namespace Prisma {
     name: "Grant"
     objects: {
       details: Prisma.$GrantDetailPayload<ExtArgs> | null
+      changes: Prisma.$GrantChangePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -3484,6 +3812,12 @@ export namespace Prisma {
       source: $Enums.GrantSource
       agencyCode: string | null
       cfdaList: Prisma.JsonValue | null
+      sourceRecordId: string | null
+      sourceKey: string | null
+      contentHash: string | null
+      lastSeenAt: Date | null
+      status: $Enums.GrantStatus
+      closedAt: Date | null
       createdAt: Date
       updatedAt: Date
     }, ExtArgs["result"]["grant"]>
@@ -3881,6 +4215,7 @@ export namespace Prisma {
   export interface Prisma__GrantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     details<T extends Grant$detailsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$detailsArgs<ExtArgs>>): Prisma__GrantDetailClient<$Result.GetResult<Prisma.$GrantDetailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    changes<T extends Grant$changesArgs<ExtArgs> = {}>(args?: Subset<T, Grant$changesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3935,6 +4270,12 @@ export namespace Prisma {
     readonly source: FieldRef<"Grant", 'GrantSource'>
     readonly agencyCode: FieldRef<"Grant", 'String'>
     readonly cfdaList: FieldRef<"Grant", 'Json'>
+    readonly sourceRecordId: FieldRef<"Grant", 'String'>
+    readonly sourceKey: FieldRef<"Grant", 'String'>
+    readonly contentHash: FieldRef<"Grant", 'String'>
+    readonly lastSeenAt: FieldRef<"Grant", 'DateTime'>
+    readonly status: FieldRef<"Grant", 'GrantStatus'>
+    readonly closedAt: FieldRef<"Grant", 'DateTime'>
     readonly createdAt: FieldRef<"Grant", 'DateTime'>
     readonly updatedAt: FieldRef<"Grant", 'DateTime'>
   }
@@ -4341,6 +4682,30 @@ export namespace Prisma {
      */
     include?: GrantDetailInclude<ExtArgs> | null
     where?: GrantDetailWhereInput
+  }
+
+  /**
+   * Grant.changes
+   */
+  export type Grant$changesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    where?: GrantChangeWhereInput
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    cursor?: GrantChangeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
   }
 
   /**
@@ -12086,6 +12451,2327 @@ export namespace Prisma {
 
 
   /**
+   * Model GrantSyncRun
+   */
+
+  export type AggregateGrantSyncRun = {
+    _count: GrantSyncRunCountAggregateOutputType | null
+    _avg: GrantSyncRunAvgAggregateOutputType | null
+    _sum: GrantSyncRunSumAggregateOutputType | null
+    _min: GrantSyncRunMinAggregateOutputType | null
+    _max: GrantSyncRunMaxAggregateOutputType | null
+  }
+
+  export type GrantSyncRunAvgAggregateOutputType = {
+    recordsFetched: number | null
+    createdCount: number | null
+    updatedCount: number | null
+    unchangedCount: number | null
+    closedCount: number | null
+    reopenedCount: number | null
+  }
+
+  export type GrantSyncRunSumAggregateOutputType = {
+    recordsFetched: number | null
+    createdCount: number | null
+    updatedCount: number | null
+    unchangedCount: number | null
+    closedCount: number | null
+    reopenedCount: number | null
+  }
+
+  export type GrantSyncRunMinAggregateOutputType = {
+    id: string | null
+    source: $Enums.GrantSource | null
+    startedAt: Date | null
+    finishedAt: Date | null
+    status: $Enums.ImportStatus | null
+    recordsFetched: number | null
+    createdCount: number | null
+    updatedCount: number | null
+    unchangedCount: number | null
+    closedCount: number | null
+    reopenedCount: number | null
+  }
+
+  export type GrantSyncRunMaxAggregateOutputType = {
+    id: string | null
+    source: $Enums.GrantSource | null
+    startedAt: Date | null
+    finishedAt: Date | null
+    status: $Enums.ImportStatus | null
+    recordsFetched: number | null
+    createdCount: number | null
+    updatedCount: number | null
+    unchangedCount: number | null
+    closedCount: number | null
+    reopenedCount: number | null
+  }
+
+  export type GrantSyncRunCountAggregateOutputType = {
+    id: number
+    source: number
+    startedAt: number
+    finishedAt: number
+    status: number
+    recordsFetched: number
+    createdCount: number
+    updatedCount: number
+    unchangedCount: number
+    closedCount: number
+    reopenedCount: number
+    errorsJson: number
+    schemaJson: number
+    _all: number
+  }
+
+
+  export type GrantSyncRunAvgAggregateInputType = {
+    recordsFetched?: true
+    createdCount?: true
+    updatedCount?: true
+    unchangedCount?: true
+    closedCount?: true
+    reopenedCount?: true
+  }
+
+  export type GrantSyncRunSumAggregateInputType = {
+    recordsFetched?: true
+    createdCount?: true
+    updatedCount?: true
+    unchangedCount?: true
+    closedCount?: true
+    reopenedCount?: true
+  }
+
+  export type GrantSyncRunMinAggregateInputType = {
+    id?: true
+    source?: true
+    startedAt?: true
+    finishedAt?: true
+    status?: true
+    recordsFetched?: true
+    createdCount?: true
+    updatedCount?: true
+    unchangedCount?: true
+    closedCount?: true
+    reopenedCount?: true
+  }
+
+  export type GrantSyncRunMaxAggregateInputType = {
+    id?: true
+    source?: true
+    startedAt?: true
+    finishedAt?: true
+    status?: true
+    recordsFetched?: true
+    createdCount?: true
+    updatedCount?: true
+    unchangedCount?: true
+    closedCount?: true
+    reopenedCount?: true
+  }
+
+  export type GrantSyncRunCountAggregateInputType = {
+    id?: true
+    source?: true
+    startedAt?: true
+    finishedAt?: true
+    status?: true
+    recordsFetched?: true
+    createdCount?: true
+    updatedCount?: true
+    unchangedCount?: true
+    closedCount?: true
+    reopenedCount?: true
+    errorsJson?: true
+    schemaJson?: true
+    _all?: true
+  }
+
+  export type GrantSyncRunAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantSyncRun to aggregate.
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantSyncRuns to fetch.
+     */
+    orderBy?: GrantSyncRunOrderByWithRelationInput | GrantSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GrantSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GrantSyncRuns
+    **/
+    _count?: true | GrantSyncRunCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GrantSyncRunAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GrantSyncRunSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GrantSyncRunMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GrantSyncRunMaxAggregateInputType
+  }
+
+  export type GetGrantSyncRunAggregateType<T extends GrantSyncRunAggregateArgs> = {
+        [P in keyof T & keyof AggregateGrantSyncRun]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGrantSyncRun[P]>
+      : GetScalarType<T[P], AggregateGrantSyncRun[P]>
+  }
+
+
+
+
+  export type GrantSyncRunGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantSyncRunWhereInput
+    orderBy?: GrantSyncRunOrderByWithAggregationInput | GrantSyncRunOrderByWithAggregationInput[]
+    by: GrantSyncRunScalarFieldEnum[] | GrantSyncRunScalarFieldEnum
+    having?: GrantSyncRunScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GrantSyncRunCountAggregateInputType | true
+    _avg?: GrantSyncRunAvgAggregateInputType
+    _sum?: GrantSyncRunSumAggregateInputType
+    _min?: GrantSyncRunMinAggregateInputType
+    _max?: GrantSyncRunMaxAggregateInputType
+  }
+
+  export type GrantSyncRunGroupByOutputType = {
+    id: string
+    source: $Enums.GrantSource
+    startedAt: Date
+    finishedAt: Date | null
+    status: $Enums.ImportStatus
+    recordsFetched: number
+    createdCount: number
+    updatedCount: number
+    unchangedCount: number
+    closedCount: number
+    reopenedCount: number
+    errorsJson: JsonValue | null
+    schemaJson: JsonValue | null
+    _count: GrantSyncRunCountAggregateOutputType | null
+    _avg: GrantSyncRunAvgAggregateOutputType | null
+    _sum: GrantSyncRunSumAggregateOutputType | null
+    _min: GrantSyncRunMinAggregateOutputType | null
+    _max: GrantSyncRunMaxAggregateOutputType | null
+  }
+
+  type GetGrantSyncRunGroupByPayload<T extends GrantSyncRunGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GrantSyncRunGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GrantSyncRunGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GrantSyncRunGroupByOutputType[P]>
+            : GetScalarType<T[P], GrantSyncRunGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GrantSyncRunSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    source?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+    status?: boolean
+    recordsFetched?: boolean
+    createdCount?: boolean
+    updatedCount?: boolean
+    unchangedCount?: boolean
+    closedCount?: boolean
+    reopenedCount?: boolean
+    errorsJson?: boolean
+    schemaJson?: boolean
+    changes?: boolean | GrantSyncRun$changesArgs<ExtArgs>
+    _count?: boolean | GrantSyncRunCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantSyncRun"]>
+
+  export type GrantSyncRunSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    source?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+    status?: boolean
+    recordsFetched?: boolean
+    createdCount?: boolean
+    updatedCount?: boolean
+    unchangedCount?: boolean
+    closedCount?: boolean
+    reopenedCount?: boolean
+    errorsJson?: boolean
+    schemaJson?: boolean
+  }, ExtArgs["result"]["grantSyncRun"]>
+
+  export type GrantSyncRunSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    source?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+    status?: boolean
+    recordsFetched?: boolean
+    createdCount?: boolean
+    updatedCount?: boolean
+    unchangedCount?: boolean
+    closedCount?: boolean
+    reopenedCount?: boolean
+    errorsJson?: boolean
+    schemaJson?: boolean
+  }, ExtArgs["result"]["grantSyncRun"]>
+
+  export type GrantSyncRunSelectScalar = {
+    id?: boolean
+    source?: boolean
+    startedAt?: boolean
+    finishedAt?: boolean
+    status?: boolean
+    recordsFetched?: boolean
+    createdCount?: boolean
+    updatedCount?: boolean
+    unchangedCount?: boolean
+    closedCount?: boolean
+    reopenedCount?: boolean
+    errorsJson?: boolean
+    schemaJson?: boolean
+  }
+
+  export type GrantSyncRunOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "source" | "startedAt" | "finishedAt" | "status" | "recordsFetched" | "createdCount" | "updatedCount" | "unchangedCount" | "closedCount" | "reopenedCount" | "errorsJson" | "schemaJson", ExtArgs["result"]["grantSyncRun"]>
+  export type GrantSyncRunInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    changes?: boolean | GrantSyncRun$changesArgs<ExtArgs>
+    _count?: boolean | GrantSyncRunCountOutputTypeDefaultArgs<ExtArgs>
+  }
+  export type GrantSyncRunIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+  export type GrantSyncRunIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
+
+  export type $GrantSyncRunPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GrantSyncRun"
+    objects: {
+      changes: Prisma.$GrantChangePayload<ExtArgs>[]
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      source: $Enums.GrantSource
+      startedAt: Date
+      finishedAt: Date | null
+      status: $Enums.ImportStatus
+      recordsFetched: number
+      createdCount: number
+      updatedCount: number
+      unchangedCount: number
+      closedCount: number
+      reopenedCount: number
+      errorsJson: Prisma.JsonValue | null
+      schemaJson: Prisma.JsonValue | null
+    }, ExtArgs["result"]["grantSyncRun"]>
+    composites: {}
+  }
+
+  type GrantSyncRunGetPayload<S extends boolean | null | undefined | GrantSyncRunDefaultArgs> = $Result.GetResult<Prisma.$GrantSyncRunPayload, S>
+
+  type GrantSyncRunCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GrantSyncRunFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GrantSyncRunCountAggregateInputType | true
+    }
+
+  export interface GrantSyncRunDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GrantSyncRun'], meta: { name: 'GrantSyncRun' } }
+    /**
+     * Find zero or one GrantSyncRun that matches the filter.
+     * @param {GrantSyncRunFindUniqueArgs} args - Arguments to find a GrantSyncRun
+     * @example
+     * // Get one GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GrantSyncRunFindUniqueArgs>(args: SelectSubset<T, GrantSyncRunFindUniqueArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GrantSyncRun that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GrantSyncRunFindUniqueOrThrowArgs} args - Arguments to find a GrantSyncRun
+     * @example
+     * // Get one GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GrantSyncRunFindUniqueOrThrowArgs>(args: SelectSubset<T, GrantSyncRunFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantSyncRun that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunFindFirstArgs} args - Arguments to find a GrantSyncRun
+     * @example
+     * // Get one GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GrantSyncRunFindFirstArgs>(args?: SelectSubset<T, GrantSyncRunFindFirstArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantSyncRun that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunFindFirstOrThrowArgs} args - Arguments to find a GrantSyncRun
+     * @example
+     * // Get one GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GrantSyncRunFindFirstOrThrowArgs>(args?: SelectSubset<T, GrantSyncRunFindFirstOrThrowArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GrantSyncRuns that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GrantSyncRuns
+     * const grantSyncRuns = await prisma.grantSyncRun.findMany()
+     * 
+     * // Get first 10 GrantSyncRuns
+     * const grantSyncRuns = await prisma.grantSyncRun.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const grantSyncRunWithIdOnly = await prisma.grantSyncRun.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GrantSyncRunFindManyArgs>(args?: SelectSubset<T, GrantSyncRunFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GrantSyncRun.
+     * @param {GrantSyncRunCreateArgs} args - Arguments to create a GrantSyncRun.
+     * @example
+     * // Create one GrantSyncRun
+     * const GrantSyncRun = await prisma.grantSyncRun.create({
+     *   data: {
+     *     // ... data to create a GrantSyncRun
+     *   }
+     * })
+     * 
+     */
+    create<T extends GrantSyncRunCreateArgs>(args: SelectSubset<T, GrantSyncRunCreateArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GrantSyncRuns.
+     * @param {GrantSyncRunCreateManyArgs} args - Arguments to create many GrantSyncRuns.
+     * @example
+     * // Create many GrantSyncRuns
+     * const grantSyncRun = await prisma.grantSyncRun.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GrantSyncRunCreateManyArgs>(args?: SelectSubset<T, GrantSyncRunCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GrantSyncRuns and returns the data saved in the database.
+     * @param {GrantSyncRunCreateManyAndReturnArgs} args - Arguments to create many GrantSyncRuns.
+     * @example
+     * // Create many GrantSyncRuns
+     * const grantSyncRun = await prisma.grantSyncRun.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GrantSyncRuns and only return the `id`
+     * const grantSyncRunWithIdOnly = await prisma.grantSyncRun.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GrantSyncRunCreateManyAndReturnArgs>(args?: SelectSubset<T, GrantSyncRunCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GrantSyncRun.
+     * @param {GrantSyncRunDeleteArgs} args - Arguments to delete one GrantSyncRun.
+     * @example
+     * // Delete one GrantSyncRun
+     * const GrantSyncRun = await prisma.grantSyncRun.delete({
+     *   where: {
+     *     // ... filter to delete one GrantSyncRun
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GrantSyncRunDeleteArgs>(args: SelectSubset<T, GrantSyncRunDeleteArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GrantSyncRun.
+     * @param {GrantSyncRunUpdateArgs} args - Arguments to update one GrantSyncRun.
+     * @example
+     * // Update one GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GrantSyncRunUpdateArgs>(args: SelectSubset<T, GrantSyncRunUpdateArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GrantSyncRuns.
+     * @param {GrantSyncRunDeleteManyArgs} args - Arguments to filter GrantSyncRuns to delete.
+     * @example
+     * // Delete a few GrantSyncRuns
+     * const { count } = await prisma.grantSyncRun.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GrantSyncRunDeleteManyArgs>(args?: SelectSubset<T, GrantSyncRunDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantSyncRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GrantSyncRuns
+     * const grantSyncRun = await prisma.grantSyncRun.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GrantSyncRunUpdateManyArgs>(args: SelectSubset<T, GrantSyncRunUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantSyncRuns and returns the data updated in the database.
+     * @param {GrantSyncRunUpdateManyAndReturnArgs} args - Arguments to update many GrantSyncRuns.
+     * @example
+     * // Update many GrantSyncRuns
+     * const grantSyncRun = await prisma.grantSyncRun.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GrantSyncRuns and only return the `id`
+     * const grantSyncRunWithIdOnly = await prisma.grantSyncRun.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GrantSyncRunUpdateManyAndReturnArgs>(args: SelectSubset<T, GrantSyncRunUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GrantSyncRun.
+     * @param {GrantSyncRunUpsertArgs} args - Arguments to update or create a GrantSyncRun.
+     * @example
+     * // Update or create a GrantSyncRun
+     * const grantSyncRun = await prisma.grantSyncRun.upsert({
+     *   create: {
+     *     // ... data to create a GrantSyncRun
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GrantSyncRun we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GrantSyncRunUpsertArgs>(args: SelectSubset<T, GrantSyncRunUpsertArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GrantSyncRuns.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunCountArgs} args - Arguments to filter GrantSyncRuns to count.
+     * @example
+     * // Count the number of GrantSyncRuns
+     * const count = await prisma.grantSyncRun.count({
+     *   where: {
+     *     // ... the filter for the GrantSyncRuns we want to count
+     *   }
+     * })
+    **/
+    count<T extends GrantSyncRunCountArgs>(
+      args?: Subset<T, GrantSyncRunCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GrantSyncRunCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GrantSyncRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GrantSyncRunAggregateArgs>(args: Subset<T, GrantSyncRunAggregateArgs>): Prisma.PrismaPromise<GetGrantSyncRunAggregateType<T>>
+
+    /**
+     * Group by GrantSyncRun.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantSyncRunGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GrantSyncRunGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GrantSyncRunGroupByArgs['orderBy'] }
+        : { orderBy?: GrantSyncRunGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GrantSyncRunGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGrantSyncRunGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GrantSyncRun model
+   */
+  readonly fields: GrantSyncRunFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GrantSyncRun.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GrantSyncRunClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    changes<T extends GrantSyncRun$changesArgs<ExtArgs> = {}>(args?: Subset<T, GrantSyncRun$changesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GrantSyncRun model
+   */
+  interface GrantSyncRunFieldRefs {
+    readonly id: FieldRef<"GrantSyncRun", 'String'>
+    readonly source: FieldRef<"GrantSyncRun", 'GrantSource'>
+    readonly startedAt: FieldRef<"GrantSyncRun", 'DateTime'>
+    readonly finishedAt: FieldRef<"GrantSyncRun", 'DateTime'>
+    readonly status: FieldRef<"GrantSyncRun", 'ImportStatus'>
+    readonly recordsFetched: FieldRef<"GrantSyncRun", 'Int'>
+    readonly createdCount: FieldRef<"GrantSyncRun", 'Int'>
+    readonly updatedCount: FieldRef<"GrantSyncRun", 'Int'>
+    readonly unchangedCount: FieldRef<"GrantSyncRun", 'Int'>
+    readonly closedCount: FieldRef<"GrantSyncRun", 'Int'>
+    readonly reopenedCount: FieldRef<"GrantSyncRun", 'Int'>
+    readonly errorsJson: FieldRef<"GrantSyncRun", 'Json'>
+    readonly schemaJson: FieldRef<"GrantSyncRun", 'Json'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GrantSyncRun findUnique
+   */
+  export type GrantSyncRunFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantSyncRun to fetch.
+     */
+    where: GrantSyncRunWhereUniqueInput
+  }
+
+  /**
+   * GrantSyncRun findUniqueOrThrow
+   */
+  export type GrantSyncRunFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantSyncRun to fetch.
+     */
+    where: GrantSyncRunWhereUniqueInput
+  }
+
+  /**
+   * GrantSyncRun findFirst
+   */
+  export type GrantSyncRunFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantSyncRun to fetch.
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantSyncRuns to fetch.
+     */
+    orderBy?: GrantSyncRunOrderByWithRelationInput | GrantSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantSyncRuns.
+     */
+    cursor?: GrantSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantSyncRuns.
+     */
+    distinct?: GrantSyncRunScalarFieldEnum | GrantSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * GrantSyncRun findFirstOrThrow
+   */
+  export type GrantSyncRunFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantSyncRun to fetch.
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantSyncRuns to fetch.
+     */
+    orderBy?: GrantSyncRunOrderByWithRelationInput | GrantSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantSyncRuns.
+     */
+    cursor?: GrantSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantSyncRuns.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantSyncRuns.
+     */
+    distinct?: GrantSyncRunScalarFieldEnum | GrantSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * GrantSyncRun findMany
+   */
+  export type GrantSyncRunFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantSyncRuns to fetch.
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantSyncRuns to fetch.
+     */
+    orderBy?: GrantSyncRunOrderByWithRelationInput | GrantSyncRunOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GrantSyncRuns.
+     */
+    cursor?: GrantSyncRunWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantSyncRuns from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantSyncRuns.
+     */
+    skip?: number
+    distinct?: GrantSyncRunScalarFieldEnum | GrantSyncRunScalarFieldEnum[]
+  }
+
+  /**
+   * GrantSyncRun create
+   */
+  export type GrantSyncRunCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GrantSyncRun.
+     */
+    data: XOR<GrantSyncRunCreateInput, GrantSyncRunUncheckedCreateInput>
+  }
+
+  /**
+   * GrantSyncRun createMany
+   */
+  export type GrantSyncRunCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GrantSyncRuns.
+     */
+    data: GrantSyncRunCreateManyInput | GrantSyncRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantSyncRun createManyAndReturn
+   */
+  export type GrantSyncRunCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * The data used to create many GrantSyncRuns.
+     */
+    data: GrantSyncRunCreateManyInput | GrantSyncRunCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantSyncRun update
+   */
+  export type GrantSyncRunUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GrantSyncRun.
+     */
+    data: XOR<GrantSyncRunUpdateInput, GrantSyncRunUncheckedUpdateInput>
+    /**
+     * Choose, which GrantSyncRun to update.
+     */
+    where: GrantSyncRunWhereUniqueInput
+  }
+
+  /**
+   * GrantSyncRun updateMany
+   */
+  export type GrantSyncRunUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GrantSyncRuns.
+     */
+    data: XOR<GrantSyncRunUpdateManyMutationInput, GrantSyncRunUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantSyncRuns to update
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * Limit how many GrantSyncRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantSyncRun updateManyAndReturn
+   */
+  export type GrantSyncRunUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * The data used to update GrantSyncRuns.
+     */
+    data: XOR<GrantSyncRunUpdateManyMutationInput, GrantSyncRunUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantSyncRuns to update
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * Limit how many GrantSyncRuns to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantSyncRun upsert
+   */
+  export type GrantSyncRunUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GrantSyncRun to update in case it exists.
+     */
+    where: GrantSyncRunWhereUniqueInput
+    /**
+     * In case the GrantSyncRun found by the `where` argument doesn't exist, create a new GrantSyncRun with this data.
+     */
+    create: XOR<GrantSyncRunCreateInput, GrantSyncRunUncheckedCreateInput>
+    /**
+     * In case the GrantSyncRun was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GrantSyncRunUpdateInput, GrantSyncRunUncheckedUpdateInput>
+  }
+
+  /**
+   * GrantSyncRun delete
+   */
+  export type GrantSyncRunDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+    /**
+     * Filter which GrantSyncRun to delete.
+     */
+    where: GrantSyncRunWhereUniqueInput
+  }
+
+  /**
+   * GrantSyncRun deleteMany
+   */
+  export type GrantSyncRunDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantSyncRuns to delete
+     */
+    where?: GrantSyncRunWhereInput
+    /**
+     * Limit how many GrantSyncRuns to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantSyncRun.changes
+   */
+  export type GrantSyncRun$changesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    where?: GrantChangeWhereInput
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    cursor?: GrantChangeWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
+  }
+
+  /**
+   * GrantSyncRun without action
+   */
+  export type GrantSyncRunDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantSyncRun
+     */
+    select?: GrantSyncRunSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantSyncRun
+     */
+    omit?: GrantSyncRunOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantSyncRunInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GrantChange
+   */
+
+  export type AggregateGrantChange = {
+    _count: GrantChangeCountAggregateOutputType | null
+    _min: GrantChangeMinAggregateOutputType | null
+    _max: GrantChangeMaxAggregateOutputType | null
+  }
+
+  export type GrantChangeMinAggregateOutputType = {
+    id: string | null
+    grantId: string | null
+    runId: string | null
+    changeType: string | null
+    oldHash: string | null
+    newHash: string | null
+    observedAt: Date | null
+  }
+
+  export type GrantChangeMaxAggregateOutputType = {
+    id: string | null
+    grantId: string | null
+    runId: string | null
+    changeType: string | null
+    oldHash: string | null
+    newHash: string | null
+    observedAt: Date | null
+  }
+
+  export type GrantChangeCountAggregateOutputType = {
+    id: number
+    grantId: number
+    runId: number
+    changeType: number
+    oldHash: number
+    newHash: number
+    diffJson: number
+    observedAt: number
+    _all: number
+  }
+
+
+  export type GrantChangeMinAggregateInputType = {
+    id?: true
+    grantId?: true
+    runId?: true
+    changeType?: true
+    oldHash?: true
+    newHash?: true
+    observedAt?: true
+  }
+
+  export type GrantChangeMaxAggregateInputType = {
+    id?: true
+    grantId?: true
+    runId?: true
+    changeType?: true
+    oldHash?: true
+    newHash?: true
+    observedAt?: true
+  }
+
+  export type GrantChangeCountAggregateInputType = {
+    id?: true
+    grantId?: true
+    runId?: true
+    changeType?: true
+    oldHash?: true
+    newHash?: true
+    diffJson?: true
+    observedAt?: true
+    _all?: true
+  }
+
+  export type GrantChangeAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantChange to aggregate.
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantChanges to fetch.
+     */
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GrantChangeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantChanges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantChanges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GrantChanges
+    **/
+    _count?: true | GrantChangeCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GrantChangeMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GrantChangeMaxAggregateInputType
+  }
+
+  export type GetGrantChangeAggregateType<T extends GrantChangeAggregateArgs> = {
+        [P in keyof T & keyof AggregateGrantChange]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGrantChange[P]>
+      : GetScalarType<T[P], AggregateGrantChange[P]>
+  }
+
+
+
+
+  export type GrantChangeGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantChangeWhereInput
+    orderBy?: GrantChangeOrderByWithAggregationInput | GrantChangeOrderByWithAggregationInput[]
+    by: GrantChangeScalarFieldEnum[] | GrantChangeScalarFieldEnum
+    having?: GrantChangeScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GrantChangeCountAggregateInputType | true
+    _min?: GrantChangeMinAggregateInputType
+    _max?: GrantChangeMaxAggregateInputType
+  }
+
+  export type GrantChangeGroupByOutputType = {
+    id: string
+    grantId: string
+    runId: string
+    changeType: string
+    oldHash: string | null
+    newHash: string | null
+    diffJson: JsonValue | null
+    observedAt: Date
+    _count: GrantChangeCountAggregateOutputType | null
+    _min: GrantChangeMinAggregateOutputType | null
+    _max: GrantChangeMaxAggregateOutputType | null
+  }
+
+  type GetGrantChangeGroupByPayload<T extends GrantChangeGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GrantChangeGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GrantChangeGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GrantChangeGroupByOutputType[P]>
+            : GetScalarType<T[P], GrantChangeGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GrantChangeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    runId?: boolean
+    changeType?: boolean
+    oldHash?: boolean
+    newHash?: boolean
+    diffJson?: boolean
+    observedAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantChange"]>
+
+  export type GrantChangeSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    runId?: boolean
+    changeType?: boolean
+    oldHash?: boolean
+    newHash?: boolean
+    diffJson?: boolean
+    observedAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantChange"]>
+
+  export type GrantChangeSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    runId?: boolean
+    changeType?: boolean
+    oldHash?: boolean
+    newHash?: boolean
+    diffJson?: boolean
+    observedAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantChange"]>
+
+  export type GrantChangeSelectScalar = {
+    id?: boolean
+    grantId?: boolean
+    runId?: boolean
+    changeType?: boolean
+    oldHash?: boolean
+    newHash?: boolean
+    diffJson?: boolean
+    observedAt?: boolean
+  }
+
+  export type GrantChangeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "grantId" | "runId" | "changeType" | "oldHash" | "newHash" | "diffJson" | "observedAt", ExtArgs["result"]["grantChange"]>
+  export type GrantChangeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }
+  export type GrantChangeIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }
+  export type GrantChangeIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+    run?: boolean | GrantSyncRunDefaultArgs<ExtArgs>
+  }
+
+  export type $GrantChangePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GrantChange"
+    objects: {
+      grant: Prisma.$GrantPayload<ExtArgs>
+      run: Prisma.$GrantSyncRunPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      grantId: string
+      runId: string
+      changeType: string
+      oldHash: string | null
+      newHash: string | null
+      diffJson: Prisma.JsonValue | null
+      observedAt: Date
+    }, ExtArgs["result"]["grantChange"]>
+    composites: {}
+  }
+
+  type GrantChangeGetPayload<S extends boolean | null | undefined | GrantChangeDefaultArgs> = $Result.GetResult<Prisma.$GrantChangePayload, S>
+
+  type GrantChangeCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GrantChangeFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GrantChangeCountAggregateInputType | true
+    }
+
+  export interface GrantChangeDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GrantChange'], meta: { name: 'GrantChange' } }
+    /**
+     * Find zero or one GrantChange that matches the filter.
+     * @param {GrantChangeFindUniqueArgs} args - Arguments to find a GrantChange
+     * @example
+     * // Get one GrantChange
+     * const grantChange = await prisma.grantChange.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GrantChangeFindUniqueArgs>(args: SelectSubset<T, GrantChangeFindUniqueArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GrantChange that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GrantChangeFindUniqueOrThrowArgs} args - Arguments to find a GrantChange
+     * @example
+     * // Get one GrantChange
+     * const grantChange = await prisma.grantChange.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GrantChangeFindUniqueOrThrowArgs>(args: SelectSubset<T, GrantChangeFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantChange that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeFindFirstArgs} args - Arguments to find a GrantChange
+     * @example
+     * // Get one GrantChange
+     * const grantChange = await prisma.grantChange.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GrantChangeFindFirstArgs>(args?: SelectSubset<T, GrantChangeFindFirstArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantChange that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeFindFirstOrThrowArgs} args - Arguments to find a GrantChange
+     * @example
+     * // Get one GrantChange
+     * const grantChange = await prisma.grantChange.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GrantChangeFindFirstOrThrowArgs>(args?: SelectSubset<T, GrantChangeFindFirstOrThrowArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GrantChanges that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GrantChanges
+     * const grantChanges = await prisma.grantChange.findMany()
+     * 
+     * // Get first 10 GrantChanges
+     * const grantChanges = await prisma.grantChange.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const grantChangeWithIdOnly = await prisma.grantChange.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GrantChangeFindManyArgs>(args?: SelectSubset<T, GrantChangeFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GrantChange.
+     * @param {GrantChangeCreateArgs} args - Arguments to create a GrantChange.
+     * @example
+     * // Create one GrantChange
+     * const GrantChange = await prisma.grantChange.create({
+     *   data: {
+     *     // ... data to create a GrantChange
+     *   }
+     * })
+     * 
+     */
+    create<T extends GrantChangeCreateArgs>(args: SelectSubset<T, GrantChangeCreateArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GrantChanges.
+     * @param {GrantChangeCreateManyArgs} args - Arguments to create many GrantChanges.
+     * @example
+     * // Create many GrantChanges
+     * const grantChange = await prisma.grantChange.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GrantChangeCreateManyArgs>(args?: SelectSubset<T, GrantChangeCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GrantChanges and returns the data saved in the database.
+     * @param {GrantChangeCreateManyAndReturnArgs} args - Arguments to create many GrantChanges.
+     * @example
+     * // Create many GrantChanges
+     * const grantChange = await prisma.grantChange.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GrantChanges and only return the `id`
+     * const grantChangeWithIdOnly = await prisma.grantChange.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GrantChangeCreateManyAndReturnArgs>(args?: SelectSubset<T, GrantChangeCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GrantChange.
+     * @param {GrantChangeDeleteArgs} args - Arguments to delete one GrantChange.
+     * @example
+     * // Delete one GrantChange
+     * const GrantChange = await prisma.grantChange.delete({
+     *   where: {
+     *     // ... filter to delete one GrantChange
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GrantChangeDeleteArgs>(args: SelectSubset<T, GrantChangeDeleteArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GrantChange.
+     * @param {GrantChangeUpdateArgs} args - Arguments to update one GrantChange.
+     * @example
+     * // Update one GrantChange
+     * const grantChange = await prisma.grantChange.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GrantChangeUpdateArgs>(args: SelectSubset<T, GrantChangeUpdateArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GrantChanges.
+     * @param {GrantChangeDeleteManyArgs} args - Arguments to filter GrantChanges to delete.
+     * @example
+     * // Delete a few GrantChanges
+     * const { count } = await prisma.grantChange.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GrantChangeDeleteManyArgs>(args?: SelectSubset<T, GrantChangeDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantChanges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GrantChanges
+     * const grantChange = await prisma.grantChange.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GrantChangeUpdateManyArgs>(args: SelectSubset<T, GrantChangeUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantChanges and returns the data updated in the database.
+     * @param {GrantChangeUpdateManyAndReturnArgs} args - Arguments to update many GrantChanges.
+     * @example
+     * // Update many GrantChanges
+     * const grantChange = await prisma.grantChange.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GrantChanges and only return the `id`
+     * const grantChangeWithIdOnly = await prisma.grantChange.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GrantChangeUpdateManyAndReturnArgs>(args: SelectSubset<T, GrantChangeUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GrantChange.
+     * @param {GrantChangeUpsertArgs} args - Arguments to update or create a GrantChange.
+     * @example
+     * // Update or create a GrantChange
+     * const grantChange = await prisma.grantChange.upsert({
+     *   create: {
+     *     // ... data to create a GrantChange
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GrantChange we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GrantChangeUpsertArgs>(args: SelectSubset<T, GrantChangeUpsertArgs<ExtArgs>>): Prisma__GrantChangeClient<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GrantChanges.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeCountArgs} args - Arguments to filter GrantChanges to count.
+     * @example
+     * // Count the number of GrantChanges
+     * const count = await prisma.grantChange.count({
+     *   where: {
+     *     // ... the filter for the GrantChanges we want to count
+     *   }
+     * })
+    **/
+    count<T extends GrantChangeCountArgs>(
+      args?: Subset<T, GrantChangeCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GrantChangeCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GrantChange.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GrantChangeAggregateArgs>(args: Subset<T, GrantChangeAggregateArgs>): Prisma.PrismaPromise<GetGrantChangeAggregateType<T>>
+
+    /**
+     * Group by GrantChange.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantChangeGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GrantChangeGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GrantChangeGroupByArgs['orderBy'] }
+        : { orderBy?: GrantChangeGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GrantChangeGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGrantChangeGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GrantChange model
+   */
+  readonly fields: GrantChangeFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GrantChange.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GrantChangeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    grant<T extends GrantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GrantDefaultArgs<ExtArgs>>): Prisma__GrantClient<$Result.GetResult<Prisma.$GrantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    run<T extends GrantSyncRunDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GrantSyncRunDefaultArgs<ExtArgs>>): Prisma__GrantSyncRunClient<$Result.GetResult<Prisma.$GrantSyncRunPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GrantChange model
+   */
+  interface GrantChangeFieldRefs {
+    readonly id: FieldRef<"GrantChange", 'String'>
+    readonly grantId: FieldRef<"GrantChange", 'String'>
+    readonly runId: FieldRef<"GrantChange", 'String'>
+    readonly changeType: FieldRef<"GrantChange", 'String'>
+    readonly oldHash: FieldRef<"GrantChange", 'String'>
+    readonly newHash: FieldRef<"GrantChange", 'String'>
+    readonly diffJson: FieldRef<"GrantChange", 'Json'>
+    readonly observedAt: FieldRef<"GrantChange", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GrantChange findUnique
+   */
+  export type GrantChangeFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantChange to fetch.
+     */
+    where: GrantChangeWhereUniqueInput
+  }
+
+  /**
+   * GrantChange findUniqueOrThrow
+   */
+  export type GrantChangeFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantChange to fetch.
+     */
+    where: GrantChangeWhereUniqueInput
+  }
+
+  /**
+   * GrantChange findFirst
+   */
+  export type GrantChangeFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantChange to fetch.
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantChanges to fetch.
+     */
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantChanges.
+     */
+    cursor?: GrantChangeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantChanges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantChanges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantChanges.
+     */
+    distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
+  }
+
+  /**
+   * GrantChange findFirstOrThrow
+   */
+  export type GrantChangeFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantChange to fetch.
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantChanges to fetch.
+     */
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantChanges.
+     */
+    cursor?: GrantChangeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantChanges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantChanges.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantChanges.
+     */
+    distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
+  }
+
+  /**
+   * GrantChange findMany
+   */
+  export type GrantChangeFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantChanges to fetch.
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantChanges to fetch.
+     */
+    orderBy?: GrantChangeOrderByWithRelationInput | GrantChangeOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GrantChanges.
+     */
+    cursor?: GrantChangeWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantChanges from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantChanges.
+     */
+    skip?: number
+    distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
+  }
+
+  /**
+   * GrantChange create
+   */
+  export type GrantChangeCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GrantChange.
+     */
+    data: XOR<GrantChangeCreateInput, GrantChangeUncheckedCreateInput>
+  }
+
+  /**
+   * GrantChange createMany
+   */
+  export type GrantChangeCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GrantChanges.
+     */
+    data: GrantChangeCreateManyInput | GrantChangeCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantChange createManyAndReturn
+   */
+  export type GrantChangeCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * The data used to create many GrantChanges.
+     */
+    data: GrantChangeCreateManyInput | GrantChangeCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantChange update
+   */
+  export type GrantChangeUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GrantChange.
+     */
+    data: XOR<GrantChangeUpdateInput, GrantChangeUncheckedUpdateInput>
+    /**
+     * Choose, which GrantChange to update.
+     */
+    where: GrantChangeWhereUniqueInput
+  }
+
+  /**
+   * GrantChange updateMany
+   */
+  export type GrantChangeUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GrantChanges.
+     */
+    data: XOR<GrantChangeUpdateManyMutationInput, GrantChangeUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantChanges to update
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * Limit how many GrantChanges to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantChange updateManyAndReturn
+   */
+  export type GrantChangeUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * The data used to update GrantChanges.
+     */
+    data: XOR<GrantChangeUpdateManyMutationInput, GrantChangeUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantChanges to update
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * Limit how many GrantChanges to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantChange upsert
+   */
+  export type GrantChangeUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GrantChange to update in case it exists.
+     */
+    where: GrantChangeWhereUniqueInput
+    /**
+     * In case the GrantChange found by the `where` argument doesn't exist, create a new GrantChange with this data.
+     */
+    create: XOR<GrantChangeCreateInput, GrantChangeUncheckedCreateInput>
+    /**
+     * In case the GrantChange was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GrantChangeUpdateInput, GrantChangeUncheckedUpdateInput>
+  }
+
+  /**
+   * GrantChange delete
+   */
+  export type GrantChangeDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+    /**
+     * Filter which GrantChange to delete.
+     */
+    where: GrantChangeWhereUniqueInput
+  }
+
+  /**
+   * GrantChange deleteMany
+   */
+  export type GrantChangeDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantChanges to delete
+     */
+    where?: GrantChangeWhereInput
+    /**
+     * Limit how many GrantChanges to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantChange without action
+   */
+  export type GrantChangeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantChange
+     */
+    select?: GrantChangeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantChange
+     */
+    omit?: GrantChangeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantChangeInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -12143,6 +14829,12 @@ export namespace Prisma {
     source: 'source',
     agencyCode: 'agencyCode',
     cfdaList: 'cfdaList',
+    sourceRecordId: 'sourceRecordId',
+    sourceKey: 'sourceKey',
+    contentHash: 'contentHash',
+    lastSeenAt: 'lastSeenAt',
+    status: 'status',
+    closedAt: 'closedAt',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
@@ -12244,6 +14936,39 @@ export namespace Prisma {
   };
 
   export type InvitationScalarFieldEnum = (typeof InvitationScalarFieldEnum)[keyof typeof InvitationScalarFieldEnum]
+
+
+  export const GrantSyncRunScalarFieldEnum: {
+    id: 'id',
+    source: 'source',
+    startedAt: 'startedAt',
+    finishedAt: 'finishedAt',
+    status: 'status',
+    recordsFetched: 'recordsFetched',
+    createdCount: 'createdCount',
+    updatedCount: 'updatedCount',
+    unchangedCount: 'unchangedCount',
+    closedCount: 'closedCount',
+    reopenedCount: 'reopenedCount',
+    errorsJson: 'errorsJson',
+    schemaJson: 'schemaJson'
+  };
+
+  export type GrantSyncRunScalarFieldEnum = (typeof GrantSyncRunScalarFieldEnum)[keyof typeof GrantSyncRunScalarFieldEnum]
+
+
+  export const GrantChangeScalarFieldEnum: {
+    id: 'id',
+    grantId: 'grantId',
+    runId: 'runId',
+    changeType: 'changeType',
+    oldHash: 'oldHash',
+    newHash: 'newHash',
+    diffJson: 'diffJson',
+    observedAt: 'observedAt'
+  };
+
+  export type GrantChangeScalarFieldEnum = (typeof GrantChangeScalarFieldEnum)[keyof typeof GrantChangeScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -12408,6 +15133,20 @@ export namespace Prisma {
    * Reference to a field of type 'QueryMode'
    */
   export type EnumQueryModeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'QueryMode'>
+    
+
+
+  /**
+   * Reference to a field of type 'GrantStatus'
+   */
+  export type EnumGrantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'GrantStatus[]'
+   */
+  export type ListEnumGrantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantStatus[]'>
     
 
 
@@ -12592,9 +15331,16 @@ export namespace Prisma {
     source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableFilter<"Grant"> | string | null
     cfdaList?: JsonNullableFilter<"Grant">
+    sourceRecordId?: StringNullableFilter<"Grant"> | string | null
+    sourceKey?: StringNullableFilter<"Grant"> | string | null
+    contentHash?: StringNullableFilter<"Grant"> | string | null
+    lastSeenAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
+    status?: EnumGrantStatusFilter<"Grant"> | $Enums.GrantStatus
+    closedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
+    changes?: GrantChangeListRelationFilter
   }
 
   export type GrantOrderByWithRelationInput = {
@@ -12623,20 +15369,29 @@ export namespace Prisma {
     source?: SortOrder
     agencyCode?: SortOrderInput | SortOrder
     cfdaList?: SortOrderInput | SortOrder
+    sourceRecordId?: SortOrderInput | SortOrder
+    sourceKey?: SortOrderInput | SortOrder
+    contentHash?: SortOrderInput | SortOrder
+    lastSeenAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     details?: GrantDetailOrderByWithRelationInput
+    changes?: GrantChangeOrderByRelationAggregateInput
   }
 
   export type GrantWhereUniqueInput = Prisma.AtLeast<{
     id?: string
-    number?: string
-    portalId_source?: GrantPortalIdSourceCompoundUniqueInput
+    source_number?: GrantSourceNumberCompoundUniqueInput
+    source_sourceRecordId?: GrantSourceSourceRecordIdCompoundUniqueInput
+    source_sourceKey?: GrantSourceSourceKeyCompoundUniqueInput
     AND?: GrantWhereInput | GrantWhereInput[]
     OR?: GrantWhereInput[]
     NOT?: GrantWhereInput | GrantWhereInput[]
     url?: StringFilter<"Grant"> | string
     title?: StringFilter<"Grant"> | string
+    number?: StringNullableFilter<"Grant"> | string | null
     deadline?: DateTimeNullableFilter<"Grant"> | Date | string | null
     deadlineType?: EnumGrantDeadlineTypeNullableFilter<"Grant"> | $Enums.GrantDeadlineType | null
     openDate?: DateTimeNullableFilter<"Grant"> | Date | string | null
@@ -12658,10 +15413,17 @@ export namespace Prisma {
     source?: EnumGrantSourceFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableFilter<"Grant"> | string | null
     cfdaList?: JsonNullableFilter<"Grant">
+    sourceRecordId?: StringNullableFilter<"Grant"> | string | null
+    sourceKey?: StringNullableFilter<"Grant"> | string | null
+    contentHash?: StringNullableFilter<"Grant"> | string | null
+    lastSeenAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
+    status?: EnumGrantStatusFilter<"Grant"> | $Enums.GrantStatus
+    closedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
-  }, "id" | "number" | "portalId_source">
+    changes?: GrantChangeListRelationFilter
+  }, "id" | "source_number" | "source_sourceRecordId" | "source_sourceKey">
 
   export type GrantOrderByWithAggregationInput = {
     id?: SortOrder
@@ -12689,6 +15451,12 @@ export namespace Prisma {
     source?: SortOrder
     agencyCode?: SortOrderInput | SortOrder
     cfdaList?: SortOrderInput | SortOrder
+    sourceRecordId?: SortOrderInput | SortOrder
+    sourceKey?: SortOrderInput | SortOrder
+    contentHash?: SortOrderInput | SortOrder
+    lastSeenAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: GrantCountOrderByAggregateInput
@@ -12727,6 +15495,12 @@ export namespace Prisma {
     source?: EnumGrantSourceWithAggregatesFilter<"Grant"> | $Enums.GrantSource
     agencyCode?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     cfdaList?: JsonNullableWithAggregatesFilter<"Grant">
+    sourceRecordId?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    sourceKey?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    contentHash?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
+    status?: EnumGrantStatusWithAggregatesFilter<"Grant"> | $Enums.GrantStatus
+    closedAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Grant"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Grant"> | Date | string
   }
@@ -13222,6 +15996,176 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"Invitation"> | Date | string
   }
 
+  export type GrantSyncRunWhereInput = {
+    AND?: GrantSyncRunWhereInput | GrantSyncRunWhereInput[]
+    OR?: GrantSyncRunWhereInput[]
+    NOT?: GrantSyncRunWhereInput | GrantSyncRunWhereInput[]
+    id?: StringFilter<"GrantSyncRun"> | string
+    source?: EnumGrantSourceFilter<"GrantSyncRun"> | $Enums.GrantSource
+    startedAt?: DateTimeFilter<"GrantSyncRun"> | Date | string
+    finishedAt?: DateTimeNullableFilter<"GrantSyncRun"> | Date | string | null
+    status?: EnumImportStatusFilter<"GrantSyncRun"> | $Enums.ImportStatus
+    recordsFetched?: IntFilter<"GrantSyncRun"> | number
+    createdCount?: IntFilter<"GrantSyncRun"> | number
+    updatedCount?: IntFilter<"GrantSyncRun"> | number
+    unchangedCount?: IntFilter<"GrantSyncRun"> | number
+    closedCount?: IntFilter<"GrantSyncRun"> | number
+    reopenedCount?: IntFilter<"GrantSyncRun"> | number
+    errorsJson?: JsonNullableFilter<"GrantSyncRun">
+    schemaJson?: JsonNullableFilter<"GrantSyncRun">
+    changes?: GrantChangeListRelationFilter
+  }
+
+  export type GrantSyncRunOrderByWithRelationInput = {
+    id?: SortOrder
+    source?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+    errorsJson?: SortOrderInput | SortOrder
+    schemaJson?: SortOrderInput | SortOrder
+    changes?: GrantChangeOrderByRelationAggregateInput
+  }
+
+  export type GrantSyncRunWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GrantSyncRunWhereInput | GrantSyncRunWhereInput[]
+    OR?: GrantSyncRunWhereInput[]
+    NOT?: GrantSyncRunWhereInput | GrantSyncRunWhereInput[]
+    source?: EnumGrantSourceFilter<"GrantSyncRun"> | $Enums.GrantSource
+    startedAt?: DateTimeFilter<"GrantSyncRun"> | Date | string
+    finishedAt?: DateTimeNullableFilter<"GrantSyncRun"> | Date | string | null
+    status?: EnumImportStatusFilter<"GrantSyncRun"> | $Enums.ImportStatus
+    recordsFetched?: IntFilter<"GrantSyncRun"> | number
+    createdCount?: IntFilter<"GrantSyncRun"> | number
+    updatedCount?: IntFilter<"GrantSyncRun"> | number
+    unchangedCount?: IntFilter<"GrantSyncRun"> | number
+    closedCount?: IntFilter<"GrantSyncRun"> | number
+    reopenedCount?: IntFilter<"GrantSyncRun"> | number
+    errorsJson?: JsonNullableFilter<"GrantSyncRun">
+    schemaJson?: JsonNullableFilter<"GrantSyncRun">
+    changes?: GrantChangeListRelationFilter
+  }, "id">
+
+  export type GrantSyncRunOrderByWithAggregationInput = {
+    id?: SortOrder
+    source?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrderInput | SortOrder
+    status?: SortOrder
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+    errorsJson?: SortOrderInput | SortOrder
+    schemaJson?: SortOrderInput | SortOrder
+    _count?: GrantSyncRunCountOrderByAggregateInput
+    _avg?: GrantSyncRunAvgOrderByAggregateInput
+    _max?: GrantSyncRunMaxOrderByAggregateInput
+    _min?: GrantSyncRunMinOrderByAggregateInput
+    _sum?: GrantSyncRunSumOrderByAggregateInput
+  }
+
+  export type GrantSyncRunScalarWhereWithAggregatesInput = {
+    AND?: GrantSyncRunScalarWhereWithAggregatesInput | GrantSyncRunScalarWhereWithAggregatesInput[]
+    OR?: GrantSyncRunScalarWhereWithAggregatesInput[]
+    NOT?: GrantSyncRunScalarWhereWithAggregatesInput | GrantSyncRunScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GrantSyncRun"> | string
+    source?: EnumGrantSourceWithAggregatesFilter<"GrantSyncRun"> | $Enums.GrantSource
+    startedAt?: DateTimeWithAggregatesFilter<"GrantSyncRun"> | Date | string
+    finishedAt?: DateTimeNullableWithAggregatesFilter<"GrantSyncRun"> | Date | string | null
+    status?: EnumImportStatusWithAggregatesFilter<"GrantSyncRun"> | $Enums.ImportStatus
+    recordsFetched?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    createdCount?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    updatedCount?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    unchangedCount?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    closedCount?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    reopenedCount?: IntWithAggregatesFilter<"GrantSyncRun"> | number
+    errorsJson?: JsonNullableWithAggregatesFilter<"GrantSyncRun">
+    schemaJson?: JsonNullableWithAggregatesFilter<"GrantSyncRun">
+  }
+
+  export type GrantChangeWhereInput = {
+    AND?: GrantChangeWhereInput | GrantChangeWhereInput[]
+    OR?: GrantChangeWhereInput[]
+    NOT?: GrantChangeWhereInput | GrantChangeWhereInput[]
+    id?: StringFilter<"GrantChange"> | string
+    grantId?: StringFilter<"GrantChange"> | string
+    runId?: StringFilter<"GrantChange"> | string
+    changeType?: StringFilter<"GrantChange"> | string
+    oldHash?: StringNullableFilter<"GrantChange"> | string | null
+    newHash?: StringNullableFilter<"GrantChange"> | string | null
+    diffJson?: JsonNullableFilter<"GrantChange">
+    observedAt?: DateTimeFilter<"GrantChange"> | Date | string
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+    run?: XOR<GrantSyncRunScalarRelationFilter, GrantSyncRunWhereInput>
+  }
+
+  export type GrantChangeOrderByWithRelationInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    runId?: SortOrder
+    changeType?: SortOrder
+    oldHash?: SortOrderInput | SortOrder
+    newHash?: SortOrderInput | SortOrder
+    diffJson?: SortOrderInput | SortOrder
+    observedAt?: SortOrder
+    grant?: GrantOrderByWithRelationInput
+    run?: GrantSyncRunOrderByWithRelationInput
+  }
+
+  export type GrantChangeWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: GrantChangeWhereInput | GrantChangeWhereInput[]
+    OR?: GrantChangeWhereInput[]
+    NOT?: GrantChangeWhereInput | GrantChangeWhereInput[]
+    grantId?: StringFilter<"GrantChange"> | string
+    runId?: StringFilter<"GrantChange"> | string
+    changeType?: StringFilter<"GrantChange"> | string
+    oldHash?: StringNullableFilter<"GrantChange"> | string | null
+    newHash?: StringNullableFilter<"GrantChange"> | string | null
+    diffJson?: JsonNullableFilter<"GrantChange">
+    observedAt?: DateTimeFilter<"GrantChange"> | Date | string
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+    run?: XOR<GrantSyncRunScalarRelationFilter, GrantSyncRunWhereInput>
+  }, "id">
+
+  export type GrantChangeOrderByWithAggregationInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    runId?: SortOrder
+    changeType?: SortOrder
+    oldHash?: SortOrderInput | SortOrder
+    newHash?: SortOrderInput | SortOrder
+    diffJson?: SortOrderInput | SortOrder
+    observedAt?: SortOrder
+    _count?: GrantChangeCountOrderByAggregateInput
+    _max?: GrantChangeMaxOrderByAggregateInput
+    _min?: GrantChangeMinOrderByAggregateInput
+  }
+
+  export type GrantChangeScalarWhereWithAggregatesInput = {
+    AND?: GrantChangeScalarWhereWithAggregatesInput | GrantChangeScalarWhereWithAggregatesInput[]
+    OR?: GrantChangeScalarWhereWithAggregatesInput[]
+    NOT?: GrantChangeScalarWhereWithAggregatesInput | GrantChangeScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GrantChange"> | string
+    grantId?: StringWithAggregatesFilter<"GrantChange"> | string
+    runId?: StringWithAggregatesFilter<"GrantChange"> | string
+    changeType?: StringWithAggregatesFilter<"GrantChange"> | string
+    oldHash?: StringNullableWithAggregatesFilter<"GrantChange"> | string | null
+    newHash?: StringNullableWithAggregatesFilter<"GrantChange"> | string | null
+    diffJson?: JsonNullableWithAggregatesFilter<"GrantChange">
+    observedAt?: DateTimeWithAggregatesFilter<"GrantChange"> | Date | string
+  }
+
   export type AccountCreateInput = {
     id?: string
     type: string
@@ -13352,9 +16296,16 @@ export namespace Prisma {
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
+    changes?: GrantChangeCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateInput = {
@@ -13383,9 +16334,16 @@ export namespace Prisma {
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUpdateInput = {
@@ -13414,9 +16372,16 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    changes?: GrantChangeUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateInput = {
@@ -13445,9 +16410,16 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+    changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantCreateManyInput = {
@@ -13476,6 +16448,12 @@ export namespace Prisma {
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -13506,6 +16484,12 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -13536,6 +16520,12 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -14080,6 +17070,197 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantSyncRunCreateInput = {
+    id?: string
+    source: $Enums.GrantSource
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    status?: $Enums.ImportStatus
+    recordsFetched?: number
+    createdCount?: number
+    updatedCount?: number
+    unchangedCount?: number
+    closedCount?: number
+    reopenedCount?: number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+    changes?: GrantChangeCreateNestedManyWithoutRunInput
+  }
+
+  export type GrantSyncRunUncheckedCreateInput = {
+    id?: string
+    source: $Enums.GrantSource
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    status?: $Enums.ImportStatus
+    recordsFetched?: number
+    createdCount?: number
+    updatedCount?: number
+    unchangedCount?: number
+    closedCount?: number
+    reopenedCount?: number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutRunInput
+  }
+
+  export type GrantSyncRunUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+    changes?: GrantChangeUpdateManyWithoutRunNestedInput
+  }
+
+  export type GrantSyncRunUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+    changes?: GrantChangeUncheckedUpdateManyWithoutRunNestedInput
+  }
+
+  export type GrantSyncRunCreateManyInput = {
+    id?: string
+    source: $Enums.GrantSource
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    status?: $Enums.ImportStatus
+    recordsFetched?: number
+    createdCount?: number
+    updatedCount?: number
+    unchangedCount?: number
+    closedCount?: number
+    reopenedCount?: number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantSyncRunUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantSyncRunUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantChangeCreateInput = {
+    id?: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+    grant: GrantCreateNestedOneWithoutChangesInput
+    run: GrantSyncRunCreateNestedOneWithoutChangesInput
+  }
+
+  export type GrantChangeUncheckedCreateInput = {
+    id?: string
+    grantId: string
+    runId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grant?: GrantUpdateOneRequiredWithoutChangesNestedInput
+    run?: GrantSyncRunUpdateOneRequiredWithoutChangesNestedInput
+  }
+
+  export type GrantChangeUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantChangeCreateManyInput = {
+    id?: string
+    grantId: string
+    runId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantChangeUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -14307,6 +17488,13 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type EnumGrantStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantStatusFilter<$PrismaModel> | $Enums.GrantStatus
+  }
+
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -14323,9 +17511,29 @@ export namespace Prisma {
     isNot?: GrantDetailWhereInput | null
   }
 
-  export type GrantPortalIdSourceCompoundUniqueInput = {
-    portalId: number
+  export type GrantChangeListRelationFilter = {
+    every?: GrantChangeWhereInput
+    some?: GrantChangeWhereInput
+    none?: GrantChangeWhereInput
+  }
+
+  export type GrantChangeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GrantSourceNumberCompoundUniqueInput = {
     source: $Enums.GrantSource
+    number: string
+  }
+
+  export type GrantSourceSourceRecordIdCompoundUniqueInput = {
+    source: $Enums.GrantSource
+    sourceRecordId: string
+  }
+
+  export type GrantSourceSourceKeyCompoundUniqueInput = {
+    source: $Enums.GrantSource
+    sourceKey: string
   }
 
   export type GrantCountOrderByAggregateInput = {
@@ -14354,6 +17562,12 @@ export namespace Prisma {
     source?: SortOrder
     agencyCode?: SortOrder
     cfdaList?: SortOrder
+    sourceRecordId?: SortOrder
+    sourceKey?: SortOrder
+    contentHash?: SortOrder
+    lastSeenAt?: SortOrder
+    status?: SortOrder
+    closedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14390,6 +17604,12 @@ export namespace Prisma {
     eligibleGeographies?: SortOrder
     source?: SortOrder
     agencyCode?: SortOrder
+    sourceRecordId?: SortOrder
+    sourceKey?: SortOrder
+    contentHash?: SortOrder
+    lastSeenAt?: SortOrder
+    status?: SortOrder
+    closedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14419,6 +17639,12 @@ export namespace Prisma {
     eligibleGeographies?: SortOrder
     source?: SortOrder
     agencyCode?: SortOrder
+    sourceRecordId?: SortOrder
+    sourceKey?: SortOrder
+    contentHash?: SortOrder
+    lastSeenAt?: SortOrder
+    status?: SortOrder
+    closedAt?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
@@ -14514,6 +17740,16 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type EnumGrantStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantStatusWithAggregatesFilter<$PrismaModel> | $Enums.GrantStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantStatusFilter<$PrismaModel>
+    _max?: NestedEnumGrantStatusFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -14932,6 +18168,131 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
+  export type GrantSyncRunCountOrderByAggregateInput = {
+    id?: SortOrder
+    source?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+    status?: SortOrder
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+    errorsJson?: SortOrder
+    schemaJson?: SortOrder
+  }
+
+  export type GrantSyncRunAvgOrderByAggregateInput = {
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+  }
+
+  export type GrantSyncRunMaxOrderByAggregateInput = {
+    id?: SortOrder
+    source?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+    status?: SortOrder
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+  }
+
+  export type GrantSyncRunMinOrderByAggregateInput = {
+    id?: SortOrder
+    source?: SortOrder
+    startedAt?: SortOrder
+    finishedAt?: SortOrder
+    status?: SortOrder
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+  }
+
+  export type GrantSyncRunSumOrderByAggregateInput = {
+    recordsFetched?: SortOrder
+    createdCount?: SortOrder
+    updatedCount?: SortOrder
+    unchangedCount?: SortOrder
+    closedCount?: SortOrder
+    reopenedCount?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type GrantSyncRunScalarRelationFilter = {
+    is?: GrantSyncRunWhereInput
+    isNot?: GrantSyncRunWhereInput
+  }
+
+  export type GrantChangeCountOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    runId?: SortOrder
+    changeType?: SortOrder
+    oldHash?: SortOrder
+    newHash?: SortOrder
+    diffJson?: SortOrder
+    observedAt?: SortOrder
+  }
+
+  export type GrantChangeMaxOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    runId?: SortOrder
+    changeType?: SortOrder
+    oldHash?: SortOrder
+    newHash?: SortOrder
+    observedAt?: SortOrder
+  }
+
+  export type GrantChangeMinOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    runId?: SortOrder
+    changeType?: SortOrder
+    oldHash?: SortOrder
+    newHash?: SortOrder
+    observedAt?: SortOrder
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -14968,10 +18329,24 @@ export namespace Prisma {
     connect?: GrantDetailWhereUniqueInput
   }
 
+  export type GrantChangeCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantChangeCreateManyGrantInputEnvelope
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+  }
+
   export type GrantDetailUncheckedCreateNestedOneWithoutGrantInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
     connect?: GrantDetailWhereUniqueInput
+  }
+
+  export type GrantChangeUncheckedCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantChangeCreateManyGrantInputEnvelope
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -14998,6 +18373,10 @@ export namespace Prisma {
     set?: $Enums.GrantSource
   }
 
+  export type EnumGrantStatusFieldUpdateOperationsInput = {
+    set?: $Enums.GrantStatus
+  }
+
   export type DateTimeFieldUpdateOperationsInput = {
     set?: Date | string
   }
@@ -15012,6 +18391,20 @@ export namespace Prisma {
     update?: XOR<XOR<GrantDetailUpdateToOneWithWhereWithoutGrantInput, GrantDetailUpdateWithoutGrantInput>, GrantDetailUncheckedUpdateWithoutGrantInput>
   }
 
+  export type GrantChangeUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantChangeUpsertWithWhereUniqueWithoutGrantInput | GrantChangeUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantChangeCreateManyGrantInputEnvelope
+    set?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    disconnect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    delete?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    update?: GrantChangeUpdateWithWhereUniqueWithoutGrantInput | GrantChangeUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantChangeUpdateManyWithWhereWithoutGrantInput | GrantChangeUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+  }
+
   export type GrantDetailUncheckedUpdateOneWithoutGrantNestedInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
@@ -15020,6 +18413,20 @@ export namespace Prisma {
     delete?: GrantDetailWhereInput | boolean
     connect?: GrantDetailWhereUniqueInput
     update?: XOR<XOR<GrantDetailUpdateToOneWithWhereWithoutGrantInput, GrantDetailUpdateWithoutGrantInput>, GrantDetailUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantChangeUncheckedUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantChangeUpsertWithWhereUniqueWithoutGrantInput | GrantChangeUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantChangeCreateManyGrantInputEnvelope
+    set?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    disconnect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    delete?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    update?: GrantChangeUpdateWithWhereUniqueWithoutGrantInput | GrantChangeUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantChangeUpdateManyWithWhereWithoutGrantInput | GrantChangeUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
   }
 
   export type GrantCreateNestedOneWithoutDetailsInput = {
@@ -15325,6 +18732,84 @@ export namespace Prisma {
     update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutInvitationsInput, OrganizationUpdateWithoutInvitationsInput>, OrganizationUncheckedUpdateWithoutInvitationsInput>
   }
 
+  export type GrantChangeCreateNestedManyWithoutRunInput = {
+    create?: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput> | GrantChangeCreateWithoutRunInput[] | GrantChangeUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutRunInput | GrantChangeCreateOrConnectWithoutRunInput[]
+    createMany?: GrantChangeCreateManyRunInputEnvelope
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+  }
+
+  export type GrantChangeUncheckedCreateNestedManyWithoutRunInput = {
+    create?: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput> | GrantChangeCreateWithoutRunInput[] | GrantChangeUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutRunInput | GrantChangeCreateOrConnectWithoutRunInput[]
+    createMany?: GrantChangeCreateManyRunInputEnvelope
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type GrantChangeUpdateManyWithoutRunNestedInput = {
+    create?: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput> | GrantChangeCreateWithoutRunInput[] | GrantChangeUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutRunInput | GrantChangeCreateOrConnectWithoutRunInput[]
+    upsert?: GrantChangeUpsertWithWhereUniqueWithoutRunInput | GrantChangeUpsertWithWhereUniqueWithoutRunInput[]
+    createMany?: GrantChangeCreateManyRunInputEnvelope
+    set?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    disconnect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    delete?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    update?: GrantChangeUpdateWithWhereUniqueWithoutRunInput | GrantChangeUpdateWithWhereUniqueWithoutRunInput[]
+    updateMany?: GrantChangeUpdateManyWithWhereWithoutRunInput | GrantChangeUpdateManyWithWhereWithoutRunInput[]
+    deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+  }
+
+  export type GrantChangeUncheckedUpdateManyWithoutRunNestedInput = {
+    create?: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput> | GrantChangeCreateWithoutRunInput[] | GrantChangeUncheckedCreateWithoutRunInput[]
+    connectOrCreate?: GrantChangeCreateOrConnectWithoutRunInput | GrantChangeCreateOrConnectWithoutRunInput[]
+    upsert?: GrantChangeUpsertWithWhereUniqueWithoutRunInput | GrantChangeUpsertWithWhereUniqueWithoutRunInput[]
+    createMany?: GrantChangeCreateManyRunInputEnvelope
+    set?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    disconnect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    delete?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+    update?: GrantChangeUpdateWithWhereUniqueWithoutRunInput | GrantChangeUpdateWithWhereUniqueWithoutRunInput[]
+    updateMany?: GrantChangeUpdateManyWithWhereWithoutRunInput | GrantChangeUpdateManyWithWhereWithoutRunInput[]
+    deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+  }
+
+  export type GrantCreateNestedOneWithoutChangesInput = {
+    create?: XOR<GrantCreateWithoutChangesInput, GrantUncheckedCreateWithoutChangesInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutChangesInput
+    connect?: GrantWhereUniqueInput
+  }
+
+  export type GrantSyncRunCreateNestedOneWithoutChangesInput = {
+    create?: XOR<GrantSyncRunCreateWithoutChangesInput, GrantSyncRunUncheckedCreateWithoutChangesInput>
+    connectOrCreate?: GrantSyncRunCreateOrConnectWithoutChangesInput
+    connect?: GrantSyncRunWhereUniqueInput
+  }
+
+  export type GrantUpdateOneRequiredWithoutChangesNestedInput = {
+    create?: XOR<GrantCreateWithoutChangesInput, GrantUncheckedCreateWithoutChangesInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutChangesInput
+    upsert?: GrantUpsertWithoutChangesInput
+    connect?: GrantWhereUniqueInput
+    update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutChangesInput, GrantUpdateWithoutChangesInput>, GrantUncheckedUpdateWithoutChangesInput>
+  }
+
+  export type GrantSyncRunUpdateOneRequiredWithoutChangesNestedInput = {
+    create?: XOR<GrantSyncRunCreateWithoutChangesInput, GrantSyncRunUncheckedCreateWithoutChangesInput>
+    connectOrCreate?: GrantSyncRunCreateOrConnectWithoutChangesInput
+    upsert?: GrantSyncRunUpsertWithoutChangesInput
+    connect?: GrantSyncRunWhereUniqueInput
+    update?: XOR<XOR<GrantSyncRunUpdateToOneWithWhereWithoutChangesInput, GrantSyncRunUpdateWithoutChangesInput>, GrantSyncRunUncheckedUpdateWithoutChangesInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -15479,6 +18964,13 @@ export namespace Prisma {
     not?: NestedEnumGrantSourceFilter<$PrismaModel> | $Enums.GrantSource
   }
 
+  export type NestedEnumGrantStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantStatusFilter<$PrismaModel> | $Enums.GrantStatus
+  }
+
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15573,6 +19065,16 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedEnumGrantStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumGrantStatusWithAggregatesFilter<$PrismaModel> | $Enums.GrantStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumGrantStatusFilter<$PrismaModel>
+    _max?: NestedEnumGrantStatusFilter<$PrismaModel>
+  }
+
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
@@ -15659,6 +19161,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvitationStatusFilter<$PrismaModel>
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -15772,6 +19301,36 @@ export namespace Prisma {
     create: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
   }
 
+  export type GrantChangeCreateWithoutGrantInput = {
+    id?: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+    run: GrantSyncRunCreateNestedOneWithoutChangesInput
+  }
+
+  export type GrantChangeUncheckedCreateWithoutGrantInput = {
+    id?: string
+    runId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeCreateOrConnectWithoutGrantInput = {
+    where: GrantChangeWhereUniqueInput
+    create: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantChangeCreateManyGrantInputEnvelope = {
+    data: GrantChangeCreateManyGrantInput | GrantChangeCreateManyGrantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type GrantDetailUpsertWithoutGrantInput = {
     update: XOR<GrantDetailUpdateWithoutGrantInput, GrantDetailUncheckedUpdateWithoutGrantInput>
     create: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
@@ -15805,6 +19364,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantChangeUpsertWithWhereUniqueWithoutGrantInput = {
+    where: GrantChangeWhereUniqueInput
+    update: XOR<GrantChangeUpdateWithoutGrantInput, GrantChangeUncheckedUpdateWithoutGrantInput>
+    create: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantChangeUpdateWithWhereUniqueWithoutGrantInput = {
+    where: GrantChangeWhereUniqueInput
+    data: XOR<GrantChangeUpdateWithoutGrantInput, GrantChangeUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantChangeUpdateManyWithWhereWithoutGrantInput = {
+    where: GrantChangeScalarWhereInput
+    data: XOR<GrantChangeUpdateManyMutationInput, GrantChangeUncheckedUpdateManyWithoutGrantInput>
+  }
+
+  export type GrantChangeScalarWhereInput = {
+    AND?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+    OR?: GrantChangeScalarWhereInput[]
+    NOT?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+    id?: StringFilter<"GrantChange"> | string
+    grantId?: StringFilter<"GrantChange"> | string
+    runId?: StringFilter<"GrantChange"> | string
+    changeType?: StringFilter<"GrantChange"> | string
+    oldHash?: StringNullableFilter<"GrantChange"> | string | null
+    newHash?: StringNullableFilter<"GrantChange"> | string | null
+    diffJson?: JsonNullableFilter<"GrantChange">
+    observedAt?: DateTimeFilter<"GrantChange"> | Date | string
+  }
+
   export type GrantCreateWithoutDetailsInput = {
     id?: string
     url: string
@@ -15831,8 +19420,15 @@ export namespace Prisma {
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    changes?: GrantChangeCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutDetailsInput = {
@@ -15861,8 +19457,15 @@ export namespace Prisma {
     source?: $Enums.GrantSource
     agencyCode?: string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutDetailsInput = {
@@ -15907,8 +19510,15 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    changes?: GrantChangeUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutDetailsInput = {
@@ -15937,8 +19547,15 @@ export namespace Prisma {
     source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
     agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
     cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type UserCreateWithoutGrantImportRunsInput = {
@@ -16581,6 +20198,336 @@ export namespace Prisma {
     users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
+  export type GrantChangeCreateWithoutRunInput = {
+    id?: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+    grant: GrantCreateNestedOneWithoutChangesInput
+  }
+
+  export type GrantChangeUncheckedCreateWithoutRunInput = {
+    id?: string
+    grantId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeCreateOrConnectWithoutRunInput = {
+    where: GrantChangeWhereUniqueInput
+    create: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput>
+  }
+
+  export type GrantChangeCreateManyRunInputEnvelope = {
+    data: GrantChangeCreateManyRunInput | GrantChangeCreateManyRunInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GrantChangeUpsertWithWhereUniqueWithoutRunInput = {
+    where: GrantChangeWhereUniqueInput
+    update: XOR<GrantChangeUpdateWithoutRunInput, GrantChangeUncheckedUpdateWithoutRunInput>
+    create: XOR<GrantChangeCreateWithoutRunInput, GrantChangeUncheckedCreateWithoutRunInput>
+  }
+
+  export type GrantChangeUpdateWithWhereUniqueWithoutRunInput = {
+    where: GrantChangeWhereUniqueInput
+    data: XOR<GrantChangeUpdateWithoutRunInput, GrantChangeUncheckedUpdateWithoutRunInput>
+  }
+
+  export type GrantChangeUpdateManyWithWhereWithoutRunInput = {
+    where: GrantChangeScalarWhereInput
+    data: XOR<GrantChangeUpdateManyMutationInput, GrantChangeUncheckedUpdateManyWithoutRunInput>
+  }
+
+  export type GrantCreateWithoutChangesInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailCreateNestedOneWithoutGrantInput
+  }
+
+  export type GrantUncheckedCreateWithoutChangesInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+  }
+
+  export type GrantCreateOrConnectWithoutChangesInput = {
+    where: GrantWhereUniqueInput
+    create: XOR<GrantCreateWithoutChangesInput, GrantUncheckedCreateWithoutChangesInput>
+  }
+
+  export type GrantSyncRunCreateWithoutChangesInput = {
+    id?: string
+    source: $Enums.GrantSource
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    status?: $Enums.ImportStatus
+    recordsFetched?: number
+    createdCount?: number
+    updatedCount?: number
+    unchangedCount?: number
+    closedCount?: number
+    reopenedCount?: number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantSyncRunUncheckedCreateWithoutChangesInput = {
+    id?: string
+    source: $Enums.GrantSource
+    startedAt?: Date | string
+    finishedAt?: Date | string | null
+    status?: $Enums.ImportStatus
+    recordsFetched?: number
+    createdCount?: number
+    updatedCount?: number
+    unchangedCount?: number
+    closedCount?: number
+    reopenedCount?: number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantSyncRunCreateOrConnectWithoutChangesInput = {
+    where: GrantSyncRunWhereUniqueInput
+    create: XOR<GrantSyncRunCreateWithoutChangesInput, GrantSyncRunUncheckedCreateWithoutChangesInput>
+  }
+
+  export type GrantUpsertWithoutChangesInput = {
+    update: XOR<GrantUpdateWithoutChangesInput, GrantUncheckedUpdateWithoutChangesInput>
+    create: XOR<GrantCreateWithoutChangesInput, GrantUncheckedCreateWithoutChangesInput>
+    where?: GrantWhereInput
+  }
+
+  export type GrantUpdateToOneWithWhereWithoutChangesInput = {
+    where?: GrantWhereInput
+    data: XOR<GrantUpdateWithoutChangesInput, GrantUncheckedUpdateWithoutChangesInput>
+  }
+
+  export type GrantUpdateWithoutChangesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUpdateOneWithoutGrantNestedInput
+  }
+
+  export type GrantUncheckedUpdateWithoutChangesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+  }
+
+  export type GrantSyncRunUpsertWithoutChangesInput = {
+    update: XOR<GrantSyncRunUpdateWithoutChangesInput, GrantSyncRunUncheckedUpdateWithoutChangesInput>
+    create: XOR<GrantSyncRunCreateWithoutChangesInput, GrantSyncRunUncheckedCreateWithoutChangesInput>
+    where?: GrantSyncRunWhereInput
+  }
+
+  export type GrantSyncRunUpdateToOneWithWhereWithoutChangesInput = {
+    where?: GrantSyncRunWhereInput
+    data: XOR<GrantSyncRunUpdateWithoutChangesInput, GrantSyncRunUncheckedUpdateWithoutChangesInput>
+  }
+
+  export type GrantSyncRunUpdateWithoutChangesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantSyncRunUncheckedUpdateWithoutChangesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    startedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    finishedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumImportStatusFieldUpdateOperationsInput | $Enums.ImportStatus
+    recordsFetched?: IntFieldUpdateOperationsInput | number
+    createdCount?: IntFieldUpdateOperationsInput | number
+    updatedCount?: IntFieldUpdateOperationsInput | number
+    unchangedCount?: IntFieldUpdateOperationsInput | number
+    closedCount?: IntFieldUpdateOperationsInput | number
+    reopenedCount?: IntFieldUpdateOperationsInput | number
+    errorsJson?: NullableJsonNullValueInput | InputJsonValue
+    schemaJson?: NullableJsonNullValueInput | InputJsonValue
+  }
+
+  export type GrantChangeCreateManyGrantInput = {
+    id?: string
+    runId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    run?: GrantSyncRunUpdateOneRequiredWithoutChangesNestedInput
+  }
+
+  export type GrantChangeUncheckedUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantChangeUncheckedUpdateManyWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    runId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -16793,6 +20740,46 @@ export namespace Prisma {
     status?: EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantChangeCreateManyRunInput = {
+    id?: string
+    grantId: string
+    changeType: string
+    oldHash?: string | null
+    newHash?: string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: Date | string
+  }
+
+  export type GrantChangeUpdateWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grant?: GrantUpdateOneRequiredWithoutChangesNestedInput
+  }
+
+  export type GrantChangeUncheckedUpdateWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantChangeUncheckedUpdateManyWithoutRunInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    changeType?: StringFieldUpdateOperationsInput | string
+    oldHash?: NullableStringFieldUpdateOperationsInput | string | null
+    newHash?: NullableStringFieldUpdateOperationsInput | string | null
+    diffJson?: NullableJsonNullValueInput | InputJsonValue
+    observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
 

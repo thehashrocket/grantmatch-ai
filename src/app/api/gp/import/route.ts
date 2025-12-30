@@ -1,8 +1,7 @@
 import { db } from "@/lib/db";
+import { grantImportService } from "@/lib/services/GrantImportService";
+import { parseDateFlexible } from "@/lib/utils";
 import { z } from "zod";
-import { parseDateFlexible, parseFundingAmount, toSmartTitleCase } from "@/lib/utils";
-import { $Enums } from "@/prisma/generated/client";
-// import { GrantDeadlineType, GrantOpenDateType } from "@/prisma/generated/client";
 
 // Validation helper functions
 const validationHelpers = {
@@ -117,15 +116,6 @@ const federalGrantSchema = z.object({
 // Combined schema using union
 const schema = z.union([californiaGrantSchema, federalGrantSchema]);
 
-// Helper to map string to enum
-function mapToEnumType(value: string, validTypes: string[]): string {
-  const normalized = value.trim().toUpperCase();
-  if (validTypes.includes(normalized)) return normalized;
-  // Common mappings
-  if (["ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"].includes(normalized)) return normalized;
-  return "UNKNOWN";
-}
-
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -141,9 +131,37 @@ export async function POST(req: Request) {
 
     // 2. create the grant based on source
     if (parsed.output.source === 'CALIFORNIA') {
-      await handleCaliforniaGrant(parsed as z.infer<typeof californiaGrantSchema>);
+      await grantImportService.upsertCaliforniaGrant({
+        url: parsed.output.url,
+        title: parsed.output.title,
+        deadline: parsed.output.deadline,
+        openDate: parsed.output.open_date,
+        stateAgency: parsed.output.state_agency,
+        matchFunding: parsed.output.match_funding,
+        estimatedTotalFunding: parsed.output.estimated_total_funding,
+        estimatedAwardAmounts: parsed.output.estimated_award_amounts,
+        fundsDisbursement: parsed.output.funds_disbursement,
+        currentAsOf: parsed.output.current_as_of,
+        grantor: parsed.output.grantor,
+        portalId: parsed.output.portal_id,
+        opportunityType: parsed.output.opportunity_type,
+        purpose: parsed.output.purpose,
+        eligibleApplicants: parsed.output.eligible_applicants,
+        eligibleGeographies: parsed.output.eligible_geographies,
+      });
     } else {
-      await handleFederalGrant(parsed as z.infer<typeof federalGrantSchema>);
+      await grantImportService.upsertFederalGrant({
+        url: parsed.output.url,
+        title: parsed.output.title,
+        number: parsed.output.number,
+        openDate: parsed.output.openDate,
+        closeDate: parsed.output.closeDate,
+        grantor: parsed.output.grantor,
+        agencyCode: parsed.output.agencyCode,
+        awardFloor: parsed.output.awardFloor,
+        awardCeiling: parsed.output.awardCeiling,
+        cfdaList: parsed.output.cfdaList,
+      });
     }
 
     return new Response(JSON.stringify({ message: 'Grant imported successfully' }), { status: 200 });
@@ -154,88 +172,4 @@ export async function POST(req: Request) {
     }
     return new Response(JSON.stringify({ error: 'Invalid request' }), { status: 400 });
   }
-}
-
-async function handleCaliforniaGrant(parsed: z.infer<typeof californiaGrantSchema>) {
-  const deadlineDate = parseDateFlexible(parsed.output.deadline);
-  let deadlineType: $Enums.GrantDeadlineType | null = null;
-  if (deadlineDate) {
-    deadlineType = $Enums.GrantDeadlineType.FIXED;
-  } else {
-    const type = mapToEnumType(parsed.output.deadline, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
-    deadlineType = $Enums.GrantDeadlineType[type as keyof typeof $Enums.GrantDeadlineType] ?? $Enums.GrantDeadlineType.UNKNOWN;
-  }
-
-  const openDateDate = parseDateFlexible(parsed.output.open_date);
-  let openDateType: $Enums.GrantOpenDateType | null = null;
-  if (openDateDate) {
-    openDateType = $Enums.GrantOpenDateType.FIXED;
-  } else {
-    const type = mapToEnumType(parsed.output.open_date, ["FIXED", "ONGOING", "ROLLING", "TBD", "CLOSED", "UNKNOWN"]);
-    openDateType = $Enums.GrantOpenDateType[type as keyof typeof $Enums.GrantOpenDateType] ?? $Enums.GrantOpenDateType.UNKNOWN;
-  }
-
-  const currentAsOfDate = parseDateFlexible(parsed.output.current_as_of);
-  if (!currentAsOfDate) {
-    throw new Error('Invalid date format for current_as_of.');
-  }
-
-  const grantData = {
-    url: parsed.output.url,
-    title: toSmartTitleCase(parsed.output.title),
-    deadline: deadlineDate ?? null,
-    deadlineType,
-    openDate: openDateDate ?? null,
-    openDateType,
-    stateAgency: parsed.output.state_agency,
-    matchFunding: parsed.output.match_funding,
-    estimatedTotalFunding: BigInt(parseFundingAmount(parsed.output.estimated_total_funding)),
-    estimatedAwardAmounts: parsed.output.estimated_award_amounts,
-    fundsDisbursment: parsed.output.funds_disbursement,
-    currentAsOf: currentAsOfDate,
-    grantor: parsed.output.grantor,
-    portalId: parseInt(parsed.output.portal_id),
-    opportunityType: parsed.output.opportunity_type,
-    purpose: parsed.output.purpose,
-    eligibleApplicants: parsed.output.eligible_applicants.join(', '),
-    eligibleGeographies: parsed.output.eligible_geographies,
-    source: $Enums.GrantSource.CALIFORNIA,
-  };
-
-  await db.grant.upsert({
-    where: { 
-      portalId_source: {
-        portalId: grantData.portalId,
-        source: grantData.source
-      }
-    },
-    create: grantData,
-    update: grantData,
-  });
-}
-
-async function handleFederalGrant(parsed: z.infer<typeof federalGrantSchema>) {
-  const openDate = parseDateFlexible(parsed.output.openDate);
-  const closeDate = parseDateFlexible(parsed.output.closeDate);
-
-  const grantData = {
-    url: parsed.output.url,
-    title: toSmartTitleCase(parsed.output.title),
-    number: parsed.output.number,
-    openDate: openDate ?? null,
-    deadline: closeDate ?? null,
-    grantor: parsed.output.grantor,
-    agencyCode: parsed.output.agencyCode,
-    awardFloor: BigInt(parseFundingAmount(parsed.output.awardFloor)),
-    awardCeiling: BigInt(parseFundingAmount(parsed.output.awardCeiling)),
-    cfdaList: parsed.output.cfdaList,
-    source: $Enums.GrantSource.FEDERAL,
-  };
-
-  // For Federal grants, we'll use the number as the unique identifier
-  await db.grant.upsert({
-    where: { number: grantData.number },
-    create: grantData,
-    update: grantData,
-  });
 }

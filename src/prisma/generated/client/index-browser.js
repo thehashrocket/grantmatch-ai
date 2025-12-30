@@ -161,6 +161,12 @@ exports.Prisma.GrantScalarFieldEnum = {
   source: 'source',
   agencyCode: 'agencyCode',
   cfdaList: 'cfdaList',
+  sourceRecordId: 'sourceRecordId',
+  sourceKey: 'sourceKey',
+  contentHash: 'contentHash',
+  lastSeenAt: 'lastSeenAt',
+  status: 'status',
+  closedAt: 'closedAt',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 };
@@ -240,6 +246,33 @@ exports.Prisma.InvitationScalarFieldEnum = {
   updatedAt: 'updatedAt'
 };
 
+exports.Prisma.GrantSyncRunScalarFieldEnum = {
+  id: 'id',
+  source: 'source',
+  startedAt: 'startedAt',
+  finishedAt: 'finishedAt',
+  status: 'status',
+  recordsFetched: 'recordsFetched',
+  createdCount: 'createdCount',
+  updatedCount: 'updatedCount',
+  unchangedCount: 'unchangedCount',
+  closedCount: 'closedCount',
+  reopenedCount: 'reopenedCount',
+  errorsJson: 'errorsJson',
+  schemaJson: 'schemaJson'
+};
+
+exports.Prisma.GrantChangeScalarFieldEnum = {
+  id: 'id',
+  grantId: 'grantId',
+  runId: 'runId',
+  changeType: 'changeType',
+  oldHash: 'oldHash',
+  newHash: 'newHash',
+  diffJson: 'diffJson',
+  observedAt: 'observedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -294,6 +327,12 @@ exports.GrantSource = exports.$Enums.GrantSource = {
   OTHER: 'OTHER'
 };
 
+exports.GrantStatus = exports.$Enums.GrantStatus = {
+  OPEN: 'OPEN',
+  CLOSED: 'CLOSED',
+  UNKNOWN: 'UNKNOWN'
+};
+
 exports.ImportStatus = exports.$Enums.ImportStatus = {
   QUEUED: 'QUEUED',
   IN_PROGRESS: 'IN_PROGRESS',
@@ -321,7 +360,9 @@ exports.Prisma.ModelName = {
   User: 'User',
   VerificationToken: 'VerificationToken',
   Organization: 'Organization',
-  Invitation: 'Invitation'
+  Invitation: 'Invitation',
+  GrantSyncRun: 'GrantSyncRun',
+  GrantChange: 'GrantChange'
 };
 
 /**

@@ -70,11 +70,17 @@ enum GrantSource {
   OTHER
 }
 
+enum GrantStatus {
+  OPEN
+  CLOSED
+  UNKNOWN
+}
+
 model Grant {
   id                    String             @id @default(cuid())
   url                   String
   title                 String
-  number                String?            @unique // For Federal grant numbers
+  number                String? // For Federal grant numbers (unique per source)
   deadline              DateTime?
   deadlineType          GrantDeadlineType?
   openDate              DateTime?
@@ -97,11 +103,20 @@ model Grant {
   source                GrantSource        @default(CALIFORNIA)
   agencyCode            String? // For Federal grants
   cfdaList              Json?              @db.JsonB // For Federal grants
+  sourceRecordId        String? // upstream id (string)
+  sourceKey             String? // deterministic hash if no sourceRecordId
+  contentHash           String? // hash of meaningful fields
+  lastSeenAt            DateTime?
+  status                GrantStatus        @default(UNKNOWN)
+  closedAt              DateTime?
+  changes               GrantChange[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([portalId, source])
+  @@unique([source, number])
+  @@unique([source, sourceRecordId])
+  @@unique([source, sourceKey])
 }
 
 model GrantDetail {
@@ -198,4 +213,40 @@ model Invitation {
   updatedAt      DateTime         @updatedAt
 
   @@unique([email, organizationId])
+}
+
+model GrantSyncRun {
+  id         String       @id @default(cuid())
+  source     GrantSource
+  startedAt  DateTime     @default(now())
+  finishedAt DateTime?
+  status     ImportStatus @default(IN_PROGRESS)
+
+  recordsFetched Int @default(0)
+  createdCount   Int @default(0)
+  updatedCount   Int @default(0)
+  unchangedCount Int @default(0)
+  closedCount    Int @default(0)
+  reopenedCount  Int @default(0)
+
+  errorsJson Json?         @db.JsonB
+  schemaJson Json?         @db.JsonB
+  changes    GrantChange[]
+}
+
+model GrantChange {
+  id         String   @id @default(cuid())
+  grantId    String
+  runId      String
+  changeType String // CREATED/UPDATED/CLOSED/REOPENED/STATUS_CHANGED
+  oldHash    String?
+  newHash    String?
+  diffJson   Json?    @db.JsonB
+  observedAt DateTime @default(now())
+
+  grant Grant        @relation(fields: [grantId], references: [id], onDelete: Cascade)
+  run   GrantSyncRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([grantId, observedAt])
+  @@index([runId])
 }

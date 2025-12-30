@@ -5,10 +5,14 @@
 import { notFound } from 'next/navigation';
 import GrantDetailsClient from './GrantDetailsClient';
 import { db } from '@/lib/db';
+import { ensureFederalGrantDetail } from '@/server/grants/ensureFederalGrantDetail';
 
-export default async function GrantDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  // Fetch the basic grant info (with details if present)
+const DETAIL_TIMEOUT_MS = 8_000;
+
+export default async function GrantDetailsPage({ params }: { params: { id: string } }) {
+  const { id } = params;
+  await withTimeout(ensureFederalGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
+
   const grant = await db.grant.findUnique({
     where: { id },
     include: { details: true }
@@ -21,4 +25,12 @@ export default async function GrantDetailsPage({ params }: { params: Promise<{ i
       <GrantDetailsClient grantId={id} initialGrant={grant} />
     </main>
   );
+}
+
+async function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  let timeout: NodeJS.Timeout;
+  const timed = new Promise<never>((_, reject) => {
+    timeout = setTimeout(() => reject(new Error('Timed out')), ms);
+  });
+  return Promise.race([promise, timed]).finally(() => clearTimeout(timeout));
 }

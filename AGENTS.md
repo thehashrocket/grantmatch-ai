@@ -41,6 +41,9 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 - Copy `.env.example` to `.env`, set `DATABASE_URL`, then run `./start-database.sh` to provision Postgres and rotate default passwords.
 - Align `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` with the dev server (port 3005 by default).
 - Never commit secrets or generated password hashes; share seeded credentials via the helper script `pnpm tsx scripts/generate-password.ts "sup3r-secret"`.
+- Lock down ingest endpoints: `/api/gp/start` and `/api/gp/import` currently have no auth; add NextAuth checks or a shared secret header before exposing them beyond trusted automation.
+- Avoid stubbed handlers: `/api/user` PATCH is a no-op; wire it to the database if you rely on profile updates.
+- Surface fetch failures: `/api/grants/[id]/details` currently swallows errors; prefer returning an explicit error or status so the UI can react.
 
 ## Documentation
 

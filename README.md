@@ -28,7 +28,7 @@ GrantMatch AI streamlines the grant discovery process by:
 7. **Organization** (`/org`) - Organization settings and team management
 
 ### Technology Stack
-- **Frontend**: Next.js 15 + React 19 with App Router
+- **Frontend**: Next.js 16 + React 19 with App Router
 - **Backend**: tRPC for type-safe APIs, Prisma ORM with PostgreSQL
 - **Auth**: NextAuth.js with credential and OAuth (Google) providers
 - **Styling**: Tailwind CSS v4+ with Shadcn UI components
@@ -134,10 +134,17 @@ GrantMatch AI streamlines the grant discovery process by:
 
 ## Development & Testing
 - `pnpm lint` enforces the Next.js ESLint config with Prettier + Tailwind; keep output clean before committing
+- `pnpm typecheck` runs the TypeScript compiler without emitting; use it to catch API/server regressions early
 - Add Vitest or Playwright coverage where relevant; colocate specs as `*.test.ts` or `*.spec.tsx`
 - Cover critical tRPC procedures and Prisma flows, and note manual QA in PR descriptions
 - Use Server Components by default; add "use client" only when needed for interactivity
 - Prefer tRPC calls over direct Prisma access in UI components
+
+## Current Gaps & Risk Notes
+- `src/app/api/gp/start/route.ts` and `src/app/api/gp/import/route.ts` are unauthenticated and accept arbitrary payloads; protect them with NextAuth, a shared secret header, or signed webhooks before exposing externally.
+- `src/app/api/user/route.ts` is a stubbed PATCH handler that always succeeds without writing to the database; wire it to the User model before relying on profile edits.
+- `src/app/api/grants/[id]/details/route.ts` swallows detail-fetch errors and always returns a response; consider surfacing failures (504/502) or returning the last-known payload with an error flag so the UI can react.
+- Automated tests currently cover only grant detail mapping; add coverage for API routes, ingestion flows, and service-layer logic to prevent regressions.
 
 ## SOLID Practices
 - **Single Responsibility**: Keep feature logic inside its route folder and move shared UI into `src/components/ui`.

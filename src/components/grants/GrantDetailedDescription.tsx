@@ -7,7 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 
 interface GrantDetailedDescriptionProps {
-    description: string;
+    description?: string | null;
 }
 
 interface GrantJsonData {
@@ -30,6 +30,13 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
     const [dataType, setDataType] = useState<'object' | 'array' | 'plain'>('plain');
 
     useEffect(() => {
+        if (!description) {
+            setIsJson(false);
+            setParsedData(null);
+            setDataType('plain');
+            return;
+        }
+
         try {
             const data = JSON.parse(description);
             setIsJson(true);
@@ -255,6 +262,14 @@ export default function GrantDetailedDescription({ description }: GrantDetailedD
             </div>
         );
     };
+
+    if (!description) {
+        return (
+            <div>
+                <p className="text-sm text-muted-foreground">No description available.</p>
+            </div>
+        );
+    }
 
     if (isJson && parsedData) {
         if (dataType === 'array' && Array.isArray(parsedData)) {

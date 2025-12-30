@@ -1,7 +1,9 @@
+// src/app/api/grants/[id]/details/route.ts
+
 import { NextResponse } from 'next/server';
 
 import { db } from '@/lib/db';
-import { ensureFederalGrantDetail } from '@/server/grants/ensureFederalGrantDetail';
+import { ensureGrantDetail } from '@/server/grants/ensureGrantDetail';
 
 const DETAIL_TIMEOUT_MS = 10_000;
 
@@ -11,11 +13,11 @@ export async function GET(
 ) {
   const { id } = await params;
 
-  await withTimeout(ensureFederalGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
+  await withTimeout(ensureGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
 
   const grant = await db.grant.findUnique({
     where: { id },
-    include: { details: true },
+    include: { details: true, attachments: true },
   });
 
   if (!grant) {

@@ -26,7 +26,7 @@ type FundingDetails = {
   requiresMatchedFunding?: string;
 };
 
-type GrantData = Prisma.GrantGetPayload<{ include: { details: true } }>;
+type GrantData = Prisma.GrantGetPayload<{ include: { details: true, attachments: true } }>;
 
 interface GrantDetailsClientProps {
   grantId: string;
@@ -222,7 +222,7 @@ export default function GrantDetailsClient({ grantId, initialGrant }: GrantDetai
                 <CardTitle>Detailed Description</CardTitle>
               </CardHeader>
               <CardContent>
-                <GrantDetailedDescription description={grant.details.description} />
+                <GrantDetailedDescription description={grant.details.description ?? grant.details.synopsisHtml} />
               </CardContent>
             </Card>
 

@@ -1,3 +1,4 @@
+// /src/app/api/grants/[id]/route.ts
 import { type NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
@@ -9,7 +10,7 @@ export async function GET(
     const { id } = await context.params;
     const grant = await prisma.grant.findUnique({
       where: { id },
-      include: { details: true },
+      include: { details: true, attachments: true },
     });
 
     if (!grant) {

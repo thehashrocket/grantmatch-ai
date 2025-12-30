@@ -99,6 +99,7 @@ model Grant {
   eligibleApplicants    String?
   eligibleGeographies   String?
   details               GrantDetail?
+  attachments           GrantAttachment[]
   source                GrantSource        @default(CALIFORNIA)
   agencyCode            String? // For Federal grants
   cfdaList              Json?              @db.JsonB // For Federal grants
@@ -119,17 +120,39 @@ model Grant {
 }
 
 model GrantDetail {
-  id                      String @id @default(cuid())
-  title                   String
-  purpose                 String
-  description             String
-  eligibilityRequirements Json   @db.JsonB
-  fundingDetails          Json   @db.JsonB
-  grantId                 String @unique
-  grant                   Grant  @relation(fields: [grantId], references: [id])
+  id                       String    @id @default(cuid())
+  title                    String?
+  purpose                  String?
+  description              String?
+  eligibilityRequirements  Json?     @db.JsonB
+  fundingDetails           Json?     @db.JsonB
+  synopsisHtml             String?   @db.Text
+  applicantEligibilityDesc String?   @db.Text
+  fundingDescLinkUrl       String?
+  responseDateDesc         String?   @db.Text
+  rawJson                  Json?     @db.JsonB
+  fetchedAt                DateTime?
+  grantId                  String    @unique
+  grant                    Grant     @relation(fields: [grantId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model GrantAttachment {
+  id          String   @id @default(cuid())
+  grantId     String
+  grant       Grant    @relation(fields: [grantId], references: [id], onDelete: Cascade)
+  upstreamId  String?
+  fileName    String
+  mimeType    String?
+  description String?
+  url         String?
+  sizeBytes   Int?
+  createdAt   DateTime @default(now())
+
+  @@unique([grantId, upstreamId])
+  @@index([grantId])
 }
 
 model GrantImportRun {

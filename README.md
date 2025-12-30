@@ -39,6 +39,8 @@ GrantMatch AI streamlines the grant discovery process by:
 1. **Install dependencies**: `pnpm install`
 2. **Configure environment**: Copy `.env.example` to `.env` and set:
    - `DATABASE_URL` for PostgreSQL connection
+   - Deployments: set `DATABASE_URL` or `POSTGRES_PRISMA_URL` in your hosting env (Vercel Postgres uses `POSTGRES_PRISMA_URL`) so `prisma generate` runs during builds
+   - `PRISMA_CLIENT_ENGINE_TYPE` to `library` (default in `.env.example`) to ensure the Node query engine is used instead of the data-proxy client
    - `NEXTAUTH_URL` and `NEXT_PUBLIC_APP_URL` to `http://localhost:3005`
    - `NEXTAUTH_SECRET` for session encryption
    - Optional: `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for OAuth

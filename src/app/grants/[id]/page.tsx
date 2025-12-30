@@ -5,7 +5,7 @@
 import { notFound } from 'next/navigation';
 import GrantDetailsClient from './GrantDetailsClient';
 import { db } from '@/lib/db';
-import { ensureFederalGrantDetail } from '@/server/grants/ensureFederalGrantDetail';
+import { ensureGrantDetail } from '@/server/grants/ensureGrantDetail';
 
 const DETAIL_TIMEOUT_MS = 8_000;
 
@@ -13,11 +13,11 @@ type GrantPageParams = { id: string };
 
 export default async function GrantDetailsPage({ params }: { params: Promise<GrantPageParams> }) {
   const { id } = await params;
-  await withTimeout(ensureFederalGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
+  await withTimeout(ensureGrantDetail(db, id), DETAIL_TIMEOUT_MS).catch(() => {});
 
   const grant = await db.grant.findUnique({
     where: { id },
-    include: { details: true }
+    include: { details: true, attachments: true }
   });
 
   if (!grant) notFound();

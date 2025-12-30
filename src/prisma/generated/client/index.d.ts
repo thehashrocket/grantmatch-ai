@@ -29,6 +29,11 @@ export type Grant = $Result.DefaultSelection<Prisma.$GrantPayload>
  */
 export type GrantDetail = $Result.DefaultSelection<Prisma.$GrantDetailPayload>
 /**
+ * Model GrantAttachment
+ * 
+ */
+export type GrantAttachment = $Result.DefaultSelection<Prisma.$GrantAttachmentPayload>
+/**
  * Model GrantImportRun
  * 
  */
@@ -318,6 +323,16 @@ export class PrismaClient<
     * ```
     */
   get grantDetail(): Prisma.GrantDetailDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.grantAttachment`: Exposes CRUD operations for the **GrantAttachment** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GrantAttachments
+    * const grantAttachments = await prisma.grantAttachment.findMany()
+    * ```
+    */
+  get grantAttachment(): Prisma.GrantAttachmentDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.grantImportRun`: Exposes CRUD operations for the **GrantImportRun** model.
@@ -835,6 +850,7 @@ export namespace Prisma {
     Account: 'Account',
     Grant: 'Grant',
     GrantDetail: 'GrantDetail',
+    GrantAttachment: 'GrantAttachment',
     GrantImportRun: 'GrantImportRun',
     Session: 'Session',
     User: 'User',
@@ -858,7 +874,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "grant" | "grantDetail" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange"
+      modelProps: "account" | "grant" | "grantDetail" | "grantAttachment" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1081,6 +1097,80 @@ export namespace Prisma {
           count: {
             args: Prisma.GrantDetailCountArgs<ExtArgs>
             result: $Utils.Optional<GrantDetailCountAggregateOutputType> | number
+          }
+        }
+      }
+      GrantAttachment: {
+        payload: Prisma.$GrantAttachmentPayload<ExtArgs>
+        fields: Prisma.GrantAttachmentFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GrantAttachmentFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GrantAttachmentFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          findFirst: {
+            args: Prisma.GrantAttachmentFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GrantAttachmentFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          findMany: {
+            args: Prisma.GrantAttachmentFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>[]
+          }
+          create: {
+            args: Prisma.GrantAttachmentCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          createMany: {
+            args: Prisma.GrantAttachmentCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GrantAttachmentCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>[]
+          }
+          delete: {
+            args: Prisma.GrantAttachmentDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          update: {
+            args: Prisma.GrantAttachmentUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          deleteMany: {
+            args: Prisma.GrantAttachmentDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GrantAttachmentUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GrantAttachmentUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>[]
+          }
+          upsert: {
+            args: Prisma.GrantAttachmentUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantAttachmentPayload>
+          }
+          aggregate: {
+            args: Prisma.GrantAttachmentAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGrantAttachment>
+          }
+          groupBy: {
+            args: Prisma.GrantAttachmentGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GrantAttachmentGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GrantAttachmentCountArgs<ExtArgs>
+            result: $Utils.Optional<GrantAttachmentCountAggregateOutputType> | number
           }
         }
       }
@@ -1787,6 +1877,7 @@ export namespace Prisma {
     account?: AccountOmit
     grant?: GrantOmit
     grantDetail?: GrantDetailOmit
+    grantAttachment?: GrantAttachmentOmit
     grantImportRun?: GrantImportRunOmit
     session?: SessionOmit
     user?: UserOmit
@@ -1875,10 +1966,12 @@ export namespace Prisma {
    */
 
   export type GrantCountOutputType = {
+    attachments: number
     changes: number
   }
 
   export type GrantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    attachments?: boolean | GrantCountOutputTypeCountAttachmentsArgs
     changes?: boolean | GrantCountOutputTypeCountChangesArgs
   }
 
@@ -1891,6 +1984,13 @@ export namespace Prisma {
      * Select specific fields to fetch from the GrantCountOutputType
      */
     select?: GrantCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * GrantCountOutputType without action
+   */
+  export type GrantCountOutputTypeCountAttachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantAttachmentWhereInput
   }
 
   /**
@@ -3639,6 +3739,7 @@ export namespace Prisma {
     createdAt?: boolean
     updatedAt?: boolean
     details?: boolean | Grant$detailsArgs<ExtArgs>
+    attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["grant"]>
@@ -3754,6 +3855,7 @@ export namespace Prisma {
   export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
   export type GrantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     details?: boolean | Grant$detailsArgs<ExtArgs>
+    attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -3764,6 +3866,7 @@ export namespace Prisma {
     name: "Grant"
     objects: {
       details: Prisma.$GrantDetailPayload<ExtArgs> | null
+      attachments: Prisma.$GrantAttachmentPayload<ExtArgs>[]
       changes: Prisma.$GrantChangePayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -4195,6 +4298,7 @@ export namespace Prisma {
   export interface Prisma__GrantClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     details<T extends Grant$detailsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$detailsArgs<ExtArgs>>): Prisma__GrantDetailClient<$Result.GetResult<Prisma.$GrantDetailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    attachments<T extends Grant$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     changes<T extends Grant$changesArgs<ExtArgs> = {}>(args?: Subset<T, Grant$changesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -4665,6 +4769,30 @@ export namespace Prisma {
   }
 
   /**
+   * Grant.attachments
+   */
+  export type Grant$attachmentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    where?: GrantAttachmentWhereInput
+    orderBy?: GrantAttachmentOrderByWithRelationInput | GrantAttachmentOrderByWithRelationInput[]
+    cursor?: GrantAttachmentWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantAttachmentScalarFieldEnum | GrantAttachmentScalarFieldEnum[]
+  }
+
+  /**
    * Grant.changes
    */
   export type Grant$changesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -4722,6 +4850,11 @@ export namespace Prisma {
     title: string | null
     purpose: string | null
     description: string | null
+    synopsisHtml: string | null
+    applicantEligibilityDesc: string | null
+    fundingDescLinkUrl: string | null
+    responseDateDesc: string | null
+    fetchedAt: Date | null
     grantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4732,6 +4865,11 @@ export namespace Prisma {
     title: string | null
     purpose: string | null
     description: string | null
+    synopsisHtml: string | null
+    applicantEligibilityDesc: string | null
+    fundingDescLinkUrl: string | null
+    responseDateDesc: string | null
+    fetchedAt: Date | null
     grantId: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -4744,6 +4882,12 @@ export namespace Prisma {
     description: number
     eligibilityRequirements: number
     fundingDetails: number
+    synopsisHtml: number
+    applicantEligibilityDesc: number
+    fundingDescLinkUrl: number
+    responseDateDesc: number
+    rawJson: number
+    fetchedAt: number
     grantId: number
     createdAt: number
     updatedAt: number
@@ -4756,6 +4900,11 @@ export namespace Prisma {
     title?: true
     purpose?: true
     description?: true
+    synopsisHtml?: true
+    applicantEligibilityDesc?: true
+    fundingDescLinkUrl?: true
+    responseDateDesc?: true
+    fetchedAt?: true
     grantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4766,6 +4915,11 @@ export namespace Prisma {
     title?: true
     purpose?: true
     description?: true
+    synopsisHtml?: true
+    applicantEligibilityDesc?: true
+    fundingDescLinkUrl?: true
+    responseDateDesc?: true
+    fetchedAt?: true
     grantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4778,6 +4932,12 @@ export namespace Prisma {
     description?: true
     eligibilityRequirements?: true
     fundingDetails?: true
+    synopsisHtml?: true
+    applicantEligibilityDesc?: true
+    fundingDescLinkUrl?: true
+    responseDateDesc?: true
+    rawJson?: true
+    fetchedAt?: true
     grantId?: true
     createdAt?: true
     updatedAt?: true
@@ -4858,11 +5018,17 @@ export namespace Prisma {
 
   export type GrantDetailGroupByOutputType = {
     id: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonValue
-    fundingDetails: JsonValue
+    title: string | null
+    purpose: string | null
+    description: string | null
+    eligibilityRequirements: JsonValue | null
+    fundingDetails: JsonValue | null
+    synopsisHtml: string | null
+    applicantEligibilityDesc: string | null
+    fundingDescLinkUrl: string | null
+    responseDateDesc: string | null
+    rawJson: JsonValue | null
+    fetchedAt: Date | null
     grantId: string
     createdAt: Date
     updatedAt: Date
@@ -4892,6 +5058,12 @@ export namespace Prisma {
     description?: boolean
     eligibilityRequirements?: boolean
     fundingDetails?: boolean
+    synopsisHtml?: boolean
+    applicantEligibilityDesc?: boolean
+    fundingDescLinkUrl?: boolean
+    responseDateDesc?: boolean
+    rawJson?: boolean
+    fetchedAt?: boolean
     grantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4905,6 +5077,12 @@ export namespace Prisma {
     description?: boolean
     eligibilityRequirements?: boolean
     fundingDetails?: boolean
+    synopsisHtml?: boolean
+    applicantEligibilityDesc?: boolean
+    fundingDescLinkUrl?: boolean
+    responseDateDesc?: boolean
+    rawJson?: boolean
+    fetchedAt?: boolean
     grantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4918,6 +5096,12 @@ export namespace Prisma {
     description?: boolean
     eligibilityRequirements?: boolean
     fundingDetails?: boolean
+    synopsisHtml?: boolean
+    applicantEligibilityDesc?: boolean
+    fundingDescLinkUrl?: boolean
+    responseDateDesc?: boolean
+    rawJson?: boolean
+    fetchedAt?: boolean
     grantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -4931,12 +5115,18 @@ export namespace Prisma {
     description?: boolean
     eligibilityRequirements?: boolean
     fundingDetails?: boolean
+    synopsisHtml?: boolean
+    applicantEligibilityDesc?: boolean
+    fundingDescLinkUrl?: boolean
+    responseDateDesc?: boolean
+    rawJson?: boolean
+    fetchedAt?: boolean
     grantId?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type GrantDetailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "purpose" | "description" | "eligibilityRequirements" | "fundingDetails" | "grantId" | "createdAt" | "updatedAt", ExtArgs["result"]["grantDetail"]>
+  export type GrantDetailOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "title" | "purpose" | "description" | "eligibilityRequirements" | "fundingDetails" | "synopsisHtml" | "applicantEligibilityDesc" | "fundingDescLinkUrl" | "responseDateDesc" | "rawJson" | "fetchedAt" | "grantId" | "createdAt" | "updatedAt", ExtArgs["result"]["grantDetail"]>
   export type GrantDetailInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     grant?: boolean | GrantDefaultArgs<ExtArgs>
   }
@@ -4954,11 +5144,17 @@ export namespace Prisma {
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
-      title: string
-      purpose: string
-      description: string
-      eligibilityRequirements: Prisma.JsonValue
-      fundingDetails: Prisma.JsonValue
+      title: string | null
+      purpose: string | null
+      description: string | null
+      eligibilityRequirements: Prisma.JsonValue | null
+      fundingDetails: Prisma.JsonValue | null
+      synopsisHtml: string | null
+      applicantEligibilityDesc: string | null
+      fundingDescLinkUrl: string | null
+      responseDateDesc: string | null
+      rawJson: Prisma.JsonValue | null
+      fetchedAt: Date | null
       grantId: string
       createdAt: Date
       updatedAt: Date
@@ -5392,6 +5588,12 @@ export namespace Prisma {
     readonly description: FieldRef<"GrantDetail", 'String'>
     readonly eligibilityRequirements: FieldRef<"GrantDetail", 'Json'>
     readonly fundingDetails: FieldRef<"GrantDetail", 'Json'>
+    readonly synopsisHtml: FieldRef<"GrantDetail", 'String'>
+    readonly applicantEligibilityDesc: FieldRef<"GrantDetail", 'String'>
+    readonly fundingDescLinkUrl: FieldRef<"GrantDetail", 'String'>
+    readonly responseDateDesc: FieldRef<"GrantDetail", 'String'>
+    readonly rawJson: FieldRef<"GrantDetail", 'Json'>
+    readonly fetchedAt: FieldRef<"GrantDetail", 'DateTime'>
     readonly grantId: FieldRef<"GrantDetail", 'String'>
     readonly createdAt: FieldRef<"GrantDetail", 'DateTime'>
     readonly updatedAt: FieldRef<"GrantDetail", 'DateTime'>
@@ -5806,6 +6008,1150 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: GrantDetailInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model GrantAttachment
+   */
+
+  export type AggregateGrantAttachment = {
+    _count: GrantAttachmentCountAggregateOutputType | null
+    _avg: GrantAttachmentAvgAggregateOutputType | null
+    _sum: GrantAttachmentSumAggregateOutputType | null
+    _min: GrantAttachmentMinAggregateOutputType | null
+    _max: GrantAttachmentMaxAggregateOutputType | null
+  }
+
+  export type GrantAttachmentAvgAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type GrantAttachmentSumAggregateOutputType = {
+    sizeBytes: number | null
+  }
+
+  export type GrantAttachmentMinAggregateOutputType = {
+    id: string | null
+    grantId: string | null
+    upstreamId: string | null
+    fileName: string | null
+    mimeType: string | null
+    description: string | null
+    url: string | null
+    sizeBytes: number | null
+    createdAt: Date | null
+  }
+
+  export type GrantAttachmentMaxAggregateOutputType = {
+    id: string | null
+    grantId: string | null
+    upstreamId: string | null
+    fileName: string | null
+    mimeType: string | null
+    description: string | null
+    url: string | null
+    sizeBytes: number | null
+    createdAt: Date | null
+  }
+
+  export type GrantAttachmentCountAggregateOutputType = {
+    id: number
+    grantId: number
+    upstreamId: number
+    fileName: number
+    mimeType: number
+    description: number
+    url: number
+    sizeBytes: number
+    createdAt: number
+    _all: number
+  }
+
+
+  export type GrantAttachmentAvgAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type GrantAttachmentSumAggregateInputType = {
+    sizeBytes?: true
+  }
+
+  export type GrantAttachmentMinAggregateInputType = {
+    id?: true
+    grantId?: true
+    upstreamId?: true
+    fileName?: true
+    mimeType?: true
+    description?: true
+    url?: true
+    sizeBytes?: true
+    createdAt?: true
+  }
+
+  export type GrantAttachmentMaxAggregateInputType = {
+    id?: true
+    grantId?: true
+    upstreamId?: true
+    fileName?: true
+    mimeType?: true
+    description?: true
+    url?: true
+    sizeBytes?: true
+    createdAt?: true
+  }
+
+  export type GrantAttachmentCountAggregateInputType = {
+    id?: true
+    grantId?: true
+    upstreamId?: true
+    fileName?: true
+    mimeType?: true
+    description?: true
+    url?: true
+    sizeBytes?: true
+    createdAt?: true
+    _all?: true
+  }
+
+  export type GrantAttachmentAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantAttachment to aggregate.
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantAttachments to fetch.
+     */
+    orderBy?: GrantAttachmentOrderByWithRelationInput | GrantAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GrantAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GrantAttachments
+    **/
+    _count?: true | GrantAttachmentCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GrantAttachmentAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GrantAttachmentSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GrantAttachmentMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GrantAttachmentMaxAggregateInputType
+  }
+
+  export type GetGrantAttachmentAggregateType<T extends GrantAttachmentAggregateArgs> = {
+        [P in keyof T & keyof AggregateGrantAttachment]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGrantAttachment[P]>
+      : GetScalarType<T[P], AggregateGrantAttachment[P]>
+  }
+
+
+
+
+  export type GrantAttachmentGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantAttachmentWhereInput
+    orderBy?: GrantAttachmentOrderByWithAggregationInput | GrantAttachmentOrderByWithAggregationInput[]
+    by: GrantAttachmentScalarFieldEnum[] | GrantAttachmentScalarFieldEnum
+    having?: GrantAttachmentScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GrantAttachmentCountAggregateInputType | true
+    _avg?: GrantAttachmentAvgAggregateInputType
+    _sum?: GrantAttachmentSumAggregateInputType
+    _min?: GrantAttachmentMinAggregateInputType
+    _max?: GrantAttachmentMaxAggregateInputType
+  }
+
+  export type GrantAttachmentGroupByOutputType = {
+    id: string
+    grantId: string
+    upstreamId: string | null
+    fileName: string
+    mimeType: string | null
+    description: string | null
+    url: string | null
+    sizeBytes: number | null
+    createdAt: Date
+    _count: GrantAttachmentCountAggregateOutputType | null
+    _avg: GrantAttachmentAvgAggregateOutputType | null
+    _sum: GrantAttachmentSumAggregateOutputType | null
+    _min: GrantAttachmentMinAggregateOutputType | null
+    _max: GrantAttachmentMaxAggregateOutputType | null
+  }
+
+  type GetGrantAttachmentGroupByPayload<T extends GrantAttachmentGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GrantAttachmentGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GrantAttachmentGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GrantAttachmentGroupByOutputType[P]>
+            : GetScalarType<T[P], GrantAttachmentGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GrantAttachmentSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    upstreamId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    description?: boolean
+    url?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantAttachment"]>
+
+  export type GrantAttachmentSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    upstreamId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    description?: boolean
+    url?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantAttachment"]>
+
+  export type GrantAttachmentSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    grantId?: boolean
+    upstreamId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    description?: boolean
+    url?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantAttachment"]>
+
+  export type GrantAttachmentSelectScalar = {
+    id?: boolean
+    grantId?: boolean
+    upstreamId?: boolean
+    fileName?: boolean
+    mimeType?: boolean
+    description?: boolean
+    url?: boolean
+    sizeBytes?: boolean
+    createdAt?: boolean
+  }
+
+  export type GrantAttachmentOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "grantId" | "upstreamId" | "fileName" | "mimeType" | "description" | "url" | "sizeBytes" | "createdAt", ExtArgs["result"]["grantAttachment"]>
+  export type GrantAttachmentInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantAttachmentIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantAttachmentIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+
+  export type $GrantAttachmentPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GrantAttachment"
+    objects: {
+      grant: Prisma.$GrantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      grantId: string
+      upstreamId: string | null
+      fileName: string
+      mimeType: string | null
+      description: string | null
+      url: string | null
+      sizeBytes: number | null
+      createdAt: Date
+    }, ExtArgs["result"]["grantAttachment"]>
+    composites: {}
+  }
+
+  type GrantAttachmentGetPayload<S extends boolean | null | undefined | GrantAttachmentDefaultArgs> = $Result.GetResult<Prisma.$GrantAttachmentPayload, S>
+
+  type GrantAttachmentCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GrantAttachmentFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GrantAttachmentCountAggregateInputType | true
+    }
+
+  export interface GrantAttachmentDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GrantAttachment'], meta: { name: 'GrantAttachment' } }
+    /**
+     * Find zero or one GrantAttachment that matches the filter.
+     * @param {GrantAttachmentFindUniqueArgs} args - Arguments to find a GrantAttachment
+     * @example
+     * // Get one GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GrantAttachmentFindUniqueArgs>(args: SelectSubset<T, GrantAttachmentFindUniqueArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GrantAttachment that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GrantAttachmentFindUniqueOrThrowArgs} args - Arguments to find a GrantAttachment
+     * @example
+     * // Get one GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GrantAttachmentFindUniqueOrThrowArgs>(args: SelectSubset<T, GrantAttachmentFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantAttachment that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentFindFirstArgs} args - Arguments to find a GrantAttachment
+     * @example
+     * // Get one GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GrantAttachmentFindFirstArgs>(args?: SelectSubset<T, GrantAttachmentFindFirstArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantAttachment that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentFindFirstOrThrowArgs} args - Arguments to find a GrantAttachment
+     * @example
+     * // Get one GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GrantAttachmentFindFirstOrThrowArgs>(args?: SelectSubset<T, GrantAttachmentFindFirstOrThrowArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GrantAttachments that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GrantAttachments
+     * const grantAttachments = await prisma.grantAttachment.findMany()
+     * 
+     * // Get first 10 GrantAttachments
+     * const grantAttachments = await prisma.grantAttachment.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const grantAttachmentWithIdOnly = await prisma.grantAttachment.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GrantAttachmentFindManyArgs>(args?: SelectSubset<T, GrantAttachmentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GrantAttachment.
+     * @param {GrantAttachmentCreateArgs} args - Arguments to create a GrantAttachment.
+     * @example
+     * // Create one GrantAttachment
+     * const GrantAttachment = await prisma.grantAttachment.create({
+     *   data: {
+     *     // ... data to create a GrantAttachment
+     *   }
+     * })
+     * 
+     */
+    create<T extends GrantAttachmentCreateArgs>(args: SelectSubset<T, GrantAttachmentCreateArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GrantAttachments.
+     * @param {GrantAttachmentCreateManyArgs} args - Arguments to create many GrantAttachments.
+     * @example
+     * // Create many GrantAttachments
+     * const grantAttachment = await prisma.grantAttachment.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GrantAttachmentCreateManyArgs>(args?: SelectSubset<T, GrantAttachmentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GrantAttachments and returns the data saved in the database.
+     * @param {GrantAttachmentCreateManyAndReturnArgs} args - Arguments to create many GrantAttachments.
+     * @example
+     * // Create many GrantAttachments
+     * const grantAttachment = await prisma.grantAttachment.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GrantAttachments and only return the `id`
+     * const grantAttachmentWithIdOnly = await prisma.grantAttachment.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GrantAttachmentCreateManyAndReturnArgs>(args?: SelectSubset<T, GrantAttachmentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GrantAttachment.
+     * @param {GrantAttachmentDeleteArgs} args - Arguments to delete one GrantAttachment.
+     * @example
+     * // Delete one GrantAttachment
+     * const GrantAttachment = await prisma.grantAttachment.delete({
+     *   where: {
+     *     // ... filter to delete one GrantAttachment
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GrantAttachmentDeleteArgs>(args: SelectSubset<T, GrantAttachmentDeleteArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GrantAttachment.
+     * @param {GrantAttachmentUpdateArgs} args - Arguments to update one GrantAttachment.
+     * @example
+     * // Update one GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GrantAttachmentUpdateArgs>(args: SelectSubset<T, GrantAttachmentUpdateArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GrantAttachments.
+     * @param {GrantAttachmentDeleteManyArgs} args - Arguments to filter GrantAttachments to delete.
+     * @example
+     * // Delete a few GrantAttachments
+     * const { count } = await prisma.grantAttachment.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GrantAttachmentDeleteManyArgs>(args?: SelectSubset<T, GrantAttachmentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GrantAttachments
+     * const grantAttachment = await prisma.grantAttachment.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GrantAttachmentUpdateManyArgs>(args: SelectSubset<T, GrantAttachmentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantAttachments and returns the data updated in the database.
+     * @param {GrantAttachmentUpdateManyAndReturnArgs} args - Arguments to update many GrantAttachments.
+     * @example
+     * // Update many GrantAttachments
+     * const grantAttachment = await prisma.grantAttachment.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GrantAttachments and only return the `id`
+     * const grantAttachmentWithIdOnly = await prisma.grantAttachment.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GrantAttachmentUpdateManyAndReturnArgs>(args: SelectSubset<T, GrantAttachmentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GrantAttachment.
+     * @param {GrantAttachmentUpsertArgs} args - Arguments to update or create a GrantAttachment.
+     * @example
+     * // Update or create a GrantAttachment
+     * const grantAttachment = await prisma.grantAttachment.upsert({
+     *   create: {
+     *     // ... data to create a GrantAttachment
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GrantAttachment we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GrantAttachmentUpsertArgs>(args: SelectSubset<T, GrantAttachmentUpsertArgs<ExtArgs>>): Prisma__GrantAttachmentClient<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GrantAttachments.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentCountArgs} args - Arguments to filter GrantAttachments to count.
+     * @example
+     * // Count the number of GrantAttachments
+     * const count = await prisma.grantAttachment.count({
+     *   where: {
+     *     // ... the filter for the GrantAttachments we want to count
+     *   }
+     * })
+    **/
+    count<T extends GrantAttachmentCountArgs>(
+      args?: Subset<T, GrantAttachmentCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GrantAttachmentCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GrantAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GrantAttachmentAggregateArgs>(args: Subset<T, GrantAttachmentAggregateArgs>): Prisma.PrismaPromise<GetGrantAttachmentAggregateType<T>>
+
+    /**
+     * Group by GrantAttachment.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantAttachmentGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GrantAttachmentGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GrantAttachmentGroupByArgs['orderBy'] }
+        : { orderBy?: GrantAttachmentGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GrantAttachmentGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGrantAttachmentGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GrantAttachment model
+   */
+  readonly fields: GrantAttachmentFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GrantAttachment.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GrantAttachmentClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    grant<T extends GrantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GrantDefaultArgs<ExtArgs>>): Prisma__GrantClient<$Result.GetResult<Prisma.$GrantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GrantAttachment model
+   */
+  interface GrantAttachmentFieldRefs {
+    readonly id: FieldRef<"GrantAttachment", 'String'>
+    readonly grantId: FieldRef<"GrantAttachment", 'String'>
+    readonly upstreamId: FieldRef<"GrantAttachment", 'String'>
+    readonly fileName: FieldRef<"GrantAttachment", 'String'>
+    readonly mimeType: FieldRef<"GrantAttachment", 'String'>
+    readonly description: FieldRef<"GrantAttachment", 'String'>
+    readonly url: FieldRef<"GrantAttachment", 'String'>
+    readonly sizeBytes: FieldRef<"GrantAttachment", 'Int'>
+    readonly createdAt: FieldRef<"GrantAttachment", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GrantAttachment findUnique
+   */
+  export type GrantAttachmentFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantAttachment to fetch.
+     */
+    where: GrantAttachmentWhereUniqueInput
+  }
+
+  /**
+   * GrantAttachment findUniqueOrThrow
+   */
+  export type GrantAttachmentFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantAttachment to fetch.
+     */
+    where: GrantAttachmentWhereUniqueInput
+  }
+
+  /**
+   * GrantAttachment findFirst
+   */
+  export type GrantAttachmentFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantAttachment to fetch.
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantAttachments to fetch.
+     */
+    orderBy?: GrantAttachmentOrderByWithRelationInput | GrantAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantAttachments.
+     */
+    cursor?: GrantAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantAttachments.
+     */
+    distinct?: GrantAttachmentScalarFieldEnum | GrantAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * GrantAttachment findFirstOrThrow
+   */
+  export type GrantAttachmentFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantAttachment to fetch.
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantAttachments to fetch.
+     */
+    orderBy?: GrantAttachmentOrderByWithRelationInput | GrantAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantAttachments.
+     */
+    cursor?: GrantAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantAttachments.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantAttachments.
+     */
+    distinct?: GrantAttachmentScalarFieldEnum | GrantAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * GrantAttachment findMany
+   */
+  export type GrantAttachmentFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantAttachments to fetch.
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantAttachments to fetch.
+     */
+    orderBy?: GrantAttachmentOrderByWithRelationInput | GrantAttachmentOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GrantAttachments.
+     */
+    cursor?: GrantAttachmentWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantAttachments from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantAttachments.
+     */
+    skip?: number
+    distinct?: GrantAttachmentScalarFieldEnum | GrantAttachmentScalarFieldEnum[]
+  }
+
+  /**
+   * GrantAttachment create
+   */
+  export type GrantAttachmentCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GrantAttachment.
+     */
+    data: XOR<GrantAttachmentCreateInput, GrantAttachmentUncheckedCreateInput>
+  }
+
+  /**
+   * GrantAttachment createMany
+   */
+  export type GrantAttachmentCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GrantAttachments.
+     */
+    data: GrantAttachmentCreateManyInput | GrantAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantAttachment createManyAndReturn
+   */
+  export type GrantAttachmentCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to create many GrantAttachments.
+     */
+    data: GrantAttachmentCreateManyInput | GrantAttachmentCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantAttachment update
+   */
+  export type GrantAttachmentUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GrantAttachment.
+     */
+    data: XOR<GrantAttachmentUpdateInput, GrantAttachmentUncheckedUpdateInput>
+    /**
+     * Choose, which GrantAttachment to update.
+     */
+    where: GrantAttachmentWhereUniqueInput
+  }
+
+  /**
+   * GrantAttachment updateMany
+   */
+  export type GrantAttachmentUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GrantAttachments.
+     */
+    data: XOR<GrantAttachmentUpdateManyMutationInput, GrantAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantAttachments to update
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * Limit how many GrantAttachments to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantAttachment updateManyAndReturn
+   */
+  export type GrantAttachmentUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * The data used to update GrantAttachments.
+     */
+    data: XOR<GrantAttachmentUpdateManyMutationInput, GrantAttachmentUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantAttachments to update
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * Limit how many GrantAttachments to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantAttachment upsert
+   */
+  export type GrantAttachmentUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GrantAttachment to update in case it exists.
+     */
+    where: GrantAttachmentWhereUniqueInput
+    /**
+     * In case the GrantAttachment found by the `where` argument doesn't exist, create a new GrantAttachment with this data.
+     */
+    create: XOR<GrantAttachmentCreateInput, GrantAttachmentUncheckedCreateInput>
+    /**
+     * In case the GrantAttachment was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GrantAttachmentUpdateInput, GrantAttachmentUncheckedUpdateInput>
+  }
+
+  /**
+   * GrantAttachment delete
+   */
+  export type GrantAttachmentDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
+    /**
+     * Filter which GrantAttachment to delete.
+     */
+    where: GrantAttachmentWhereUniqueInput
+  }
+
+  /**
+   * GrantAttachment deleteMany
+   */
+  export type GrantAttachmentDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantAttachments to delete
+     */
+    where?: GrantAttachmentWhereInput
+    /**
+     * Limit how many GrantAttachments to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantAttachment without action
+   */
+  export type GrantAttachmentDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantAttachment
+     */
+    select?: GrantAttachmentSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantAttachment
+     */
+    omit?: GrantAttachmentOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantAttachmentInclude<ExtArgs> | null
   }
 
 
@@ -14829,12 +16175,33 @@ export namespace Prisma {
     description: 'description',
     eligibilityRequirements: 'eligibilityRequirements',
     fundingDetails: 'fundingDetails',
+    synopsisHtml: 'synopsisHtml',
+    applicantEligibilityDesc: 'applicantEligibilityDesc',
+    fundingDescLinkUrl: 'fundingDescLinkUrl',
+    responseDateDesc: 'responseDateDesc',
+    rawJson: 'rawJson',
+    fetchedAt: 'fetchedAt',
     grantId: 'grantId',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
   };
 
   export type GrantDetailScalarFieldEnum = (typeof GrantDetailScalarFieldEnum)[keyof typeof GrantDetailScalarFieldEnum]
+
+
+  export const GrantAttachmentScalarFieldEnum: {
+    id: 'id',
+    grantId: 'grantId',
+    upstreamId: 'upstreamId',
+    fileName: 'fileName',
+    mimeType: 'mimeType',
+    description: 'description',
+    url: 'url',
+    sizeBytes: 'sizeBytes',
+    createdAt: 'createdAt'
+  };
+
+  export type GrantAttachmentScalarFieldEnum = (typeof GrantAttachmentScalarFieldEnum)[keyof typeof GrantAttachmentScalarFieldEnum]
 
 
   export const GrantImportRunScalarFieldEnum: {
@@ -14965,13 +16332,6 @@ export namespace Prisma {
   };
 
   export type NullableJsonNullValueInput = (typeof NullableJsonNullValueInput)[keyof typeof NullableJsonNullValueInput]
-
-
-  export const JsonNullValueInput: {
-    JsonNull: typeof JsonNull
-  };
-
-  export type JsonNullValueInput = (typeof JsonNullValueInput)[keyof typeof JsonNullValueInput]
 
 
   export const QueryMode: {
@@ -15320,6 +16680,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
+    attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
   }
 
@@ -15358,6 +16719,7 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     details?: GrantDetailOrderByWithRelationInput
+    attachments?: GrantAttachmentOrderByRelationAggregateInput
     changes?: GrantChangeOrderByRelationAggregateInput
   }
 
@@ -15402,6 +16764,7 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Grant"> | Date | string
     updatedAt?: DateTimeFilter<"Grant"> | Date | string
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
+    attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
   }, "id" | "source_number" | "source_sourceRecordId" | "source_sourceKey">
 
@@ -15490,11 +16853,17 @@ export namespace Prisma {
     OR?: GrantDetailWhereInput[]
     NOT?: GrantDetailWhereInput | GrantDetailWhereInput[]
     id?: StringFilter<"GrantDetail"> | string
-    title?: StringFilter<"GrantDetail"> | string
-    purpose?: StringFilter<"GrantDetail"> | string
-    description?: StringFilter<"GrantDetail"> | string
-    eligibilityRequirements?: JsonFilter<"GrantDetail">
-    fundingDetails?: JsonFilter<"GrantDetail">
+    title?: StringNullableFilter<"GrantDetail"> | string | null
+    purpose?: StringNullableFilter<"GrantDetail"> | string | null
+    description?: StringNullableFilter<"GrantDetail"> | string | null
+    eligibilityRequirements?: JsonNullableFilter<"GrantDetail">
+    fundingDetails?: JsonNullableFilter<"GrantDetail">
+    synopsisHtml?: StringNullableFilter<"GrantDetail"> | string | null
+    applicantEligibilityDesc?: StringNullableFilter<"GrantDetail"> | string | null
+    fundingDescLinkUrl?: StringNullableFilter<"GrantDetail"> | string | null
+    responseDateDesc?: StringNullableFilter<"GrantDetail"> | string | null
+    rawJson?: JsonNullableFilter<"GrantDetail">
+    fetchedAt?: DateTimeNullableFilter<"GrantDetail"> | Date | string | null
     grantId?: StringFilter<"GrantDetail"> | string
     createdAt?: DateTimeFilter<"GrantDetail"> | Date | string
     updatedAt?: DateTimeFilter<"GrantDetail"> | Date | string
@@ -15503,11 +16872,17 @@ export namespace Prisma {
 
   export type GrantDetailOrderByWithRelationInput = {
     id?: SortOrder
-    title?: SortOrder
-    purpose?: SortOrder
-    description?: SortOrder
-    eligibilityRequirements?: SortOrder
-    fundingDetails?: SortOrder
+    title?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    eligibilityRequirements?: SortOrderInput | SortOrder
+    fundingDetails?: SortOrderInput | SortOrder
+    synopsisHtml?: SortOrderInput | SortOrder
+    applicantEligibilityDesc?: SortOrderInput | SortOrder
+    fundingDescLinkUrl?: SortOrderInput | SortOrder
+    responseDateDesc?: SortOrderInput | SortOrder
+    rawJson?: SortOrderInput | SortOrder
+    fetchedAt?: SortOrderInput | SortOrder
     grantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15520,11 +16895,17 @@ export namespace Prisma {
     AND?: GrantDetailWhereInput | GrantDetailWhereInput[]
     OR?: GrantDetailWhereInput[]
     NOT?: GrantDetailWhereInput | GrantDetailWhereInput[]
-    title?: StringFilter<"GrantDetail"> | string
-    purpose?: StringFilter<"GrantDetail"> | string
-    description?: StringFilter<"GrantDetail"> | string
-    eligibilityRequirements?: JsonFilter<"GrantDetail">
-    fundingDetails?: JsonFilter<"GrantDetail">
+    title?: StringNullableFilter<"GrantDetail"> | string | null
+    purpose?: StringNullableFilter<"GrantDetail"> | string | null
+    description?: StringNullableFilter<"GrantDetail"> | string | null
+    eligibilityRequirements?: JsonNullableFilter<"GrantDetail">
+    fundingDetails?: JsonNullableFilter<"GrantDetail">
+    synopsisHtml?: StringNullableFilter<"GrantDetail"> | string | null
+    applicantEligibilityDesc?: StringNullableFilter<"GrantDetail"> | string | null
+    fundingDescLinkUrl?: StringNullableFilter<"GrantDetail"> | string | null
+    responseDateDesc?: StringNullableFilter<"GrantDetail"> | string | null
+    rawJson?: JsonNullableFilter<"GrantDetail">
+    fetchedAt?: DateTimeNullableFilter<"GrantDetail"> | Date | string | null
     createdAt?: DateTimeFilter<"GrantDetail"> | Date | string
     updatedAt?: DateTimeFilter<"GrantDetail"> | Date | string
     grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
@@ -15532,11 +16913,17 @@ export namespace Prisma {
 
   export type GrantDetailOrderByWithAggregationInput = {
     id?: SortOrder
-    title?: SortOrder
-    purpose?: SortOrder
-    description?: SortOrder
-    eligibilityRequirements?: SortOrder
-    fundingDetails?: SortOrder
+    title?: SortOrderInput | SortOrder
+    purpose?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    eligibilityRequirements?: SortOrderInput | SortOrder
+    fundingDetails?: SortOrderInput | SortOrder
+    synopsisHtml?: SortOrderInput | SortOrder
+    applicantEligibilityDesc?: SortOrderInput | SortOrder
+    fundingDescLinkUrl?: SortOrderInput | SortOrder
+    responseDateDesc?: SortOrderInput | SortOrder
+    rawJson?: SortOrderInput | SortOrder
+    fetchedAt?: SortOrderInput | SortOrder
     grantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -15550,14 +16937,98 @@ export namespace Prisma {
     OR?: GrantDetailScalarWhereWithAggregatesInput[]
     NOT?: GrantDetailScalarWhereWithAggregatesInput | GrantDetailScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"GrantDetail"> | string
-    title?: StringWithAggregatesFilter<"GrantDetail"> | string
-    purpose?: StringWithAggregatesFilter<"GrantDetail"> | string
-    description?: StringWithAggregatesFilter<"GrantDetail"> | string
-    eligibilityRequirements?: JsonWithAggregatesFilter<"GrantDetail">
-    fundingDetails?: JsonWithAggregatesFilter<"GrantDetail">
+    title?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    purpose?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    description?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    eligibilityRequirements?: JsonNullableWithAggregatesFilter<"GrantDetail">
+    fundingDetails?: JsonNullableWithAggregatesFilter<"GrantDetail">
+    synopsisHtml?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    applicantEligibilityDesc?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    fundingDescLinkUrl?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    responseDateDesc?: StringNullableWithAggregatesFilter<"GrantDetail"> | string | null
+    rawJson?: JsonNullableWithAggregatesFilter<"GrantDetail">
+    fetchedAt?: DateTimeNullableWithAggregatesFilter<"GrantDetail"> | Date | string | null
     grantId?: StringWithAggregatesFilter<"GrantDetail"> | string
     createdAt?: DateTimeWithAggregatesFilter<"GrantDetail"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"GrantDetail"> | Date | string
+  }
+
+  export type GrantAttachmentWhereInput = {
+    AND?: GrantAttachmentWhereInput | GrantAttachmentWhereInput[]
+    OR?: GrantAttachmentWhereInput[]
+    NOT?: GrantAttachmentWhereInput | GrantAttachmentWhereInput[]
+    id?: StringFilter<"GrantAttachment"> | string
+    grantId?: StringFilter<"GrantAttachment"> | string
+    upstreamId?: StringNullableFilter<"GrantAttachment"> | string | null
+    fileName?: StringFilter<"GrantAttachment"> | string
+    mimeType?: StringNullableFilter<"GrantAttachment"> | string | null
+    description?: StringNullableFilter<"GrantAttachment"> | string | null
+    url?: StringNullableFilter<"GrantAttachment"> | string | null
+    sizeBytes?: IntNullableFilter<"GrantAttachment"> | number | null
+    createdAt?: DateTimeFilter<"GrantAttachment"> | Date | string
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }
+
+  export type GrantAttachmentOrderByWithRelationInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    upstreamId?: SortOrderInput | SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    url?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    grant?: GrantOrderByWithRelationInput
+  }
+
+  export type GrantAttachmentWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    grantId_upstreamId?: GrantAttachmentGrantIdUpstreamIdCompoundUniqueInput
+    AND?: GrantAttachmentWhereInput | GrantAttachmentWhereInput[]
+    OR?: GrantAttachmentWhereInput[]
+    NOT?: GrantAttachmentWhereInput | GrantAttachmentWhereInput[]
+    grantId?: StringFilter<"GrantAttachment"> | string
+    upstreamId?: StringNullableFilter<"GrantAttachment"> | string | null
+    fileName?: StringFilter<"GrantAttachment"> | string
+    mimeType?: StringNullableFilter<"GrantAttachment"> | string | null
+    description?: StringNullableFilter<"GrantAttachment"> | string | null
+    url?: StringNullableFilter<"GrantAttachment"> | string | null
+    sizeBytes?: IntNullableFilter<"GrantAttachment"> | number | null
+    createdAt?: DateTimeFilter<"GrantAttachment"> | Date | string
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }, "id" | "grantId_upstreamId">
+
+  export type GrantAttachmentOrderByWithAggregationInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    upstreamId?: SortOrderInput | SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrderInput | SortOrder
+    description?: SortOrderInput | SortOrder
+    url?: SortOrderInput | SortOrder
+    sizeBytes?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    _count?: GrantAttachmentCountOrderByAggregateInput
+    _avg?: GrantAttachmentAvgOrderByAggregateInput
+    _max?: GrantAttachmentMaxOrderByAggregateInput
+    _min?: GrantAttachmentMinOrderByAggregateInput
+    _sum?: GrantAttachmentSumOrderByAggregateInput
+  }
+
+  export type GrantAttachmentScalarWhereWithAggregatesInput = {
+    AND?: GrantAttachmentScalarWhereWithAggregatesInput | GrantAttachmentScalarWhereWithAggregatesInput[]
+    OR?: GrantAttachmentScalarWhereWithAggregatesInput[]
+    NOT?: GrantAttachmentScalarWhereWithAggregatesInput | GrantAttachmentScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GrantAttachment"> | string
+    grantId?: StringWithAggregatesFilter<"GrantAttachment"> | string
+    upstreamId?: StringNullableWithAggregatesFilter<"GrantAttachment"> | string | null
+    fileName?: StringWithAggregatesFilter<"GrantAttachment"> | string
+    mimeType?: StringNullableWithAggregatesFilter<"GrantAttachment"> | string | null
+    description?: StringNullableWithAggregatesFilter<"GrantAttachment"> | string | null
+    url?: StringNullableWithAggregatesFilter<"GrantAttachment"> | string | null
+    sizeBytes?: IntNullableWithAggregatesFilter<"GrantAttachment"> | number | null
+    createdAt?: DateTimeWithAggregatesFilter<"GrantAttachment"> | Date | string
   }
 
   export type GrantImportRunWhereInput = {
@@ -16285,6 +17756,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
   }
 
@@ -16323,6 +17795,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
   }
 
@@ -16361,6 +17834,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
   }
 
@@ -16399,6 +17873,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
   }
 
@@ -16512,11 +17987,17 @@ export namespace Prisma {
 
   export type GrantDetailCreateInput = {
     id?: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonNullValueInput | InputJsonValue
-    fundingDetails: JsonNullValueInput | InputJsonValue
+    title?: string | null
+    purpose?: string | null
+    description?: string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: string | null
+    applicantEligibilityDesc?: string | null
+    fundingDescLinkUrl?: string | null
+    responseDateDesc?: string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
     grant: GrantCreateNestedOneWithoutDetailsInput
@@ -16524,11 +18005,17 @@ export namespace Prisma {
 
   export type GrantDetailUncheckedCreateInput = {
     id?: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonNullValueInput | InputJsonValue
-    fundingDetails: JsonNullValueInput | InputJsonValue
+    title?: string | null
+    purpose?: string | null
+    description?: string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: string | null
+    applicantEligibilityDesc?: string | null
+    fundingDescLinkUrl?: string | null
+    responseDateDesc?: string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: Date | string | null
     grantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16536,11 +18023,17 @@ export namespace Prisma {
 
   export type GrantDetailUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     grant?: GrantUpdateOneRequiredWithoutDetailsNestedInput
@@ -16548,11 +18041,17 @@ export namespace Prisma {
 
   export type GrantDetailUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -16560,11 +18059,17 @@ export namespace Prisma {
 
   export type GrantDetailCreateManyInput = {
     id?: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonNullValueInput | InputJsonValue
-    fundingDetails: JsonNullValueInput | InputJsonValue
+    title?: string | null
+    purpose?: string | null
+    description?: string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: string | null
+    applicantEligibilityDesc?: string | null
+    fundingDescLinkUrl?: string | null
+    responseDateDesc?: string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: Date | string | null
     grantId: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -16572,25 +18077,120 @@ export namespace Prisma {
 
   export type GrantDetailUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GrantDetailUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     grantId?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentCreateInput = {
+    id?: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+    grant: GrantCreateNestedOneWithoutAttachmentsInput
+  }
+
+  export type GrantAttachmentUncheckedCreateInput = {
+    id?: string
+    grantId: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+  }
+
+  export type GrantAttachmentUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grant?: GrantUpdateOneRequiredWithoutAttachmentsNestedInput
+  }
+
+  export type GrantAttachmentUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentCreateManyInput = {
+    id?: string
+    grantId: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+  }
+
+  export type GrantAttachmentUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GrantImportRunCreateInput = {
@@ -17491,10 +19091,20 @@ export namespace Prisma {
     isNot?: GrantDetailWhereInput | null
   }
 
+  export type GrantAttachmentListRelationFilter = {
+    every?: GrantAttachmentWhereInput
+    some?: GrantAttachmentWhereInput
+    none?: GrantAttachmentWhereInput
+  }
+
   export type GrantChangeListRelationFilter = {
     every?: GrantChangeWhereInput
     some?: GrantChangeWhereInput
     none?: GrantChangeWhereInput
+  }
+
+  export type GrantAttachmentOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type GrantChangeOrderByRelationAggregateInput = {
@@ -17745,29 +19355,6 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
-  export type JsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type GrantScalarRelationFilter = {
     is?: GrantWhereInput
@@ -17781,6 +19368,12 @@ export namespace Prisma {
     description?: SortOrder
     eligibilityRequirements?: SortOrder
     fundingDetails?: SortOrder
+    synopsisHtml?: SortOrder
+    applicantEligibilityDesc?: SortOrder
+    fundingDescLinkUrl?: SortOrder
+    responseDateDesc?: SortOrder
+    rawJson?: SortOrder
+    fetchedAt?: SortOrder
     grantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17791,6 +19384,11 @@ export namespace Prisma {
     title?: SortOrder
     purpose?: SortOrder
     description?: SortOrder
+    synopsisHtml?: SortOrder
+    applicantEligibilityDesc?: SortOrder
+    fundingDescLinkUrl?: SortOrder
+    responseDateDesc?: SortOrder
+    fetchedAt?: SortOrder
     grantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -17801,35 +19399,63 @@ export namespace Prisma {
     title?: SortOrder
     purpose?: SortOrder
     description?: SortOrder
+    synopsisHtml?: SortOrder
+    applicantEligibilityDesc?: SortOrder
+    fundingDescLinkUrl?: SortOrder
+    responseDateDesc?: SortOrder
+    fetchedAt?: SortOrder
     grantId?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
   }
-  export type JsonWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
 
-  export type JsonWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedJsonFilter<$PrismaModel>
-    _max?: NestedJsonFilter<$PrismaModel>
+  export type GrantAttachmentGrantIdUpstreamIdCompoundUniqueInput = {
+    grantId: string
+    upstreamId: string
+  }
+
+  export type GrantAttachmentCountOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    upstreamId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GrantAttachmentAvgOrderByAggregateInput = {
+    sizeBytes?: SortOrder
+  }
+
+  export type GrantAttachmentMaxOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    upstreamId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GrantAttachmentMinOrderByAggregateInput = {
+    id?: SortOrder
+    grantId?: SortOrder
+    upstreamId?: SortOrder
+    fileName?: SortOrder
+    mimeType?: SortOrder
+    description?: SortOrder
+    url?: SortOrder
+    sizeBytes?: SortOrder
+    createdAt?: SortOrder
+  }
+
+  export type GrantAttachmentSumOrderByAggregateInput = {
+    sizeBytes?: SortOrder
   }
 
   export type EnumImportStatusFilter<$PrismaModel = never> = {
@@ -18309,6 +19935,13 @@ export namespace Prisma {
     connect?: GrantDetailWhereUniqueInput
   }
 
+  export type GrantAttachmentCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput> | GrantAttachmentCreateWithoutGrantInput[] | GrantAttachmentUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantAttachmentCreateOrConnectWithoutGrantInput | GrantAttachmentCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantAttachmentCreateManyGrantInputEnvelope
+    connect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+  }
+
   export type GrantChangeCreateNestedManyWithoutGrantInput = {
     create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
     connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
@@ -18320,6 +19953,13 @@ export namespace Prisma {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
     connect?: GrantDetailWhereUniqueInput
+  }
+
+  export type GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput> | GrantAttachmentCreateWithoutGrantInput[] | GrantAttachmentUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantAttachmentCreateOrConnectWithoutGrantInput | GrantAttachmentCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantAttachmentCreateManyGrantInputEnvelope
+    connect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
   }
 
   export type GrantChangeUncheckedCreateNestedManyWithoutGrantInput = {
@@ -18371,6 +20011,20 @@ export namespace Prisma {
     update?: XOR<XOR<GrantDetailUpdateToOneWithWhereWithoutGrantInput, GrantDetailUpdateWithoutGrantInput>, GrantDetailUncheckedUpdateWithoutGrantInput>
   }
 
+  export type GrantAttachmentUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput> | GrantAttachmentCreateWithoutGrantInput[] | GrantAttachmentUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantAttachmentCreateOrConnectWithoutGrantInput | GrantAttachmentCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantAttachmentUpsertWithWhereUniqueWithoutGrantInput | GrantAttachmentUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantAttachmentCreateManyGrantInputEnvelope
+    set?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    disconnect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    delete?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    connect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    update?: GrantAttachmentUpdateWithWhereUniqueWithoutGrantInput | GrantAttachmentUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantAttachmentUpdateManyWithWhereWithoutGrantInput | GrantAttachmentUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantAttachmentScalarWhereInput | GrantAttachmentScalarWhereInput[]
+  }
+
   export type GrantChangeUpdateManyWithoutGrantNestedInput = {
     create?: XOR<GrantChangeCreateWithoutGrantInput, GrantChangeUncheckedCreateWithoutGrantInput> | GrantChangeCreateWithoutGrantInput[] | GrantChangeUncheckedCreateWithoutGrantInput[]
     connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
@@ -18393,6 +20047,20 @@ export namespace Prisma {
     delete?: GrantDetailWhereInput | boolean
     connect?: GrantDetailWhereUniqueInput
     update?: XOR<XOR<GrantDetailUpdateToOneWithWhereWithoutGrantInput, GrantDetailUpdateWithoutGrantInput>, GrantDetailUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput> | GrantAttachmentCreateWithoutGrantInput[] | GrantAttachmentUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantAttachmentCreateOrConnectWithoutGrantInput | GrantAttachmentCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantAttachmentUpsertWithWhereUniqueWithoutGrantInput | GrantAttachmentUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantAttachmentCreateManyGrantInputEnvelope
+    set?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    disconnect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    delete?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    connect?: GrantAttachmentWhereUniqueInput | GrantAttachmentWhereUniqueInput[]
+    update?: GrantAttachmentUpdateWithWhereUniqueWithoutGrantInput | GrantAttachmentUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantAttachmentUpdateManyWithWhereWithoutGrantInput | GrantAttachmentUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantAttachmentScalarWhereInput | GrantAttachmentScalarWhereInput[]
   }
 
   export type GrantChangeUncheckedUpdateManyWithoutGrantNestedInput = {
@@ -18421,6 +20089,20 @@ export namespace Prisma {
     upsert?: GrantUpsertWithoutDetailsInput
     connect?: GrantWhereUniqueInput
     update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutDetailsInput, GrantUpdateWithoutDetailsInput>, GrantUncheckedUpdateWithoutDetailsInput>
+  }
+
+  export type GrantCreateNestedOneWithoutAttachmentsInput = {
+    create?: XOR<GrantCreateWithoutAttachmentsInput, GrantUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutAttachmentsInput
+    connect?: GrantWhereUniqueInput
+  }
+
+  export type GrantUpdateOneRequiredWithoutAttachmentsNestedInput = {
+    create?: XOR<GrantCreateWithoutAttachmentsInput, GrantUncheckedCreateWithoutAttachmentsInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutAttachmentsInput
+    upsert?: GrantUpsertWithoutAttachmentsInput
+    connect?: GrantWhereUniqueInput
+    update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutAttachmentsInput, GrantUpdateWithoutAttachmentsInput>, GrantUncheckedUpdateWithoutAttachmentsInput>
   }
 
   export type UserCreateNestedOneWithoutGrantImportRunsInput = {
@@ -19068,29 +20750,6 @@ export namespace Prisma {
     _min?: NestedDateTimeFilter<$PrismaModel>
     _max?: NestedDateTimeFilter<$PrismaModel>
   }
-  export type NestedJsonFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string[]
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    lte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gt?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    gte?: InputJsonValue | JsonFieldRefInput<$PrismaModel>
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
 
   export type NestedEnumImportStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ImportStatus | EnumImportStatusFieldRefInput<$PrismaModel>
@@ -19256,22 +20915,34 @@ export namespace Prisma {
 
   export type GrantDetailCreateWithoutGrantInput = {
     id?: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonNullValueInput | InputJsonValue
-    fundingDetails: JsonNullValueInput | InputJsonValue
+    title?: string | null
+    purpose?: string | null
+    description?: string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: string | null
+    applicantEligibilityDesc?: string | null
+    fundingDescLinkUrl?: string | null
+    responseDateDesc?: string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
 
   export type GrantDetailUncheckedCreateWithoutGrantInput = {
     id?: string
-    title: string
-    purpose: string
-    description: string
-    eligibilityRequirements: JsonNullValueInput | InputJsonValue
-    fundingDetails: JsonNullValueInput | InputJsonValue
+    title?: string | null
+    purpose?: string | null
+    description?: string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: string | null
+    applicantEligibilityDesc?: string | null
+    fundingDescLinkUrl?: string | null
+    responseDateDesc?: string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
   }
@@ -19279,6 +20950,38 @@ export namespace Prisma {
   export type GrantDetailCreateOrConnectWithoutGrantInput = {
     where: GrantDetailWhereUniqueInput
     create: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantAttachmentCreateWithoutGrantInput = {
+    id?: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+  }
+
+  export type GrantAttachmentUncheckedCreateWithoutGrantInput = {
+    id?: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+  }
+
+  export type GrantAttachmentCreateOrConnectWithoutGrantInput = {
+    where: GrantAttachmentWhereUniqueInput
+    create: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantAttachmentCreateManyGrantInputEnvelope = {
+    data: GrantAttachmentCreateManyGrantInput | GrantAttachmentCreateManyGrantInput[]
+    skipDuplicates?: boolean
   }
 
   export type GrantChangeCreateWithoutGrantInput = {
@@ -19324,24 +21027,67 @@ export namespace Prisma {
 
   export type GrantDetailUpdateWithoutGrantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GrantDetailUncheckedUpdateWithoutGrantInput = {
     id?: StringFieldUpdateOperationsInput | string
-    title?: StringFieldUpdateOperationsInput | string
-    purpose?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
-    eligibilityRequirements?: JsonNullValueInput | InputJsonValue
-    fundingDetails?: JsonNullValueInput | InputJsonValue
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibilityRequirements?: NullableJsonNullValueInput | InputJsonValue
+    fundingDetails?: NullableJsonNullValueInput | InputJsonValue
+    synopsisHtml?: NullableStringFieldUpdateOperationsInput | string | null
+    applicantEligibilityDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    fundingDescLinkUrl?: NullableStringFieldUpdateOperationsInput | string | null
+    responseDateDesc?: NullableStringFieldUpdateOperationsInput | string | null
+    rawJson?: NullableJsonNullValueInput | InputJsonValue
+    fetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentUpsertWithWhereUniqueWithoutGrantInput = {
+    where: GrantAttachmentWhereUniqueInput
+    update: XOR<GrantAttachmentUpdateWithoutGrantInput, GrantAttachmentUncheckedUpdateWithoutGrantInput>
+    create: XOR<GrantAttachmentCreateWithoutGrantInput, GrantAttachmentUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantAttachmentUpdateWithWhereUniqueWithoutGrantInput = {
+    where: GrantAttachmentWhereUniqueInput
+    data: XOR<GrantAttachmentUpdateWithoutGrantInput, GrantAttachmentUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantAttachmentUpdateManyWithWhereWithoutGrantInput = {
+    where: GrantAttachmentScalarWhereInput
+    data: XOR<GrantAttachmentUpdateManyMutationInput, GrantAttachmentUncheckedUpdateManyWithoutGrantInput>
+  }
+
+  export type GrantAttachmentScalarWhereInput = {
+    AND?: GrantAttachmentScalarWhereInput | GrantAttachmentScalarWhereInput[]
+    OR?: GrantAttachmentScalarWhereInput[]
+    NOT?: GrantAttachmentScalarWhereInput | GrantAttachmentScalarWhereInput[]
+    id?: StringFilter<"GrantAttachment"> | string
+    grantId?: StringFilter<"GrantAttachment"> | string
+    upstreamId?: StringNullableFilter<"GrantAttachment"> | string | null
+    fileName?: StringFilter<"GrantAttachment"> | string
+    mimeType?: StringNullableFilter<"GrantAttachment"> | string | null
+    description?: StringNullableFilter<"GrantAttachment"> | string | null
+    url?: StringNullableFilter<"GrantAttachment"> | string | null
+    sizeBytes?: IntNullableFilter<"GrantAttachment"> | number | null
+    createdAt?: DateTimeFilter<"GrantAttachment"> | Date | string
   }
 
   export type GrantChangeUpsertWithWhereUniqueWithoutGrantInput = {
@@ -19408,6 +21154,7 @@ export namespace Prisma {
     closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
   }
 
@@ -19445,6 +21192,7 @@ export namespace Prisma {
     closedAt?: Date | string | null
     createdAt?: Date | string
     updatedAt?: Date | string
+    attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
   }
 
@@ -19498,6 +21246,7 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
   }
 
@@ -19535,6 +21284,175 @@ export namespace Prisma {
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
+    changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+  }
+
+  export type GrantCreateWithoutAttachmentsInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailCreateNestedOneWithoutGrantInput
+    changes?: GrantChangeCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantUncheckedCreateWithoutAttachmentsInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantCreateOrConnectWithoutAttachmentsInput = {
+    where: GrantWhereUniqueInput
+    create: XOR<GrantCreateWithoutAttachmentsInput, GrantUncheckedCreateWithoutAttachmentsInput>
+  }
+
+  export type GrantUpsertWithoutAttachmentsInput = {
+    update: XOR<GrantUpdateWithoutAttachmentsInput, GrantUncheckedUpdateWithoutAttachmentsInput>
+    create: XOR<GrantCreateWithoutAttachmentsInput, GrantUncheckedCreateWithoutAttachmentsInput>
+    where?: GrantWhereInput
+  }
+
+  export type GrantUpdateToOneWithWhereWithoutAttachmentsInput = {
+    where?: GrantWhereInput
+    data: XOR<GrantUpdateWithoutAttachmentsInput, GrantUncheckedUpdateWithoutAttachmentsInput>
+  }
+
+  export type GrantUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+  }
+
+  export type GrantUncheckedUpdateWithoutAttachmentsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
   }
 
@@ -20259,6 +22177,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutChangesInput = {
@@ -20296,6 +22215,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutChangesInput = {
@@ -20386,6 +22306,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutChangesInput = {
@@ -20423,6 +22344,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantSyncRunUpsertWithoutChangesInput = {
@@ -20468,6 +22390,17 @@ export namespace Prisma {
     schemaJson?: NullableJsonNullValueInput | InputJsonValue
   }
 
+  export type GrantAttachmentCreateManyGrantInput = {
+    id?: string
+    upstreamId?: string | null
+    fileName: string
+    mimeType?: string | null
+    description?: string | null
+    url?: string | null
+    sizeBytes?: number | null
+    createdAt?: Date | string
+  }
+
   export type GrantChangeCreateManyGrantInput = {
     id?: string
     runId: string
@@ -20476,6 +22409,39 @@ export namespace Prisma {
     newHash?: string | null
     diffJson?: NullableJsonNullValueInput | InputJsonValue
     observedAt?: Date | string
+  }
+
+  export type GrantAttachmentUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentUncheckedUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantAttachmentUncheckedUpdateManyWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    upstreamId?: NullableStringFieldUpdateOperationsInput | string | null
+    fileName?: StringFieldUpdateOperationsInput | string
+    mimeType?: NullableStringFieldUpdateOperationsInput | string | null
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    url?: NullableStringFieldUpdateOperationsInput | string | null
+    sizeBytes?: NullableIntFieldUpdateOperationsInput | number | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type GrantChangeUpdateWithoutGrantInput = {

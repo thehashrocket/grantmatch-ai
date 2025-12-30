@@ -239,10 +239,10 @@ async function upsertGrantDetail(
       data: {
         title: details.title ?? existing.title ?? fallbackTitle,
         purpose: details.purpose ?? existing.purpose ?? fallbackTitle,
-        description: details.description ?? existing.description ?? '',
+        description: details.description ?? existing.description ?? null,
         eligibilityRequirements:
-          (details.eligibilityRequirements ?? existing.eligibilityRequirements ?? {}) as Prisma.InputJsonValue,
-        fundingDetails: (details.fundingDetails ?? existing.fundingDetails ?? {}) as Prisma.InputJsonValue,
+          (details.eligibilityRequirements ?? existing.eligibilityRequirements ?? null) as Prisma.InputJsonValue,
+        fundingDetails: (details.fundingDetails ?? existing.fundingDetails ?? null) as Prisma.InputJsonValue,
       },
     });
   }
@@ -251,9 +251,9 @@ async function upsertGrantDetail(
       grantId,
       title: details.title ?? fallbackTitle,
       purpose: details.purpose ?? details.title ?? fallbackTitle,
-      description: details.description ?? '',
-      eligibilityRequirements: (details.eligibilityRequirements ?? {}) as Prisma.InputJsonValue,
-      fundingDetails: (details.fundingDetails ?? {}) as Prisma.InputJsonValue,
+      description: details.description ?? null,
+      eligibilityRequirements: (details.eligibilityRequirements ?? null) as Prisma.InputJsonValue,
+      fundingDetails: (details.fundingDetails ?? null) as Prisma.InputJsonValue,
     },
   });
 }

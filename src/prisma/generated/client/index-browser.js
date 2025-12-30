@@ -178,9 +178,27 @@ exports.Prisma.GrantDetailScalarFieldEnum = {
   description: 'description',
   eligibilityRequirements: 'eligibilityRequirements',
   fundingDetails: 'fundingDetails',
+  synopsisHtml: 'synopsisHtml',
+  applicantEligibilityDesc: 'applicantEligibilityDesc',
+  fundingDescLinkUrl: 'fundingDescLinkUrl',
+  responseDateDesc: 'responseDateDesc',
+  rawJson: 'rawJson',
+  fetchedAt: 'fetchedAt',
   grantId: 'grantId',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GrantAttachmentScalarFieldEnum = {
+  id: 'id',
+  grantId: 'grantId',
+  upstreamId: 'upstreamId',
+  fileName: 'fileName',
+  mimeType: 'mimeType',
+  description: 'description',
+  url: 'url',
+  sizeBytes: 'sizeBytes',
+  createdAt: 'createdAt'
 };
 
 exports.Prisma.GrantImportRunScalarFieldEnum = {
@@ -283,10 +301,6 @@ exports.Prisma.NullableJsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
-exports.Prisma.JsonNullValueInput = {
-  JsonNull: Prisma.JsonNull
-};
-
 exports.Prisma.QueryMode = {
   default: 'default',
   insensitive: 'insensitive'
@@ -355,6 +369,7 @@ exports.Prisma.ModelName = {
   Account: 'Account',
   Grant: 'Grant',
   GrantDetail: 'GrantDetail',
+  GrantAttachment: 'GrantAttachment',
   GrantImportRun: 'GrantImportRun',
   Session: 'Session',
   User: 'User',

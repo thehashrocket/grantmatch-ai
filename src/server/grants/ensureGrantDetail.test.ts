@@ -17,6 +17,9 @@ const fetchMock = vi.fn(async () => ({
 	grantPatch: {},
 }));
 
+const parseCalls = (spy: ReturnType<typeof vi.spyOn>) =>
+	spy.mock.calls.map(([line]) => JSON.parse(String(line)));
+
 vi.mock('@/server/grants/details/fetchers', () => ({
 	getDetailFetcher: vi.fn(() => ({
 		endpoint: 'test-endpoint',
@@ -138,15 +141,24 @@ function createPrismaMock(grant: GrantWithRelations): PrismaClient {
 
 describe('ensureGrantDetail concurrency guards', () => {
 	const now = new Date('2025-01-01T00:00:00Z');
+	let infoSpy: ReturnType<typeof vi.spyOn>;
+	let warnSpy: ReturnType<typeof vi.spyOn>;
+	let errorSpy: ReturnType<typeof vi.spyOn>;
 
 	beforeEach(() => {
 		vi.useFakeTimers();
 		vi.setSystemTime(now);
 		fetchMock.mockClear();
+		infoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+		warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
+		errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 	});
 
 	afterEach(() => {
 		vi.useRealTimers();
+		infoSpy.mockRestore();
+		warnSpy.mockRestore();
+		errorSpy.mockRestore();
 	});
 
 	it('skips fetch when status is AVAILABLE', async () => {
@@ -266,7 +278,7 @@ describe('ensureGrantDetail concurrency guards', () => {
 		const prisma = createPrismaMock(grant);
 
 		const queryRawSpy = prisma.$queryRaw as ReturnType<typeof vi.fn>;
-		queryRawSpy.mockImplementationOnce(async () => [{ id: grant.id }]);
+		queryRawSpy.mockImplementationOnce(async () => [{ id: grant.id, prevStatus: grant.detailsStatus }]);
 		queryRawSpy.mockImplementationOnce(async () => []);
 
 		const [resultA, resultB] = await Promise.all([
@@ -278,5 +290,25 @@ describe('ensureGrantDetail concurrency guards', () => {
 		expect(fetchedCount).toBe(1);
 		expect(fetchMock).toHaveBeenCalledTimes(1);
 		expect(queryRawSpy).toHaveBeenCalledTimes(2);
+
+		const infoLogs = parseCalls(infoSpy);
+		const warnLogs = parseCalls(warnSpy);
+		expect(infoLogs.filter((l) => l.decision === 'claim_success')).toHaveLength(1);
+		expect(warnLogs.filter((l) => l.decision === 'claim_miss')).toHaveLength(1);
+	});
+
+	it('logs prevStatus from claim on failure', async () => {
+		const grant = baseGrant();
+		const prisma = createPrismaMock(grant);
+		const queryRawSpy = prisma.$queryRaw as ReturnType<typeof vi.fn>;
+		queryRawSpy.mockImplementation(async () => [{ id: grant.id, prevStatus: 'FETCHING' }]);
+		fetchMock.mockRejectedValueOnce(new Error('network fail'));
+
+		await ensureGrantDetail(prisma, grant.id);
+
+		const errorLogs = parseCalls(errorSpy);
+		const failedLog = errorLogs.find((l) => l.decision === 'fetch_failed');
+		expect(failedLog?.prevStatus).toBe('FETCHING');
+		expect(String(failedLog?.error)).toContain('network fail');
 	});
 });

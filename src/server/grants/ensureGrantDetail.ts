@@ -18,42 +18,77 @@ export const FAILED_RETRY_TTL_MS = 1000 * 60 * 60 * 6;
 
 type EnsureOpts = { timeoutMs?: number; force?: boolean };
 
+function toOneLineJson(payload: Record<string, unknown>): string {
+	try {
+		return JSON.stringify(payload);
+	} catch {
+		return JSON.stringify({
+			event: 'grant_details.ensure',
+			decision: 'serialize_failed',
+		});
+	}
+}
+
+function logEnsure(
+	level: 'info' | 'warn' | 'error',
+	payload: Record<string, unknown>,
+) {
+	const line = toOneLineJson(payload);
+	if (level === 'info') console.info(line);
+	else if (level === 'warn') console.warn(line);
+	else console.error(line);
+}
+
+// Uses detailsFetchedAt as the FETCHING heartbeat; stale values allow reclaim.
 async function atomicClaimGrantDetailFetch(
 	prisma: PrismaClient,
 	grantId: string,
 	now: Date,
 	staleBoundary: Date,
 	failedRetryBoundary: Date,
-): Promise<boolean> {
-	const rows = await prisma.$queryRaw<{ id: string }[]>(Prisma.sql`
-    UPDATE "Grant"
+): Promise<{ claimed: boolean; prevStatus: string | null }> {
+	// CTE locks eligible row; SKIP LOCKED ensures concurrent callers don’t block and only one claims.
+	const rows = await prisma.$queryRaw<{ id: string; prevStatus: string | null }[]>(Prisma.sql`
+    WITH eligible AS (
+      SELECT "id", "detailsStatus" AS "prevStatus"
+      FROM "Grant"
+      WHERE
+        "id" = ${grantId}
+        AND (
+          "detailsStatus" IS NULL
+          OR "detailsStatus" = 'UNKNOWN'
+          OR (
+            "detailsStatus" = 'FAILED'
+            AND ("detailsErrorAt" IS NULL OR "detailsErrorAt" < ${failedRetryBoundary})
+          )
+          OR (
+            "detailsStatus" = 'FETCHING'
+            AND (
+              "detailsFetchedAt" IS NULL
+              OR "detailsFetchedAt" < ${staleBoundary}
+            )
+          )
+        )
+      ORDER BY "id"
+      FOR UPDATE SKIP LOCKED
+      LIMIT 1
+    )
+    UPDATE "Grant" AS g
     SET
       "detailsStatus" = 'FETCHING',
       "detailsFetchedAt" = ${now},
       "detailsError" = NULL,
       "detailsErrorAt" = NULL
-    WHERE
-      "id" = ${grantId}
-      AND (
-        "detailsStatus" IS NULL
-        OR "detailsStatus" = 'UNKNOWN'
-        OR (
-          "detailsStatus" = 'FAILED'
-          AND "detailsErrorAt" IS NOT NULL
-          AND "detailsErrorAt" < ${failedRetryBoundary}
-        )
-        OR (
-          "detailsStatus" = 'FETCHING'
-          AND (
-            "detailsFetchedAt" IS NULL
-            OR "detailsFetchedAt" < ${staleBoundary}
-          )
-        )
-      )
-    RETURNING "id"
+    FROM eligible
+    WHERE g."id" = eligible."id"
+    RETURNING eligible."prevStatus" AS "prevStatus", eligible."id" AS "id"
   `);
 
-	return rows.length > 0;
+	if (!rows.length) {
+		return { claimed: false, prevStatus: null };
+	}
+
+	return { claimed: true, prevStatus: rows[0].prevStatus ?? null };
 }
 
 export async function ensureGrantDetail(
@@ -61,6 +96,7 @@ export async function ensureGrantDetail(
 	grantId: string,
 	opts: EnsureOpts = {},
 ): Promise<{ fetched: boolean; error?: string }> {
+	const t0 = Date.now();
 	const grant = await prisma.grant.findUnique({
 		where: { id: grantId },
 		include: { details: true, attachments: true },
@@ -69,8 +105,22 @@ export async function ensureGrantDetail(
 	if (!grant) return { fetched: false, error: 'not found' };
 
 	const now = new Date();
+	const force = opts.force ?? false;
 
 	if (grant.detailsStatus === $Enums.GrantDetailsStatus.AVAILABLE) {
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'skip_available',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'status_available',
+			status: grant.detailsStatus ?? null,
+			prevStatus: grant.detailsStatus ?? null,
+			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			force,
+		});
 		return { fetched: false };
 	}
 
@@ -79,6 +129,19 @@ export async function ensureGrantDetail(
 		grant.detailsFetchedAt &&
 		now.getTime() - grant.detailsFetchedAt.getTime() < FETCH_STALE_MS
 	) {
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'skip_fetching_recent',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'fetching_recent',
+			status: grant.detailsStatus ?? null,
+			prevStatus: grant.detailsStatus ?? null,
+			detailsFetchedAt: grant.detailsFetchedAt.toISOString(),
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			force,
+		});
 		return { fetched: false };
 	}
 
@@ -87,6 +150,20 @@ export async function ensureGrantDetail(
 		grant.detailsErrorAt &&
 		now.getTime() - grant.detailsErrorAt.getTime() < FAILED_RETRY_TTL_MS
 	) {
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'skip_failed_recent',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'failed_recent',
+			status: grant.detailsStatus ?? null,
+			prevStatus: grant.detailsStatus ?? null,
+			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt.toISOString(),
+			error: (grant.detailsError ?? '').slice(0, 500) || undefined,
+			force,
+		});
 		return { fetched: false, error: grant.detailsError ?? 'previous failure' };
 	}
 
@@ -94,10 +171,25 @@ export async function ensureGrantDetail(
 	const fetchedAt = grant.details?.fetchedAt;
 	const isStale = !fetchedAt || Date.now() - fetchedAt.getTime() > ttl;
 	if (
-		!opts.force &&
+		!force &&
 		!isStale &&
 		grant.detailsStatus !== $Enums.GrantDetailsStatus.FAILED
 	) {
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'skip_not_stale',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'details_fresh',
+			status: grant.detailsStatus ?? null,
+			prevStatus: grant.detailsStatus ?? null,
+			detailsFetchedAt: fetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			ttlMs: ttl,
+			isStale: false,
+			force,
+		});
 		return { fetched: false };
 	}
 
@@ -114,15 +206,41 @@ export async function ensureGrantDetail(
 					},
 				})
 				.catch(() => {});
+			logEnsure('info', {
+				event: 'grant_details.ensure',
+				decision: 'skip_non_federal_mark_available',
+				grantId,
+				source: grant.source,
+				now: now.toISOString(),
+				reason: 'non_federal_existing_details',
+				status: grant.detailsStatus ?? null,
+				prevStatus: grant.detailsStatus ?? null,
+				detailsFetchedAt: grant.details.fetchedAt?.toISOString() ?? null,
+				detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+				force,
+			});
 			return { fetched: false };
 		}
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'skip_non_federal_no_details',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'non_federal_no_details',
+			status: grant.detailsStatus ?? null,
+			prevStatus: grant.detailsStatus ?? null,
+			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			force,
+		});
 		return { fetched: false };
 	}
 
 	const staleBoundary = new Date(now.getTime() - FETCH_STALE_MS);
 	const failedRetryBoundary = new Date(now.getTime() - FAILED_RETRY_TTL_MS);
 
-	const claimed = await atomicClaimGrantDetailFetch(
+	const { claimed, prevStatus } = await atomicClaimGrantDetailFetch(
 		prisma,
 		grantId,
 		now,
@@ -131,15 +249,48 @@ export async function ensureGrantDetail(
 	);
 
 	if (!claimed) {
+		logEnsure('warn', {
+			event: 'grant_details.ensure',
+			decision: 'claim_miss',
+			grantId,
+			source: grant.source,
+			now: now.toISOString(),
+			reason: 'not_eligible_or_locked',
+			status: grant.detailsStatus ?? null,
+			prevStatus,
+			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			force,
+			staleBoundary: staleBoundary.toISOString(),
+			failedRetryBoundary: failedRetryBoundary.toISOString(),
+		});
 		return { fetched: false };
 	}
+
+	logEnsure('info', {
+		event: 'grant_details.ensure',
+		decision: 'claim_success',
+		grantId,
+		source: grant.source,
+		now: now.toISOString(),
+		reason: 'claimed',
+		status: grant.detailsStatus ?? null,
+		prevStatus,
+		detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+		detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+		force,
+		staleBoundary: staleBoundary.toISOString(),
+		failedRetryBoundary: failedRetryBoundary.toISOString(),
+	});
 
 	let runId: string | null = null;
 	let fetcher: ReturnType<typeof getDetailFetcher> | null = null;
 	const observedAt = now;
+	let tFetch0: number | null = null;
 
 	try {
 		fetcher = getDetailFetcher(grant.source);
+		tFetch0 = Date.now();
 
 		const run = await prisma.grantSyncRun.create({
 			data: {
@@ -285,10 +436,33 @@ export async function ensureGrantDetail(
 			},
 		});
 
+		const fetchMs = tFetch0 ? Date.now() - tFetch0 : 0;
+		const totalMs = Date.now() - t0;
+		logEnsure('info', {
+			event: 'grant_details.ensure',
+			decision: 'fetch_success',
+			grantId,
+			source: grant.source,
+			now: new Date().toISOString(),
+			reason: 'ok',
+			status: grant.detailsStatus ?? null,
+			prevStatus,
+			detailsFetchedAt: (detailData.fetchedAt ?? observedAt).toISOString(),
+			detailsErrorAt: null,
+			force,
+			fetchMs,
+			totalMs,
+			attachmentsCount: result.attachments.length,
+			hasGrantPatch:
+				!!(result.grantPatch && Object.keys(result.grantPatch).length),
+		});
+
 		return { fetched: true };
 	} catch (error: unknown) {
 		const message = error instanceof Error ? error.message : String(error);
 		const truncatedMessage = message.slice(0, 500);
+		const fetchMs = tFetch0 ? Date.now() - tFetch0 : 0;
+		const totalMs = Date.now() - t0;
 
 		await prisma.grant
 			.update({
@@ -314,8 +488,8 @@ export async function ensureGrantDetail(
 						source: grant.source,
 						endpoint: fetcher?.endpoint ?? 'unknown',
 						status: {
-							from: grant.detailsStatus,
-							to: $Enums.GrantDetailsStatus.FAILED,
+							from: prevStatus ?? grant.detailsStatus ?? null,
+							to: 'FAILED',
 						},
 					} as Prisma.InputJsonValue,
 					observedAt,
@@ -331,6 +505,23 @@ export async function ensureGrantDetail(
 				},
 			});
 		}
+
+		logEnsure('error', {
+			event: 'grant_details.ensure',
+			decision: 'fetch_failed',
+			grantId,
+			source: grant.source,
+			now: new Date().toISOString(),
+			reason: 'exception',
+			status: grant.detailsStatus ?? null,
+			prevStatus,
+			detailsFetchedAt: grant.detailsFetchedAt?.toISOString() ?? null,
+			detailsErrorAt: grant.detailsErrorAt?.toISOString() ?? null,
+			force,
+			fetchMs,
+			totalMs,
+			error: truncatedMessage,
+		});
 
 		return { fetched: false, error: message };
 	}

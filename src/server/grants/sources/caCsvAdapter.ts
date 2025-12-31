@@ -12,7 +12,7 @@ import { $Enums } from '@/prisma/generated/client';
 
 const DEFAULT_RESOURCE_ID =
 	process.env.CA_CKAN_RESOURCE_ID ?? '111c8c88-21f6-453c-ae2c-b4785a0624f5';
-const DEFAULT_LIMIT = parseInt(process.env.CA_CKAN_LIMIT ?? '500', 10) || 500;
+const DEFAULT_LIMIT = parseInt(process.env.CA_CKAN_LIMIT ?? '200', 10) || 200;
 const DEFAULT_BASE_URL =
 	process.env.CA_CKAN_BASE_URL ??
 	'https://data.ca.gov/api/3/action/datastore_search';
@@ -89,32 +89,35 @@ export const caCsvAdapter: GrantSourceAdapter = {
 			limit: DEFAULT_LIMIT,
 		};
 	},
-	async *getRecords() {
-		let offset = 0;
-		let total = Number.POSITIVE_INFINITY;
-		const limit = DEFAULT_LIMIT;
-
-		while (offset < total) {
-			const { records, total: pageTotal } = await fetchCkanPage({
-				offset,
-				limit,
-			});
-
-			if (typeof pageTotal === 'number') {
-				total = pageTotal;
-			}
-
-			if (!records.length) break;
-
-			for (const record of records) {
+	async getPage(cursor) {
+		const offset = Number.isFinite(cursor as number) ? Number(cursor) : 0;
+		const { records, total } = await fetchCkanPage({
+			offset,
+			limit: DEFAULT_LIMIT,
+		});
+		const done = typeof total === 'number' ? offset + records.length >= total : false;
+		return {
+			records: records.map((record) => {
 				const normalized: Record<string, string> = {};
 				for (const [key, value] of Object.entries(record)) {
 					normalized[key] = value == null ? '' : String(value);
 				}
-				yield normalized;
+				return normalized;
+			}),
+			nextCursor: done ? null : offset + DEFAULT_LIMIT,
+			done: done || records.length === 0,
+		};
+	},
+	async *getRecords() {
+		let cursor: unknown = 0;
+		let done = false;
+		while (!done) {
+			const page = await this.getPage(cursor);
+			for (const record of page.records) {
+				yield record;
 			}
-
-			offset += limit;
+			done = !!page.done;
+			cursor = page.nextCursor ?? null;
 		}
 	},
 	mapRecord(record) {

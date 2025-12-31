@@ -15,7 +15,8 @@ type CkanRecordsResponse = {
 	};
 };
 
-const DEFAULT_PAGE_SIZE = 1000;
+// Keep pages small to fit Vercel execution windows.
+const DEFAULT_PAGE_SIZE = 200;
 const MAX_RETRIES = 5;
 const INITIAL_BACKOFF_MS = 500;
 const REQUEST_TIMEOUT_MS = 15_000;

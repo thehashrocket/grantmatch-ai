@@ -26,7 +26,7 @@ type OppHit = {
 
 const SEARCH_URL = 'https://micro.grants.gov/rest/opportunities/search';
 const DEFAULT_ROWS =
-	parseInt(process.env.FEDERAL_GRANTS_ROWS ?? '500', 10) || 500;
+	parseInt(process.env.FEDERAL_GRANTS_ROWS ?? '200', 10) || 200;
 const DEFAULT_ELIG = process.env.FEDERAL_GRANTS_ELIGIBILITIES ?? '12|13';
 const DEFAULT_STATUSES =
 	process.env.FEDERAL_GRANTS_OPP_STATUSES ??
@@ -43,38 +43,50 @@ export const federalGrantsGovAdapter: GrantSourceAdapter = {
 			oppStatuses: DEFAULT_STATUSES,
 		};
 	},
-	async *getRecords() {
-		let startRecordNum = 0;
-		let total = Number.MAX_SAFE_INTEGER;
+	async getPage(cursor) {
+		const startRecordNum = Number.isFinite(cursor as number)
+			? Number(cursor)
+			: 0;
 		const rows = DEFAULT_ROWS;
+		const body = {
+			keyword: null,
+			cfda: null,
+			agencies: null,
+			sortBy: 'openDate|desc',
+			rows,
+			eligibilities: DEFAULT_ELIG,
+			fundingCategories: null,
+			fundingInstruments: null,
+			dateRange: '',
+			oppStatuses: DEFAULT_STATUSES,
+			startRecordNum,
+		};
 
-		while (startRecordNum < total) {
-			const body = {
-				keyword: null,
-				cfda: null,
-				agencies: null,
-				sortBy: 'openDate|desc',
-				rows,
-				eligibilities: DEFAULT_ELIG,
-				fundingCategories: null,
-				fundingInstruments: null,
-				dateRange: '',
-				oppStatuses: DEFAULT_STATUSES,
-				startRecordNum,
-			};
-
-			const res = await postJsonWithRetry<{
-				hitCount?: number;
-				startRecord?: number;
-				oppHits?: OppHit[];
-			}>(SEARCH_URL, body);
-			total = res.hitCount ?? 0;
-			const hits = res.oppHits ?? [];
-			for (const hit of hits) {
-				yield hit as Record<string, unknown>;
+		const res = await postJsonWithRetry<{
+			hitCount?: number;
+			startRecord?: number;
+			oppHits?: OppHit[];
+		}>(SEARCH_URL, body);
+		const total = res.hitCount ?? 0;
+		const hits = res.oppHits ?? [];
+		const nextCursor = startRecordNum + rows;
+		const done = hits.length === 0 || nextCursor >= total;
+		return {
+			records: hits as Record<string, unknown>[],
+			nextCursor: done ? null : nextCursor,
+			done,
+		};
+	},
+	async *getRecords() {
+		let cursor: unknown = 0;
+		let done = false;
+		while (!done) {
+			const page = await this.getPage(cursor);
+			for (const hit of page.records) {
+				yield hit;
 			}
-			startRecordNum += rows;
-			if (hits.length === 0) break;
+			done = !!page.done;
+			cursor = page.nextCursor ?? null;
 		}
 	},
 	mapRecord(raw) {

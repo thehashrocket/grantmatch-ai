@@ -16,6 +16,9 @@ import type { GrantSourceAdapter } from '@/server/grants/ingest/types';
 import { $Enums } from '@/prisma/generated/client';
 
 const RESOURCE_ID = '111c8c88-21f6-453c-ae2c-b4785a0624f5';
+const PAGE_SIZE =
+	parseInt(process.env.CA_CKAN_PAGE_SIZE ?? `${CKAN_PAGE_SIZE}`, 10) ||
+	CKAN_PAGE_SIZE;
 
 const candidates = {
 	sourceRecordId: [
@@ -70,17 +73,27 @@ export const caCkanAdapter: GrantSourceAdapter = {
 	async getSchema() {
 		return fetchCkanSchema(RESOURCE_ID);
 	},
+	async getPage(cursor) {
+		const offset = Number.isFinite(cursor as number) ? Number(cursor) : 0;
+		const page = await fetchCkanPage(RESOURCE_ID, offset, PAGE_SIZE);
+		const nextOffset = offset + PAGE_SIZE;
+		const done = offset + page.records.length >= page.total;
+		return {
+			records: page.records,
+			nextCursor: done ? null : nextOffset,
+			done,
+		};
+	},
 	async *getRecords() {
-		let offset = 0;
-		let total = Number.MAX_SAFE_INTEGER;
-
-		while (offset < total) {
-			const page = await fetchCkanPage(RESOURCE_ID, offset, CKAN_PAGE_SIZE);
-			total = page.total;
+		let cursor: unknown = 0;
+		let done = false;
+		while (!done) {
+			const page = await this.getPage(cursor);
 			for (const record of page.records) {
 				yield record;
 			}
-			offset += CKAN_PAGE_SIZE;
+			done = !!page.done || page.records.length === 0;
+			cursor = page.nextCursor ?? null;
 		}
 	},
 	mapRecord(record) {

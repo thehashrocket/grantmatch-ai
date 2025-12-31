@@ -59,10 +59,17 @@ export type UpsertResult = {
 	reopened?: boolean;
 };
 
+export type GrantSourcePage = {
+	records: Record<string, unknown>[];
+	nextCursor?: unknown;
+	done?: boolean;
+};
+
 export interface GrantSourceAdapter {
 	source: $Enums.GrantSource;
 	name: string;
 	getSchema?(): Promise<unknown>;
+	getPage(cursor?: unknown): Promise<GrantSourcePage>;
 	getRecords(): AsyncGenerator<Record<string, unknown>>;
 	mapRecord(record: Record<string, unknown>): NormalizedGrantInput | null;
 }

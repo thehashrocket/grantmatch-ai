@@ -39,9 +39,11 @@ export async function POST(
 	const tick = await runTick(db, id);
 
 	if (!tick.claimed) {
-		const reason = tick.claim?.reason ?? 'TICK_ALREADY_CLAIMED';
-		const status =
-			reason === 'NOT_FOUND' ? 404 : reason === 'NOT_IN_PROGRESS' ? 409 : 409;
+		const reason =
+			tick.claim && !tick.claim.claimed
+				? tick.claim.reason
+				: 'TICK_ALREADY_CLAIMED';
+		const status = reason === 'NOT_FOUND' ? 404 : reason === 'NOT_IN_PROGRESS' ? 409 : 409;
 		return NextResponse.json(
 			{
 				code: reason,

@@ -101,9 +101,10 @@ function createMockPrisma(initial: Partial<MockState> & { id: string }) {
 				delete schema.tickClaimedAt;
 				state.schemaJson = schema;
 				const mergedErrors = (currentCommitArgs.errors ?? []) as unknown[];
-				state.errorsJson = Array.isArray(state.errorsJson)
+				const mergedJson = Array.isArray(state.errorsJson)
 					? [...(state.errorsJson as unknown[]), ...mergedErrors]
 					: mergedErrors;
+				state.errorsJson = mergedJson as Prisma.JsonValue;
 				return [cloneState(state)];
 			}
 
@@ -175,9 +176,14 @@ describe('claimTick', () => {
 		const claimed = first.claimed ? first : second;
 		const rejected = first.claimed ? second : first;
 
-		expect(claimed.claimed).toBe(true);
+		if (!claimed.claimed) {
+			throw new Error('Expected one claim to succeed');
+		}
+		if (rejected.claimed) {
+			throw new Error('Expected one claim to be rejected');
+		}
+
 		expect(claimed.run.schema.tickClaimId).toBeDefined();
-		expect(rejected.claimed).toBe(false);
 		expect(rejected.reason).toBe('TICK_ALREADY_CLAIMED');
 	});
 
@@ -194,7 +200,10 @@ describe('claimTick', () => {
 			30,
 		);
 
-		expect(claim.claimed).toBe(true);
+		if (!claim.claimed) {
+			throw new Error('Expected claim to succeed after stale');
+		}
+
 		expect(claim.run.schema.tickClaimId).not.toBe('existing');
 	});
 });
@@ -237,6 +246,7 @@ describe('commitTick', () => {
 		);
 
 		expect(result.committed).toBe(false);
+		if (result.committed) throw new Error('Commit should be rejected');
 		expect(result.reason).toBe('STALE_CLAIM');
 	});
 });

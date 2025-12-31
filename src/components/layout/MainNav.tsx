@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Home, Info, BarChart } from 'lucide-react';
+import { Home, Info, BarChart, ShieldCheck } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 export function MainNav({
@@ -49,6 +49,18 @@ export function MainNav({
 				>
 					<BarChart className="h-4 w-4" />
 					<span>Dashboard</span>
+				</Link>
+			)}
+			{session?.user?.role === 'ADMIN' && (
+				<Link
+					href="/admin"
+					className={cn(
+						'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
+						pathname === '/admin' ? 'text-primary' : 'text-muted-foreground',
+					)}
+				>
+					<ShieldCheck className="h-4 w-4" />
+					<span>Admin</span>
 				</Link>
 			)}
 		</nav>

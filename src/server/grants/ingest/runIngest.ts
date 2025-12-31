@@ -58,6 +58,7 @@ const normalizedGrantSchema = z.object({
 
 export async function runIngest(
 	adapter: GrantSourceAdapter,
+	options?: { fireAndForget?: boolean },
 ): Promise<{ runId: string }> {
 	const runCounters: RunCounters = {
 		recordsFetched: 0,
@@ -76,13 +77,32 @@ export async function runIngest(
 		},
 	});
 
+	const runner = executeIngest(adapter, run.id, runCounters, errors);
+
+	if (options?.fireAndForget) {
+		runner.catch((err) => {
+			console.error('Ingest run failed:', err);
+		});
+		return { runId: run.id };
+	}
+
+	await runner;
+	return { runId: run.id };
+}
+
+async function executeIngest(
+	adapter: GrantSourceAdapter,
+	runId: string,
+	runCounters: RunCounters,
+	errors: unknown[],
+) {
 	try {
 		if (adapter.getSchema) {
 			try {
 				const schema = await adapter.getSchema();
 				const schemaJson = (schema ?? Prisma.JsonNull) as Prisma.InputJsonValue;
 				await db.grantSyncRun.update({
-					where: { id: run.id },
+					where: { id: runId },
 					data: { schemaJson },
 				});
 			} catch (err) {
@@ -95,7 +115,7 @@ export async function runIngest(
 
 		for await (const record of adapter.getRecords()) {
 			runCounters.recordsFetched += 1;
-			const task = processRecord(adapter, record, run.id, runCounters, errors);
+			const task = processRecord(adapter, record, runId, runCounters, errors);
 			batch.push(task);
 			if (batch.length >= CONCURRENCY) {
 				await Promise.allSettled(batch);
@@ -108,7 +128,7 @@ export async function runIngest(
 		}
 
 		await db.grantSyncRun.update({
-			where: { id: run.id },
+			where: { id: runId },
 			data: {
 				status: $Enums.ImportStatus.COMPLETED,
 				finishedAt: new Date(),
@@ -126,7 +146,7 @@ export async function runIngest(
 	} catch (err) {
 		errors.push(formatError(err));
 		await db.grantSyncRun.update({
-			where: { id: run.id },
+			where: { id: runId },
 			data: {
 				status: $Enums.ImportStatus.FAILED,
 				finishedAt: new Date(),
@@ -141,8 +161,6 @@ export async function runIngest(
 		});
 		throw err;
 	}
-
-	return { runId: run.id };
 }
 
 async function processRecord(

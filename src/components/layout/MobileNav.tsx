@@ -8,6 +8,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useSession } from 'next-auth/react';
 
 interface MobileNavProps {
 	user?: {
@@ -19,6 +20,9 @@ interface MobileNavProps {
 export function MobileNav({ user }: MobileNavProps) {
 	const pathname = usePathname();
 	const [open, setOpen] = React.useState(false);
+	const { data: session } = useSession();
+	const isAuthenticated = Boolean(session?.user || user);
+	const isAdmin = session?.user?.role === 'ADMIN';
 
 	return (
 		<Sheet open={open} onOpenChange={setOpen}>
@@ -50,7 +54,7 @@ export function MobileNav({ user }: MobileNavProps) {
 					>
 						About
 					</Link>
-					{!user ? (
+					{!isAuthenticated ? (
 						<Link
 							href="/login"
 							className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
@@ -67,6 +71,15 @@ export function MobileNav({ user }: MobileNavProps) {
 							>
 								Profile
 							</Link>
+							{isAdmin && (
+								<Link
+									href="/admin"
+									className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+									onClick={() => setOpen(false)}
+								>
+									Admin
+								</Link>
+							)}
 							<button
 								type="button"
 								onClick={() => {

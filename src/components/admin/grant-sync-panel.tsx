@@ -87,12 +87,12 @@ export function GrantSyncPanel({
 	const [runState, setRunState] = useState<RunSummary | null>(
 		initialRun
 			? {
-					...initialRun,
-					startedAt: new Date(initialRun.startedAt),
-					finishedAt: initialRun.finishedAt
-						? new Date(initialRun.finishedAt)
-						: null,
-				}
+				...initialRun,
+				startedAt: new Date(initialRun.startedAt),
+				finishedAt: initialRun.finishedAt
+					? new Date(initialRun.finishedAt)
+					: null,
+			}
 			: null,
 	);
 	const [isStarting, setIsStarting] = useState(false);
@@ -141,20 +141,27 @@ export function GrantSyncPanel({
 		try {
 			const response = await fetch(apiPath, { method: 'POST' });
 			let payload: ApiResponse = {};
+			let textFallback = '';
 			try {
 				payload = ((await response.json()) as ApiResponse) ?? {};
 			} catch {
-				// Non-JSON response; keep payload empty.
+				try {
+					textFallback = await response.text();
+				} catch {
+					textFallback = '';
+				}
 			}
 
 			if (!response.ok) {
-				toast.error(payload.error ?? 'Failed to start run', {
-					description: formatDescription(payload),
+				const errorMsg =
+					payload.error ?? (textFallback ? textFallback : response.statusText);
+				toast.error(errorMsg ?? 'Failed to start run', {
+					description: formatDescription(payload) || textFallback || undefined,
 				});
 				setLastFeedback({
 					type: 'error',
-					message: payload.error ?? 'Failed to start run',
-					description: formatDescription(payload) || undefined,
+					message: errorMsg ?? 'Failed to start run',
+					description: formatDescription(payload) || textFallback || undefined,
 				});
 				if (response.status === 409 && payload.runId) {
 					setRunState(
@@ -303,11 +310,10 @@ export function GrantSyncPanel({
 				</div>
 				{lastFeedback && (
 					<div
-						className={`rounded-lg border p-3 text-sm ${
-							lastFeedback.type === 'success'
+						className={`rounded-lg border p-3 text-sm ${lastFeedback.type === 'success'
 								? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-100'
 								: 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100'
-						}`}
+							}`}
 					>
 						<div className="font-medium">{lastFeedback.message}</div>
 						{lastFeedback.description && (

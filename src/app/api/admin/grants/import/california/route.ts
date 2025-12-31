@@ -47,14 +47,14 @@ export async function POST(_: NextRequest) {
 			);
 		}
 
-		const { runId } = await runIngest(caCsvAdapter, { fireAndForget: true });
+		const { runId } = await runIngest(caCsvAdapter);
 
 		return NextResponse.json(
 			{
 				message: 'California import started',
 				runId,
 			},
-			{ status: 202 },
+			{ status: 200 },
 		);
 	} catch (error) {
 		console.error('Failed to start California import', error);

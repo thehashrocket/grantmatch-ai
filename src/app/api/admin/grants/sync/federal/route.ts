@@ -46,14 +46,14 @@ export async function POST(_: NextRequest) {
 			);
 		}
 
-		const { runId } = await syncFederalGrants({ fireAndForget: true });
+		const { runId } = await syncFederalGrants();
 
 		return NextResponse.json(
 			{
 				message: 'Federal sync started',
 				runId,
 			},
-			{ status: 202 },
+			{ status: 200 },
 		);
 	} catch (error) {
 		console.error('Failed to start federal sync', error);

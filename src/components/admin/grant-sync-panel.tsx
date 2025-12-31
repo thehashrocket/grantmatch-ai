@@ -1,6 +1,8 @@
+// /src/components/admin/grant-sync-panel.tsx
+
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
@@ -26,6 +28,7 @@ type RunSummary = {
 	unchangedCount: number;
 	closedCount: number;
 	reopenedCount: number;
+	errorsJson?: unknown;
 };
 
 type GrantSyncPanelProps = {
@@ -44,6 +47,10 @@ type ApiResponse = {
 	runId?: string;
 	code?: string;
 };
+
+function sleep(ms: number) {
+	return new Promise((r) => setTimeout(r, ms));
+}
 
 const statusStyles: Record<
 	ImportStatus,
@@ -87,15 +94,16 @@ export function GrantSyncPanel({
 	const [runState, setRunState] = useState<RunSummary | null>(
 		initialRun
 			? {
-				...initialRun,
-				startedAt: new Date(initialRun.startedAt),
-				finishedAt: initialRun.finishedAt
-					? new Date(initialRun.finishedAt)
-					: null,
-			}
+					...initialRun,
+					startedAt: new Date(initialRun.startedAt),
+					finishedAt: initialRun.finishedAt
+						? new Date(initialRun.finishedAt)
+						: null,
+				}
 			: null,
 	);
 	const [isStarting, setIsStarting] = useState(false);
+	const lastStatusRef = useRef<ImportStatus | null>(initialRun?.status ?? null);
 	const [lastFeedback, setLastFeedback] = useState<{
 		type: 'success' | 'error';
 		message: string;
@@ -111,30 +119,86 @@ export function GrantSyncPanel({
 			.join(' • ');
 
 	useEffect(() => {
-		if (!runState || runState.status !== 'IN_PROGRESS') return;
+		const runId = runState?.id;
+		const status = runState?.status;
 
-		const interval = setInterval(async () => {
-			try {
-				const response = await fetch(
-					`${statusBasePath}/${encodeURIComponent(runState.id)}`,
-				);
-				if (!response.ok) return;
-				const payload = (await response.json()) as RunSummary;
-				setRunState({
-					...payload,
-					startedAt: new Date(payload.startedAt),
-					finishedAt: payload.finishedAt ? new Date(payload.finishedAt) : null,
-				});
-				if (payload.status !== 'IN_PROGRESS') {
-					clearInterval(interval);
+		if (!runId || status !== 'IN_PROGRESS') return;
+
+		let cancelled = false;
+
+		const poll = async () => {
+			while (!cancelled) {
+				try {
+					// 1) tick
+					const tickRes = await fetch(
+						`${statusBasePath}/${encodeURIComponent(runId)}/tick`,
+						{ method: 'POST' },
+					);
+
+					let tickPayload: { code?: string } | null = null;
+					try {
+						tickPayload = await tickRes.json();
+					} catch {}
+
+					if (tickRes.status === 401 || tickRes.status === 403) {
+						toast.error('Not authorized to tick this run.');
+						return;
+					}
+					if (tickRes.status === 404) {
+						toast.error('Run not found while ticking.');
+						return;
+					}
+					if (tickRes.status >= 500) {
+						console.error('Tick failed', tickRes.status, tickPayload);
+					}
+
+					// 2) status
+					const res = await fetch(
+						`${statusBasePath}/${encodeURIComponent(runId)}`,
+					);
+					if (!res.ok) {
+						await sleep(4000);
+						continue;
+					}
+
+					const payload = (await res.json()) as RunSummary;
+					const nextState: RunSummary = {
+						...payload,
+						startedAt: new Date(payload.startedAt),
+						finishedAt: payload.finishedAt
+							? new Date(payload.finishedAt)
+							: null,
+					};
+
+					setRunState(nextState);
+
+					if (nextState.status !== 'IN_PROGRESS') {
+						if (lastStatusRef.current === 'IN_PROGRESS') {
+							if (nextState.status === 'COMPLETED') {
+								toast.success(`${title} completed`);
+							} else if (nextState.status === 'FAILED') {
+								toast.error(`${title} failed`);
+							}
+						}
+						lastStatusRef.current = nextState.status;
+						return;
+					}
+
+					lastStatusRef.current = nextState.status;
+					await sleep(4000);
+				} catch (e) {
+					console.error('Polling error', e);
+					await sleep(4000);
 				}
-			} catch (err) {
-				console.error('Failed to poll run status', err);
 			}
-		}, 5000);
+		};
 
-		return () => clearInterval(interval);
-	}, [runState, statusBasePath]);
+		poll();
+
+		return () => {
+			cancelled = true;
+		};
+	}, [runState?.id, runState?.status, statusBasePath, title]);
 
 	const handleStart = async () => {
 		setIsStarting(true);
@@ -200,6 +264,7 @@ export function GrantSyncPanel({
 				closedCount: 0,
 				reopenedCount: 0,
 			});
+			lastStatusRef.current = 'IN_PROGRESS';
 
 			toast.success(`${title} started`, {
 				description: formatDescription(payload),
@@ -310,10 +375,11 @@ export function GrantSyncPanel({
 				</div>
 				{lastFeedback && (
 					<div
-						className={`rounded-lg border p-3 text-sm ${lastFeedback.type === 'success'
+						className={`rounded-lg border p-3 text-sm ${
+							lastFeedback.type === 'success'
 								? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-100'
 								: 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100'
-							}`}
+						}`}
 					>
 						<div className="font-medium">{lastFeedback.message}</div>
 						{lastFeedback.description && (

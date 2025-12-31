@@ -1,3 +1,5 @@
+// /src/server/grants/ingest/tickIngest.ts
+
 import { randomUUID } from 'node:crypto';
 import { Prisma, type PrismaClient, $Enums } from '@/prisma/generated/client';
 import { caCkanAdapter } from '@/server/grants/sources/caCkanAdapter';
@@ -341,7 +343,7 @@ async function performWork(
 
 	const done =
 		!!page.done || page.records.length === 0 || page.nextCursor === undefined;
-	const nextCursor = done ? null : page.nextCursor ?? null;
+	const nextCursor = done ? null : (page.nextCursor ?? null);
 
 	return { deltas, nextCursor, done, errors };
 }

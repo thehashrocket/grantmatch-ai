@@ -1,3 +1,5 @@
+// /src/app/api/admin/grants/runs/[id]/tick/route.ts
+
 import { type NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
@@ -43,7 +45,8 @@ export async function POST(
 			tick.claim && !tick.claim.claimed
 				? tick.claim.reason
 				: 'TICK_ALREADY_CLAIMED';
-		const status = reason === 'NOT_FOUND' ? 404 : reason === 'NOT_IN_PROGRESS' ? 409 : 409;
+		const status =
+			reason === 'NOT_FOUND' ? 404 : reason === 'NOT_IN_PROGRESS' ? 409 : 409;
 		return NextResponse.json(
 			{
 				code: reason,

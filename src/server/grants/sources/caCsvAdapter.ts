@@ -95,7 +95,8 @@ export const caCsvAdapter: GrantSourceAdapter = {
 			offset,
 			limit: DEFAULT_LIMIT,
 		});
-		const done = typeof total === 'number' ? offset + records.length >= total : false;
+		const done =
+			typeof total === 'number' ? offset + records.length >= total : false;
 		return {
 			records: records.map((record) => {
 				const normalized: Record<string, string> = {};

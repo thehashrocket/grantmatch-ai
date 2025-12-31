@@ -194,11 +194,7 @@ describe('claimTick', () => {
 			schemaJson: { tickClaimId: 'existing', tickClaimedAt: stale },
 		});
 
-		const claim = await claimTick(
-			mock as unknown as PrismaClient,
-			'run-2',
-			30,
-		);
+		const claim = await claimTick(mock as unknown as PrismaClient, 'run-2', 30);
 
 		if (!claim.claimed) {
 			throw new Error('Expected claim to succeed after stale');
@@ -221,7 +217,10 @@ describe('commitTick', () => {
 	it('rejects stale tickClaimId updates', async () => {
 		const mock = createMockPrisma({
 			id: 'run-3',
-			schemaJson: { tickClaimId: 'fresh-claim', tickClaimedAt: new Date().toISOString() },
+			schemaJson: {
+				tickClaimId: 'fresh-claim',
+				tickClaimedAt: new Date().toISOString(),
+			},
 		});
 		const args: CommitArgs = {
 			runId: 'run-3',
@@ -240,10 +239,7 @@ describe('commitTick', () => {
 		};
 		mock.setCommitArgs(args);
 
-		const result = await commitTick(
-			mock as unknown as PrismaClient,
-			args,
-		);
+		const result = await commitTick(mock as unknown as PrismaClient, args);
 
 		expect(result.committed).toBe(false);
 		if (result.committed) throw new Error('Commit should be rejected');

@@ -20,7 +20,10 @@ export const normalizedGrantSchema = z.object({
 	currentAsOf: z.date().optional(),
 	portalId: z.number().int().nullable().optional(),
 	matchFunding: z.string().optional(),
-	estimatedTotalFunding: z.union([z.bigint(), z.number()]).nullable().optional(),
+	estimatedTotalFunding: z
+		.union([z.bigint(), z.number()])
+		.nullable()
+		.optional(),
 	awardFloor: z.union([z.bigint(), z.number()]).nullable().optional(),
 	awardCeiling: z.union([z.bigint(), z.number()]).nullable().optional(),
 	estimatedAwardAmounts: z.string().optional(),

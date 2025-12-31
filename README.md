@@ -5,13 +5,16 @@ GrantMatch AI is a comprehensive grant discovery and management platform built f
 ## Platform Overview
 
 ### Core Purpose
+
 GrantMatch AI streamlines the grant discovery process by:
+
 - **Aggregating grants** from multiple government and institutional sources
 - **Intelligent search & filtering** by deadline, funding amount, geography, and grant source
 - **Organization-based collaboration** with multi-user support and team invitations
 - **Detailed grant information** including eligibility, funding details, and application requirements
 
 ### User Journey
+
 1. **Landing Page** (`/`) - Marketing site showcasing platform features (Smart Matching, Streamlined Applications, Impact Tracking)
 2. **Registration** (`/register`) - Account creation with email/password or OAuth (Google)
 3. **Onboarding** (`/(auth)/onboarding`) - Three-step process:
@@ -28,6 +31,7 @@ GrantMatch AI streamlines the grant discovery process by:
 7. **Organization** (`/org`) - Organization settings and team management
 
 ### Technology Stack
+
 - **Frontend**: Next.js 16 + React 19 with App Router
 - **Backend**: tRPC for type-safe APIs, Prisma ORM with PostgreSQL
 - **Auth**: NextAuth.js with credential and OAuth (Google) providers
@@ -36,6 +40,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - **State**: React Query (@tanstack/react-query) for server state management
 
 ## Quick Start
+
 1. **Install dependencies**: `pnpm install`
 2. **Configure environment**: Copy `.env.example` to `.env` and set:
    - `DATABASE_URL` for PostgreSQL connection
@@ -51,6 +56,7 @@ GrantMatch AI streamlines the grant discovery process by:
 6. **Start dev server**: `pnpm dev` (runs on port 3005 with Turbopack)
 
 ## Application Structure
+
 - `src/app/` — Next.js App Router pages and API routes
   - `(auth)/` - Auth route group (register, onboarding)
   - `login/`, `dashboard/`, `grants/[id]/`, `profile/`, `org/`, `verify-email/` - Main pages
@@ -77,6 +83,7 @@ GrantMatch AI streamlines the grant discovery process by:
 ## Database Schema
 
 ### Core Models
+
 - **User** - User accounts with auth (email/password or OAuth), role management, organization membership
 - **Account** - OAuth provider accounts (NextAuth.js adapter)
 - **Session** - User sessions (NextAuth.js adapter)
@@ -92,12 +99,14 @@ GrantMatch AI streamlines the grant discovery process by:
 - **GrantImportRun** - Batch import tracking for grant data ingestion (QUEUED, IN_PROGRESS, COMPLETED, FAILED)
 
 ### Key Relationships
+
 - Users belong to Organizations (many-to-one)
 - Organizations have many Users and Invitations
 - Grants optionally have one GrantDetail (one-to-one)
 - Users can create GrantImportRuns
 
 ## Development Commands
+
 - **Dev server**: `pnpm dev` - Starts Next.js with Turbopack on port 3005
 - **Build**: `pnpm build` - Runs `prisma generate` then `next build`
 - **Lint**: `pnpm lint` - Runs Next.js ESLint config with TypeScript checking
@@ -111,28 +120,34 @@ GrantMatch AI streamlines the grant discovery process by:
 - **Prisma Studio**: `pnpm prisma studio` - Visual database browser
 
 ## Grant sync & identity model
+
 - **Sources**: Supports multiple sources (California CKAN and CSV, Federal index live; future-ready for others).
 - **Identity**: Each grant carries `source`, `sourceRecordId` (preferred upstream id), `sourceKey` (hash fallback), and `number` (unique per-source). Portal IDs are deprecated for uniqueness.
 - **Change detection**: `contentHash` detects field changes; `status` (`OPEN`/`CLOSED`/`UNKNOWN`) and `closedAt` track deadline/explicit closures; `lastSeenAt` marks sync freshness.
 - **Run logging**: `GrantSyncRun` records each ingest with counters and schema snapshot; `GrantChange` logs CREATED/UPDATED/CLOSED/REOPENED/STATUS_CHANGED (plus `DETAILS_FETCHED` for on-demand detail pulls) with hashes and diffs.
 
 ## Running the California CKAN sync
+
 1. Ensure `.env` has `DATABASE_URL`; set `TZ=America/Los_Angeles` in your environment if scheduling.
 2. Run locally: `pnpm sync:ca-grants`.
 3. Output: `GrantSyncRun` + `GrantChange` rows capture counts/errors; `Grant` rows are upserted idempotently.
 
 ## California CSV (legacy) import
+
 - `pnpm import:california` uses the same unified ingestion core as CKAN, so identity/contentHash/status handling and logging are consistent.
 
 ## Federal ingestion & details
+
 - Nightly index ingest (no full details): `pnpm sync:federal-grants` (envs: `FEDERAL_GRANTS_ELIGIBILITIES` default `12|13`; `FEDERAL_GRANTS_ROWS` default `500`; `FEDERAL_GRANTS_OPP_STATUSES` default `posted|forecasted|closed|archived`).
 - Grant details are fetched on-demand when viewing a grant page or hitting `/api/grants/[id]/details`; failures don’t block page rendering. On-demand detail fetch logs a `GrantChange` with changeType `DETAILS_FETCHED`.
 
 ## Migrations (dev)
+
 - Apply schema changes: `pnpm prisma migrate dev` (or `pnpm prisma migrate reset` to wipe dev data).
 - Regenerate client after schema updates: `pnpm prisma generate`.
 
 ## Development & Testing
+
 - `pnpm lint` enforces the Next.js ESLint config with Prettier + Tailwind; keep output clean before committing
 - `pnpm typecheck` runs the TypeScript compiler without emitting; use it to catch API/server regressions early
 - Add Vitest or Playwright coverage where relevant; colocate specs as `*.test.ts` or `*.spec.tsx`
@@ -141,12 +156,14 @@ GrantMatch AI streamlines the grant discovery process by:
 - Prefer tRPC calls over direct Prisma access in UI components
 
 ## Current Gaps & Risk Notes
+
 - `src/app/api/gp/start/route.ts` and `src/app/api/gp/import/route.ts` are unauthenticated and accept arbitrary payloads; protect them with NextAuth, a shared secret header, or signed webhooks before exposing externally.
 - `src/app/api/user/route.ts` is a stubbed PATCH handler that always succeeds without writing to the database; wire it to the User model before relying on profile edits.
 - `src/app/api/grants/[id]/details/route.ts` swallows detail-fetch errors and always returns a response; consider surfacing failures (504/502) or returning the last-known payload with an error flag so the UI can react.
 - Automated tests currently cover only grant detail mapping; add coverage for API routes, ingestion flows, and service-layer logic to prevent regressions.
 
 ## SOLID Practices
+
 - **Single Responsibility**: Keep feature logic inside its route folder and move shared UI into `src/components/ui`.
 - **Open/Closed**: Extend via new components or tRPC procedures instead of modifying stable code.
 - **Liskov Substitution**: Define clear prop types and router contracts so alternatives drop in safely.
@@ -156,6 +173,7 @@ GrantMatch AI streamlines the grant discovery process by:
 ## Key Features & Implementation Notes
 
 ### Authentication & Authorization
+
 - NextAuth.js v4 with custom credential provider
 - Support for OAuth (Google) and email/password authentication
 - Organization-based access control
@@ -163,6 +181,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - Session management with database persistence
 
 ### Grant Management
+
 - Multi-source grant aggregation (Federal via grants.gov, state-level sources)
 - Advanced search with compound filters (keyword, source, deadline range, funding amount)
 - Paginated results with configurable page sizes
@@ -170,12 +189,14 @@ GrantMatch AI streamlines the grant discovery process by:
 - Import system for batch grant data ingestion with status tracking
 
 ### Organization Collaboration
+
 - Multi-tenant architecture with organization isolation
 - Team invitation system with email-based workflow
 - Role-based access (USER, ADMIN)
 - Shared grant pipeline across organization members
 
 ### UI/UX
+
 - Responsive design with mobile-first approach
 - Dark mode support throughout
 - Loading states with React Suspense and skeleton components
@@ -184,12 +205,14 @@ GrantMatch AI streamlines the grant discovery process by:
 - Animated gradients and visual polish on marketing pages
 
 ### Data Architecture
+
 - Custom Prisma client output path (`src/prisma/generated/client`)
 - JSON columns for flexible metadata (eligibility requirements, CFDA lists, funding details)
 - Composite unique constraints for data integrity (portalId + source, email + organizationId)
 - Optimistic date handling for various deadline types
 
 ## Workflow & PRs
+
 - Use short, present-tense commits (`added search filters on dashboard`) and group related work; reference issues with `#id` when available
 - PRs need a concise summary, visuals for UI work, and explicit notes on schema or env changes
 - Confirm `pnpm lint` passes and Prisma commands (`migrate dev`, `generate`) ran successfully

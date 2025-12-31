@@ -1,6 +1,3 @@
-import fs from 'node:fs';
-import path from 'node:path';
-
 import {
 	computeContentHash,
 	computeSourceKey,
@@ -13,7 +10,13 @@ import {
 import type { GrantSourceAdapter } from '@/server/grants/ingest/types';
 import { $Enums } from '@/prisma/generated/client';
 
-const FILE_NAME = 'california-grants-portal-data.csv';
+const DEFAULT_RESOURCE_ID =
+	process.env.CA_CKAN_RESOURCE_ID ?? '111c8c88-21f6-453c-ae2c-b4785a0624f5';
+const DEFAULT_LIMIT = parseInt(process.env.CA_CKAN_LIMIT ?? '500', 10) || 500;
+const DEFAULT_BASE_URL =
+	process.env.CA_CKAN_BASE_URL ??
+	'https://data.ca.gov/api/3/action/datastore_search';
+const RETRY_DELAYS = [500, 1500, 3500];
 
 const candidates = {
 	sourceRecordId: [
@@ -77,21 +80,41 @@ const candidates = {
 
 export const caCsvAdapter: GrantSourceAdapter = {
 	source: $Enums.GrantSource.CALIFORNIA,
-	name: 'California CSV (legacy)',
+	name: 'California CKAN',
+	async getSchema() {
+		return {
+			transport: 'CKAN',
+			baseUrl: DEFAULT_BASE_URL,
+			resourceId: DEFAULT_RESOURCE_ID,
+			limit: DEFAULT_LIMIT,
+		};
+	},
 	async *getRecords() {
-		const filePath = path.join(process.cwd(), 'source_files', FILE_NAME);
-		const content = await fs.promises.readFile(filePath, 'utf8');
-		const rows = parseCsv(content);
-		if (!rows.length) return;
-		const headers = rows[0].map((h) => h.trim());
-		for (let i = 1; i < rows.length; i++) {
-			const row = rows[i];
-			if (row.length === 1 && row[0].trim() === '') continue;
-			const record: Record<string, unknown> = {};
-			headers.forEach((header, idx) => {
-				record[header] = row[idx];
+		let offset = 0;
+		let total = Number.POSITIVE_INFINITY;
+		const limit = DEFAULT_LIMIT;
+
+		while (offset < total) {
+			const { records, total: pageTotal } = await fetchCkanPage({
+				offset,
+				limit,
 			});
-			yield record;
+
+			if (typeof pageTotal === 'number') {
+				total = pageTotal;
+			}
+
+			if (!records.length) break;
+
+			for (const record of records) {
+				const normalized: Record<string, string> = {};
+				for (const [key, value] of Object.entries(record)) {
+					normalized[key] = value == null ? '' : String(value);
+				}
+				yield normalized;
+			}
+
+			offset += limit;
 		}
 	},
 	mapRecord(record) {
@@ -262,58 +285,6 @@ export const caCsvAdapter: GrantSourceAdapter = {
 	},
 };
 
-function parseCsv(content: string): string[][] {
-	const rows: string[][] = [];
-	let current = '';
-	let row: string[] = [];
-	let inQuotes = false;
-
-	for (let i = 0; i < content.length; i++) {
-		const char = content[i];
-		const next = content[i + 1];
-
-		if (inQuotes) {
-			if (char === '"' && next === '"') {
-				current += '"';
-				i++;
-				continue;
-			}
-			if (char === '"') {
-				inQuotes = false;
-				continue;
-			}
-			current += char;
-			continue;
-		}
-
-		if (char === '"') {
-			inQuotes = true;
-			continue;
-		}
-		if (char === ',') {
-			row.push(current);
-			current = '';
-			continue;
-		}
-		if (char === '\r') continue;
-		if (char === '\n') {
-			row.push(current);
-			rows.push(row);
-			row = [];
-			current = '';
-			continue;
-		}
-		current += char;
-	}
-
-	if (current.length > 0 || row.length > 0) {
-		row.push(current);
-		rows.push(row);
-	}
-
-	return rows;
-}
-
 function buildDetails({
 	title,
 	purpose,
@@ -409,4 +380,68 @@ function parseCurrency(value: unknown): number | null {
 	if (!str) return null;
 	const num = Number(str);
 	return Number.isFinite(num) ? num : null;
+}
+
+type CkanResult = {
+	records?: Record<string, unknown>[];
+	total?: number;
+};
+
+async function fetchCkanPage({
+	offset,
+	limit,
+}: {
+	offset: number;
+	limit: number;
+}): Promise<{ records: Record<string, unknown>[]; total?: number }> {
+	const url = new URL(DEFAULT_BASE_URL);
+	url.searchParams.set('resource_id', DEFAULT_RESOURCE_ID);
+	url.searchParams.set('limit', String(limit));
+	url.searchParams.set('offset', String(offset));
+
+	for (let attempt = 0; attempt < RETRY_DELAYS.length + 1; attempt++) {
+		try {
+			const res = await fetch(url.toString(), { method: 'GET' });
+
+			if (res.status === 429 || res.status >= 500) {
+				if (attempt < RETRY_DELAYS.length) {
+					await delay(RETRY_DELAYS[attempt]);
+					continue;
+				}
+			}
+
+			if (!res.ok) {
+				const text = await res.text().catch(() => '');
+				throw new Error(
+					`CKAN request failed (${res.status}): ${text.slice(0, 200)}`,
+				);
+			}
+
+			const payload = (await res.json()) as {
+				success?: boolean;
+				result?: CkanResult;
+			};
+
+			if (!payload?.success || !payload.result) {
+				throw new Error('CKAN response missing result');
+			}
+
+			return {
+				records: payload.result.records ?? [],
+				total: payload.result.total,
+			};
+		} catch (error) {
+			if (attempt < RETRY_DELAYS.length) {
+				await delay(RETRY_DELAYS[attempt]);
+				continue;
+			}
+			throw error;
+		}
+	}
+
+	return { records: [], total: undefined };
+}
+
+function delay(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }

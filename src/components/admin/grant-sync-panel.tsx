@@ -131,19 +131,20 @@ export function GrantSyncPanel({
 					description: payload.runId ? `Run ID: ${payload.runId}` : undefined,
 				});
 				if (response.status === 409 && payload.runId) {
-					setRunState((current) =>
-						current ?? {
-							id: payload.runId as string,
-							status: 'IN_PROGRESS',
-							startedAt: new Date(),
-							finishedAt: null,
-							recordsFetched: 0,
-							createdCount: 0,
-							updatedCount: 0,
-							unchangedCount: 0,
-							closedCount: 0,
-							reopenedCount: 0,
-						},
+					setRunState(
+						(current) =>
+							current ?? {
+								id: payload.runId as string,
+								status: 'IN_PROGRESS',
+								startedAt: new Date(),
+								finishedAt: null,
+								recordsFetched: 0,
+								createdCount: 0,
+								updatedCount: 0,
+								unchangedCount: 0,
+								closedCount: 0,
+								reopenedCount: 0,
+							},
 					);
 				}
 				return;

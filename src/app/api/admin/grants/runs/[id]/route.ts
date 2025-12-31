@@ -1,14 +1,16 @@
 import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
 import { db } from '@/lib/db';
+import { authOptions } from '@/lib/auth';
 
-export async function GET(
-	_req: Request,
-	context: { params: Promise<{ id: string }> },
-) {
-	const { id } = await context.params;
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
+type Params = {
+	params: { id: string };
+};
+
+export async function GET(_: Request, { params }: Params) {
 	const session = await getServerSession(authOptions);
 
 	if (!session?.user) {
@@ -19,15 +21,10 @@ export async function GET(
 		return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 	}
 
-	if (!id) {
-		return NextResponse.json({ error: 'Run ID is required' }, { status: 400 });
-	}
-
 	const run = await db.grantSyncRun.findUnique({
-		where: { id },
+		where: { id: params.id },
 		select: {
 			id: true,
-			source: true,
 			status: true,
 			startedAt: true,
 			finishedAt: true,

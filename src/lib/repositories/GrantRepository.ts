@@ -16,6 +16,8 @@ const grantSelect = {
 	stateAgency: true,
 	matchFunding: true,
 	estimatedTotalFunding: true,
+	awardFloor: true,
+	awardCeiling: true,
 	estimatedAwardAmounts: true,
 	fundsDisbursment: true,
 	currentAsOf: true,

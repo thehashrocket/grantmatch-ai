@@ -18,17 +18,10 @@ import { ExternalLink } from 'lucide-react';
 import { getFlagInfo } from '@/lib/utils/flag-utils';
 import Image from 'next/image';
 import DetailsStatusBadge from '@/components/grants/DetailsStatusBadge';
+import { FundingAmount } from '@/components/grants/FundingAmount';
 
 interface GrantCardProps {
 	grant: GrantMatch;
-}
-
-function formatCurrency(amount: number): string {
-	return new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		maximumFractionDigits: 0,
-	}).format(amount);
 }
 
 function formatDate(dateString: string): string {
@@ -81,9 +74,12 @@ export function GrantCard({ grant }: GrantCardProps) {
 							</CardDescription>
 						</div>
 						<div className="text-right">
-							<div className="font-semibold">
-								{formatCurrency(grant.fundingAmount)}
-							</div>
+							<FundingAmount
+								estimatedTotalFunding={grant.estimatedTotalFunding}
+								awardFloor={grant.awardFloor}
+								awardCeiling={grant.awardCeiling}
+								fundingAmount={grant.fundingAmount}
+							/>
 							<div className="text-sm text-muted-foreground">
 								Due {formatDate(grant.deadline)}
 							</div>

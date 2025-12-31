@@ -7,7 +7,10 @@ export interface GrantMatch {
 	internalUrl: string;
 	fitScore: number;
 	explanation: string;
-	fundingAmount: number;
+	fundingAmount: number | null;
+	estimatedTotalFunding?: number | null;
+	awardFloor?: number | null;
+	awardCeiling?: number | null;
 	deadline: string;
 	source: string; // State name or 'Federal'
 	detailsStatus?: 'UNKNOWN' | 'FETCHING' | 'AVAILABLE' | 'FAILED';

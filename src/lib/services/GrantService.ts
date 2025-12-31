@@ -2,6 +2,7 @@
 // called by src/server/api/routers/grants.ts
 
 import type { GrantRepository } from '@/lib/repositories/GrantRepository';
+import type { GrantRecord } from '@/lib/repositories/GrantRepository';
 import type {
 	GrantMatch,
 	GrantSearchFilters,
@@ -22,32 +23,48 @@ export interface GrantService {
 export class GrantServiceImpl implements GrantService {
 	constructor(private grantRepository: GrantRepository) {}
 
+	private mapGrantToMatch(grant: GrantRecord): GrantMatch {
+		const fitScore = calculateGrantFitScore(grant);
+		const estimatedTotalFunding =
+			grant.estimatedTotalFunding !== null &&
+			grant.estimatedTotalFunding !== undefined
+				? Number(grant.estimatedTotalFunding)
+				: null;
+		const awardFloor =
+			grant.awardFloor !== null && grant.awardFloor !== undefined
+				? Number(grant.awardFloor)
+				: null;
+		const awardCeiling =
+			grant.awardCeiling !== null && grant.awardCeiling !== undefined
+				? Number(grant.awardCeiling)
+				: null;
+
+		return {
+			id: grant.id,
+			title: grant.title,
+			url: grant.url,
+			internalUrl: `/grants/${grant.id}`,
+			fitScore,
+			explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
+			fundingAmount: estimatedTotalFunding,
+			estimatedTotalFunding,
+			awardFloor,
+			awardCeiling,
+			deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
+			source: grant.source,
+			detailsStatus: grant.detailsStatus,
+			detailsFetchedAt: grant.detailsFetchedAt
+				? grant.detailsFetchedAt.toISOString()
+				: null,
+		};
+	}
+
 	async searchGrants(filters: GrantSearchFilters): Promise<GrantMatch[]> {
 		// Get raw grants from repository
 		const grants = await this.grantRepository.findWithFilters(filters);
 
 		// Transform grants and calculate fit scores
-		let grantMatches = grants.map((grant) => {
-			const fitScore = calculateGrantFitScore(grant);
-
-			return {
-				id: grant.id,
-				title: grant.title,
-				url: grant.url,
-				internalUrl: `/grants/${grant.id}`,
-				fitScore,
-				explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
-				fundingAmount: grant.estimatedTotalFunding
-					? Number(grant.estimatedTotalFunding)
-					: 0,
-				deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
-				source: grant.source,
-				detailsStatus: grant.detailsStatus,
-				detailsFetchedAt: grant.detailsFetchedAt
-					? grant.detailsFetchedAt.toISOString()
-					: null,
-			} satisfies GrantMatch;
-		});
+		let grantMatches = grants.map((grant) => this.mapGrantToMatch(grant));
 
 		// Apply fit score filtering if specified
 		if (filters.minFitScore) {
@@ -78,27 +95,7 @@ export class GrantServiceImpl implements GrantService {
 			);
 
 		// Transform grants and calculate fit scores
-		let grantMatches = grants.map((grant) => {
-			const fitScore = calculateGrantFitScore(grant);
-
-			return {
-				id: grant.id,
-				title: grant.title,
-				url: grant.url,
-				internalUrl: `/grants/${grant.id}`,
-				fitScore,
-				explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
-				fundingAmount: grant.estimatedTotalFunding
-					? Number(grant.estimatedTotalFunding)
-					: 0,
-				deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
-				source: grant.source,
-				detailsStatus: grant.detailsStatus,
-				detailsFetchedAt: grant.detailsFetchedAt
-					? grant.detailsFetchedAt.toISOString()
-					: null,
-			} satisfies GrantMatch;
-		});
+		let grantMatches = grants.map((grant) => this.mapGrantToMatch(grant));
 
 		// Apply fit score filtering if specified
 		if (filters.minFitScore) {
@@ -135,24 +132,6 @@ export class GrantServiceImpl implements GrantService {
 			return null;
 		}
 
-		const fitScore = calculateGrantFitScore(grant);
-
-		return {
-			id: grant.id,
-			title: grant.title,
-			url: grant.url,
-			internalUrl: `/grants/${grant.id}`,
-			fitScore,
-			explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
-			fundingAmount: grant.estimatedTotalFunding
-				? Number(grant.estimatedTotalFunding)
-				: 0,
-			deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
-			source: grant.source,
-			detailsStatus: grant.detailsStatus,
-			detailsFetchedAt: grant.detailsFetchedAt
-				? grant.detailsFetchedAt.toISOString()
-				: null,
-		} satisfies GrantMatch;
+		return this.mapGrantToMatch(grant);
 	}
 }

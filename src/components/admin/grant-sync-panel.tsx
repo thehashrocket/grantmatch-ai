@@ -39,6 +39,12 @@ type GrantSyncPanelProps = {
 	busyLabel?: string;
 };
 
+type ApiResponse = {
+	error?: string;
+	runId?: string;
+	code?: string;
+};
+
 const statusStyles: Record<
 	ImportStatus,
 	{ badge: string; label: string; text: string }
@@ -90,6 +96,19 @@ export function GrantSyncPanel({
 			: null,
 	);
 	const [isStarting, setIsStarting] = useState(false);
+	const [lastFeedback, setLastFeedback] = useState<{
+		type: 'success' | 'error';
+		message: string;
+		description?: string;
+	} | null>(null);
+
+	const formatDescription = (payload: ApiResponse) =>
+		[
+			payload.code ? `Code: ${payload.code}` : null,
+			payload.runId ? `Run ID: ${payload.runId}` : null,
+		]
+			.filter(Boolean)
+			.join(' • ');
 
 	useEffect(() => {
 		if (!runState || runState.status !== 'IN_PROGRESS') return;
@@ -121,14 +140,21 @@ export function GrantSyncPanel({
 		setIsStarting(true);
 		try {
 			const response = await fetch(apiPath, { method: 'POST' });
-			const payload = (await response.json()) as {
-				error?: string;
-				runId?: string;
-			};
+			let payload: ApiResponse = {};
+			try {
+				payload = ((await response.json()) as ApiResponse) ?? {};
+			} catch {
+				// Non-JSON response; keep payload empty.
+			}
 
 			if (!response.ok) {
 				toast.error(payload.error ?? 'Failed to start run', {
-					description: payload.runId ? `Run ID: ${payload.runId}` : undefined,
+					description: formatDescription(payload),
+				});
+				setLastFeedback({
+					type: 'error',
+					message: payload.error ?? 'Failed to start run',
+					description: formatDescription(payload) || undefined,
 				});
 				if (response.status === 409 && payload.runId) {
 					setRunState(
@@ -169,11 +195,20 @@ export function GrantSyncPanel({
 			});
 
 			toast.success(`${title} started`, {
-				description: `Run ID: ${payload.runId}`,
+				description: formatDescription(payload),
+			});
+			setLastFeedback({
+				type: 'success',
+				message: `${title} started`,
+				description: formatDescription(payload) || undefined,
 			});
 		} catch (error) {
 			console.error('Failed to trigger run', error);
 			toast.error('Unable to start run. Please try again.');
+			setLastFeedback({
+				type: 'error',
+				message: 'Unable to start run. Please try again.',
+			});
 		} finally {
 			setIsStarting(false);
 		}
@@ -266,6 +301,22 @@ export function GrantSyncPanel({
 						)}
 					</div>
 				</div>
+				{lastFeedback && (
+					<div
+						className={`rounded-lg border p-3 text-sm ${
+							lastFeedback.type === 'success'
+								? 'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-100'
+								: 'border-red-200 bg-red-50 text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-100'
+						}`}
+					>
+						<div className="font-medium">{lastFeedback.message}</div>
+						{lastFeedback.description && (
+							<div className="text-xs text-foreground/80 dark:text-foreground/70">
+								{lastFeedback.description}
+							</div>
+						)}
+					</div>
+				)}
 				<p className="text-sm text-muted-foreground">
 					Starting a run executes the same workflow as the CLI script{' '}
 					<code className="mx-1 rounded bg-muted px-1 py-0.5 text-xs">

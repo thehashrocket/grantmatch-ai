@@ -99,10 +99,12 @@ export function MultiStepForm() {
 				throw new Error(result.error || 'Failed to submit form');
 			}
 
-			// Update the session with new user data
+			// Update the session with new user data so middleware sees the org ID
 			await updateSession({
-				...result.user,
-				organizationId: result.organizationId,
+				user: {
+					...result.user,
+					organizationId: result.organizationId,
+				},
 			});
 
 			toast.success('Profile completed successfully!');

@@ -17,10 +17,7 @@ export async function syncCaliforniaGrants(options?: {
 		if (!tick.claimed) {
 			const reason =
 				tick.claim && 'reason' in tick.claim ? tick.claim.reason : undefined;
-			if (
-				reason === 'NOT_FOUND' ||
-				reason === 'NOT_IN_PROGRESS'
-			) {
+			if (reason === 'NOT_FOUND' || reason === 'NOT_IN_PROGRESS') {
 				break;
 			}
 			await wait(200);

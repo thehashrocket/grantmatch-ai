@@ -4,7 +4,12 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import {
+	Sheet,
+	SheetContent,
+	SheetTitle,
+	SheetTrigger,
+} from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
 import { Menu } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -33,6 +38,7 @@ export function MobileNav({ user }: MobileNavProps) {
 				</Button>
 			</SheetTrigger>
 			<SheetContent side="left" className="w-[240px] sm:w-[300px]">
+				<SheetTitle className="sr-only">Navigation menu</SheetTitle>
 				<nav className="flex flex-col space-y-4">
 					<Link
 						href="/"

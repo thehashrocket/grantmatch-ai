@@ -86,13 +86,8 @@ export class GrantServiceImpl implements GrantService {
 		page: number,
 		pageSize: number,
 	): Promise<PaginatedGrantMatches> {
-		// Get paginated raw grants from repository
-		const { grants, total } =
-			await this.grantRepository.findWithFiltersPaginated(
-				filters,
-				page,
-				pageSize,
-			);
+		// Get all grants matching the non-fit filters so we can paginate after scoring
+		const grants = await this.grantRepository.findWithFilters(filters);
 
 		// Transform grants and calculate fit scores
 		let grantMatches = grants.map((grant) => this.mapGrantToMatch(grant));
@@ -111,11 +106,17 @@ export class GrantServiceImpl implements GrantService {
 		// Sort by fit score descending
 		const sortedGrants = grantMatches.sort((a, b) => b.fitScore - a.fitScore);
 
-		// Calculate pagination metadata
+		// Paginate after scoring to avoid losing high-fit grants from other sources
+		const total = sortedGrants.length;
 		const totalPages = Math.ceil(total / pageSize);
+		const startIndex = (page - 1) * pageSize;
+		const paginatedGrants = sortedGrants.slice(
+			startIndex,
+			startIndex + pageSize,
+		);
 
 		return {
-			grants: sortedGrants,
+			grants: paginatedGrants,
 			pagination: {
 				page,
 				pageSize,

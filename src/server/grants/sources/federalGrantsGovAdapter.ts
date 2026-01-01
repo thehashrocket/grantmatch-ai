@@ -44,10 +44,17 @@ export const federalGrantsGovAdapter: GrantSourceAdapter = {
 		};
 	},
 	async getPage(cursor) {
-		const startRecordNum = Number.isFinite(cursor as number)
-			? Number(cursor)
-			: 0;
+		const cursorNumber = Number(cursor);
+		const startRecordNum =
+			Number.isFinite(cursorNumber) && cursorNumber > 0 ? cursorNumber : 0;
 		const rows = DEFAULT_ROWS;
+		const parseTotal = (value: unknown) => {
+			const asNumber =
+				typeof value === 'string'
+					? Number.parseInt(value, 10)
+					: (value as number);
+			return Number.isFinite(asNumber) ? asNumber : null;
+		};
 		const body = {
 			keyword: null,
 			cfda: null,
@@ -67,10 +74,12 @@ export const federalGrantsGovAdapter: GrantSourceAdapter = {
 			startRecord?: number;
 			oppHits?: OppHit[];
 		}>(SEARCH_URL, body);
-		const total = res.hitCount ?? 0;
+		const total = parseTotal(res.hitCount);
 		const hits = res.oppHits ?? [];
 		const nextCursor = startRecordNum + rows;
-		const done = hits.length === 0 || nextCursor >= total;
+		const done =
+			hits.length === 0 ||
+			(total !== null ? nextCursor >= total : hits.length < rows);
 		return {
 			records: hits as Record<string, unknown>[],
 			nextCursor: done ? null : nextCursor,

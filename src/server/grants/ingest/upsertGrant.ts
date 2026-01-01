@@ -170,6 +170,18 @@ async function findExistingGrant(
 		if (grant) return grant;
 	}
 
+	if (normalized.number) {
+		const grant = await prisma.grant.findUnique({
+			where: {
+				source_number: {
+					source: normalized.source,
+					number: normalized.number,
+				},
+			},
+		});
+		if (grant) return grant;
+	}
+
 	if (normalized.sourceKey) {
 		const grant = await prisma.grant.findUnique({
 			where: {

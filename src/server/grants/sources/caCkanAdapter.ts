@@ -74,10 +74,23 @@ export const caCkanAdapter: GrantSourceAdapter = {
 		return fetchCkanSchema(RESOURCE_ID);
 	},
 	async getPage(cursor) {
-		const offset = Number.isFinite(cursor as number) ? Number(cursor) : 0;
+		const cursorNumber = Number(cursor);
+		const offset = Number.isFinite(cursorNumber) && cursorNumber > 0
+			? cursorNumber
+			: 0;
+		const parseTotal = (value: unknown) => {
+			const asNumber = typeof value === 'number' ? value : Number(value);
+			return Number.isFinite(asNumber) ? asNumber : null;
+		};
+
 		const page = await fetchCkanPage(RESOURCE_ID, offset, PAGE_SIZE);
 		const nextOffset = offset + PAGE_SIZE;
-		const done = offset + page.records.length >= page.total;
+		const total = parseTotal(page.total);
+		const done =
+			page.records.length === 0 ||
+			(total !== null
+				? offset + page.records.length >= total
+				: page.records.length < PAGE_SIZE);
 		return {
 			records: page.records,
 			nextCursor: done ? null : nextOffset,

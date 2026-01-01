@@ -294,4 +294,40 @@ describe('adapter paging', () => {
 		expect(second.records).toHaveLength(0);
 		expect(second.done).toBe(true);
 	});
+
+	it('falls back to page size when hitCount is missing', async () => {
+		const postMock = vi.mocked(postJsonWithRetry);
+		postMock.mockResolvedValueOnce({
+			startRecord: 0,
+			oppHits: [{ id: '1' }],
+		});
+
+		const page = await federalGrantsGovAdapter.getPage();
+		expect(page.done).toBe(true);
+		expect(page.nextCursor).toBeNull();
+	});
+
+	it('marks CA CKAN done when total is missing and page is short', async () => {
+		const fetchMock = vi.mocked(fetchCkanPage);
+		fetchMock.mockResolvedValueOnce({
+			total: Number.NaN,
+			records: [{ id: '1' }],
+		} as any);
+
+		const page = await caCkanAdapter.getPage();
+		expect(page.done).toBe(true);
+		expect(page.nextCursor).toBeNull();
+	});
+
+	it('accepts string cursors for CA CKAN pagination', async () => {
+		const fetchMock = vi.mocked(fetchCkanPage);
+		fetchMock.mockResolvedValueOnce({
+			total: 400,
+			records: [{ id: '1' }],
+		} as any);
+
+		await caCkanAdapter.getPage('200');
+		const call = fetchMock.mock.calls.at(-1);
+		expect(call?.[1]).toBe(200);
+	});
 });

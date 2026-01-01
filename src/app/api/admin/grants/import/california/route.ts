@@ -3,7 +3,7 @@ import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { authOptions } from '@/lib/auth';
 import { $Enums } from '@/prisma/generated/client';
-import { runIngest } from '@/server/grants/ingest/runIngest';
+import { startTickIngest } from '@/server/grants/ingest/tickIngest';
 import { caCsvAdapter } from '@/server/grants/sources/caCsvAdapter';
 
 export const runtime = 'nodejs';
@@ -47,7 +47,7 @@ export async function POST(_: NextRequest) {
 			);
 		}
 
-		const { runId } = await runIngest(caCsvAdapter);
+		const { runId } = await startTickIngest(db, caCsvAdapter);
 
 		return NextResponse.json(
 			{

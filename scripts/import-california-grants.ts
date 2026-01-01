@@ -1,11 +1,10 @@
 import 'dotenv/config';
 
 import { db } from '@/lib/db';
-import { runIngest } from '@/server/grants/ingest/runIngest';
-import { caCsvAdapter } from '@/server/grants/sources/caCsvAdapter';
+import { syncCaliforniaGrants } from '@/server/grants/syncCaliforniaGrants';
 
 async function main() {
-	const { runId } = await runIngest(caCsvAdapter);
+	const { runId } = await syncCaliforniaGrants({ driveTicks: true });
 	const run = await db.grantSyncRun.findUnique({ where: { id: runId } });
 	if (run) {
 		console.log(

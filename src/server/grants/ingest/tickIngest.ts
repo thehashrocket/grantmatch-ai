@@ -77,11 +77,40 @@ export type CommitArgs = {
 	nextCursor: unknown;
 	done: boolean;
 	errors?: unknown[];
+	currentSchema?: TickSchema;
 };
 
 export type CommitResult =
 	| { committed: true; run: TickRunSummary }
 	| { committed: false; reason: 'STALE_CLAIM' };
+
+export async function startTickIngest(
+	prisma: PrismaClient,
+	adapter: GrantSourceAdapter,
+): Promise<{ runId: string }> {
+	let schemaJson: Prisma.InputJsonValue | undefined = { cursor: null };
+	try {
+		if (adapter.getSchema) {
+			const schema = await adapter.getSchema();
+			schemaJson = {
+				...(schema ?? {}),
+				cursor: null,
+			} as Prisma.InputJsonValue;
+		}
+	} catch {
+		// Ignore schema fetch failures; run can still proceed.
+	}
+
+	const run = await prisma.grantSyncRun.create({
+		data: {
+			source: adapter.source,
+			status: $Enums.ImportStatus.IN_PROGRESS,
+			schemaJson,
+		},
+	});
+
+	return { runId: run.id };
+}
 
 export async function claimTick(
 	prisma: TickPrisma,
@@ -97,11 +126,11 @@ export async function claimTick(
 				jsonb_set(
 					COALESCE("schemaJson", '{}'::jsonb),
 					'{tickClaimId}',
-					to_jsonb(${tickClaimId}),
+					to_jsonb(${tickClaimId}::text),
 					true
 				),
 				'{tickClaimedAt}',
-				to_jsonb(${tickClaimedAt}),
+				to_jsonb(${tickClaimedAt}::timestamptz),
 				true
 			)
 		WHERE "id" = ${runId}
@@ -127,7 +156,14 @@ export async function claimTick(
 	`;
 
 	if (claim.length > 0) {
-		return { claimed: true, run: mapRunRow(claim[0]) };
+		const run = mapRunRow(claim[0]);
+		logDebug('claim:granted', {
+			runId: run.id,
+			source: run.source,
+			cursor: run.schema.cursor ?? null,
+			status: run.status,
+		});
+		return { claimed: true, run };
 	}
 
 	const existing = await prisma.grantSyncRun.findUnique({
@@ -160,10 +196,19 @@ export async function claimTick(
 		};
 	}
 
+	const run = mapRunRow(existing);
+	logDebug('claim:rejected', {
+		runId: run.id,
+		source: run.source,
+		cursor: run.schema.cursor ?? null,
+		status: run.status,
+		reason: 'TICK_ALREADY_CLAIMED',
+	});
+
 	return {
 		claimed: false,
 		reason: 'TICK_ALREADY_CLAIMED',
-		run: mapRunRow(existing),
+		run,
 	};
 }
 
@@ -171,31 +216,43 @@ export async function commitTick(
 	prisma: TickPrisma,
 	args: CommitArgs,
 ): Promise<CommitResult> {
+	logDebug('commit:start', {
+		runId: args.runId,
+		tickClaimId: args.tickClaimId,
+		nextCursor: args.nextCursor ?? null,
+		done: args.done,
+		deltas: args.deltas,
+		errors: args.errors?.length ?? 0,
+	});
+
 	const errors = (args.errors ?? []).slice(0, MAX_TICK_ERRORS);
-	const cursorJson = args.nextCursor ?? null;
-	const doneLiteral = Prisma.raw(args.done ? 'true' : 'false');
-	const completedStatus = Prisma.raw(
-		`'${$Enums.ImportStatus.COMPLETED}'::"ImportStatus"`,
-	);
-	const baseSchema = Prisma.sql`COALESCE("schemaJson", '{}'::jsonb)`;
-	const cursorSchema = Prisma.sql`
-		CASE
-			WHEN ${doneLiteral} THEN ${baseSchema} - 'cursor'
-			ELSE jsonb_set(${baseSchema}, '{cursor}', to_jsonb(${cursorJson}), true)
-		END
-	`;
-	const schemaWithErrors =
-		errors.length > 0
-			? Prisma.sql`
-				jsonb_set(
-					${cursorSchema},
-					'{tickErrors}',
-					COALESCE(${baseSchema}->'tickErrors', '[]'::jsonb) || to_jsonb(${errors}),
-					true
-				)
-			`
-			: cursorSchema;
-	const finalSchema = Prisma.sql`${schemaWithErrors} - 'tickClaimId' - 'tickClaimedAt'`;
+	const baseSchema: TickSchema = (args.currentSchema ?? {}) as TickSchema;
+	const mergedErrors = [
+		...(Array.isArray(baseSchema.tickErrors)
+			? (baseSchema.tickErrors as unknown[])
+			: []),
+		...errors,
+	].slice(0, MAX_TICK_ERRORS);
+
+	const nextCursor = args.done ? undefined : args.nextCursor ?? null;
+	const updatedSchema: Record<string, unknown> = { ...baseSchema };
+	if (args.done) {
+		delete updatedSchema.cursor;
+	} else {
+		updatedSchema.cursor = nextCursor;
+	}
+
+	if (mergedErrors.length > 0) {
+		updatedSchema.tickErrors = mergedErrors;
+	} else {
+		delete updatedSchema.tickErrors;
+	}
+
+	delete updatedSchema.tickClaimId;
+	delete updatedSchema.tickClaimedAt;
+
+	const schemaJsonString = JSON.stringify(updatedSchema);
+	const errorsLiteral = Prisma.sql`${JSON.stringify(errors)}::jsonb`;
 
 	const update = await prisma.$queryRaw<RunRow[]>`
 		UPDATE "GrantSyncRun"
@@ -207,13 +264,13 @@ export async function commitTick(
 			"closedCount" = "closedCount" + ${args.deltas.closedDelta},
 			"reopenedCount" = "reopenedCount" + ${args.deltas.reopenedDelta},
 			"errorsJson" = CASE
-				WHEN ${errors.length > 0 ? Prisma.raw('true') : Prisma.raw('false')}
-					THEN COALESCE("errorsJson", '[]'::jsonb) || to_jsonb(${errors})
+				WHEN ${errors.length > 0}
+					THEN COALESCE("errorsJson", '[]'::jsonb) || ${errorsLiteral}
 				ELSE "errorsJson"
 			END,
-			"schemaJson" = ${finalSchema},
-			"status" = CASE WHEN ${doneLiteral} THEN ${completedStatus} ELSE "status" END,
-			"finishedAt" = CASE WHEN ${doneLiteral} THEN NOW() ELSE "finishedAt" END
+			"schemaJson" = ${schemaJsonString}::jsonb,
+			"status" = CASE WHEN ${args.done} THEN ${$Enums.ImportStatus.COMPLETED}::"ImportStatus" ELSE "status" END,
+			"finishedAt" = CASE WHEN ${args.done} THEN NOW() ELSE "finishedAt" END
 		WHERE "id" = ${args.runId}
 			AND "schemaJson"->>'tickClaimId' = ${args.tickClaimId}
 		RETURNING
@@ -232,10 +289,28 @@ export async function commitTick(
 	`;
 
 	if (!update.length) {
+		logDebug('commit:stale', {
+			runId: args.runId,
+			tickClaimId: args.tickClaimId,
+		});
 		return { committed: false, reason: 'STALE_CLAIM' };
 	}
 
-	return { committed: true, run: mapRunRow(update[0]) };
+	const run = mapRunRow(update[0]);
+	logDebug('commit:schema', {
+		runId: run.id,
+		rawSchema: update[0].schemaJson,
+		mappedCursor: run.schema.cursor ?? null,
+	});
+	logDebug('commit:applied', {
+		runId: run.id,
+		source: run.source,
+		cursor: run.schema.cursor ?? null,
+		done: args.done,
+		deltas: args.deltas,
+	});
+
+	return { committed: true, run };
 }
 
 export async function runTick(
@@ -250,17 +325,18 @@ export async function runTick(
 
 	const adapter = getAdapter(claim.run.source);
 	if (!adapter) {
-		const commit = await commitTick(prisma, {
-			runId,
-			tickClaimId: claim.run.schema.tickClaimId as string,
-			deltas: emptyDeltas(),
-			nextCursor: claim.run.schema.cursor ?? null,
-			done: false,
-			errors: [
-				{
-					message: `No adapter registered for source ${claim.run.source}`,
-				},
-			],
+	const commit = await commitTick(prisma, {
+		runId,
+		tickClaimId: claim.run.schema.tickClaimId as string,
+		deltas: emptyDeltas(),
+		nextCursor: claim.run.schema.cursor ?? null,
+		done: false,
+		currentSchema: claim.run.schema,
+		errors: [
+			{
+				message: `No adapter registered for source ${claim.run.source}`,
+			},
+		],
 		});
 		return { claimed: true, result: commit };
 	}
@@ -272,6 +348,7 @@ export async function runTick(
 		deltas: work.deltas,
 		nextCursor: work.nextCursor,
 		done: work.done,
+		currentSchema: claim.run.schema,
 		errors: work.errors,
 	});
 
@@ -286,9 +363,20 @@ async function performWork(
 	const errors: unknown[] = [];
 
 	let page: Awaited<ReturnType<GrantSourceAdapter['getPage']>>;
+	logDebug('tick:start', {
+		runId: run.id,
+		source: run.source,
+		cursor: run.schema.cursor ?? null,
+	});
 	try {
 		page = await adapter.getPage(run.schema.cursor);
 	} catch (err) {
+		logDebug('tick:error', {
+			runId: run.id,
+			source: run.source,
+			cursor: run.schema.cursor ?? null,
+			error: formatError(err),
+		});
 		return {
 			deltas: emptyDeltas(),
 			nextCursor: run.schema.cursor ?? null,
@@ -344,6 +432,16 @@ async function performWork(
 	const done =
 		!!page.done || page.records.length === 0 || page.nextCursor === undefined;
 	const nextCursor = done ? null : (page.nextCursor ?? null);
+
+	logDebug('tick:page', {
+		runId: run.id,
+		source: run.source,
+		cursor: run.schema.cursor ?? null,
+		records: page.records.length,
+		nextCursor,
+		done,
+		errors: errors.length,
+	});
 
 	return { deltas, nextCursor, done, errors };
 }
@@ -406,4 +504,14 @@ function formatError(err: unknown) {
 		return { message: err.message, stack: err.stack };
 	}
 	return { message: String(err) };
+}
+
+const debugEnabled =
+	process.env.GRANT_SYNC_DEBUG?.toLowerCase() === 'true' ||
+	process.env.GRANT_SYNC_DEBUG === '1';
+
+function logDebug(message: string, payload?: Record<string, unknown>) {
+	if (!debugEnabled) return;
+	// eslint-disable-next-line no-console
+	console.info('[grant-sync]', message, payload ?? '');
 }

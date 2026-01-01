@@ -4,7 +4,7 @@ import { db } from '@/lib/db';
 import { syncFederalGrants } from '@/server/grants/syncFederalGrants';
 
 async function main() {
-	const { runId } = await syncFederalGrants();
+	const { runId } = await syncFederalGrants({ driveTicks: true });
 	const run = await db.grantSyncRun.findUnique({ where: { id: runId } });
 	if (run) {
 		console.log(

@@ -234,7 +234,7 @@ export async function commitTick(
 		...errors,
 	].slice(0, MAX_TICK_ERRORS);
 
-	const nextCursor = args.done ? undefined : args.nextCursor ?? null;
+	const nextCursor = args.done ? undefined : (args.nextCursor ?? null);
 	const updatedSchema: Record<string, unknown> = { ...baseSchema };
 	if (args.done) {
 		delete updatedSchema.cursor;
@@ -325,18 +325,18 @@ export async function runTick(
 
 	const adapter = getAdapter(claim.run.source);
 	if (!adapter) {
-	const commit = await commitTick(prisma, {
-		runId,
-		tickClaimId: claim.run.schema.tickClaimId as string,
-		deltas: emptyDeltas(),
-		nextCursor: claim.run.schema.cursor ?? null,
-		done: false,
-		currentSchema: claim.run.schema,
-		errors: [
-			{
-				message: `No adapter registered for source ${claim.run.source}`,
-			},
-		],
+		const commit = await commitTick(prisma, {
+			runId,
+			tickClaimId: claim.run.schema.tickClaimId as string,
+			deltas: emptyDeltas(),
+			nextCursor: claim.run.schema.cursor ?? null,
+			done: false,
+			currentSchema: claim.run.schema,
+			errors: [
+				{
+					message: `No adapter registered for source ${claim.run.source}`,
+				},
+			],
 		});
 		return { claimed: true, result: commit };
 	}

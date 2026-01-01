@@ -312,7 +312,7 @@ describe('adapter paging', () => {
 		fetchMock.mockResolvedValueOnce({
 			total: Number.NaN,
 			records: [{ id: '1' }],
-		} as any);
+		} as { total: number; records: Array<Record<string, unknown>> });
 
 		const page = await caCkanAdapter.getPage();
 		expect(page.done).toBe(true);
@@ -324,7 +324,7 @@ describe('adapter paging', () => {
 		fetchMock.mockResolvedValueOnce({
 			total: 400,
 			records: [{ id: '1' }],
-		} as any);
+		} as { total: number; records: Array<Record<string, unknown>> });
 
 		await caCkanAdapter.getPage('200');
 		const call = fetchMock.mock.calls.at(-1);

@@ -75,9 +75,8 @@ export const caCkanAdapter: GrantSourceAdapter = {
 	},
 	async getPage(cursor) {
 		const cursorNumber = Number(cursor);
-		const offset = Number.isFinite(cursorNumber) && cursorNumber > 0
-			? cursorNumber
-			: 0;
+		const offset =
+			Number.isFinite(cursorNumber) && cursorNumber > 0 ? cursorNumber : 0;
 		const parseTotal = (value: unknown) => {
 			const asNumber = typeof value === 'number' ? value : Number(value);
 			return Number.isFinite(asNumber) ? asNumber : null;

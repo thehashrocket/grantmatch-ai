@@ -11,17 +11,15 @@ export async function syncCaliforniaGrants(options?: {
 
 	let attempts = 0;
 	while (attempts < 10_000) {
-		const tick = await runTick(
-			db,
-			runId,
-			options?.staleAfterSeconds ?? 30,
-		);
+		const tick = await runTick(db, runId, options?.staleAfterSeconds ?? 30);
 		attempts += 1;
 
 		if (!tick.claimed) {
+			const reason =
+				tick.claim && 'reason' in tick.claim ? tick.claim.reason : undefined;
 			if (
-				tick.claim?.reason === 'NOT_FOUND' ||
-				tick.claim?.reason === 'NOT_IN_PROGRESS'
+				reason === 'NOT_FOUND' ||
+				reason === 'NOT_IN_PROGRESS'
 			) {
 				break;
 			}

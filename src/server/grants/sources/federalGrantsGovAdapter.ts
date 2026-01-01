@@ -27,7 +27,7 @@ type OppHit = {
 const SEARCH_URL = 'https://micro.grants.gov/rest/opportunities/search';
 const DEFAULT_ROWS =
 	parseInt(process.env.FEDERAL_GRANTS_ROWS ?? '200', 10) || 200;
-const DEFAULT_ELIG = process.env.FEDERAL_GRANTS_ELIGIBILITIES ?? '';
+const DEFAULT_ELIG = process.env.FEDERAL_GRANTS_ELIGIBILITIES ?? '12|13';
 const DEFAULT_STATUSES =
 	process.env.FEDERAL_GRANTS_OPP_STATUSES ??
 	'posted|forecasted|closed|archived';

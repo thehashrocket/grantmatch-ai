@@ -119,6 +119,13 @@ GrantMatch AI streamlines the grant discovery process by:
 - **Sync Federal grants (index)**: `pnpm sync:federal-grants` - Runs the Grants.gov index ingest (no detail fetch; details are on-demand)
 - **Prisma Studio**: `pnpm prisma studio` - Visual database browser
 
+## Cron-triggered grant sync
+
+- Vercel Cron hits `/api/cron/sync-federal` every 6 hours and `/api/cron/sync-california` nightly (see `vercel.json`).
+- Protect with `CRON_SECRET` in Vercel Project Settings (or `.env` locally). Requests must send `Authorization: Bearer <CRON_SECRET>`.
+- Endpoints are lock-aware: if a recent run is in progress, they return `{ ok: true, skipped: true, reason: "lock-held" }` instead of starting a duplicate.
+- Local test example: `curl -H "Authorization: Bearer $CRON_SECRET" http://localhost:3005/api/cron/sync-federal`.
+
 ## Grant sync & identity model
 
 - **Sources**: Supports multiple sources (California CKAN and CSV, Federal index live; future-ready for others).

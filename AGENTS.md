@@ -45,6 +45,14 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 - Avoid stubbed handlers: `/api/user` PATCH is a no-op; wire it to the database if you rely on profile updates.
 - Surface fetch failures: `/api/grants/[id]/details` currently swallows errors; prefer returning an explicit error or status so the UI can react.
 
+## Bookmarking
+
+- Per-user bookmarks: max 100/user; statuses are `INTERESTED`, `APPLIED`, `NOT_FOR_US`.
+- Bookmark payload includes optional note (<=2000 chars) and tags (max 10, normalized lowercase with collapsed whitespace, 30 chars max, deduped).
+- Do not change grant matching to include bookmark state; fetch bookmark state separately via `bookmark.statusMap` after `getMatchesPaginated`.
+- `statusMap` returns tags (not note) for optimistic UI; keep it lightweight and invalidate on toggle/status/meta updates.
+- Dashboard and grant detail must call `bookmark.statusMap` with the visible grantIds; profile uses `bookmark.list` filtering/sorting client-side (<=100 rows).
+
 ## Documentation
 
 - Prisma 7.2.0: <https://www.prisma.io/llms.txt>

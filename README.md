@@ -192,6 +192,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - Multi-source grant aggregation (Federal via grants.gov, state-level sources)
 - Advanced search with compound filters (keyword, source, deadline range, funding amount)
 - Paginated results with configurable page sizes
+- Per-user bookmarking with statuses (Interested/Applied/Not for us), notes, and tags (max 10 per bookmark, 100 bookmarks/user) plus quick tag from dashboard cards and profile list filters
 - Detailed grant views with rich metadata
 - Import system for batch grant data ingestion with status tracking
 

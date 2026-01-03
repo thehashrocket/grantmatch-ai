@@ -295,6 +295,17 @@ exports.Prisma.GrantChangeScalarFieldEnum = {
   observedAt: 'observedAt'
 };
 
+exports.Prisma.GrantBookmarkScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  grantId: 'grantId',
+  status: 'status',
+  note: 'note',
+  tags: 'tags',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -376,6 +387,12 @@ exports.InvitationStatus = exports.$Enums.InvitationStatus = {
   REJECTED: 'REJECTED'
 };
 
+exports.BookmarkStatus = exports.$Enums.BookmarkStatus = {
+  INTERESTED: 'INTERESTED',
+  APPLIED: 'APPLIED',
+  NOT_FOR_US: 'NOT_FOR_US'
+};
+
 exports.Prisma.ModelName = {
   Account: 'Account',
   Grant: 'Grant',
@@ -388,7 +405,8 @@ exports.Prisma.ModelName = {
   Organization: 'Organization',
   Invitation: 'Invitation',
   GrantSyncRun: 'GrantSyncRun',
-  GrantChange: 'GrantChange'
+  GrantChange: 'GrantChange',
+  GrantBookmark: 'GrantBookmark'
 };
 
 /**

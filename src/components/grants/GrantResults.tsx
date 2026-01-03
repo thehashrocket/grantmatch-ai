@@ -3,6 +3,10 @@ import { GrantResultsError } from './GrantResultsError';
 import { GrantResultsSkeleton } from './GrantResultsSkeleton';
 import { Pagination } from './Pagination';
 import type { GrantMatch } from '@/lib/types/grant';
+import type { BookmarkStatusRecord } from '@/lib/types/bookmark';
+import { BookmarkButton } from './BookmarkButton';
+import { BookmarkStatusSelect } from './BookmarkStatusSelect';
+import { BookmarkQuickTagMenu } from './BookmarkQuickTagMenu';
 
 interface GrantResultsProps {
 	grants: GrantMatch[] | undefined;
@@ -13,6 +17,8 @@ interface GrantResultsProps {
 	pageSize?: number;
 	total?: number;
 	onPageChange?: (page: number) => void;
+	bookmarkStatusMap?: Record<string, BookmarkStatusRecord>;
+	statusMapInput?: { grantIds: string[] };
 }
 
 export function GrantResults({
@@ -24,6 +30,8 @@ export function GrantResults({
 	pageSize = 10,
 	total,
 	onPageChange,
+	bookmarkStatusMap,
+	statusMapInput,
 }: GrantResultsProps) {
 	if (isLoading) {
 		return <GrantResultsSkeleton />;
@@ -48,7 +56,38 @@ export function GrantResults({
 		<>
 			<div className="grid gap-4 md:grid-cols-2">
 				{grants.map((grant) => (
-					<GrantCard key={grant.id} grant={grant} />
+					<GrantCard
+						key={grant.id}
+						grant={grant}
+						actionSlot={
+							<div className="flex items-start gap-2">
+								<div className="flex flex-col items-end gap-2">
+									{statusMapInput ? (
+										<BookmarkButton
+											grantId={grant.id}
+											isBookmarked={Boolean(bookmarkStatusMap?.[grant.id])}
+											status={bookmarkStatusMap?.[grant.id]?.status}
+											statusMapInput={statusMapInput}
+										/>
+									) : null}
+									{bookmarkStatusMap?.[grant.id] ? (
+										<BookmarkStatusSelect
+											grantId={grant.id}
+											status={bookmarkStatusMap[grant.id]?.status}
+											statusMapInput={statusMapInput}
+										/>
+									) : null}
+								</div>
+								{bookmarkStatusMap?.[grant.id] && statusMapInput ? (
+									<BookmarkQuickTagMenu
+										grantId={grant.id}
+										currentTags={bookmarkStatusMap[grant.id]?.tags}
+										statusMapInput={statusMapInput}
+									/>
+								) : null}
+							</div>
+						}
+					/>
 				))}
 			</div>
 			{onPageChange && (

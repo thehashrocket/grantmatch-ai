@@ -1,3 +1,5 @@
+// /src/app/grants/[id]/GrantDetailsClient.tsx
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,6 +11,11 @@ import { GrantBasicInfoCard } from '@/components/grants/GrantBasicInfoCard';
 import { FundingSummaryCard } from '@/components/grants/FundingSummaryCard';
 import type { Prisma } from '@/prisma/generated/client';
 import type { GrantMatch } from '@/lib/types/grant';
+import { BookmarkButton } from '@/components/grants/BookmarkButton';
+import { BookmarkStatusSelect } from '@/components/grants/BookmarkStatusSelect';
+import { trpc } from '@/lib/trpc/client';
+import type { BookmarkStatus } from '@/lib/types/bookmark';
+import { BookmarkMetaEditor } from '@/components/grants/BookmarkMetaEditor';
 
 type GrantData = Prisma.GrantGetPayload<{
 	include: { details: true; attachments: true };
@@ -20,18 +27,53 @@ interface GrantDetailsClientProps {
 }
 
 export default function GrantDetailsClient({
+	grantId,
 	initialGrant,
 }: GrantDetailsClientProps) {
 	const grant = initialGrant;
+	const statusMapInput = { grantIds: [grantId] };
+	const { data: statusMap } = trpc.bookmark.statusMap.useQuery(statusMapInput, {
+		retry: false,
+	});
+
+	const bookmarkStatus = statusMap?.[grantId]?.status as
+		| BookmarkStatus
+		| undefined;
+	const isBookmarked = Boolean(statusMap?.[grantId]);
+
+	const { data: bookmarkList } = trpc.bookmark.list.useQuery(undefined, {
+		enabled: isBookmarked,
+	});
+
+	const bookmarkEntry = bookmarkList?.items.find(
+		(item) => item.grant.id === grantId,
+	);
 
 	return (
 		<div className="space-y-6">
 			<div className="space-y-2">
-				<div className="flex flex-wrap items-center gap-2">
-					<h1 className="text-3xl font-bold tracking-tight">{grant.title}</h1>
-					<DetailsStatusBadge
-						status={grant.detailsStatus as GrantMatch['detailsStatus']}
-					/>
+				<div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+					<div className="flex flex-wrap items-center gap-2">
+						<h1 className="text-3xl font-bold tracking-tight">{grant.title}</h1>
+						<DetailsStatusBadge
+							status={grant.detailsStatus as GrantMatch['detailsStatus']}
+						/>
+					</div>
+					<div className="flex flex-wrap gap-3">
+						<BookmarkButton
+							grantId={grantId}
+							statusMapInput={statusMapInput}
+							isBookmarked={isBookmarked}
+							status={bookmarkStatus}
+						/>
+						{isBookmarked ? (
+							<BookmarkStatusSelect
+								grantId={grantId}
+								status={bookmarkStatus}
+								statusMapInput={statusMapInput}
+							/>
+						) : null}
+					</div>
 				</div>
 				<p className="text-muted-foreground">Portal ID: {grant.portalId}</p>
 				{grant.detailsStatus === 'FETCHING' && (
@@ -40,6 +82,15 @@ export default function GrantDetailsClient({
 					</p>
 				)}
 			</div>
+
+			{isBookmarked ? (
+				<BookmarkMetaEditor
+					grantId={grantId}
+					initialNote={bookmarkEntry?.note}
+					initialTags={bookmarkEntry?.tags}
+					statusMapInput={statusMapInput}
+				/>
+			) : null}
 
 			<div className="grid gap-6 md:grid-cols-2">
 				<GrantBasicInfoCard grant={grant} />

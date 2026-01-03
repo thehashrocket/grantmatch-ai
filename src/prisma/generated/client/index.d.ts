@@ -73,6 +73,11 @@ export type GrantSyncRun = $Result.DefaultSelection<Prisma.$GrantSyncRunPayload>
  * 
  */
 export type GrantChange = $Result.DefaultSelection<Prisma.$GrantChangePayload>
+/**
+ * Model GrantBookmark
+ * 
+ */
+export type GrantBookmark = $Result.DefaultSelection<Prisma.$GrantBookmarkPayload>
 
 /**
  * Enums
@@ -149,6 +154,15 @@ export const GrantDetailsStatus: {
 export type GrantDetailsStatus = (typeof GrantDetailsStatus)[keyof typeof GrantDetailsStatus]
 
 
+export const BookmarkStatus: {
+  INTERESTED: 'INTERESTED',
+  APPLIED: 'APPLIED',
+  NOT_FOR_US: 'NOT_FOR_US'
+};
+
+export type BookmarkStatus = (typeof BookmarkStatus)[keyof typeof BookmarkStatus]
+
+
 export const InvitationStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -186,6 +200,10 @@ export const GrantStatus: typeof $Enums.GrantStatus
 export type GrantDetailsStatus = $Enums.GrantDetailsStatus
 
 export const GrantDetailsStatus: typeof $Enums.GrantDetailsStatus
+
+export type BookmarkStatus = $Enums.BookmarkStatus
+
+export const BookmarkStatus: typeof $Enums.BookmarkStatus
 
 export type InvitationStatus = $Enums.InvitationStatus
 
@@ -427,6 +445,16 @@ export class PrismaClient<
     * ```
     */
   get grantChange(): Prisma.GrantChangeDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.grantBookmark`: Exposes CRUD operations for the **GrantBookmark** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GrantBookmarks
+    * const grantBookmarks = await prisma.grantBookmark.findMany()
+    * ```
+    */
+  get grantBookmark(): Prisma.GrantBookmarkDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -872,7 +900,8 @@ export namespace Prisma {
     Organization: 'Organization',
     Invitation: 'Invitation',
     GrantSyncRun: 'GrantSyncRun',
-    GrantChange: 'GrantChange'
+    GrantChange: 'GrantChange',
+    GrantBookmark: 'GrantBookmark'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -888,7 +917,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "grant" | "grantDetail" | "grantAttachment" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange"
+      modelProps: "account" | "grant" | "grantDetail" | "grantAttachment" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange" | "grantBookmark"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1780,6 +1809,80 @@ export namespace Prisma {
           }
         }
       }
+      GrantBookmark: {
+        payload: Prisma.$GrantBookmarkPayload<ExtArgs>
+        fields: Prisma.GrantBookmarkFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GrantBookmarkFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GrantBookmarkFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          findFirst: {
+            args: Prisma.GrantBookmarkFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GrantBookmarkFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          findMany: {
+            args: Prisma.GrantBookmarkFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>[]
+          }
+          create: {
+            args: Prisma.GrantBookmarkCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          createMany: {
+            args: Prisma.GrantBookmarkCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GrantBookmarkCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>[]
+          }
+          delete: {
+            args: Prisma.GrantBookmarkDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          update: {
+            args: Prisma.GrantBookmarkUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          deleteMany: {
+            args: Prisma.GrantBookmarkDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GrantBookmarkUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GrantBookmarkUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>[]
+          }
+          upsert: {
+            args: Prisma.GrantBookmarkUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantBookmarkPayload>
+          }
+          aggregate: {
+            args: Prisma.GrantBookmarkAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGrantBookmark>
+          }
+          groupBy: {
+            args: Prisma.GrantBookmarkGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GrantBookmarkGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GrantBookmarkCountArgs<ExtArgs>
+            result: $Utils.Optional<GrantBookmarkCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1900,6 +2003,7 @@ export namespace Prisma {
     invitation?: InvitationOmit
     grantSyncRun?: GrantSyncRunOmit
     grantChange?: GrantChangeOmit
+    grantBookmark?: GrantBookmarkOmit
   }
 
   /* Types for Logging */
@@ -1982,11 +2086,13 @@ export namespace Prisma {
   export type GrantCountOutputType = {
     attachments: number
     changes: number
+    bookmarks: number
   }
 
   export type GrantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attachments?: boolean | GrantCountOutputTypeCountAttachmentsArgs
     changes?: boolean | GrantCountOutputTypeCountChangesArgs
+    bookmarks?: boolean | GrantCountOutputTypeCountBookmarksArgs
   }
 
   // Custom InputTypes
@@ -2014,6 +2120,13 @@ export namespace Prisma {
     where?: GrantChangeWhereInput
   }
 
+  /**
+   * GrantCountOutputType without action
+   */
+  export type GrantCountOutputTypeCountBookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantBookmarkWhereInput
+  }
+
 
   /**
    * Count Type UserCountOutputType
@@ -2022,12 +2135,14 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number
     sessions: number
+    grantBookmarks: number
     grantImportRuns: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     sessions?: boolean | UserCountOutputTypeCountSessionsArgs
+    grantBookmarks?: boolean | UserCountOutputTypeCountGrantBookmarksArgs
     grantImportRuns?: boolean | UserCountOutputTypeCountGrantImportRunsArgs
   }
 
@@ -2054,6 +2169,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountSessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: SessionWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountGrantBookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantBookmarkWhereInput
   }
 
   /**
@@ -3787,6 +3909,7 @@ export namespace Prisma {
     details?: boolean | Grant$detailsArgs<ExtArgs>
     attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
+    bookmarks?: boolean | Grant$bookmarksArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["grant"]>
 
@@ -3915,6 +4038,7 @@ export namespace Prisma {
     details?: boolean | Grant$detailsArgs<ExtArgs>
     attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
+    bookmarks?: boolean | Grant$bookmarksArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GrantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -3926,6 +4050,7 @@ export namespace Prisma {
       details: Prisma.$GrantDetailPayload<ExtArgs> | null
       attachments: Prisma.$GrantAttachmentPayload<ExtArgs>[]
       changes: Prisma.$GrantChangePayload<ExtArgs>[]
+      bookmarks: Prisma.$GrantBookmarkPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4362,6 +4487,7 @@ export namespace Prisma {
     details<T extends Grant$detailsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$detailsArgs<ExtArgs>>): Prisma__GrantDetailClient<$Result.GetResult<Prisma.$GrantDetailPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     attachments<T extends Grant$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     changes<T extends Grant$changesArgs<ExtArgs> = {}>(args?: Subset<T, Grant$changesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    bookmarks<T extends Grant$bookmarksArgs<ExtArgs> = {}>(args?: Subset<T, Grant$bookmarksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4880,6 +5006,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GrantChangeScalarFieldEnum | GrantChangeScalarFieldEnum[]
+  }
+
+  /**
+   * Grant.bookmarks
+   */
+  export type Grant$bookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    where?: GrantBookmarkWhereInput
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    cursor?: GrantBookmarkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
   }
 
   /**
@@ -9586,6 +9736,7 @@ export namespace Prisma {
     organization?: boolean | User$organizationArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    grantBookmarks?: boolean | User$grantBookmarksArgs<ExtArgs>
     grantImportRuns?: boolean | User$grantImportRunsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
@@ -9642,6 +9793,7 @@ export namespace Prisma {
     organization?: boolean | User$organizationArgs<ExtArgs>
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
+    grantBookmarks?: boolean | User$grantBookmarksArgs<ExtArgs>
     grantImportRuns?: boolean | User$grantImportRunsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -9658,6 +9810,7 @@ export namespace Prisma {
       organization: Prisma.$OrganizationPayload<ExtArgs> | null
       accounts: Prisma.$AccountPayload<ExtArgs>[]
       sessions: Prisma.$SessionPayload<ExtArgs>[]
+      grantBookmarks: Prisma.$GrantBookmarkPayload<ExtArgs>[]
       grantImportRuns: Prisma.$GrantImportRunPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -10070,6 +10223,7 @@ export namespace Prisma {
     organization<T extends User$organizationArgs<ExtArgs> = {}>(args?: Subset<T, User$organizationArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     accounts<T extends User$accountsArgs<ExtArgs> = {}>(args?: Subset<T, User$accountsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     sessions<T extends User$sessionsArgs<ExtArgs> = {}>(args?: Subset<T, User$sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$SessionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    grantBookmarks<T extends User$grantBookmarksArgs<ExtArgs> = {}>(args?: Subset<T, User$grantBookmarksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     grantImportRuns<T extends User$grantImportRunsArgs<ExtArgs> = {}>(args?: Subset<T, User$grantImportRunsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantImportRunPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -10572,6 +10726,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: SessionScalarFieldEnum | SessionScalarFieldEnum[]
+  }
+
+  /**
+   * User.grantBookmarks
+   */
+  export type User$grantBookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    where?: GrantBookmarkWhereInput
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    cursor?: GrantBookmarkWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
   }
 
   /**
@@ -16164,6 +16342,1107 @@ export namespace Prisma {
 
 
   /**
+   * Model GrantBookmark
+   */
+
+  export type AggregateGrantBookmark = {
+    _count: GrantBookmarkCountAggregateOutputType | null
+    _min: GrantBookmarkMinAggregateOutputType | null
+    _max: GrantBookmarkMaxAggregateOutputType | null
+  }
+
+  export type GrantBookmarkMinAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    grantId: string | null
+    status: $Enums.BookmarkStatus | null
+    note: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GrantBookmarkMaxAggregateOutputType = {
+    id: string | null
+    userId: string | null
+    grantId: string | null
+    status: $Enums.BookmarkStatus | null
+    note: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+  }
+
+  export type GrantBookmarkCountAggregateOutputType = {
+    id: number
+    userId: number
+    grantId: number
+    status: number
+    note: number
+    tags: number
+    createdAt: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type GrantBookmarkMinAggregateInputType = {
+    id?: true
+    userId?: true
+    grantId?: true
+    status?: true
+    note?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GrantBookmarkMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    grantId?: true
+    status?: true
+    note?: true
+    createdAt?: true
+    updatedAt?: true
+  }
+
+  export type GrantBookmarkCountAggregateInputType = {
+    id?: true
+    userId?: true
+    grantId?: true
+    status?: true
+    note?: true
+    tags?: true
+    createdAt?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type GrantBookmarkAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantBookmark to aggregate.
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantBookmarks to fetch.
+     */
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GrantBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GrantBookmarks
+    **/
+    _count?: true | GrantBookmarkCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GrantBookmarkMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GrantBookmarkMaxAggregateInputType
+  }
+
+  export type GetGrantBookmarkAggregateType<T extends GrantBookmarkAggregateArgs> = {
+        [P in keyof T & keyof AggregateGrantBookmark]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGrantBookmark[P]>
+      : GetScalarType<T[P], AggregateGrantBookmark[P]>
+  }
+
+
+
+
+  export type GrantBookmarkGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantBookmarkWhereInput
+    orderBy?: GrantBookmarkOrderByWithAggregationInput | GrantBookmarkOrderByWithAggregationInput[]
+    by: GrantBookmarkScalarFieldEnum[] | GrantBookmarkScalarFieldEnum
+    having?: GrantBookmarkScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GrantBookmarkCountAggregateInputType | true
+    _min?: GrantBookmarkMinAggregateInputType
+    _max?: GrantBookmarkMaxAggregateInputType
+  }
+
+  export type GrantBookmarkGroupByOutputType = {
+    id: string
+    userId: string
+    grantId: string
+    status: $Enums.BookmarkStatus
+    note: string | null
+    tags: string[]
+    createdAt: Date
+    updatedAt: Date
+    _count: GrantBookmarkCountAggregateOutputType | null
+    _min: GrantBookmarkMinAggregateOutputType | null
+    _max: GrantBookmarkMaxAggregateOutputType | null
+  }
+
+  type GetGrantBookmarkGroupByPayload<T extends GrantBookmarkGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GrantBookmarkGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GrantBookmarkGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GrantBookmarkGroupByOutputType[P]>
+            : GetScalarType<T[P], GrantBookmarkGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GrantBookmarkSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    grantId?: boolean
+    status?: boolean
+    note?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantBookmark"]>
+
+  export type GrantBookmarkSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    grantId?: boolean
+    status?: boolean
+    note?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantBookmark"]>
+
+  export type GrantBookmarkSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    grantId?: boolean
+    status?: boolean
+    note?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantBookmark"]>
+
+  export type GrantBookmarkSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    grantId?: boolean
+    status?: boolean
+    note?: boolean
+    tags?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+  }
+
+  export type GrantBookmarkOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "grantId" | "status" | "note" | "tags" | "createdAt" | "updatedAt", ExtArgs["result"]["grantBookmark"]>
+  export type GrantBookmarkInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantBookmarkIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantBookmarkIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+
+  export type $GrantBookmarkPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GrantBookmark"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+      grant: Prisma.$GrantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      userId: string
+      grantId: string
+      status: $Enums.BookmarkStatus
+      note: string | null
+      tags: string[]
+      createdAt: Date
+      updatedAt: Date
+    }, ExtArgs["result"]["grantBookmark"]>
+    composites: {}
+  }
+
+  type GrantBookmarkGetPayload<S extends boolean | null | undefined | GrantBookmarkDefaultArgs> = $Result.GetResult<Prisma.$GrantBookmarkPayload, S>
+
+  type GrantBookmarkCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GrantBookmarkFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GrantBookmarkCountAggregateInputType | true
+    }
+
+  export interface GrantBookmarkDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GrantBookmark'], meta: { name: 'GrantBookmark' } }
+    /**
+     * Find zero or one GrantBookmark that matches the filter.
+     * @param {GrantBookmarkFindUniqueArgs} args - Arguments to find a GrantBookmark
+     * @example
+     * // Get one GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GrantBookmarkFindUniqueArgs>(args: SelectSubset<T, GrantBookmarkFindUniqueArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GrantBookmark that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GrantBookmarkFindUniqueOrThrowArgs} args - Arguments to find a GrantBookmark
+     * @example
+     * // Get one GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GrantBookmarkFindUniqueOrThrowArgs>(args: SelectSubset<T, GrantBookmarkFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantBookmark that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkFindFirstArgs} args - Arguments to find a GrantBookmark
+     * @example
+     * // Get one GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GrantBookmarkFindFirstArgs>(args?: SelectSubset<T, GrantBookmarkFindFirstArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantBookmark that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkFindFirstOrThrowArgs} args - Arguments to find a GrantBookmark
+     * @example
+     * // Get one GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GrantBookmarkFindFirstOrThrowArgs>(args?: SelectSubset<T, GrantBookmarkFindFirstOrThrowArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GrantBookmarks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GrantBookmarks
+     * const grantBookmarks = await prisma.grantBookmark.findMany()
+     * 
+     * // Get first 10 GrantBookmarks
+     * const grantBookmarks = await prisma.grantBookmark.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const grantBookmarkWithIdOnly = await prisma.grantBookmark.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GrantBookmarkFindManyArgs>(args?: SelectSubset<T, GrantBookmarkFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GrantBookmark.
+     * @param {GrantBookmarkCreateArgs} args - Arguments to create a GrantBookmark.
+     * @example
+     * // Create one GrantBookmark
+     * const GrantBookmark = await prisma.grantBookmark.create({
+     *   data: {
+     *     // ... data to create a GrantBookmark
+     *   }
+     * })
+     * 
+     */
+    create<T extends GrantBookmarkCreateArgs>(args: SelectSubset<T, GrantBookmarkCreateArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GrantBookmarks.
+     * @param {GrantBookmarkCreateManyArgs} args - Arguments to create many GrantBookmarks.
+     * @example
+     * // Create many GrantBookmarks
+     * const grantBookmark = await prisma.grantBookmark.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GrantBookmarkCreateManyArgs>(args?: SelectSubset<T, GrantBookmarkCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GrantBookmarks and returns the data saved in the database.
+     * @param {GrantBookmarkCreateManyAndReturnArgs} args - Arguments to create many GrantBookmarks.
+     * @example
+     * // Create many GrantBookmarks
+     * const grantBookmark = await prisma.grantBookmark.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GrantBookmarks and only return the `id`
+     * const grantBookmarkWithIdOnly = await prisma.grantBookmark.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GrantBookmarkCreateManyAndReturnArgs>(args?: SelectSubset<T, GrantBookmarkCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GrantBookmark.
+     * @param {GrantBookmarkDeleteArgs} args - Arguments to delete one GrantBookmark.
+     * @example
+     * // Delete one GrantBookmark
+     * const GrantBookmark = await prisma.grantBookmark.delete({
+     *   where: {
+     *     // ... filter to delete one GrantBookmark
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GrantBookmarkDeleteArgs>(args: SelectSubset<T, GrantBookmarkDeleteArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GrantBookmark.
+     * @param {GrantBookmarkUpdateArgs} args - Arguments to update one GrantBookmark.
+     * @example
+     * // Update one GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GrantBookmarkUpdateArgs>(args: SelectSubset<T, GrantBookmarkUpdateArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GrantBookmarks.
+     * @param {GrantBookmarkDeleteManyArgs} args - Arguments to filter GrantBookmarks to delete.
+     * @example
+     * // Delete a few GrantBookmarks
+     * const { count } = await prisma.grantBookmark.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GrantBookmarkDeleteManyArgs>(args?: SelectSubset<T, GrantBookmarkDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantBookmarks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GrantBookmarks
+     * const grantBookmark = await prisma.grantBookmark.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GrantBookmarkUpdateManyArgs>(args: SelectSubset<T, GrantBookmarkUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantBookmarks and returns the data updated in the database.
+     * @param {GrantBookmarkUpdateManyAndReturnArgs} args - Arguments to update many GrantBookmarks.
+     * @example
+     * // Update many GrantBookmarks
+     * const grantBookmark = await prisma.grantBookmark.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GrantBookmarks and only return the `id`
+     * const grantBookmarkWithIdOnly = await prisma.grantBookmark.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GrantBookmarkUpdateManyAndReturnArgs>(args: SelectSubset<T, GrantBookmarkUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GrantBookmark.
+     * @param {GrantBookmarkUpsertArgs} args - Arguments to update or create a GrantBookmark.
+     * @example
+     * // Update or create a GrantBookmark
+     * const grantBookmark = await prisma.grantBookmark.upsert({
+     *   create: {
+     *     // ... data to create a GrantBookmark
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GrantBookmark we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GrantBookmarkUpsertArgs>(args: SelectSubset<T, GrantBookmarkUpsertArgs<ExtArgs>>): Prisma__GrantBookmarkClient<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GrantBookmarks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkCountArgs} args - Arguments to filter GrantBookmarks to count.
+     * @example
+     * // Count the number of GrantBookmarks
+     * const count = await prisma.grantBookmark.count({
+     *   where: {
+     *     // ... the filter for the GrantBookmarks we want to count
+     *   }
+     * })
+    **/
+    count<T extends GrantBookmarkCountArgs>(
+      args?: Subset<T, GrantBookmarkCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GrantBookmarkCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GrantBookmark.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GrantBookmarkAggregateArgs>(args: Subset<T, GrantBookmarkAggregateArgs>): Prisma.PrismaPromise<GetGrantBookmarkAggregateType<T>>
+
+    /**
+     * Group by GrantBookmark.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantBookmarkGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GrantBookmarkGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GrantBookmarkGroupByArgs['orderBy'] }
+        : { orderBy?: GrantBookmarkGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GrantBookmarkGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGrantBookmarkGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GrantBookmark model
+   */
+  readonly fields: GrantBookmarkFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GrantBookmark.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GrantBookmarkClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    grant<T extends GrantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GrantDefaultArgs<ExtArgs>>): Prisma__GrantClient<$Result.GetResult<Prisma.$GrantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GrantBookmark model
+   */
+  interface GrantBookmarkFieldRefs {
+    readonly id: FieldRef<"GrantBookmark", 'String'>
+    readonly userId: FieldRef<"GrantBookmark", 'String'>
+    readonly grantId: FieldRef<"GrantBookmark", 'String'>
+    readonly status: FieldRef<"GrantBookmark", 'BookmarkStatus'>
+    readonly note: FieldRef<"GrantBookmark", 'String'>
+    readonly tags: FieldRef<"GrantBookmark", 'String[]'>
+    readonly createdAt: FieldRef<"GrantBookmark", 'DateTime'>
+    readonly updatedAt: FieldRef<"GrantBookmark", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GrantBookmark findUnique
+   */
+  export type GrantBookmarkFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantBookmark to fetch.
+     */
+    where: GrantBookmarkWhereUniqueInput
+  }
+
+  /**
+   * GrantBookmark findUniqueOrThrow
+   */
+  export type GrantBookmarkFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantBookmark to fetch.
+     */
+    where: GrantBookmarkWhereUniqueInput
+  }
+
+  /**
+   * GrantBookmark findFirst
+   */
+  export type GrantBookmarkFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantBookmark to fetch.
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantBookmarks to fetch.
+     */
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantBookmarks.
+     */
+    cursor?: GrantBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantBookmarks.
+     */
+    distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * GrantBookmark findFirstOrThrow
+   */
+  export type GrantBookmarkFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantBookmark to fetch.
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantBookmarks to fetch.
+     */
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantBookmarks.
+     */
+    cursor?: GrantBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantBookmarks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantBookmarks.
+     */
+    distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * GrantBookmark findMany
+   */
+  export type GrantBookmarkFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantBookmarks to fetch.
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantBookmarks to fetch.
+     */
+    orderBy?: GrantBookmarkOrderByWithRelationInput | GrantBookmarkOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GrantBookmarks.
+     */
+    cursor?: GrantBookmarkWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantBookmarks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantBookmarks.
+     */
+    skip?: number
+    distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * GrantBookmark create
+   */
+  export type GrantBookmarkCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GrantBookmark.
+     */
+    data: XOR<GrantBookmarkCreateInput, GrantBookmarkUncheckedCreateInput>
+  }
+
+  /**
+   * GrantBookmark createMany
+   */
+  export type GrantBookmarkCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GrantBookmarks.
+     */
+    data: GrantBookmarkCreateManyInput | GrantBookmarkCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantBookmark createManyAndReturn
+   */
+  export type GrantBookmarkCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * The data used to create many GrantBookmarks.
+     */
+    data: GrantBookmarkCreateManyInput | GrantBookmarkCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantBookmark update
+   */
+  export type GrantBookmarkUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GrantBookmark.
+     */
+    data: XOR<GrantBookmarkUpdateInput, GrantBookmarkUncheckedUpdateInput>
+    /**
+     * Choose, which GrantBookmark to update.
+     */
+    where: GrantBookmarkWhereUniqueInput
+  }
+
+  /**
+   * GrantBookmark updateMany
+   */
+  export type GrantBookmarkUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GrantBookmarks.
+     */
+    data: XOR<GrantBookmarkUpdateManyMutationInput, GrantBookmarkUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantBookmarks to update
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * Limit how many GrantBookmarks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantBookmark updateManyAndReturn
+   */
+  export type GrantBookmarkUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * The data used to update GrantBookmarks.
+     */
+    data: XOR<GrantBookmarkUpdateManyMutationInput, GrantBookmarkUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantBookmarks to update
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * Limit how many GrantBookmarks to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantBookmark upsert
+   */
+  export type GrantBookmarkUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GrantBookmark to update in case it exists.
+     */
+    where: GrantBookmarkWhereUniqueInput
+    /**
+     * In case the GrantBookmark found by the `where` argument doesn't exist, create a new GrantBookmark with this data.
+     */
+    create: XOR<GrantBookmarkCreateInput, GrantBookmarkUncheckedCreateInput>
+    /**
+     * In case the GrantBookmark was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GrantBookmarkUpdateInput, GrantBookmarkUncheckedUpdateInput>
+  }
+
+  /**
+   * GrantBookmark delete
+   */
+  export type GrantBookmarkDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+    /**
+     * Filter which GrantBookmark to delete.
+     */
+    where: GrantBookmarkWhereUniqueInput
+  }
+
+  /**
+   * GrantBookmark deleteMany
+   */
+  export type GrantBookmarkDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantBookmarks to delete
+     */
+    where?: GrantBookmarkWhereInput
+    /**
+     * Limit how many GrantBookmarks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantBookmark without action
+   */
+  export type GrantBookmarkDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantBookmark
+     */
+    select?: GrantBookmarkSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantBookmark
+     */
+    omit?: GrantBookmarkOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantBookmarkInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -16386,6 +17665,20 @@ export namespace Prisma {
   };
 
   export type GrantChangeScalarFieldEnum = (typeof GrantChangeScalarFieldEnum)[keyof typeof GrantChangeScalarFieldEnum]
+
+
+  export const GrantBookmarkScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    grantId: 'grantId',
+    status: 'status',
+    note: 'note',
+    tags: 'tags',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt'
+  };
+
+  export type GrantBookmarkScalarFieldEnum = (typeof GrantBookmarkScalarFieldEnum)[keyof typeof GrantBookmarkScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -16617,6 +17910,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'BookmarkStatus'
+   */
+  export type EnumBookmarkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookmarkStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'BookmarkStatus[]'
+   */
+  export type ListEnumBookmarkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookmarkStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
@@ -16770,6 +18077,7 @@ export namespace Prisma {
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
     attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
+    bookmarks?: GrantBookmarkListRelationFilter
   }
 
   export type GrantOrderByWithRelationInput = {
@@ -16813,6 +18121,7 @@ export namespace Prisma {
     details?: GrantDetailOrderByWithRelationInput
     attachments?: GrantAttachmentOrderByRelationAggregateInput
     changes?: GrantChangeOrderByRelationAggregateInput
+    bookmarks?: GrantBookmarkOrderByRelationAggregateInput
   }
 
   export type GrantWhereUniqueInput = Prisma.AtLeast<{
@@ -16862,6 +18171,7 @@ export namespace Prisma {
     details?: XOR<GrantDetailNullableScalarRelationFilter, GrantDetailWhereInput> | null
     attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
+    bookmarks?: GrantBookmarkListRelationFilter
   }, "id" | "source_number" | "source_sourceRecordId" | "source_sourceKey">
 
   export type GrantOrderByWithAggregationInput = {
@@ -17274,6 +18584,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    grantBookmarks?: GrantBookmarkListRelationFilter
     grantImportRuns?: GrantImportRunListRelationFilter
   }
 
@@ -17293,6 +18604,7 @@ export namespace Prisma {
     organization?: OrganizationOrderByWithRelationInput
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
+    grantBookmarks?: GrantBookmarkOrderByRelationAggregateInput
     grantImportRuns?: GrantImportRunOrderByRelationAggregateInput
   }
 
@@ -17315,6 +18627,7 @@ export namespace Prisma {
     organization?: XOR<OrganizationNullableScalarRelationFilter, OrganizationWhereInput> | null
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
+    grantBookmarks?: GrantBookmarkListRelationFilter
     grantImportRuns?: GrantImportRunListRelationFilter
   }, "id" | "email">
 
@@ -17721,6 +19034,80 @@ export namespace Prisma {
     observedAt?: DateTimeWithAggregatesFilter<"GrantChange"> | Date | string
   }
 
+  export type GrantBookmarkWhereInput = {
+    AND?: GrantBookmarkWhereInput | GrantBookmarkWhereInput[]
+    OR?: GrantBookmarkWhereInput[]
+    NOT?: GrantBookmarkWhereInput | GrantBookmarkWhereInput[]
+    id?: StringFilter<"GrantBookmark"> | string
+    userId?: StringFilter<"GrantBookmark"> | string
+    grantId?: StringFilter<"GrantBookmark"> | string
+    status?: EnumBookmarkStatusFilter<"GrantBookmark"> | $Enums.BookmarkStatus
+    note?: StringNullableFilter<"GrantBookmark"> | string | null
+    tags?: StringNullableListFilter<"GrantBookmark">
+    createdAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+    updatedAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }
+
+  export type GrantBookmarkOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    grantId?: SortOrder
+    status?: SortOrder
+    note?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    user?: UserOrderByWithRelationInput
+    grant?: GrantOrderByWithRelationInput
+  }
+
+  export type GrantBookmarkWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    userId_grantId?: GrantBookmarkUserIdGrantIdCompoundUniqueInput
+    AND?: GrantBookmarkWhereInput | GrantBookmarkWhereInput[]
+    OR?: GrantBookmarkWhereInput[]
+    NOT?: GrantBookmarkWhereInput | GrantBookmarkWhereInput[]
+    userId?: StringFilter<"GrantBookmark"> | string
+    grantId?: StringFilter<"GrantBookmark"> | string
+    status?: EnumBookmarkStatusFilter<"GrantBookmark"> | $Enums.BookmarkStatus
+    note?: StringNullableFilter<"GrantBookmark"> | string | null
+    tags?: StringNullableListFilter<"GrantBookmark">
+    createdAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+    updatedAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }, "id" | "userId_grantId">
+
+  export type GrantBookmarkOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    grantId?: SortOrder
+    status?: SortOrder
+    note?: SortOrderInput | SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    _count?: GrantBookmarkCountOrderByAggregateInput
+    _max?: GrantBookmarkMaxOrderByAggregateInput
+    _min?: GrantBookmarkMinOrderByAggregateInput
+  }
+
+  export type GrantBookmarkScalarWhereWithAggregatesInput = {
+    AND?: GrantBookmarkScalarWhereWithAggregatesInput | GrantBookmarkScalarWhereWithAggregatesInput[]
+    OR?: GrantBookmarkScalarWhereWithAggregatesInput[]
+    NOT?: GrantBookmarkScalarWhereWithAggregatesInput | GrantBookmarkScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GrantBookmark"> | string
+    userId?: StringWithAggregatesFilter<"GrantBookmark"> | string
+    grantId?: StringWithAggregatesFilter<"GrantBookmark"> | string
+    status?: EnumBookmarkStatusWithAggregatesFilter<"GrantBookmark"> | $Enums.BookmarkStatus
+    note?: StringNullableWithAggregatesFilter<"GrantBookmark"> | string | null
+    tags?: StringNullableListFilter<"GrantBookmark">
+    createdAt?: DateTimeWithAggregatesFilter<"GrantBookmark"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"GrantBookmark"> | Date | string
+  }
+
   export type AccountCreateInput = {
     id?: string
     type: string
@@ -17866,6 +19253,7 @@ export namespace Prisma {
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateInput = {
@@ -17909,6 +19297,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUpdateInput = {
@@ -17952,6 +19341,7 @@ export namespace Prisma {
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateInput = {
@@ -17995,6 +19385,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantCreateManyInput = {
@@ -18464,6 +19855,7 @@ export namespace Prisma {
     organization?: OrganizationCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunCreateNestedManyWithoutRequestedByInput
   }
 
@@ -18482,6 +19874,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput
   }
 
@@ -18500,6 +19893,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -18518,6 +19912,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -18973,6 +20368,81 @@ export namespace Prisma {
     observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantBookmarkCreateInput = {
+    id?: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutGrantBookmarksInput
+    grant: GrantCreateNestedOneWithoutBookmarksInput
+  }
+
+  export type GrantBookmarkUncheckedCreateInput = {
+    id?: string
+    userId: string
+    grantId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GrantBookmarkUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGrantBookmarksNestedInput
+    grant?: GrantUpdateOneRequiredWithoutBookmarksNestedInput
+  }
+
+  export type GrantBookmarkUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantBookmarkCreateManyInput = {
+    id?: string
+    userId: string
+    grantId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GrantBookmarkUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantBookmarkUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -19242,11 +20712,21 @@ export namespace Prisma {
     none?: GrantChangeWhereInput
   }
 
+  export type GrantBookmarkListRelationFilter = {
+    every?: GrantBookmarkWhereInput
+    some?: GrantBookmarkWhereInput
+    none?: GrantBookmarkWhereInput
+  }
+
   export type GrantAttachmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type GrantChangeOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GrantBookmarkOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -20060,6 +21540,59 @@ export namespace Prisma {
     observedAt?: SortOrder
   }
 
+  export type EnumBookmarkStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BookmarkStatus | EnumBookmarkStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBookmarkStatusFilter<$PrismaModel> | $Enums.BookmarkStatus
+  }
+
+  export type GrantBookmarkUserIdGrantIdCompoundUniqueInput = {
+    userId: string
+    grantId: string
+  }
+
+  export type GrantBookmarkCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    grantId?: SortOrder
+    status?: SortOrder
+    note?: SortOrder
+    tags?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GrantBookmarkMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    grantId?: SortOrder
+    status?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type GrantBookmarkMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    grantId?: SortOrder
+    status?: SortOrder
+    note?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type EnumBookmarkStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BookmarkStatus | EnumBookmarkStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBookmarkStatusWithAggregatesFilter<$PrismaModel> | $Enums.BookmarkStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBookmarkStatusFilter<$PrismaModel>
+    _max?: NestedEnumBookmarkStatusFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -20110,6 +21643,13 @@ export namespace Prisma {
     connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
   }
 
+  export type GrantBookmarkCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput> | GrantBookmarkCreateWithoutGrantInput[] | GrantBookmarkUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutGrantInput | GrantBookmarkCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantBookmarkCreateManyGrantInputEnvelope
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+  }
+
   export type GrantDetailUncheckedCreateNestedOneWithoutGrantInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
@@ -20128,6 +21668,13 @@ export namespace Prisma {
     connectOrCreate?: GrantChangeCreateOrConnectWithoutGrantInput | GrantChangeCreateOrConnectWithoutGrantInput[]
     createMany?: GrantChangeCreateManyGrantInputEnvelope
     connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
+  }
+
+  export type GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput> | GrantBookmarkCreateWithoutGrantInput[] | GrantBookmarkUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutGrantInput | GrantBookmarkCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantBookmarkCreateManyGrantInputEnvelope
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -20204,6 +21751,20 @@ export namespace Prisma {
     deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
   }
 
+  export type GrantBookmarkUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput> | GrantBookmarkCreateWithoutGrantInput[] | GrantBookmarkUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutGrantInput | GrantBookmarkCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantBookmarkUpsertWithWhereUniqueWithoutGrantInput | GrantBookmarkUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantBookmarkCreateManyGrantInputEnvelope
+    set?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    disconnect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    delete?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    update?: GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput | GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantBookmarkUpdateManyWithWhereWithoutGrantInput | GrantBookmarkUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
+  }
+
   export type GrantDetailUncheckedUpdateOneWithoutGrantNestedInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
@@ -20240,6 +21801,20 @@ export namespace Prisma {
     update?: GrantChangeUpdateWithWhereUniqueWithoutGrantInput | GrantChangeUpdateWithWhereUniqueWithoutGrantInput[]
     updateMany?: GrantChangeUpdateManyWithWhereWithoutGrantInput | GrantChangeUpdateManyWithWhereWithoutGrantInput[]
     deleteMany?: GrantChangeScalarWhereInput | GrantChangeScalarWhereInput[]
+  }
+
+  export type GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput> | GrantBookmarkCreateWithoutGrantInput[] | GrantBookmarkUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutGrantInput | GrantBookmarkCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantBookmarkUpsertWithWhereUniqueWithoutGrantInput | GrantBookmarkUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantBookmarkCreateManyGrantInputEnvelope
+    set?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    disconnect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    delete?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    update?: GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput | GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantBookmarkUpdateManyWithWhereWithoutGrantInput | GrantBookmarkUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
   }
 
   export type GrantCreateNestedOneWithoutDetailsInput = {
@@ -20322,6 +21897,13 @@ export namespace Prisma {
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
   }
 
+  export type GrantBookmarkCreateNestedManyWithoutUserInput = {
+    create?: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput> | GrantBookmarkCreateWithoutUserInput[] | GrantBookmarkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutUserInput | GrantBookmarkCreateOrConnectWithoutUserInput[]
+    createMany?: GrantBookmarkCreateManyUserInputEnvelope
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+  }
+
   export type GrantImportRunCreateNestedManyWithoutRequestedByInput = {
     create?: XOR<GrantImportRunCreateWithoutRequestedByInput, GrantImportRunUncheckedCreateWithoutRequestedByInput> | GrantImportRunCreateWithoutRequestedByInput[] | GrantImportRunUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: GrantImportRunCreateOrConnectWithoutRequestedByInput | GrantImportRunCreateOrConnectWithoutRequestedByInput[]
@@ -20341,6 +21923,13 @@ export namespace Prisma {
     connectOrCreate?: SessionCreateOrConnectWithoutUserInput | SessionCreateOrConnectWithoutUserInput[]
     createMany?: SessionCreateManyUserInputEnvelope
     connect?: SessionWhereUniqueInput | SessionWhereUniqueInput[]
+  }
+
+  export type GrantBookmarkUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput> | GrantBookmarkCreateWithoutUserInput[] | GrantBookmarkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutUserInput | GrantBookmarkCreateOrConnectWithoutUserInput[]
+    createMany?: GrantBookmarkCreateManyUserInputEnvelope
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
   }
 
   export type GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput = {
@@ -20392,6 +21981,20 @@ export namespace Prisma {
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
   }
 
+  export type GrantBookmarkUpdateManyWithoutUserNestedInput = {
+    create?: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput> | GrantBookmarkCreateWithoutUserInput[] | GrantBookmarkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutUserInput | GrantBookmarkCreateOrConnectWithoutUserInput[]
+    upsert?: GrantBookmarkUpsertWithWhereUniqueWithoutUserInput | GrantBookmarkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: GrantBookmarkCreateManyUserInputEnvelope
+    set?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    disconnect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    delete?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    update?: GrantBookmarkUpdateWithWhereUniqueWithoutUserInput | GrantBookmarkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: GrantBookmarkUpdateManyWithWhereWithoutUserInput | GrantBookmarkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
+  }
+
   export type GrantImportRunUpdateManyWithoutRequestedByNestedInput = {
     create?: XOR<GrantImportRunCreateWithoutRequestedByInput, GrantImportRunUncheckedCreateWithoutRequestedByInput> | GrantImportRunCreateWithoutRequestedByInput[] | GrantImportRunUncheckedCreateWithoutRequestedByInput[]
     connectOrCreate?: GrantImportRunCreateOrConnectWithoutRequestedByInput | GrantImportRunCreateOrConnectWithoutRequestedByInput[]
@@ -20432,6 +22035,20 @@ export namespace Prisma {
     update?: SessionUpdateWithWhereUniqueWithoutUserInput | SessionUpdateWithWhereUniqueWithoutUserInput[]
     updateMany?: SessionUpdateManyWithWhereWithoutUserInput | SessionUpdateManyWithWhereWithoutUserInput[]
     deleteMany?: SessionScalarWhereInput | SessionScalarWhereInput[]
+  }
+
+  export type GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput> | GrantBookmarkCreateWithoutUserInput[] | GrantBookmarkUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: GrantBookmarkCreateOrConnectWithoutUserInput | GrantBookmarkCreateOrConnectWithoutUserInput[]
+    upsert?: GrantBookmarkUpsertWithWhereUniqueWithoutUserInput | GrantBookmarkUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: GrantBookmarkCreateManyUserInputEnvelope
+    set?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    disconnect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    delete?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+    update?: GrantBookmarkUpdateWithWhereUniqueWithoutUserInput | GrantBookmarkUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: GrantBookmarkUpdateManyWithWhereWithoutUserInput | GrantBookmarkUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
   }
 
   export type GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput = {
@@ -20635,6 +22252,47 @@ export namespace Prisma {
     upsert?: GrantSyncRunUpsertWithoutChangesInput
     connect?: GrantSyncRunWhereUniqueInput
     update?: XOR<XOR<GrantSyncRunUpdateToOneWithWhereWithoutChangesInput, GrantSyncRunUpdateWithoutChangesInput>, GrantSyncRunUncheckedUpdateWithoutChangesInput>
+  }
+
+  export type GrantBookmarkCreatetagsInput = {
+    set: string[]
+  }
+
+  export type UserCreateNestedOneWithoutGrantBookmarksInput = {
+    create?: XOR<UserCreateWithoutGrantBookmarksInput, UserUncheckedCreateWithoutGrantBookmarksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutGrantBookmarksInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type GrantCreateNestedOneWithoutBookmarksInput = {
+    create?: XOR<GrantCreateWithoutBookmarksInput, GrantUncheckedCreateWithoutBookmarksInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutBookmarksInput
+    connect?: GrantWhereUniqueInput
+  }
+
+  export type EnumBookmarkStatusFieldUpdateOperationsInput = {
+    set?: $Enums.BookmarkStatus
+  }
+
+  export type GrantBookmarkUpdatetagsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type UserUpdateOneRequiredWithoutGrantBookmarksNestedInput = {
+    create?: XOR<UserCreateWithoutGrantBookmarksInput, UserUncheckedCreateWithoutGrantBookmarksInput>
+    connectOrCreate?: UserCreateOrConnectWithoutGrantBookmarksInput
+    upsert?: UserUpsertWithoutGrantBookmarksInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutGrantBookmarksInput, UserUpdateWithoutGrantBookmarksInput>, UserUncheckedUpdateWithoutGrantBookmarksInput>
+  }
+
+  export type GrantUpdateOneRequiredWithoutBookmarksNestedInput = {
+    create?: XOR<GrantCreateWithoutBookmarksInput, GrantUncheckedCreateWithoutBookmarksInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutBookmarksInput
+    upsert?: GrantUpsertWithoutBookmarksInput
+    connect?: GrantWhereUniqueInput
+    update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutBookmarksInput, GrantUpdateWithoutBookmarksInput>, GrantUncheckedUpdateWithoutBookmarksInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -21011,6 +22669,23 @@ export namespace Prisma {
     not?: NestedFloatFilter<$PrismaModel> | number
   }
 
+  export type NestedEnumBookmarkStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.BookmarkStatus | EnumBookmarkStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBookmarkStatusFilter<$PrismaModel> | $Enums.BookmarkStatus
+  }
+
+  export type NestedEnumBookmarkStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BookmarkStatus | EnumBookmarkStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumBookmarkStatusWithAggregatesFilter<$PrismaModel> | $Enums.BookmarkStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumBookmarkStatusFilter<$PrismaModel>
+    _max?: NestedEnumBookmarkStatusFilter<$PrismaModel>
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     firstName?: string | null
@@ -21025,6 +22700,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutUsersInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunCreateNestedManyWithoutRequestedByInput
   }
 
@@ -21042,6 +22718,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput
   }
 
@@ -21075,6 +22752,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutUsersNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -21092,6 +22770,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -21193,6 +22872,36 @@ export namespace Prisma {
 
   export type GrantChangeCreateManyGrantInputEnvelope = {
     data: GrantChangeCreateManyGrantInput | GrantChangeCreateManyGrantInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GrantBookmarkCreateWithoutGrantInput = {
+    id?: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    user: UserCreateNestedOneWithoutGrantBookmarksInput
+  }
+
+  export type GrantBookmarkUncheckedCreateWithoutGrantInput = {
+    id?: string
+    userId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GrantBookmarkCreateOrConnectWithoutGrantInput = {
+    where: GrantBookmarkWhereUniqueInput
+    create: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantBookmarkCreateManyGrantInputEnvelope = {
+    data: GrantBookmarkCreateManyGrantInput | GrantBookmarkCreateManyGrantInput[]
     skipDuplicates?: boolean
   }
 
@@ -21302,6 +23011,36 @@ export namespace Prisma {
     observedAt?: DateTimeFilter<"GrantChange"> | Date | string
   }
 
+  export type GrantBookmarkUpsertWithWhereUniqueWithoutGrantInput = {
+    where: GrantBookmarkWhereUniqueInput
+    update: XOR<GrantBookmarkUpdateWithoutGrantInput, GrantBookmarkUncheckedUpdateWithoutGrantInput>
+    create: XOR<GrantBookmarkCreateWithoutGrantInput, GrantBookmarkUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput = {
+    where: GrantBookmarkWhereUniqueInput
+    data: XOR<GrantBookmarkUpdateWithoutGrantInput, GrantBookmarkUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantBookmarkUpdateManyWithWhereWithoutGrantInput = {
+    where: GrantBookmarkScalarWhereInput
+    data: XOR<GrantBookmarkUpdateManyMutationInput, GrantBookmarkUncheckedUpdateManyWithoutGrantInput>
+  }
+
+  export type GrantBookmarkScalarWhereInput = {
+    AND?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
+    OR?: GrantBookmarkScalarWhereInput[]
+    NOT?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
+    id?: StringFilter<"GrantBookmark"> | string
+    userId?: StringFilter<"GrantBookmark"> | string
+    grantId?: StringFilter<"GrantBookmark"> | string
+    status?: EnumBookmarkStatusFilter<"GrantBookmark"> | $Enums.BookmarkStatus
+    note?: StringNullableFilter<"GrantBookmark"> | string | null
+    tags?: StringNullableListFilter<"GrantBookmark">
+    createdAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+    updatedAt?: DateTimeFilter<"GrantBookmark"> | Date | string
+  }
+
   export type GrantCreateWithoutDetailsInput = {
     id?: string
     url: string
@@ -21342,6 +23081,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutDetailsInput = {
@@ -21384,6 +23124,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutDetailsInput = {
@@ -21442,6 +23183,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutDetailsInput = {
@@ -21484,6 +23226,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantCreateWithoutAttachmentsInput = {
@@ -21526,6 +23269,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutAttachmentsInput = {
@@ -21568,6 +23312,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutAttachmentsInput = {
@@ -21626,6 +23371,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutAttachmentsInput = {
@@ -21668,6 +23414,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type UserCreateWithoutGrantImportRunsInput = {
@@ -21685,6 +23432,7 @@ export namespace Prisma {
     organization?: OrganizationCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutGrantImportRunsInput = {
@@ -21702,6 +23450,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutGrantImportRunsInput = {
@@ -21735,6 +23484,7 @@ export namespace Prisma {
     organization?: OrganizationUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutGrantImportRunsInput = {
@@ -21752,6 +23502,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateWithoutSessionsInput = {
@@ -21768,6 +23519,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     organization?: OrganizationCreateNestedOneWithoutUsersInput
     accounts?: AccountCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunCreateNestedManyWithoutRequestedByInput
   }
 
@@ -21785,6 +23537,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput
   }
 
@@ -21818,6 +23571,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     organization?: OrganizationUpdateOneWithoutUsersNestedInput
     accounts?: AccountUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -21835,6 +23589,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -21932,6 +23687,36 @@ export namespace Prisma {
 
   export type SessionCreateManyUserInputEnvelope = {
     data: SessionCreateManyUserInput | SessionCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type GrantBookmarkCreateWithoutUserInput = {
+    id?: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    grant: GrantCreateNestedOneWithoutBookmarksInput
+  }
+
+  export type GrantBookmarkUncheckedCreateWithoutUserInput = {
+    id?: string
+    grantId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
+  }
+
+  export type GrantBookmarkCreateOrConnectWithoutUserInput = {
+    where: GrantBookmarkWhereUniqueInput
+    create: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput>
+  }
+
+  export type GrantBookmarkCreateManyUserInputEnvelope = {
+    data: GrantBookmarkCreateManyUserInput | GrantBookmarkCreateManyUserInput[]
     skipDuplicates?: boolean
   }
 
@@ -22068,6 +23853,22 @@ export namespace Prisma {
     expires?: DateTimeFilter<"Session"> | Date | string
   }
 
+  export type GrantBookmarkUpsertWithWhereUniqueWithoutUserInput = {
+    where: GrantBookmarkWhereUniqueInput
+    update: XOR<GrantBookmarkUpdateWithoutUserInput, GrantBookmarkUncheckedUpdateWithoutUserInput>
+    create: XOR<GrantBookmarkCreateWithoutUserInput, GrantBookmarkUncheckedCreateWithoutUserInput>
+  }
+
+  export type GrantBookmarkUpdateWithWhereUniqueWithoutUserInput = {
+    where: GrantBookmarkWhereUniqueInput
+    data: XOR<GrantBookmarkUpdateWithoutUserInput, GrantBookmarkUncheckedUpdateWithoutUserInput>
+  }
+
+  export type GrantBookmarkUpdateManyWithWhereWithoutUserInput = {
+    where: GrantBookmarkScalarWhereInput
+    data: XOR<GrantBookmarkUpdateManyMutationInput, GrantBookmarkUncheckedUpdateManyWithoutUserInput>
+  }
+
   export type GrantImportRunUpsertWithWhereUniqueWithoutRequestedByInput = {
     where: GrantImportRunWhereUniqueInput
     update: XOR<GrantImportRunUpdateWithoutRequestedByInput, GrantImportRunUncheckedUpdateWithoutRequestedByInput>
@@ -22112,6 +23913,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunCreateNestedManyWithoutRequestedByInput
   }
 
@@ -22129,6 +23931,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    grantBookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutUserInput
     grantImportRuns?: GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput
   }
 
@@ -22396,6 +24199,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutChangesInput = {
@@ -22438,6 +24242,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutChangesInput = {
@@ -22533,6 +24338,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutChangesInput = {
@@ -22575,6 +24381,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantSyncRunUpsertWithoutChangesInput = {
@@ -22620,6 +24427,282 @@ export namespace Prisma {
     schemaJson?: NullableJsonNullValueInput | InputJsonValue
   }
 
+  export type UserCreateWithoutGrantBookmarksInput = {
+    id?: string
+    firstName?: string | null
+    lastName?: string | null
+    email?: string | null
+    phone?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    role?: $Enums.UserRole
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    organization?: OrganizationCreateNestedOneWithoutUsersInput
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    sessions?: SessionCreateNestedManyWithoutUserInput
+    grantImportRuns?: GrantImportRunCreateNestedManyWithoutRequestedByInput
+  }
+
+  export type UserUncheckedCreateWithoutGrantBookmarksInput = {
+    id?: string
+    firstName?: string | null
+    lastName?: string | null
+    email?: string | null
+    phone?: string | null
+    password?: string | null
+    emailVerified?: Date | string | null
+    image?: string | null
+    role?: $Enums.UserRole
+    organizationId?: string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
+    grantImportRuns?: GrantImportRunUncheckedCreateNestedManyWithoutRequestedByInput
+  }
+
+  export type UserCreateOrConnectWithoutGrantBookmarksInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutGrantBookmarksInput, UserUncheckedCreateWithoutGrantBookmarksInput>
+  }
+
+  export type GrantCreateWithoutBookmarksInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
+    changes?: GrantChangeCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantUncheckedCreateWithoutBookmarksInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantCreateOrConnectWithoutBookmarksInput = {
+    where: GrantWhereUniqueInput
+    create: XOR<GrantCreateWithoutBookmarksInput, GrantUncheckedCreateWithoutBookmarksInput>
+  }
+
+  export type UserUpsertWithoutGrantBookmarksInput = {
+    update: XOR<UserUpdateWithoutGrantBookmarksInput, UserUncheckedUpdateWithoutGrantBookmarksInput>
+    create: XOR<UserCreateWithoutGrantBookmarksInput, UserUncheckedCreateWithoutGrantBookmarksInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutGrantBookmarksInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutGrantBookmarksInput, UserUncheckedUpdateWithoutGrantBookmarksInput>
+  }
+
+  export type UserUpdateWithoutGrantBookmarksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    organization?: OrganizationUpdateOneWithoutUsersNestedInput
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    sessions?: SessionUpdateManyWithoutUserNestedInput
+    grantImportRuns?: GrantImportRunUpdateManyWithoutRequestedByNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutGrantBookmarksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    firstName?: NullableStringFieldUpdateOperationsInput | string | null
+    lastName?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    phone?: NullableStringFieldUpdateOperationsInput | string | null
+    password?: NullableStringFieldUpdateOperationsInput | string | null
+    emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    image?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    organizationId?: NullableStringFieldUpdateOperationsInput | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    grantImportRuns?: GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput
+  }
+
+  export type GrantUpsertWithoutBookmarksInput = {
+    update: XOR<GrantUpdateWithoutBookmarksInput, GrantUncheckedUpdateWithoutBookmarksInput>
+    create: XOR<GrantCreateWithoutBookmarksInput, GrantUncheckedCreateWithoutBookmarksInput>
+    where?: GrantWhereInput
+  }
+
+  export type GrantUpdateToOneWithWhereWithoutBookmarksInput = {
+    where?: GrantWhereInput
+    data: XOR<GrantUpdateWithoutBookmarksInput, GrantUncheckedUpdateWithoutBookmarksInput>
+  }
+
+  export type GrantUpdateWithoutBookmarksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
+    changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+  }
+
+  export type GrantUncheckedUpdateWithoutBookmarksInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
+    changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+  }
+
   export type GrantAttachmentCreateManyGrantInput = {
     id?: string
     upstreamId?: string | null
@@ -22639,6 +24722,16 @@ export namespace Prisma {
     newHash?: string | null
     diffJson?: NullableJsonNullValueInput | InputJsonValue
     observedAt?: Date | string
+  }
+
+  export type GrantBookmarkCreateManyGrantInput = {
+    id?: string
+    userId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type GrantAttachmentUpdateWithoutGrantInput = {
@@ -22704,6 +24797,36 @@ export namespace Prisma {
     observedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantBookmarkUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    user?: UserUpdateOneRequiredWithoutGrantBookmarksNestedInput
+  }
+
+  export type GrantBookmarkUncheckedUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantBookmarkUncheckedUpdateManyWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    userId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     type: string
@@ -22722,6 +24845,16 @@ export namespace Prisma {
     id?: string
     sessionToken: string
     expires: Date | string
+  }
+
+  export type GrantBookmarkCreateManyUserInput = {
+    id?: string
+    grantId: string
+    status?: $Enums.BookmarkStatus
+    note?: string | null
+    tags?: GrantBookmarkCreatetagsInput | string[]
+    createdAt?: Date | string
+    updatedAt?: Date | string
   }
 
   export type GrantImportRunCreateManyRequestedByInput = {
@@ -22794,6 +24927,36 @@ export namespace Prisma {
     expires?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantBookmarkUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    grant?: GrantUpdateOneRequiredWithoutBookmarksNestedInput
+  }
+
+  export type GrantBookmarkUncheckedUpdateWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantBookmarkUncheckedUpdateManyWithoutUserInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    status?: EnumBookmarkStatusFieldUpdateOperationsInput | $Enums.BookmarkStatus
+    note?: NullableStringFieldUpdateOperationsInput | string | null
+    tags?: GrantBookmarkUpdatetagsInput | string[]
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type GrantImportRunUpdateWithoutRequestedByInput = {
     id?: StringFieldUpdateOperationsInput | string
     dateStart?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22860,6 +25023,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUpdateManyWithoutRequestedByNestedInput
   }
 
@@ -22877,6 +25041,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
+    grantBookmarks?: GrantBookmarkUncheckedUpdateManyWithoutUserNestedInput
     grantImportRuns?: GrantImportRunUncheckedUpdateManyWithoutRequestedByNestedInput
   }
 

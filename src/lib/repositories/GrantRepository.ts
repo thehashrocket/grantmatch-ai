@@ -30,6 +30,8 @@ const grantSelect = {
 	createdAt: true,
 	updatedAt: true,
 	source: true,
+	status: true,
+	closedAt: true,
 	detailsStatus: true,
 	detailsFetchedAt: true,
 } satisfies Prisma.GrantSelect;

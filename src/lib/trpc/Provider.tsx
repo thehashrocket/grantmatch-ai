@@ -1,3 +1,5 @@
+// /src/lib/trpc/Provider.tsx
+
 'use client';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -14,6 +16,12 @@ export function TRPCProvider({ children }: { children: React.ReactNode }) {
 				httpBatchLink({
 					url: '/api/trpc',
 					transformer: superjson,
+					fetch(url, options) {
+						return fetch(url, {
+							...options,
+							credentials: 'include',
+						});
+					},
 				}),
 			],
 		}),

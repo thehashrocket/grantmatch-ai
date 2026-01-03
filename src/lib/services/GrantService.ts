@@ -56,6 +56,8 @@ export class GrantServiceImpl implements GrantService {
 			detailsFetchedAt: grant.detailsFetchedAt
 				? grant.detailsFetchedAt.toISOString()
 				: null,
+			status: grant.status,
+			closedAt: grant.closedAt ? grant.closedAt.toISOString() : null,
 		};
 	}
 

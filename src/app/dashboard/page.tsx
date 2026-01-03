@@ -23,6 +23,8 @@ export default function DashboardPage() {
 		currentPage,
 		pageSize,
 		handlePageChange,
+		bookmarkStatusMap,
+		statusMapInput,
 	} = useGrantSearch();
 
 	// Handler for removing a single filter
@@ -74,6 +76,8 @@ export default function DashboardPage() {
 				pageSize={pageSize}
 				total={resultsCount}
 				onPageChange={handlePageChange}
+				bookmarkStatusMap={bookmarkStatusMap}
+				statusMapInput={statusMapInput}
 			/>
 		</div>
 	);

@@ -82,6 +82,12 @@ enum GrantDetailsStatus {
   FAILED
 }
 
+enum BookmarkStatus {
+  INTERESTED
+  APPLIED
+  NOT_FOR_US
+}
+
 model Grant {
   id                    String             @id @default(cuid())
   url                   String
@@ -121,6 +127,7 @@ model Grant {
   status                GrantStatus        @default(UNKNOWN)
   closedAt              DateTime?
   changes               GrantChange[]
+  bookmarks             GrantBookmark[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -200,6 +207,7 @@ model User {
   organization    Organization?    @relation(fields: [organizationId], references: [id])
   accounts        Account[]
   sessions        Session[]
+  grantBookmarks  GrantBookmark[]
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
   grantImportRuns GrantImportRun[]
@@ -282,4 +290,23 @@ model GrantChange {
 
   @@index([grantId, observedAt])
   @@index([runId])
+}
+
+model GrantBookmark {
+  id        String         @id @default(cuid())
+  userId    String
+  grantId   String
+  status    BookmarkStatus @default(INTERESTED)
+  note      String?        @db.Text
+  tags      String[]       @default([])
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  grant Grant @relation(fields: [grantId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, grantId])
+  @@index([userId, createdAt])
+  @@index([userId, status])
+  @@index([grantId])
 }

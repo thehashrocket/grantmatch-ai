@@ -15,6 +15,8 @@ export interface GrantMatch {
 	source: string; // State name or 'Federal'
 	detailsStatus?: 'UNKNOWN' | 'FETCHING' | 'AVAILABLE' | 'FAILED';
 	detailsFetchedAt?: string | null;
+	status?: 'OPEN' | 'CLOSED' | 'UNKNOWN';
+	closedAt?: string | null;
 }
 
 export interface PaginatedGrantMatches {

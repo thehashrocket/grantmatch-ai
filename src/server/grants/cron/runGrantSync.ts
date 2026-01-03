@@ -1,9 +1,5 @@
 import { db } from '@/lib/db';
-import {
-	Prisma,
-	$Enums,
-	type PrismaClient,
-} from '@/prisma/generated/client';
+import { Prisma, $Enums, type PrismaClient } from '@/prisma/generated/client';
 import { runTick } from '@/server/grants/ingest/tickIngest';
 import { caCkanAdapter } from '@/server/grants/sources/caCkanAdapter';
 import { federalGrantsGovAdapter } from '@/server/grants/sources/federalGrantsGovAdapter';
@@ -252,7 +248,8 @@ async function driveTicksToCompletion(
 function mapRunRow(row: RunRow): RunSummary {
 	return {
 		runId: row.id,
-		source: row.source === $Enums.GrantSource.FEDERAL ? 'federal' : 'california',
+		source:
+			row.source === $Enums.GrantSource.FEDERAL ? 'federal' : 'california',
 		status: row.status,
 		startedAt: row.startedAt,
 		finishedAt: row.finishedAt,

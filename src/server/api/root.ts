@@ -1,7 +1,10 @@
+// /src/server/api/root.ts
+
 import { z } from 'zod';
 import { router, publicProcedure } from './trpc';
 import { organizationRouter } from './routers/organization';
 import { grantsRouter } from './routers/grants';
+import { bookmarkRouter } from './routers/bookmark';
 
 export const appRouter = router({
 	hello: publicProcedure
@@ -11,6 +14,7 @@ export const appRouter = router({
 		})),
 	organization: organizationRouter,
 	grants: grantsRouter,
+	bookmark: bookmarkRouter,
 });
 
 // This is needed for tRPC type inference

@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { router, publicProcedure } from '../trpc';
+import { router, publicProcedure } from '../api/trpc';
 
 export const appRouter = router({
 	hello: publicProcedure

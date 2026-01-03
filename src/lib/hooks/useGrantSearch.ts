@@ -29,6 +29,16 @@ export function useGrantSearch() {
 		pageSize,
 	});
 
+	const grantIds = paginatedData?.grants.map((grant) => grant.id) ?? [];
+
+	const statusMapInput = { grantIds };
+
+	const { data: bookmarkStatusMap, isLoading: isBookmarkMapLoading } =
+		trpc.bookmark.statusMap.useQuery(statusMapInput, {
+			enabled: grantIds.length > 0,
+			retry: false,
+		});
+
 	const grants = paginatedData?.grants;
 	const pagination = paginatedData?.pagination;
 
@@ -60,6 +70,9 @@ export function useGrantSearch() {
 		grants,
 		isLoading,
 		error,
+		bookmarkStatusMap,
+		isBookmarkMapLoading,
+		statusMapInput,
 		currentPage,
 		pageSize,
 

@@ -22,6 +22,7 @@ import { FundingAmount } from '@/components/grants/FundingAmount';
 
 interface GrantCardProps {
 	grant: GrantMatch;
+	actionSlot?: React.ReactNode;
 }
 
 function formatDate(dateString: string): string {
@@ -32,7 +33,7 @@ function formatDate(dateString: string): string {
 	});
 }
 
-export function GrantCard({ grant }: GrantCardProps) {
+export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
 	const flagInfo = getFlagInfo(grant.source);
@@ -41,7 +42,7 @@ export function GrantCard({ grant }: GrantCardProps) {
 		<div className="relative">
 			<Card className="transition-shadow hover:shadow-lg">
 				<CardHeader>
-					<div className="flex items-start justify-between">
+					<div className="flex items-start justify-between gap-4">
 						<div className="space-y-1.5">
 							<CardTitle className="text-xl flex items-center gap-2">
 								{flagInfo && (
@@ -73,7 +74,8 @@ export function GrantCard({ grant }: GrantCardProps) {
 								</a>
 							</CardDescription>
 						</div>
-						<div className="text-right">
+						<div className="flex flex-col items-end gap-3 text-right">
+							{actionSlot}
 							<FundingAmount
 								estimatedTotalFunding={grant.estimatedTotalFunding}
 								awardFloor={grant.awardFloor}

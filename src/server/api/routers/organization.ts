@@ -292,7 +292,6 @@ export const organizationRouter = router({
 				data.serviceAreas = nextServiceAreas;
 			}
 			if (priorityFocusKeywords !== undefined) {
-				// @ts-expect-error prisma client not yet regenerated with priorityFocusKeywords
 				data.priorityFocusKeywords = nextPriorityFocusKeywords;
 			}
 			if (mission !== undefined) {

@@ -266,9 +266,13 @@ export const organizationRouter = router({
 					? organization.description
 					: (description ?? null);
 			const nextMinAward =
-				input.minAward === undefined ? currentMinAward : input.minAward ?? null;
+				input.minAward === undefined
+					? currentMinAward
+					: (input.minAward ?? null);
 			const nextMaxAward =
-				input.maxAward === undefined ? currentMaxAward : input.maxAward ?? null;
+				input.maxAward === undefined
+					? currentMaxAward
+					: (input.maxAward ?? null);
 
 			const stableJoin = (values: string[]) => [...values].sort().join('|');
 			const scoringChanged =

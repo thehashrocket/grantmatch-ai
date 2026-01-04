@@ -19,32 +19,37 @@ export const createOrganizationSchema = z.object({
 	mission: z.string().max(2000).optional(),
 });
 
-export const updateOrganizationProfileSchema = z.object({
-	entityType: emptyToUndefined(
-		z.nativeEnum($Enums.OrganizationEntityType).nullish(),
-	),
-	revenueSources: z.array(z.nativeEnum($Enums.RevenueSource)).max(20).nullish(),
-	budgetRange: emptyToUndefined(z.nativeEnum($Enums.BudgetRange).nullish()),
-	staffRange: emptyToUndefined(z.nativeEnum($Enums.StaffRange).nullish()),
-	focusAreas: tagArray,
-	serviceAreas: tagArray,
-	priorityFocusKeywords: z.array(z.string()).max(5).optional(),
-	mission: z.string().max(2000).nullish(),
-	description: z.string().max(5000).nullish(),
-	minAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
-	maxAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
-}).superRefine((data, ctx) => {
-	if (
-		data.minAward !== null &&
-		data.minAward !== undefined &&
-		data.maxAward !== null &&
-		data.maxAward !== undefined &&
-		data.minAward > data.maxAward
-	) {
-		ctx.addIssue({
-			code: 'custom',
-			message: 'MIN_AWARD_GT_MAX_AWARD',
-			path: ['minAward'],
-		});
-	}
-});
+export const updateOrganizationProfileSchema = z
+	.object({
+		entityType: emptyToUndefined(
+			z.nativeEnum($Enums.OrganizationEntityType).nullish(),
+		),
+		revenueSources: z
+			.array(z.nativeEnum($Enums.RevenueSource))
+			.max(20)
+			.nullish(),
+		budgetRange: emptyToUndefined(z.nativeEnum($Enums.BudgetRange).nullish()),
+		staffRange: emptyToUndefined(z.nativeEnum($Enums.StaffRange).nullish()),
+		focusAreas: tagArray,
+		serviceAreas: tagArray,
+		priorityFocusKeywords: z.array(z.string()).max(5).optional(),
+		mission: z.string().max(2000).nullish(),
+		description: z.string().max(5000).nullish(),
+		minAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
+		maxAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
+	})
+	.superRefine((data, ctx) => {
+		if (
+			data.minAward !== null &&
+			data.minAward !== undefined &&
+			data.maxAward !== null &&
+			data.maxAward !== undefined &&
+			data.minAward > data.maxAward
+		) {
+			ctx.addIssue({
+				code: 'custom',
+				message: 'MIN_AWARD_GT_MAX_AWARD',
+				path: ['minAward'],
+			});
+		}
+	});

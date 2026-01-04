@@ -103,8 +103,7 @@ const buildPrisma = (overrides?: {
 			...base.grantMatch,
 			...overrides.grantMatch,
 			findMany: overrides.grantMatch.findMany ?? base.grantMatch.findMany,
-			updateMany:
-				overrides.grantMatch.updateMany ?? base.grantMatch.updateMany,
+			updateMany: overrides.grantMatch.updateMany ?? base.grantMatch.updateMany,
 			upsert: overrides.grantMatch.upsert ?? base.grantMatch.upsert,
 		};
 	}
@@ -251,8 +250,8 @@ describe('upsertGrantMatch cheap bump', () => {
 
 		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
 		const where =
-			(prisma.grantMatch.updateMany as ReturnType<typeof vi.fn>).mock.calls[0]
-				?.[0]?.where ?? {};
+			(prisma.grantMatch.updateMany as ReturnType<typeof vi.fn>).mock
+				.calls[0]?.[0]?.where ?? {};
 		expect(where).toMatchObject({
 			organizationId: 'org-1',
 			grantId: 'g1',

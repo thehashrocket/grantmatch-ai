@@ -1,6 +1,10 @@
 // src/server/grants/match/upsertGrantMatch.ts
 
-import { $Enums, type Prisma, type PrismaClient } from '@/prisma/generated/client';
+import {
+	$Enums,
+	type Prisma,
+	type PrismaClient,
+} from '@/prisma/generated/client';
 import {
 	SCORING_VERSION,
 	computeOrgGrantFitScore,

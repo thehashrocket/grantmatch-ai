@@ -1,7 +1,7 @@
+// src/lib/utils/grant-scoring.ts
 // import { type Prisma } from '@prisma/client';
 
 interface ScoringFactors {
-	deadlineWeight: number;
 	fundingWeight: number;
 	eligibilityWeight: number;
 	geographyWeight: number;
@@ -9,22 +9,27 @@ interface ScoringFactors {
 }
 
 const DEFAULT_SCORING_FACTORS: ScoringFactors = {
-	deadlineWeight: 0.2,
-	fundingWeight: 0.3,
-	eligibilityWeight: 0.2,
-	geographyWeight: 0.1,
-	purposeWeight: 0.2,
+	fundingWeight: 0.375,
+	eligibilityWeight: 0.25,
+	geographyWeight: 0.125,
+	purposeWeight: 0.25,
 };
 
-function calculateDeadlineScore(deadline: Date | null): number {
-	if (!deadline) return 0.5; // Neutral score for unknown deadlines
+export const FIT_SCORE_VERSION = 1;
 
+export function calculateDaysUntilDeadline(
+	deadline: Date | null,
+): number | null {
+	if (!deadline) return null;
 	const now = new Date();
-	const daysUntilDeadline = Math.floor(
+	return Math.ceil(
 		(deadline.getTime() - now.getTime()) / (1000 * 60 * 60 * 24),
 	);
+}
 
-	// Score higher for deadlines between 30-90 days away
+export function calculateGrantUrgencyScore(deadline: Date | null): number {
+	const daysUntilDeadline = calculateDaysUntilDeadline(deadline);
+	if (daysUntilDeadline === null) return 0.5; // Neutral score for unknown deadlines
 	if (daysUntilDeadline < 0) return 0; // Past deadline
 	if (daysUntilDeadline <= 14) return 0.6; // Urgent but might be too soon
 	if (daysUntilDeadline <= 30) return 0.8; // Good amount of time
@@ -96,7 +101,6 @@ function calculatePurposeScore(purpose: string | null): number {
 }
 
 type GrantWithRequiredFields = {
-	deadline: Date | null;
 	estimatedTotalFunding: bigint | number | null;
 	eligibleApplicants: string | null;
 	eligibleGeographies: string | null;
@@ -108,7 +112,6 @@ export function calculateGrantFitScore(
 	factors: ScoringFactors = DEFAULT_SCORING_FACTORS,
 ): number {
 	const scores = {
-		deadline: calculateDeadlineScore(grant.deadline) * factors.deadlineWeight,
 		funding:
 			calculateFundingScore(grant.estimatedTotalFunding || 0) *
 			factors.fundingWeight,

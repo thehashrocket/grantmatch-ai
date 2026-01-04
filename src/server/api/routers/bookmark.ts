@@ -3,10 +3,14 @@
 import { router, protectedProcedure } from '../trpc';
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
-import { calculateGrantFitScore } from '@/lib/utils/grant-scoring';
+import {
+	calculateDaysUntilDeadline,
+	calculateGrantFitScore,
+} from '@/lib/utils/grant-scoring';
 import type { GrantMatch } from '@/lib/types/grant';
 import { $Enums, Prisma } from '@/prisma/generated/client';
 import type { PrismaClient } from '@/prisma/generated/client';
+import { ensureGrantMatches } from '@/server/grants/match/upsertGrantMatch';
 
 const BOOKMARK_LIMIT = 100;
 
@@ -19,6 +23,7 @@ const sortEnum = z.enum([
 	'DEADLINE_DESC',
 	'TITLE_ASC',
 	'AMOUNT_DESC',
+	'FIT_DESC',
 ]);
 
 const bookmarkGrantSelect = {
@@ -26,6 +31,9 @@ const bookmarkGrantSelect = {
 	title: true,
 	url: true,
 	deadline: true,
+	fitScore: true,
+	fitScoreVersion: true,
+	fitScoreComputedAt: true,
 	source: true,
 	purpose: true,
 	estimatedTotalFunding: true,
@@ -70,14 +78,19 @@ const normalizeTags = (tags?: string[] | null) => {
 	return unique;
 };
 
-const mapGrantToMatch = (grant: BookmarkGrant): GrantMatch => {
-	const fitScore = calculateGrantFitScore({
-		deadline: grant.deadline ?? null,
-		estimatedTotalFunding: grant.estimatedTotalFunding ?? null,
-		eligibleApplicants: grant.eligibleApplicants ?? null,
-		eligibleGeographies: grant.eligibleGeographies ?? null,
-		purpose: grant.purpose ?? null,
-	});
+const mapGrantToMatch = (
+	grant: BookmarkGrant,
+	override?: { fitScore?: number; explanation?: string | null },
+): GrantMatch => {
+	const fitScore =
+		override?.fitScore ??
+		grant.fitScore ??
+		calculateGrantFitScore({
+			estimatedTotalFunding: grant.estimatedTotalFunding ?? null,
+			eligibleApplicants: grant.eligibleApplicants ?? null,
+			eligibleGeographies: grant.eligibleGeographies ?? null,
+			purpose: grant.purpose ?? null,
+		});
 
 	return {
 		id: grant.id,
@@ -85,7 +98,9 @@ const mapGrantToMatch = (grant: BookmarkGrant): GrantMatch => {
 		url: grant.url,
 		internalUrl: `/grants/${grant.id}`,
 		fitScore,
-		explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
+		explanation:
+			override?.explanation ??
+			`This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
 		fundingAmount:
 			grant.estimatedTotalFunding === null ||
 			grant.estimatedTotalFunding === undefined
@@ -104,7 +119,8 @@ const mapGrantToMatch = (grant: BookmarkGrant): GrantMatch => {
 			grant.awardCeiling === null || grant.awardCeiling === undefined
 				? null
 				: Number(grant.awardCeiling),
-		deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
+		deadline: grant.deadline ? grant.deadline.toISOString() : null,
+		daysUntilDeadline: calculateDaysUntilDeadline(grant.deadline ?? null),
 		source: grant.source,
 		detailsStatus: grant.detailsStatus,
 		detailsFetchedAt: grant.detailsFetchedAt
@@ -143,6 +159,9 @@ const requireUserId = (ctx: {
 
 const buildOrderBy = (sort: z.infer<typeof sortEnum>) => {
 	switch (sort) {
+		case 'FIT_DESC':
+			// Will be re-sorted in memory using org-specific scores; keep deterministic tie-breaker.
+			return [{ createdAt: 'desc' as const }, { id: 'desc' as const }];
 		case 'DEADLINE_ASC':
 			return [{ grant: { deadline: 'asc' as const } }, { id: 'desc' as const }];
 		case 'DEADLINE_DESC':
@@ -313,6 +332,7 @@ export const bookmarkRouter = router({
 		.query(async ({ ctx, input }) => {
 			const prismaClient = ctx.prisma;
 			const userId = requireUserId(ctx);
+			const organizationId = ctx.session?.organizationId ?? null;
 			const filters = input?.filters;
 			const sort = input?.sort ?? 'BOOKMARKED_AT_DESC';
 
@@ -356,16 +376,75 @@ export const bookmarkRouter = router({
 					})
 				: bookmarks;
 
+			const grantIds = filtered.map((bookmark) => bookmark.grantId);
+			let matchMap: Record<
+				string,
+				{
+					fitScore: number;
+					explanation: string | null;
+					subscoresJson?: unknown;
+				}
+			> = {};
+
+			if (organizationId && grantIds.length > 0) {
+				await ensureGrantMatches({
+					prisma: prismaClient,
+					organizationId,
+					grantIds,
+				});
+
+				const matches = await prismaClient.grantMatch.findMany({
+					where: {
+						organizationId,
+						grantId: { in: grantIds },
+					},
+					select: {
+						grantId: true,
+						fitScore: true,
+						explanation: true,
+						subscoresJson: true,
+					},
+				});
+
+				matchMap = matches.reduce<typeof matchMap>((acc, match) => {
+					acc[match.grantId] = {
+						fitScore: match.fitScore,
+						explanation: match.explanation ?? null,
+						subscoresJson: match.subscoresJson ?? undefined,
+					};
+					return acc;
+				}, {});
+			}
+
+			const sorted =
+				sort === 'FIT_DESC'
+					? [...filtered].sort((a, b) => {
+							const scoreA = matchMap[a.grantId]?.fitScore ?? null;
+							const scoreB = matchMap[b.grantId]?.fitScore ?? null;
+							if (scoreA === null && scoreB === null) return 0;
+							if (scoreA === null) return 1;
+							if (scoreB === null) return -1;
+							if (scoreB !== scoreA) return scoreB - scoreA;
+							return b.createdAt.getTime() - a.createdAt.getTime();
+						})
+					: filtered;
+
 			return {
-				items: filtered.map((bookmark) => ({
-					id: bookmark.id,
-					status: bookmark.status,
-					createdAt: bookmark.createdAt,
-					grantStatus: bookmark.grant.status,
-					note: bookmark.note ?? null,
-					tags: bookmark.tags,
-					grant: mapGrantToMatch(bookmark.grant),
-				})),
+				items: sorted.map((bookmark) => {
+					const match = matchMap[bookmark.grantId];
+					return {
+						id: bookmark.id,
+						status: bookmark.status,
+						createdAt: bookmark.createdAt,
+						grantStatus: bookmark.grant.status,
+						note: bookmark.note ?? null,
+						tags: bookmark.tags,
+						grant: mapGrantToMatch(bookmark.grant, {
+							fitScore: match?.fitScore,
+							explanation: match?.explanation ?? undefined,
+						}),
+					};
+				}),
 			};
 		}),
 

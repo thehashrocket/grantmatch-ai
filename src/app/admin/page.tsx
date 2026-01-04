@@ -1,6 +1,7 @@
 import { GrantSyncPanel } from '@/components/admin/grant-sync-panel';
 import { db } from '@/lib/db';
 import { $Enums } from '@/prisma/generated/client';
+import { FitScoreBackfill } from '@/components/admin/fit-score-backfill';
 
 export default async function AdminPage() {
 	const [latestFederalRun, latestCaliforniaRun] = await Promise.all([
@@ -58,6 +59,8 @@ export default async function AdminPage() {
 					startLabel="Start sync"
 					busyLabel="Syncing"
 				/>
+
+				<FitScoreBackfill />
 
 				<GrantSyncPanel
 					title="California grants import"

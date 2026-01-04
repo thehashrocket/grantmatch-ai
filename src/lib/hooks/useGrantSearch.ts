@@ -8,9 +8,11 @@ const initialFilters: GrantSearchFilters = {
 	maxFunding: '',
 	minDeadline: '',
 	maxDeadline: '',
+	deadlineWithinDays: '',
 	minFitScore: '',
 	maxFitScore: '',
 	source: 'ALL',
+	sort: 'FIT_DESC',
 };
 
 export function useGrantSearch() {
@@ -84,9 +86,17 @@ export function useGrantSearch() {
 		handlePageChange,
 
 		// Computed
-		hasActiveFilters: Object.values(searchFilters).some(
-			(value) => value !== '',
-		),
+		hasActiveFilters:
+			searchFilters.textSearch !== '' ||
+			searchFilters.minFunding !== '' ||
+			searchFilters.maxFunding !== '' ||
+			searchFilters.minDeadline !== '' ||
+			searchFilters.maxDeadline !== '' ||
+			searchFilters.deadlineWithinDays !== '' ||
+			searchFilters.minFitScore !== '' ||
+			searchFilters.maxFitScore !== '' ||
+			searchFilters.source !== 'ALL' ||
+			searchFilters.sort !== 'FIT_DESC',
 		resultsCount: pagination?.total ?? 0,
 		pagination,
 	};

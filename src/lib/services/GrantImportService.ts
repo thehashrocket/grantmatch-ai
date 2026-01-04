@@ -8,6 +8,10 @@ import {
 	parseFundingAmount,
 	toSmartTitleCase,
 } from '@/lib/utils';
+import {
+	calculateGrantFitScore,
+	FIT_SCORE_VERSION,
+} from '@/lib/utils/grant-scoring';
 import { $Enums } from '@/prisma/generated/client';
 
 type CaliforniaGrantInput = {
@@ -324,6 +328,17 @@ class GrantImportService {
 			closedAt,
 		};
 
+		const fitScorePayload = {
+			fitScore: calculateGrantFitScore({
+				estimatedTotalFunding: grantData.estimatedTotalFunding ?? null,
+				eligibleApplicants: grantData.eligibleApplicants ?? null,
+				eligibleGeographies: grantData.eligibleGeographies ?? null,
+				purpose: grantData.purpose ?? null,
+			}),
+			fitScoreVersion: FIT_SCORE_VERSION,
+			fitScoreComputedAt: new Date(),
+		};
+
 		const contentHash = computeContentHash({
 			source: grantData.source,
 			url: grantData.url,
@@ -346,7 +361,7 @@ class GrantImportService {
 			number: undefined,
 		});
 
-		const dataWithHash = { ...grantData, contentHash };
+		const dataWithHash = { ...grantData, ...fitScorePayload, contentHash };
 
 		if (existingId) {
 			await db.grant.update({
@@ -385,6 +400,7 @@ class GrantImportService {
 			agencyCode: input.agencyCode,
 			awardFloor: BigInt(parseFundingAmount(input.awardFloor)),
 			awardCeiling: BigInt(parseFundingAmount(input.awardCeiling)),
+			estimatedTotalFunding: null as bigint | null,
 			cfdaList: input.cfdaList,
 			source: $Enums.GrantSource.FEDERAL,
 			sourceRecordId: input.sourceRecordId,
@@ -392,6 +408,22 @@ class GrantImportService {
 			lastSeenAt: new Date(),
 			status,
 			closedAt,
+		};
+
+		const fundingForScore =
+			grantData.estimatedTotalFunding ??
+			grantData.awardCeiling ??
+			grantData.awardFloor ??
+			null;
+		const fitScorePayload = {
+			fitScore: calculateGrantFitScore({
+				estimatedTotalFunding: fundingForScore,
+				eligibleApplicants: null,
+				eligibleGeographies: null,
+				purpose: null,
+			}),
+			fitScoreVersion: FIT_SCORE_VERSION,
+			fitScoreComputedAt: new Date(),
 		};
 
 		const contentHash = computeContentHash({
@@ -415,7 +447,7 @@ class GrantImportService {
 			sourceKey,
 		});
 
-		const dataWithHash = { ...grantData, contentHash };
+		const dataWithHash = { ...grantData, ...fitScorePayload, contentHash };
 
 		if (existingId) {
 			await db.grant.update({

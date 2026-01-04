@@ -35,6 +35,9 @@ type TestGrant = {
 	awardCeiling: bigint | null;
 	eligibleApplicants: string | null;
 	eligibleGeographies: string | null;
+	fitScore: number | null;
+	fitScoreVersion: number | null;
+	fitScoreComputedAt: Date | null;
 	closedAt: Date | null;
 	detailsStatus: $Enums.GrantDetailsStatus;
 	detailsFetchedAt: Date | null;
@@ -273,6 +276,9 @@ const addGrant = (
 		awardCeiling: null,
 		eligibleApplicants: null,
 		eligibleGeographies: null,
+		fitScore: null,
+		fitScoreVersion: 1,
+		fitScoreComputedAt: null,
 		closedAt: null,
 		detailsStatus: $Enums.GrantDetailsStatus.UNKNOWN,
 		detailsFetchedAt: null,

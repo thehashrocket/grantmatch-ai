@@ -7,6 +7,10 @@ import {
 	type GrantDetail,
 	$Enums,
 } from '@/prisma/generated/client';
+import {
+	calculateGrantFitScore,
+	FIT_SCORE_VERSION,
+} from '@/lib/utils/grant-scoring';
 import { diffObjects } from '@/server/grants/ingest/normalize';
 import type {
 	NormalizedGrantDetail,
@@ -238,7 +242,8 @@ function determineStatusTransition(
 function toGrantData(normalized: NormalizedGrantInput, existing?: Grant) {
 	const cfdaList =
 		normalized.cfdaList ?? (existing?.cfdaList as string[] | undefined);
-	return {
+	const eligibleApplicants = normalized.eligibleApplicants?.join(', ') ?? null;
+	const grantData = {
 		source: normalized.source,
 		sourceRecordId: normalized.sourceRecordId,
 		sourceKey: normalized.sourceKey,
@@ -259,7 +264,7 @@ function toGrantData(normalized: NormalizedGrantInput, existing?: Grant) {
 		portalId: normalized.portalId ?? null,
 		opportunityType: normalized.opportunityType,
 		purpose: normalized.purpose,
-		eligibleApplicants: normalized.eligibleApplicants?.join(', ') ?? null,
+		eligibleApplicants,
 		eligibleGeographies: normalized.eligibleGeographies ?? null,
 		agencyCode: normalized.agencyCode,
 		cfdaList: cfdaList ?? undefined,
@@ -267,6 +272,20 @@ function toGrantData(normalized: NormalizedGrantInput, existing?: Grant) {
 		lastSeenAt: normalized.lastSeenAt,
 		status: normalized.status,
 		closedAt: normalized.closedAt ?? null,
+	};
+
+	const fitScore = calculateGrantFitScore({
+		estimatedTotalFunding: grantData.estimatedTotalFunding ?? null,
+		eligibleApplicants: grantData.eligibleApplicants ?? null,
+		eligibleGeographies: grantData.eligibleGeographies ?? null,
+		purpose: grantData.purpose ?? null,
+	});
+
+	return {
+		...grantData,
+		fitScore,
+		fitScoreVersion: FIT_SCORE_VERSION,
+		fitScoreComputedAt: new Date(),
 	};
 }
 

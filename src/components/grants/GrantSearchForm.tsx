@@ -32,9 +32,11 @@ export function GrantSearchForm({
 		maxFunding: '',
 		minDeadline: '',
 		maxDeadline: '',
+		deadlineWithinDays: '',
 		minFitScore: '',
 		maxFitScore: '',
 		source: 'ALL',
+		sort: 'FIT_DESC',
 	});
 
 	const [isExpanded, setIsExpanded] = useState(false);
@@ -57,9 +59,11 @@ export function GrantSearchForm({
 			maxFunding: '',
 			minDeadline: '',
 			maxDeadline: '',
+			deadlineWithinDays: '',
 			minFitScore: '',
 			maxFitScore: '',
 			source: 'ALL',
+			sort: 'FIT_DESC',
 		});
 		onClear();
 	};
@@ -71,9 +75,11 @@ export function GrantSearchForm({
 		filters.maxFunding !== '' ||
 		filters.minDeadline !== '' ||
 		filters.maxDeadline !== '' ||
+		filters.deadlineWithinDays !== '' ||
 		filters.minFitScore !== '' ||
 		filters.maxFitScore !== '' ||
-		(filters.source && filters.source !== 'ALL');
+		(filters.source && filters.source !== 'ALL') ||
+		filters.sort !== 'FIT_DESC';
 
 	return (
 		<Card className="mb-6">
@@ -173,6 +179,36 @@ export function GrantSearchForm({
 							</div>
 						</div>
 
+						{/* Deadline Within */}
+						<div className="space-y-2">
+							<Label>Deadline Within</Label>
+							{/*
+								We expose an explicit "Any time" option with a non-empty value to satisfy Radix Select requirements,
+								and translate it to an empty string in state for the existing filter logic.
+							*/}
+							<Select
+								value={filters.deadlineWithinDays || 'ANY'}
+								onValueChange={(value) =>
+									handleInputChange(
+										'deadlineWithinDays',
+										value === 'ANY' ? '' : value,
+									)
+								}
+							>
+								<SelectTrigger>
+									<SelectValue placeholder="Any time" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="ANY">Any time</SelectItem>
+									<SelectItem value="7">Next 7 days</SelectItem>
+									<SelectItem value="14">Next 14 days</SelectItem>
+									<SelectItem value="30">Next 30 days</SelectItem>
+									<SelectItem value="90">Next 90 days</SelectItem>
+									<SelectItem value="180">Next 180 days</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+
 						{/* Fit Score Range */}
 						<div className="space-y-2">
 							<Label>Fit Score</Label>
@@ -220,6 +256,29 @@ export function GrantSearchForm({
 									<SelectItem value="FEDERAL">Federal</SelectItem>
 									<SelectItem value="OHIO">Ohio</SelectItem>
 									<SelectItem value="OTHER">Other</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
+
+						{/* Sort */}
+						<div className="space-y-2">
+							<Label>Sort By</Label>
+							<Select
+								value={filters.sort}
+								onValueChange={(value: string) =>
+									handleInputChange('sort', value)
+								}
+							>
+								<SelectTrigger>
+									<SelectValue placeholder="Best fit" />
+								</SelectTrigger>
+								<SelectContent>
+									<SelectItem value="FIT_DESC">Best fit (default)</SelectItem>
+									<SelectItem value="DEADLINE_ASC">Soonest deadline</SelectItem>
+									<SelectItem value="DEADLINE_DESC">
+										Farthest deadline
+									</SelectItem>
+									<SelectItem value="NEWEST">Recently added</SelectItem>
 								</SelectContent>
 							</Select>
 						</div>
@@ -295,6 +354,18 @@ export function GrantSearchForm({
 									</button>
 								</span>
 							)}
+							{filters.deadlineWithinDays && (
+								<span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-orange-100 text-orange-800 rounded">
+									Due within {filters.deadlineWithinDays} days
+									<button
+										type="button"
+										onClick={() => handleInputChange('deadlineWithinDays', '')}
+										className="ml-1 hover:text-orange-600"
+									>
+										<X className="h-3 w-3" />
+									</button>
+								</span>
+							)}
 							{filters.minFitScore && (
 								<span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-indigo-100 text-indigo-800 rounded">
 									Min Score: {filters.minFitScore}
@@ -326,6 +397,18 @@ export function GrantSearchForm({
 										type="button"
 										onClick={() => handleInputChange('source', 'ALL')}
 										className="ml-1 hover:text-purple-600"
+									>
+										<X className="h-3 w-3" />
+									</button>
+								</span>
+							)}
+							{filters.sort !== 'FIT_DESC' && (
+								<span className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-slate-100 text-slate-800 rounded">
+									Sort: {filters.sort.replace('_', ' ').toLowerCase()}
+									<button
+										type="button"
+										onClick={() => handleInputChange('sort', 'FIT_DESC')}
+										className="ml-1 hover:text-slate-600"
 									>
 										<X className="h-3 w-3" />
 									</button>

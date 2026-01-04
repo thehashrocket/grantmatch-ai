@@ -16,6 +16,8 @@ import { BookmarkStatusSelect } from '@/components/grants/BookmarkStatusSelect';
 import { trpc } from '@/lib/trpc/client';
 import type { BookmarkStatus } from '@/lib/types/bookmark';
 import { BookmarkMetaEditor } from '@/components/grants/BookmarkMetaEditor';
+import { useEffect } from 'react';
+import { getFitScoreCategory, getFitScoreColor } from '@/lib/types/grant';
 
 type GrantData = Prisma.GrantGetPayload<{
 	include: { details: true; attachments: true };
@@ -49,6 +51,42 @@ export default function GrantDetailsClient({
 		(item) => item.grant.id === grantId,
 	);
 
+	const utils = trpc.useUtils();
+	const ensureMatches = trpc.match.ensureForGrants.useMutation({
+		onSuccess: () => {
+			utils.match.scoreMap.invalidate({ grantIds: [grantId] });
+		},
+	});
+
+	const {
+		data: scoreMap,
+		isLoading: isScoreLoading,
+		error: scoreError,
+	} = trpc.match.scoreMap.useQuery(
+		{ grantIds: [grantId] },
+		{
+			enabled: Boolean(grantId),
+			retry: false,
+		},
+	);
+
+	const scoreEntry = scoreMap?.[grantId];
+	const fitScore = scoreEntry?.fitScore ?? null;
+	const fitScoreCategory =
+		fitScore !== null ? getFitScoreCategory(fitScore) : null;
+	const fitScoreClass =
+		fitScoreCategory !== null
+			? getFitScoreColor(fitScoreCategory)
+			: 'bg-muted text-muted-foreground';
+
+	useEffect(() => {
+		if (scoreError) return;
+		if (isScoreLoading) return;
+		if (scoreEntry) return;
+		if (ensureMatches.isPending) return;
+		ensureMatches.mutate({ grantIds: [grantId] });
+	}, [ensureMatches, grantId, isScoreLoading, scoreEntry, scoreError]);
+
 	return (
 		<div className="space-y-6">
 			<div className="space-y-2">
@@ -76,6 +114,19 @@ export default function GrantDetailsClient({
 					</div>
 				</div>
 				<p className="text-muted-foreground">Portal ID: {grant.portalId}</p>
+				<div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+					<span>Fit score:</span>
+					<span
+						className={`inline-flex items-center rounded-full px-2 py-1 text-xs font-semibold ${fitScoreClass}`}
+					>
+						{fitScore !== null ? `${fitScore.toFixed(1)}/10` : '—'}
+					</span>
+					{scoreEntry?.explanation && (
+						<span className="text-xs text-muted-foreground">
+							{scoreEntry.explanation}
+						</span>
+					)}
+				</div>
 				{grant.detailsStatus === 'FETCHING' && (
 					<p className="text-sm text-muted-foreground">
 						Fetching details in the background…

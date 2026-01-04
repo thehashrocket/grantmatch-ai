@@ -11,7 +11,8 @@ export interface GrantMatch {
 	estimatedTotalFunding?: number | null;
 	awardFloor?: number | null;
 	awardCeiling?: number | null;
-	deadline: string;
+	deadline: string | null;
+	daysUntilDeadline?: number | null;
 	source: string; // State name or 'Federal'
 	detailsStatus?: 'UNKNOWN' | 'FETCHING' | 'AVAILABLE' | 'FAILED';
 	detailsFetchedAt?: string | null;
@@ -27,6 +28,8 @@ export interface PaginatedGrantMatches {
 		total: number;
 		totalPages: number;
 	};
+	matchIndexStatus?: string | null;
+	usedOrgMatches?: boolean;
 }
 
 export interface GrantSearchFilters {
@@ -35,10 +38,18 @@ export interface GrantSearchFilters {
 	maxFunding: string;
 	minDeadline: string;
 	maxDeadline: string;
+	deadlineWithinDays: string;
 	minFitScore: string;
 	maxFitScore: string;
 	source: string;
+	sort: GrantSortOption;
 }
+
+export type GrantSortOption =
+	| 'FIT_DESC'
+	| 'DEADLINE_ASC'
+	| 'DEADLINE_DESC'
+	| 'NEWEST';
 
 export type FitScoreCategory = 'high' | 'medium' | 'low';
 

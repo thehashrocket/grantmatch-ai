@@ -2,20 +2,32 @@
 // called by src/server/api/routers/grants.ts
 
 import type { GrantRepository } from '@/lib/repositories/GrantRepository';
-import type { GrantRecord } from '@/lib/repositories/GrantRepository';
+import type {
+	GrantMatchRecord,
+	GrantRecord,
+} from '@/lib/repositories/GrantRepository';
 import type {
 	GrantMatch,
 	GrantSearchFilters,
 	PaginatedGrantMatches,
 } from '@/lib/types/grant';
-import { calculateGrantFitScore } from '@/lib/utils/grant-scoring';
+import {
+	calculateDaysUntilDeadline,
+	calculateGrantFitScore,
+} from '@/lib/utils/grant-scoring';
 
 export interface GrantService {
-	searchGrants(filters: GrantSearchFilters): Promise<GrantMatch[]>;
+	searchGrants(
+		filters: GrantSearchFilters,
+		organizationId?: string | null,
+		matchIndexStatus?: string | null,
+	): Promise<GrantMatch[]>;
 	searchGrantsPaginated(
 		filters: GrantSearchFilters,
 		page: number,
 		pageSize: number,
+		organizationId?: string | null,
+		matchIndexStatus?: string | null,
 	): Promise<PaginatedGrantMatches>;
 	getGrantById(id: string): Promise<GrantMatch | null>;
 }
@@ -23,8 +35,19 @@ export interface GrantService {
 export class GrantServiceImpl implements GrantService {
 	constructor(private grantRepository: GrantRepository) {}
 
-	private mapGrantToMatch(grant: GrantRecord): GrantMatch {
-		const fitScore = calculateGrantFitScore(grant);
+	private mapGrantToMatch(
+		grant: GrantRecord,
+		override?: { fitScore?: number; explanation?: string | null },
+	): GrantMatch {
+		const fitScore =
+			override?.fitScore ??
+			grant.fitScore ??
+			calculateGrantFitScore({
+				estimatedTotalFunding: grant.estimatedTotalFunding ?? null,
+				eligibleApplicants: grant.eligibleApplicants ?? null,
+				eligibleGeographies: grant.eligibleGeographies ?? null,
+				purpose: grant.purpose ?? null,
+			});
 		const estimatedTotalFunding =
 			grant.estimatedTotalFunding !== null &&
 			grant.estimatedTotalFunding !== undefined
@@ -45,12 +68,15 @@ export class GrantServiceImpl implements GrantService {
 			url: grant.url,
 			internalUrl: `/grants/${grant.id}`,
 			fitScore,
-			explanation: `This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
+			explanation:
+				override?.explanation ??
+				`This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
 			fundingAmount: estimatedTotalFunding,
 			estimatedTotalFunding,
 			awardFloor,
 			awardCeiling,
-			deadline: grant.deadline?.toISOString() ?? new Date().toISOString(),
+			deadline: grant.deadline ? grant.deadline.toISOString() : null,
+			daysUntilDeadline: calculateDaysUntilDeadline(grant.deadline ?? null),
 			source: grant.source,
 			detailsStatus: grant.detailsStatus,
 			detailsFetchedAt: grant.detailsFetchedAt
@@ -61,61 +87,64 @@ export class GrantServiceImpl implements GrantService {
 		};
 	}
 
-	async searchGrants(filters: GrantSearchFilters): Promise<GrantMatch[]> {
+	async searchGrants(
+		filters: GrantSearchFilters,
+		_organizationId?: string | null,
+		_matchIndexStatus?: string | null,
+	): Promise<GrantMatch[]> {
 		// Get raw grants from repository
 		const grants = await this.grantRepository.findWithFilters(filters);
 
-		// Transform grants and calculate fit scores
-		let grantMatches = grants.map((grant) => this.mapGrantToMatch(grant));
-
-		// Apply fit score filtering if specified
-		if (filters.minFitScore) {
-			const minScore = parseFloat(filters.minFitScore);
-			grantMatches = grantMatches.filter((grant) => grant.fitScore >= minScore);
-		}
-
-		if (filters.maxFitScore) {
-			const maxScore = parseFloat(filters.maxFitScore);
-			grantMatches = grantMatches.filter((grant) => grant.fitScore <= maxScore);
-		}
-
-		// Sort by fit score descending
-		return grantMatches.sort((a, b) => b.fitScore - a.fitScore);
+		// Transform grants and calculate fit scores for any legacy records missing them
+		return grants.map((grant) => this.mapGrantToMatch(grant));
 	}
 
 	async searchGrantsPaginated(
 		filters: GrantSearchFilters,
 		page: number,
 		pageSize: number,
+		organizationId?: string | null,
+		matchIndexStatus?: string | null,
 	): Promise<PaginatedGrantMatches> {
-		// Get all grants matching the non-fit filters so we can paginate after scoring
-		const grants = await this.grantRepository.findWithFilters(filters);
+		if (organizationId) {
+			const { matches, total } =
+				await this.grantRepository.findWithFiltersPaginatedForOrg(
+					filters,
+					page,
+					pageSize,
+					organizationId,
+				);
 
-		// Transform grants and calculate fit scores
-		let grantMatches = grants.map((grant) => this.mapGrantToMatch(grant));
+			const paginatedGrants = matches.map((match: GrantMatchRecord) =>
+				this.mapGrantToMatch(match.grant, {
+					fitScore: match.fitScore,
+					explanation: match.explanation,
+				}),
+			);
 
-		// Apply fit score filtering if specified
-		if (filters.minFitScore) {
-			const minScore = parseFloat(filters.minFitScore);
-			grantMatches = grantMatches.filter((grant) => grant.fitScore >= minScore);
+			const totalPages = Math.ceil(total / pageSize);
+			return {
+				grants: paginatedGrants,
+				pagination: {
+					page,
+					pageSize,
+					total,
+					totalPages,
+				},
+				matchIndexStatus: matchIndexStatus ?? null,
+				usedOrgMatches: true,
+			};
 		}
 
-		if (filters.maxFitScore) {
-			const maxScore = parseFloat(filters.maxFitScore);
-			grantMatches = grantMatches.filter((grant) => grant.fitScore <= maxScore);
-		}
+		const { grants, total } =
+			await this.grantRepository.findWithFiltersPaginated(
+				filters,
+				page,
+				pageSize,
+			);
 
-		// Sort by fit score descending
-		const sortedGrants = grantMatches.sort((a, b) => b.fitScore - a.fitScore);
-
-		// Paginate after scoring to avoid losing high-fit grants from other sources
-		const total = sortedGrants.length;
+		const paginatedGrants = grants.map((grant) => this.mapGrantToMatch(grant));
 		const totalPages = Math.ceil(total / pageSize);
-		const startIndex = (page - 1) * pageSize;
-		const paginatedGrants = sortedGrants.slice(
-			startIndex,
-			startIndex + pageSize,
-		);
 
 		return {
 			grants: paginatedGrants,
@@ -125,6 +154,8 @@ export class GrantServiceImpl implements GrantService {
 				total,
 				totalPages,
 			},
+			matchIndexStatus: matchIndexStatus ?? null,
+			usedOrgMatches: false,
 		};
 	}
 

@@ -168,6 +168,9 @@ exports.Prisma.GrantScalarFieldEnum = {
   sourceRecordId: 'sourceRecordId',
   sourceKey: 'sourceKey',
   contentHash: 'contentHash',
+  fitScore: 'fitScore',
+  fitScoreVersion: 'fitScoreVersion',
+  fitScoreComputedAt: 'fitScoreComputedAt',
   lastSeenAt: 'lastSeenAt',
   status: 'status',
   closedAt: 'closedAt',
@@ -250,6 +253,16 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   description: 'description',
   mission: 'mission',
   focusAreas: 'focusAreas',
+  focusKeywords: 'focusKeywords',
+  geographyKeywords: 'geographyKeywords',
+  applicantType: 'applicantType',
+  minAward: 'minAward',
+  maxAward: 'maxAward',
+  scoringVersion: 'scoringVersion',
+  matchIndexStatus: 'matchIndexStatus',
+  matchIndexedAt: 'matchIndexedAt',
+  matchIndexedCount: 'matchIndexedCount',
+  matchIndexError: 'matchIndexError',
   address1: 'address1',
   address2: 'address2',
   city: 'city',
@@ -304,6 +317,17 @@ exports.Prisma.GrantBookmarkScalarFieldEnum = {
   tags: 'tags',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
+};
+
+exports.Prisma.GrantMatchScalarFieldEnum = {
+  id: 'id',
+  organizationId: 'organizationId',
+  grantId: 'grantId',
+  fitScore: 'fitScore',
+  version: 'version',
+  computedAt: 'computedAt',
+  subscoresJson: 'subscoresJson',
+  explanation: 'explanation'
 };
 
 exports.Prisma.SortOrder = {
@@ -381,6 +405,23 @@ exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN'
 };
 
+exports.OrganizationApplicantType = exports.$Enums.OrganizationApplicantType = {
+  NONPROFIT: 'NONPROFIT',
+  SCHOOL: 'SCHOOL',
+  GOVERNMENT: 'GOVERNMENT',
+  TRIBE: 'TRIBE',
+  FOR_PROFIT: 'FOR_PROFIT',
+  INDIVIDUAL: 'INDIVIDUAL',
+  OTHER: 'OTHER'
+};
+
+exports.MatchIndexStatus = exports.$Enums.MatchIndexStatus = {
+  NOT_STARTED: 'NOT_STARTED',
+  RUNNING: 'RUNNING',
+  COMPLETE: 'COMPLETE',
+  FAILED: 'FAILED'
+};
+
 exports.InvitationStatus = exports.$Enums.InvitationStatus = {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -406,7 +447,8 @@ exports.Prisma.ModelName = {
   Invitation: 'Invitation',
   GrantSyncRun: 'GrantSyncRun',
   GrantChange: 'GrantChange',
-  GrantBookmark: 'GrantBookmark'
+  GrantBookmark: 'GrantBookmark',
+  GrantMatch: 'GrantMatch'
 };
 
 /**

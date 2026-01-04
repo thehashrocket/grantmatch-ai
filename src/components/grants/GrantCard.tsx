@@ -37,6 +37,43 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
 	const flagInfo = getFlagInfo(grant.source);
+	const deadlineLabel = grant.deadline
+		? formatDate(grant.deadline)
+		: 'Deadline not provided';
+	const deadlineBadge = (() => {
+		if (!grant.deadline) {
+			return {
+				label: 'Deadline TBD',
+				className: 'bg-slate-100 text-slate-800',
+			};
+		}
+		const daysUntil = grant.daysUntilDeadline ?? null;
+		if (daysUntil === null) {
+			return {
+				label: `Due ${deadlineLabel}`,
+				className: 'bg-slate-100 text-slate-800',
+			};
+		}
+		if (daysUntil < 0) {
+			return {
+				label: 'Deadline passed',
+				className: 'bg-rose-100 text-rose-800',
+			};
+		}
+		if (daysUntil === 0) {
+			return { label: 'Due today', className: 'bg-amber-100 text-amber-800' };
+		}
+		if (daysUntil <= 14) {
+			return {
+				label: `Due in ${daysUntil} days`,
+				className: 'bg-amber-100 text-amber-800',
+			};
+		}
+		return {
+			label: `Due in ${daysUntil} days`,
+			className: 'bg-emerald-100 text-emerald-800',
+		};
+	})();
 
 	return (
 		<div className="relative">
@@ -62,6 +99,11 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 								<Badge className={colorClasses}>
 									Fit Score: {grant.fitScore.toFixed(1)}
 								</Badge>
+								{deadlineBadge ? (
+									<Badge className={deadlineBadge.className}>
+										{deadlineBadge.label}
+									</Badge>
+								) : null}
 								<DetailsStatusBadge status={grant.detailsStatus} />
 								<a
 									href={grant.url}
@@ -83,7 +125,9 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 								fundingAmount={grant.fundingAmount}
 							/>
 							<div className="text-sm text-muted-foreground">
-								Due {formatDate(grant.deadline)}
+								{grant.deadline
+									? `Deadline: ${deadlineLabel}`
+									: 'Deadline not provided'}
 							</div>
 						</div>
 					</div>

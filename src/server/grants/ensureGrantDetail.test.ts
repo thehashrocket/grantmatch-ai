@@ -67,6 +67,9 @@ const baseGrant = (): GrantWithRelations => {
 		lastSeenAt: now,
 		status: $Enums.GrantStatus.UNKNOWN,
 		closedAt: null,
+		fitScore: null,
+		fitScoreVersion: 1,
+		fitScoreComputedAt: null,
 		createdAt: now,
 		updatedAt: now,
 	} satisfies GrantWithRelations;

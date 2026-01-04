@@ -34,12 +34,19 @@ export default function DashboardPage() {
 	) => {
 		if (field === 'source') {
 			updateFilter(field, value || 'ALL');
+		} else if (field === 'sort') {
+			updateFilter(field, 'FIT_DESC');
 		} else {
 			updateFilter(field, '');
 		}
 		const newFilters = {
 			...searchFilters,
-			[field]: field === 'source' ? value || 'ALL' : '',
+			[field]:
+				field === 'source'
+					? value || 'ALL'
+					: field === 'sort'
+						? 'FIT_DESC'
+						: '',
 		};
 		handleSearch(newFilters);
 	};

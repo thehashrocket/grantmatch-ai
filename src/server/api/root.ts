@@ -5,6 +5,7 @@ import { router, publicProcedure } from './trpc';
 import { organizationRouter } from './routers/organization';
 import { grantsRouter } from './routers/grants';
 import { bookmarkRouter } from './routers/bookmark';
+import { matchRouter } from './routers/match';
 
 export const appRouter = router({
 	hello: publicProcedure
@@ -15,6 +16,7 @@ export const appRouter = router({
 	organization: organizationRouter,
 	grants: grantsRouter,
 	bookmark: bookmarkRouter,
+	match: matchRouter,
 });
 
 // This is needed for tRPC type inference

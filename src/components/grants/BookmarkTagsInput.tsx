@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Tag } from 'lucide-react';
 import { trpc } from '@/lib/trpc/client';
 import { Input } from '@/components/ui/input';
@@ -41,6 +41,13 @@ export function BookmarkTagsInput({
 				return a.tag.localeCompare(b.tag);
 			});
 	}, [tagSummary, tags]);
+
+	useEffect(() => {
+		if (disabled && isOpen) {
+			setIsOpen(false);
+			setFrozenSuggestions([]);
+		}
+	}, [disabled, isOpen]);
 
 	const suggestions = useMemo(() => {
 		const needle = input.trim().toLowerCase();
@@ -117,12 +124,14 @@ export function BookmarkTagsInput({
 						}
 					}}
 					onBlur={() => {
-						setIsOpen(false);
-						setFrozenSuggestions([]);
+						setTimeout(() => {
+							setIsOpen(false);
+							setFrozenSuggestions([]);
+						}, 50);
 						if (input.trim()) commitTag(input);
 					}}
 				/>
-				{suggestions.length > 0 && (
+				{isOpen && suggestions.length > 0 && (
 					<div className="absolute z-10 mt-1 w-full rounded-md border bg-popover shadow-md">
 						<ul className="max-h-48 overflow-auto p-1">
 							{suggestions.map((suggestion) => (

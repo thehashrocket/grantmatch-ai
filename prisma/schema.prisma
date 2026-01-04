@@ -25,6 +25,16 @@ enum UserRole {
   ADMIN
 }
 
+enum OrganizationApplicantType {
+  NONPROFIT
+  SCHOOL
+  GOVERNMENT
+  TRIBE
+  FOR_PROFIT
+  INDIVIDUAL
+  OTHER
+}
+
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -88,6 +98,13 @@ enum BookmarkStatus {
   NOT_FOR_US
 }
 
+enum MatchIndexStatus {
+  NOT_STARTED
+  RUNNING
+  COMPLETE
+  FAILED
+}
+
 model Grant {
   id                    String       @id @default(cuid())
   url                   String
@@ -123,18 +140,23 @@ model Grant {
   sourceRecordId        String?       // upstream id (string)
   sourceKey             String?       // deterministic hash if no sourceRecordId
   contentHash           String?       // hash of meaningful fields
+  fitScore              Float?
+  fitScoreVersion       Int           @default(1)
+  fitScoreComputedAt    DateTime?
   lastSeenAt            DateTime?
   status                GrantStatus   @default(UNKNOWN)
   closedAt              DateTime?
   changes               GrantChange[]
   bookmarks             GrantBookmark[]
+  grantMatches          GrantMatch[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  
+
   @@unique([source, number])
   @@unique([source, sourceRecordId])
   @@unique([source, sourceKey])
+  @@index([fitScore])
 }
 
 model GrantDetail {
@@ -227,15 +249,26 @@ model Organization {
   description String       @db.Text
   mission     String       @default("Not specified")
   focusAreas  String[]
-  address1    String
-  address2    String?
-  city        String
-  state       String
-  zipCode     String
-  users       User[]
-  invitations Invitation[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  focusKeywords     String[]                  @default([])
+  geographyKeywords String[]                  @default([])
+  applicantType     OrganizationApplicantType?
+  minAward          Int?
+  maxAward          Int?
+  scoringVersion    Int                       @default(1)
+  matchIndexStatus  MatchIndexStatus          @default(NOT_STARTED)
+  matchIndexedAt    DateTime?
+  matchIndexedCount Int                       @default(0)
+  matchIndexError   String?
+  address1          String
+  address2          String?
+  city              String
+  state             String
+  zipCode           String
+  users             User[]
+  invitations       Invitation[]
+  grantMatches      GrantMatch[]
+  createdAt         DateTime                  @default(now())
+  updatedAt         DateTime                  @updatedAt
 }
 
 enum InvitationStatus {
@@ -309,4 +342,22 @@ model GrantBookmark {
   @@index([userId, createdAt])
   @@index([userId, status])
   @@index([grantId])
+}
+
+model GrantMatch {
+  id             String   @id @default(cuid())
+  organizationId String
+  grantId        String
+  fitScore       Float
+  version        Int
+  computedAt     DateTime @default(now())
+  subscoresJson  Json?    @db.JsonB
+  explanation    String?
+
+  organization Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  grant         Grant         @relation(fields: [grantId], references: [id], onDelete: Cascade)
+
+  @@unique([organizationId, grantId])
+  @@index([organizationId, fitScore])
+  @@index([organizationId, grantId])
 }

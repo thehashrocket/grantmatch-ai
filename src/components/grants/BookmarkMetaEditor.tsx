@@ -82,7 +82,8 @@ export function BookmarkMetaEditor({
 			});
 			setIsDirty(false);
 			setSaveState('saved');
-			window.setTimeout(
+			if (savedTimerRef.current) window.clearTimeout(savedTimerRef.current);
+			savedTimerRef.current = window.setTimeout(
 				() => setSaveState((s) => (s === 'saved' ? 'idle' : s)),
 				1500,
 			);
@@ -138,7 +139,11 @@ export function BookmarkMetaEditor({
 				<span>Bookmark notes & tags</span>
 			</div>
 
-			<BookmarkTagsInput tags={tags} onChange={handleTagsChange} />
+			<BookmarkTagsInput
+				tags={tags}
+				onChange={handleTagsChange}
+				disabled={mutation.isPending}
+			/>
 
 			<div className="space-y-2">
 				<label

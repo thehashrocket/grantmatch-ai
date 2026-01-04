@@ -78,6 +78,11 @@ export type GrantChange = $Result.DefaultSelection<Prisma.$GrantChangePayload>
  * 
  */
 export type GrantBookmark = $Result.DefaultSelection<Prisma.$GrantBookmarkPayload>
+/**
+ * Model GrantMatch
+ * 
+ */
+export type GrantMatch = $Result.DefaultSelection<Prisma.$GrantMatchPayload>
 
 /**
  * Enums
@@ -99,6 +104,19 @@ export const UserRole: {
 };
 
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
+
+
+export const OrganizationApplicantType: {
+  NONPROFIT: 'NONPROFIT',
+  SCHOOL: 'SCHOOL',
+  GOVERNMENT: 'GOVERNMENT',
+  TRIBE: 'TRIBE',
+  FOR_PROFIT: 'FOR_PROFIT',
+  INDIVIDUAL: 'INDIVIDUAL',
+  OTHER: 'OTHER'
+};
+
+export type OrganizationApplicantType = (typeof OrganizationApplicantType)[keyof typeof OrganizationApplicantType]
 
 
 export const GrantDeadlineType: {
@@ -163,6 +181,16 @@ export const BookmarkStatus: {
 export type BookmarkStatus = (typeof BookmarkStatus)[keyof typeof BookmarkStatus]
 
 
+export const MatchIndexStatus: {
+  NOT_STARTED: 'NOT_STARTED',
+  RUNNING: 'RUNNING',
+  COMPLETE: 'COMPLETE',
+  FAILED: 'FAILED'
+};
+
+export type MatchIndexStatus = (typeof MatchIndexStatus)[keyof typeof MatchIndexStatus]
+
+
 export const InvitationStatus: {
   PENDING: 'PENDING',
   ACCEPTED: 'ACCEPTED',
@@ -180,6 +208,10 @@ export const ImportStatus: typeof $Enums.ImportStatus
 export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
+
+export type OrganizationApplicantType = $Enums.OrganizationApplicantType
+
+export const OrganizationApplicantType: typeof $Enums.OrganizationApplicantType
 
 export type GrantDeadlineType = $Enums.GrantDeadlineType
 
@@ -204,6 +236,10 @@ export const GrantDetailsStatus: typeof $Enums.GrantDetailsStatus
 export type BookmarkStatus = $Enums.BookmarkStatus
 
 export const BookmarkStatus: typeof $Enums.BookmarkStatus
+
+export type MatchIndexStatus = $Enums.MatchIndexStatus
+
+export const MatchIndexStatus: typeof $Enums.MatchIndexStatus
 
 export type InvitationStatus = $Enums.InvitationStatus
 
@@ -455,6 +491,16 @@ export class PrismaClient<
     * ```
     */
   get grantBookmark(): Prisma.GrantBookmarkDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.grantMatch`: Exposes CRUD operations for the **GrantMatch** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more GrantMatches
+    * const grantMatches = await prisma.grantMatch.findMany()
+    * ```
+    */
+  get grantMatch(): Prisma.GrantMatchDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -901,7 +947,8 @@ export namespace Prisma {
     Invitation: 'Invitation',
     GrantSyncRun: 'GrantSyncRun',
     GrantChange: 'GrantChange',
-    GrantBookmark: 'GrantBookmark'
+    GrantBookmark: 'GrantBookmark',
+    GrantMatch: 'GrantMatch'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -917,7 +964,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "account" | "grant" | "grantDetail" | "grantAttachment" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange" | "grantBookmark"
+      modelProps: "account" | "grant" | "grantDetail" | "grantAttachment" | "grantImportRun" | "session" | "user" | "verificationToken" | "organization" | "invitation" | "grantSyncRun" | "grantChange" | "grantBookmark" | "grantMatch"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1883,6 +1930,80 @@ export namespace Prisma {
           }
         }
       }
+      GrantMatch: {
+        payload: Prisma.$GrantMatchPayload<ExtArgs>
+        fields: Prisma.GrantMatchFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.GrantMatchFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.GrantMatchFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          findFirst: {
+            args: Prisma.GrantMatchFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.GrantMatchFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          findMany: {
+            args: Prisma.GrantMatchFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>[]
+          }
+          create: {
+            args: Prisma.GrantMatchCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          createMany: {
+            args: Prisma.GrantMatchCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.GrantMatchCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>[]
+          }
+          delete: {
+            args: Prisma.GrantMatchDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          update: {
+            args: Prisma.GrantMatchUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          deleteMany: {
+            args: Prisma.GrantMatchDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.GrantMatchUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.GrantMatchUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>[]
+          }
+          upsert: {
+            args: Prisma.GrantMatchUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$GrantMatchPayload>
+          }
+          aggregate: {
+            args: Prisma.GrantMatchAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateGrantMatch>
+          }
+          groupBy: {
+            args: Prisma.GrantMatchGroupByArgs<ExtArgs>
+            result: $Utils.Optional<GrantMatchGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.GrantMatchCountArgs<ExtArgs>
+            result: $Utils.Optional<GrantMatchCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2004,6 +2125,7 @@ export namespace Prisma {
     grantSyncRun?: GrantSyncRunOmit
     grantChange?: GrantChangeOmit
     grantBookmark?: GrantBookmarkOmit
+    grantMatch?: GrantMatchOmit
   }
 
   /* Types for Logging */
@@ -2087,12 +2209,14 @@ export namespace Prisma {
     attachments: number
     changes: number
     bookmarks: number
+    grantMatches: number
   }
 
   export type GrantCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     attachments?: boolean | GrantCountOutputTypeCountAttachmentsArgs
     changes?: boolean | GrantCountOutputTypeCountChangesArgs
     bookmarks?: boolean | GrantCountOutputTypeCountBookmarksArgs
+    grantMatches?: boolean | GrantCountOutputTypeCountGrantMatchesArgs
   }
 
   // Custom InputTypes
@@ -2125,6 +2249,13 @@ export namespace Prisma {
    */
   export type GrantCountOutputTypeCountBookmarksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: GrantBookmarkWhereInput
+  }
+
+  /**
+   * GrantCountOutputType without action
+   */
+  export type GrantCountOutputTypeCountGrantMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantMatchWhereInput
   }
 
 
@@ -2193,11 +2324,13 @@ export namespace Prisma {
   export type OrganizationCountOutputType = {
     users: number
     invitations: number
+    grantMatches: number
   }
 
   export type OrganizationCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | OrganizationCountOutputTypeCountUsersArgs
     invitations?: boolean | OrganizationCountOutputTypeCountInvitationsArgs
+    grantMatches?: boolean | OrganizationCountOutputTypeCountGrantMatchesArgs
   }
 
   // Custom InputTypes
@@ -2223,6 +2356,13 @@ export namespace Prisma {
    */
   export type OrganizationCountOutputTypeCountInvitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: InvitationWhereInput
+  }
+
+  /**
+   * OrganizationCountOutputType without action
+   */
+  export type OrganizationCountOutputTypeCountGrantMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantMatchWhereInput
   }
 
 
@@ -3461,6 +3601,8 @@ export namespace Prisma {
     awardFloor: number | null
     awardCeiling: number | null
     portalId: number | null
+    fitScore: number | null
+    fitScoreVersion: number | null
   }
 
   export type GrantSumAggregateOutputType = {
@@ -3468,6 +3610,8 @@ export namespace Prisma {
     awardFloor: bigint | null
     awardCeiling: bigint | null
     portalId: number | null
+    fitScore: number | null
+    fitScoreVersion: number | null
   }
 
   export type GrantMinAggregateOutputType = {
@@ -3502,6 +3646,9 @@ export namespace Prisma {
     sourceRecordId: string | null
     sourceKey: string | null
     contentHash: string | null
+    fitScore: number | null
+    fitScoreVersion: number | null
+    fitScoreComputedAt: Date | null
     lastSeenAt: Date | null
     status: $Enums.GrantStatus | null
     closedAt: Date | null
@@ -3541,6 +3688,9 @@ export namespace Prisma {
     sourceRecordId: string | null
     sourceKey: string | null
     contentHash: string | null
+    fitScore: number | null
+    fitScoreVersion: number | null
+    fitScoreComputedAt: Date | null
     lastSeenAt: Date | null
     status: $Enums.GrantStatus | null
     closedAt: Date | null
@@ -3581,6 +3731,9 @@ export namespace Prisma {
     sourceRecordId: number
     sourceKey: number
     contentHash: number
+    fitScore: number
+    fitScoreVersion: number
+    fitScoreComputedAt: number
     lastSeenAt: number
     status: number
     closedAt: number
@@ -3595,6 +3748,8 @@ export namespace Prisma {
     awardFloor?: true
     awardCeiling?: true
     portalId?: true
+    fitScore?: true
+    fitScoreVersion?: true
   }
 
   export type GrantSumAggregateInputType = {
@@ -3602,6 +3757,8 @@ export namespace Prisma {
     awardFloor?: true
     awardCeiling?: true
     portalId?: true
+    fitScore?: true
+    fitScoreVersion?: true
   }
 
   export type GrantMinAggregateInputType = {
@@ -3636,6 +3793,9 @@ export namespace Prisma {
     sourceRecordId?: true
     sourceKey?: true
     contentHash?: true
+    fitScore?: true
+    fitScoreVersion?: true
+    fitScoreComputedAt?: true
     lastSeenAt?: true
     status?: true
     closedAt?: true
@@ -3675,6 +3835,9 @@ export namespace Prisma {
     sourceRecordId?: true
     sourceKey?: true
     contentHash?: true
+    fitScore?: true
+    fitScoreVersion?: true
+    fitScoreComputedAt?: true
     lastSeenAt?: true
     status?: true
     closedAt?: true
@@ -3715,6 +3878,9 @@ export namespace Prisma {
     sourceRecordId?: true
     sourceKey?: true
     contentHash?: true
+    fitScore?: true
+    fitScoreVersion?: true
+    fitScoreComputedAt?: true
     lastSeenAt?: true
     status?: true
     closedAt?: true
@@ -3842,6 +4008,9 @@ export namespace Prisma {
     sourceRecordId: string | null
     sourceKey: string | null
     contentHash: string | null
+    fitScore: number | null
+    fitScoreVersion: number
+    fitScoreComputedAt: Date | null
     lastSeenAt: Date | null
     status: $Enums.GrantStatus
     closedAt: Date | null
@@ -3901,6 +4070,9 @@ export namespace Prisma {
     sourceRecordId?: boolean
     sourceKey?: boolean
     contentHash?: boolean
+    fitScore?: boolean
+    fitScoreVersion?: boolean
+    fitScoreComputedAt?: boolean
     lastSeenAt?: boolean
     status?: boolean
     closedAt?: boolean
@@ -3910,6 +4082,7 @@ export namespace Prisma {
     attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
     bookmarks?: boolean | Grant$bookmarksArgs<ExtArgs>
+    grantMatches?: boolean | Grant$grantMatchesArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["grant"]>
 
@@ -3946,6 +4119,9 @@ export namespace Prisma {
     sourceRecordId?: boolean
     sourceKey?: boolean
     contentHash?: boolean
+    fitScore?: boolean
+    fitScoreVersion?: boolean
+    fitScoreComputedAt?: boolean
     lastSeenAt?: boolean
     status?: boolean
     closedAt?: boolean
@@ -3986,6 +4162,9 @@ export namespace Prisma {
     sourceRecordId?: boolean
     sourceKey?: boolean
     contentHash?: boolean
+    fitScore?: boolean
+    fitScoreVersion?: boolean
+    fitScoreComputedAt?: boolean
     lastSeenAt?: boolean
     status?: boolean
     closedAt?: boolean
@@ -4026,6 +4205,9 @@ export namespace Prisma {
     sourceRecordId?: boolean
     sourceKey?: boolean
     contentHash?: boolean
+    fitScore?: boolean
+    fitScoreVersion?: boolean
+    fitScoreComputedAt?: boolean
     lastSeenAt?: boolean
     status?: boolean
     closedAt?: boolean
@@ -4033,12 +4215,13 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "detailsStatus" | "detailsFetchedAt" | "detailsError" | "detailsErrorAt" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
+  export type GrantOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "url" | "title" | "number" | "deadline" | "deadlineType" | "openDate" | "openDateType" | "stateAgency" | "matchFunding" | "estimatedTotalFunding" | "awardFloor" | "awardCeiling" | "estimatedAwardAmounts" | "fundsDisbursment" | "currentAsOf" | "grantor" | "portalId" | "opportunityType" | "purpose" | "eligibleApplicants" | "eligibleGeographies" | "detailsStatus" | "detailsFetchedAt" | "detailsError" | "detailsErrorAt" | "source" | "agencyCode" | "cfdaList" | "sourceRecordId" | "sourceKey" | "contentHash" | "fitScore" | "fitScoreVersion" | "fitScoreComputedAt" | "lastSeenAt" | "status" | "closedAt" | "createdAt" | "updatedAt", ExtArgs["result"]["grant"]>
   export type GrantInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     details?: boolean | Grant$detailsArgs<ExtArgs>
     attachments?: boolean | Grant$attachmentsArgs<ExtArgs>
     changes?: boolean | Grant$changesArgs<ExtArgs>
     bookmarks?: boolean | Grant$bookmarksArgs<ExtArgs>
+    grantMatches?: boolean | Grant$grantMatchesArgs<ExtArgs>
     _count?: boolean | GrantCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type GrantIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -4051,6 +4234,7 @@ export namespace Prisma {
       attachments: Prisma.$GrantAttachmentPayload<ExtArgs>[]
       changes: Prisma.$GrantChangePayload<ExtArgs>[]
       bookmarks: Prisma.$GrantBookmarkPayload<ExtArgs>[]
+      grantMatches: Prisma.$GrantMatchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -4085,6 +4269,9 @@ export namespace Prisma {
       sourceRecordId: string | null
       sourceKey: string | null
       contentHash: string | null
+      fitScore: number | null
+      fitScoreVersion: number
+      fitScoreComputedAt: Date | null
       lastSeenAt: Date | null
       status: $Enums.GrantStatus
       closedAt: Date | null
@@ -4488,6 +4675,7 @@ export namespace Prisma {
     attachments<T extends Grant$attachmentsArgs<ExtArgs> = {}>(args?: Subset<T, Grant$attachmentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantAttachmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     changes<T extends Grant$changesArgs<ExtArgs> = {}>(args?: Subset<T, Grant$changesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantChangePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     bookmarks<T extends Grant$bookmarksArgs<ExtArgs> = {}>(args?: Subset<T, Grant$bookmarksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantBookmarkPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    grantMatches<T extends Grant$grantMatchesArgs<ExtArgs> = {}>(args?: Subset<T, Grant$grantMatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -4549,6 +4737,9 @@ export namespace Prisma {
     readonly sourceRecordId: FieldRef<"Grant", 'String'>
     readonly sourceKey: FieldRef<"Grant", 'String'>
     readonly contentHash: FieldRef<"Grant", 'String'>
+    readonly fitScore: FieldRef<"Grant", 'Float'>
+    readonly fitScoreVersion: FieldRef<"Grant", 'Int'>
+    readonly fitScoreComputedAt: FieldRef<"Grant", 'DateTime'>
     readonly lastSeenAt: FieldRef<"Grant", 'DateTime'>
     readonly status: FieldRef<"Grant", 'GrantStatus'>
     readonly closedAt: FieldRef<"Grant", 'DateTime'>
@@ -5030,6 +5221,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: GrantBookmarkScalarFieldEnum | GrantBookmarkScalarFieldEnum[]
+  }
+
+  /**
+   * Grant.grantMatches
+   */
+  export type Grant$grantMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    where?: GrantMatchWhereInput
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    cursor?: GrantMatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantMatchScalarFieldEnum | GrantMatchScalarFieldEnum[]
   }
 
   /**
@@ -11770,8 +11985,24 @@ export namespace Prisma {
 
   export type AggregateOrganization = {
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
+  }
+
+  export type OrganizationAvgAggregateOutputType = {
+    minAward: number | null
+    maxAward: number | null
+    scoringVersion: number | null
+    matchIndexedCount: number | null
+  }
+
+  export type OrganizationSumAggregateOutputType = {
+    minAward: number | null
+    maxAward: number | null
+    scoringVersion: number | null
+    matchIndexedCount: number | null
   }
 
   export type OrganizationMinAggregateOutputType = {
@@ -11779,6 +12010,14 @@ export namespace Prisma {
     name: string | null
     description: string | null
     mission: string | null
+    applicantType: $Enums.OrganizationApplicantType | null
+    minAward: number | null
+    maxAward: number | null
+    scoringVersion: number | null
+    matchIndexStatus: $Enums.MatchIndexStatus | null
+    matchIndexedAt: Date | null
+    matchIndexedCount: number | null
+    matchIndexError: string | null
     address1: string | null
     address2: string | null
     city: string | null
@@ -11793,6 +12032,14 @@ export namespace Prisma {
     name: string | null
     description: string | null
     mission: string | null
+    applicantType: $Enums.OrganizationApplicantType | null
+    minAward: number | null
+    maxAward: number | null
+    scoringVersion: number | null
+    matchIndexStatus: $Enums.MatchIndexStatus | null
+    matchIndexedAt: Date | null
+    matchIndexedCount: number | null
+    matchIndexError: string | null
     address1: string | null
     address2: string | null
     city: string | null
@@ -11808,6 +12055,16 @@ export namespace Prisma {
     description: number
     mission: number
     focusAreas: number
+    focusKeywords: number
+    geographyKeywords: number
+    applicantType: number
+    minAward: number
+    maxAward: number
+    scoringVersion: number
+    matchIndexStatus: number
+    matchIndexedAt: number
+    matchIndexedCount: number
+    matchIndexError: number
     address1: number
     address2: number
     city: number
@@ -11819,11 +12076,33 @@ export namespace Prisma {
   }
 
 
+  export type OrganizationAvgAggregateInputType = {
+    minAward?: true
+    maxAward?: true
+    scoringVersion?: true
+    matchIndexedCount?: true
+  }
+
+  export type OrganizationSumAggregateInputType = {
+    minAward?: true
+    maxAward?: true
+    scoringVersion?: true
+    matchIndexedCount?: true
+  }
+
   export type OrganizationMinAggregateInputType = {
     id?: true
     name?: true
     description?: true
     mission?: true
+    applicantType?: true
+    minAward?: true
+    maxAward?: true
+    scoringVersion?: true
+    matchIndexStatus?: true
+    matchIndexedAt?: true
+    matchIndexedCount?: true
+    matchIndexError?: true
     address1?: true
     address2?: true
     city?: true
@@ -11838,6 +12117,14 @@ export namespace Prisma {
     name?: true
     description?: true
     mission?: true
+    applicantType?: true
+    minAward?: true
+    maxAward?: true
+    scoringVersion?: true
+    matchIndexStatus?: true
+    matchIndexedAt?: true
+    matchIndexedCount?: true
+    matchIndexError?: true
     address1?: true
     address2?: true
     city?: true
@@ -11853,6 +12140,16 @@ export namespace Prisma {
     description?: true
     mission?: true
     focusAreas?: true
+    focusKeywords?: true
+    geographyKeywords?: true
+    applicantType?: true
+    minAward?: true
+    maxAward?: true
+    scoringVersion?: true
+    matchIndexStatus?: true
+    matchIndexedAt?: true
+    matchIndexedCount?: true
+    matchIndexError?: true
     address1?: true
     address2?: true
     city?: true
@@ -11901,6 +12198,18 @@ export namespace Prisma {
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
      * 
+     * Select which fields to average
+    **/
+    _avg?: OrganizationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: OrganizationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
      * Select which fields to find the minimum value
     **/
     _min?: OrganizationMinAggregateInputType
@@ -11931,6 +12240,8 @@ export namespace Prisma {
     take?: number
     skip?: number
     _count?: OrganizationCountAggregateInputType | true
+    _avg?: OrganizationAvgAggregateInputType
+    _sum?: OrganizationSumAggregateInputType
     _min?: OrganizationMinAggregateInputType
     _max?: OrganizationMaxAggregateInputType
   }
@@ -11941,6 +12252,16 @@ export namespace Prisma {
     description: string
     mission: string
     focusAreas: string[]
+    focusKeywords: string[]
+    geographyKeywords: string[]
+    applicantType: $Enums.OrganizationApplicantType | null
+    minAward: number | null
+    maxAward: number | null
+    scoringVersion: number
+    matchIndexStatus: $Enums.MatchIndexStatus
+    matchIndexedAt: Date | null
+    matchIndexedCount: number
+    matchIndexError: string | null
     address1: string
     address2: string | null
     city: string
@@ -11949,6 +12270,8 @@ export namespace Prisma {
     createdAt: Date
     updatedAt: Date
     _count: OrganizationCountAggregateOutputType | null
+    _avg: OrganizationAvgAggregateOutputType | null
+    _sum: OrganizationSumAggregateOutputType | null
     _min: OrganizationMinAggregateOutputType | null
     _max: OrganizationMaxAggregateOutputType | null
   }
@@ -11973,6 +12296,16 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    focusKeywords?: boolean
+    geographyKeywords?: boolean
+    applicantType?: boolean
+    minAward?: boolean
+    maxAward?: boolean
+    scoringVersion?: boolean
+    matchIndexStatus?: boolean
+    matchIndexedAt?: boolean
+    matchIndexedCount?: boolean
+    matchIndexError?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -11982,6 +12315,7 @@ export namespace Prisma {
     updatedAt?: boolean
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
+    grantMatches?: boolean | Organization$grantMatchesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["organization"]>
 
@@ -11991,6 +12325,16 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    focusKeywords?: boolean
+    geographyKeywords?: boolean
+    applicantType?: boolean
+    minAward?: boolean
+    maxAward?: boolean
+    scoringVersion?: boolean
+    matchIndexStatus?: boolean
+    matchIndexedAt?: boolean
+    matchIndexedCount?: boolean
+    matchIndexError?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12006,6 +12350,16 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    focusKeywords?: boolean
+    geographyKeywords?: boolean
+    applicantType?: boolean
+    minAward?: boolean
+    maxAward?: boolean
+    scoringVersion?: boolean
+    matchIndexStatus?: boolean
+    matchIndexedAt?: boolean
+    matchIndexedCount?: boolean
+    matchIndexError?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12021,6 +12375,16 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    focusKeywords?: boolean
+    geographyKeywords?: boolean
+    applicantType?: boolean
+    minAward?: boolean
+    maxAward?: boolean
+    scoringVersion?: boolean
+    matchIndexStatus?: boolean
+    matchIndexedAt?: boolean
+    matchIndexedCount?: boolean
+    matchIndexError?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12030,10 +12394,11 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "focusKeywords" | "geographyKeywords" | "applicantType" | "minAward" | "maxAward" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
+    grantMatches?: boolean | Organization$grantMatchesArgs<ExtArgs>
     _count?: boolean | OrganizationCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type OrganizationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -12044,6 +12409,7 @@ export namespace Prisma {
     objects: {
       users: Prisma.$UserPayload<ExtArgs>[]
       invitations: Prisma.$InvitationPayload<ExtArgs>[]
+      grantMatches: Prisma.$GrantMatchPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -12051,6 +12417,16 @@ export namespace Prisma {
       description: string
       mission: string
       focusAreas: string[]
+      focusKeywords: string[]
+      geographyKeywords: string[]
+      applicantType: $Enums.OrganizationApplicantType | null
+      minAward: number | null
+      maxAward: number | null
+      scoringVersion: number
+      matchIndexStatus: $Enums.MatchIndexStatus
+      matchIndexedAt: Date | null
+      matchIndexedCount: number
+      matchIndexError: string | null
       address1: string
       address2: string | null
       city: string
@@ -12454,6 +12830,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     users<T extends Organization$usersArgs<ExtArgs> = {}>(args?: Subset<T, Organization$usersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     invitations<T extends Organization$invitationsArgs<ExtArgs> = {}>(args?: Subset<T, Organization$invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvitationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    grantMatches<T extends Organization$grantMatchesArgs<ExtArgs> = {}>(args?: Subset<T, Organization$grantMatchesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -12488,6 +12865,16 @@ export namespace Prisma {
     readonly description: FieldRef<"Organization", 'String'>
     readonly mission: FieldRef<"Organization", 'String'>
     readonly focusAreas: FieldRef<"Organization", 'String[]'>
+    readonly focusKeywords: FieldRef<"Organization", 'String[]'>
+    readonly geographyKeywords: FieldRef<"Organization", 'String[]'>
+    readonly applicantType: FieldRef<"Organization", 'OrganizationApplicantType'>
+    readonly minAward: FieldRef<"Organization", 'Int'>
+    readonly maxAward: FieldRef<"Organization", 'Int'>
+    readonly scoringVersion: FieldRef<"Organization", 'Int'>
+    readonly matchIndexStatus: FieldRef<"Organization", 'MatchIndexStatus'>
+    readonly matchIndexedAt: FieldRef<"Organization", 'DateTime'>
+    readonly matchIndexedCount: FieldRef<"Organization", 'Int'>
+    readonly matchIndexError: FieldRef<"Organization", 'String'>
     readonly address1: FieldRef<"Organization", 'String'>
     readonly address2: FieldRef<"Organization", 'String'>
     readonly city: FieldRef<"Organization", 'String'>
@@ -12928,6 +13315,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: InvitationScalarFieldEnum | InvitationScalarFieldEnum[]
+  }
+
+  /**
+   * Organization.grantMatches
+   */
+  export type Organization$grantMatchesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    where?: GrantMatchWhereInput
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    cursor?: GrantMatchWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: GrantMatchScalarFieldEnum | GrantMatchScalarFieldEnum[]
   }
 
   /**
@@ -17443,6 +17854,1145 @@ export namespace Prisma {
 
 
   /**
+   * Model GrantMatch
+   */
+
+  export type AggregateGrantMatch = {
+    _count: GrantMatchCountAggregateOutputType | null
+    _avg: GrantMatchAvgAggregateOutputType | null
+    _sum: GrantMatchSumAggregateOutputType | null
+    _min: GrantMatchMinAggregateOutputType | null
+    _max: GrantMatchMaxAggregateOutputType | null
+  }
+
+  export type GrantMatchAvgAggregateOutputType = {
+    fitScore: number | null
+    version: number | null
+  }
+
+  export type GrantMatchSumAggregateOutputType = {
+    fitScore: number | null
+    version: number | null
+  }
+
+  export type GrantMatchMinAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    grantId: string | null
+    fitScore: number | null
+    version: number | null
+    computedAt: Date | null
+    explanation: string | null
+  }
+
+  export type GrantMatchMaxAggregateOutputType = {
+    id: string | null
+    organizationId: string | null
+    grantId: string | null
+    fitScore: number | null
+    version: number | null
+    computedAt: Date | null
+    explanation: string | null
+  }
+
+  export type GrantMatchCountAggregateOutputType = {
+    id: number
+    organizationId: number
+    grantId: number
+    fitScore: number
+    version: number
+    computedAt: number
+    subscoresJson: number
+    explanation: number
+    _all: number
+  }
+
+
+  export type GrantMatchAvgAggregateInputType = {
+    fitScore?: true
+    version?: true
+  }
+
+  export type GrantMatchSumAggregateInputType = {
+    fitScore?: true
+    version?: true
+  }
+
+  export type GrantMatchMinAggregateInputType = {
+    id?: true
+    organizationId?: true
+    grantId?: true
+    fitScore?: true
+    version?: true
+    computedAt?: true
+    explanation?: true
+  }
+
+  export type GrantMatchMaxAggregateInputType = {
+    id?: true
+    organizationId?: true
+    grantId?: true
+    fitScore?: true
+    version?: true
+    computedAt?: true
+    explanation?: true
+  }
+
+  export type GrantMatchCountAggregateInputType = {
+    id?: true
+    organizationId?: true
+    grantId?: true
+    fitScore?: true
+    version?: true
+    computedAt?: true
+    subscoresJson?: true
+    explanation?: true
+    _all?: true
+  }
+
+  export type GrantMatchAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantMatch to aggregate.
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantMatches to fetch.
+     */
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: GrantMatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantMatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantMatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned GrantMatches
+    **/
+    _count?: true | GrantMatchCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: GrantMatchAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: GrantMatchSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: GrantMatchMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: GrantMatchMaxAggregateInputType
+  }
+
+  export type GetGrantMatchAggregateType<T extends GrantMatchAggregateArgs> = {
+        [P in keyof T & keyof AggregateGrantMatch]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateGrantMatch[P]>
+      : GetScalarType<T[P], AggregateGrantMatch[P]>
+  }
+
+
+
+
+  export type GrantMatchGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: GrantMatchWhereInput
+    orderBy?: GrantMatchOrderByWithAggregationInput | GrantMatchOrderByWithAggregationInput[]
+    by: GrantMatchScalarFieldEnum[] | GrantMatchScalarFieldEnum
+    having?: GrantMatchScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: GrantMatchCountAggregateInputType | true
+    _avg?: GrantMatchAvgAggregateInputType
+    _sum?: GrantMatchSumAggregateInputType
+    _min?: GrantMatchMinAggregateInputType
+    _max?: GrantMatchMaxAggregateInputType
+  }
+
+  export type GrantMatchGroupByOutputType = {
+    id: string
+    organizationId: string
+    grantId: string
+    fitScore: number
+    version: number
+    computedAt: Date
+    subscoresJson: JsonValue | null
+    explanation: string | null
+    _count: GrantMatchCountAggregateOutputType | null
+    _avg: GrantMatchAvgAggregateOutputType | null
+    _sum: GrantMatchSumAggregateOutputType | null
+    _min: GrantMatchMinAggregateOutputType | null
+    _max: GrantMatchMaxAggregateOutputType | null
+  }
+
+  type GetGrantMatchGroupByPayload<T extends GrantMatchGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<GrantMatchGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof GrantMatchGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], GrantMatchGroupByOutputType[P]>
+            : GetScalarType<T[P], GrantMatchGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type GrantMatchSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    grantId?: boolean
+    fitScore?: boolean
+    version?: boolean
+    computedAt?: boolean
+    subscoresJson?: boolean
+    explanation?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantMatch"]>
+
+  export type GrantMatchSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    grantId?: boolean
+    fitScore?: boolean
+    version?: boolean
+    computedAt?: boolean
+    subscoresJson?: boolean
+    explanation?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantMatch"]>
+
+  export type GrantMatchSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    organizationId?: boolean
+    grantId?: boolean
+    fitScore?: boolean
+    version?: boolean
+    computedAt?: boolean
+    subscoresJson?: boolean
+    explanation?: boolean
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["grantMatch"]>
+
+  export type GrantMatchSelectScalar = {
+    id?: boolean
+    organizationId?: boolean
+    grantId?: boolean
+    fitScore?: boolean
+    version?: boolean
+    computedAt?: boolean
+    subscoresJson?: boolean
+    explanation?: boolean
+  }
+
+  export type GrantMatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "organizationId" | "grantId" | "fitScore" | "version" | "computedAt" | "subscoresJson" | "explanation", ExtArgs["result"]["grantMatch"]>
+  export type GrantMatchInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantMatchIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+  export type GrantMatchIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    organization?: boolean | OrganizationDefaultArgs<ExtArgs>
+    grant?: boolean | GrantDefaultArgs<ExtArgs>
+  }
+
+  export type $GrantMatchPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "GrantMatch"
+    objects: {
+      organization: Prisma.$OrganizationPayload<ExtArgs>
+      grant: Prisma.$GrantPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      organizationId: string
+      grantId: string
+      fitScore: number
+      version: number
+      computedAt: Date
+      subscoresJson: Prisma.JsonValue | null
+      explanation: string | null
+    }, ExtArgs["result"]["grantMatch"]>
+    composites: {}
+  }
+
+  type GrantMatchGetPayload<S extends boolean | null | undefined | GrantMatchDefaultArgs> = $Result.GetResult<Prisma.$GrantMatchPayload, S>
+
+  type GrantMatchCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<GrantMatchFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: GrantMatchCountAggregateInputType | true
+    }
+
+  export interface GrantMatchDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['GrantMatch'], meta: { name: 'GrantMatch' } }
+    /**
+     * Find zero or one GrantMatch that matches the filter.
+     * @param {GrantMatchFindUniqueArgs} args - Arguments to find a GrantMatch
+     * @example
+     * // Get one GrantMatch
+     * const grantMatch = await prisma.grantMatch.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends GrantMatchFindUniqueArgs>(args: SelectSubset<T, GrantMatchFindUniqueArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one GrantMatch that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {GrantMatchFindUniqueOrThrowArgs} args - Arguments to find a GrantMatch
+     * @example
+     * // Get one GrantMatch
+     * const grantMatch = await prisma.grantMatch.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends GrantMatchFindUniqueOrThrowArgs>(args: SelectSubset<T, GrantMatchFindUniqueOrThrowArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantMatch that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchFindFirstArgs} args - Arguments to find a GrantMatch
+     * @example
+     * // Get one GrantMatch
+     * const grantMatch = await prisma.grantMatch.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends GrantMatchFindFirstArgs>(args?: SelectSubset<T, GrantMatchFindFirstArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first GrantMatch that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchFindFirstOrThrowArgs} args - Arguments to find a GrantMatch
+     * @example
+     * // Get one GrantMatch
+     * const grantMatch = await prisma.grantMatch.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends GrantMatchFindFirstOrThrowArgs>(args?: SelectSubset<T, GrantMatchFindFirstOrThrowArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more GrantMatches that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all GrantMatches
+     * const grantMatches = await prisma.grantMatch.findMany()
+     * 
+     * // Get first 10 GrantMatches
+     * const grantMatches = await prisma.grantMatch.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const grantMatchWithIdOnly = await prisma.grantMatch.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends GrantMatchFindManyArgs>(args?: SelectSubset<T, GrantMatchFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a GrantMatch.
+     * @param {GrantMatchCreateArgs} args - Arguments to create a GrantMatch.
+     * @example
+     * // Create one GrantMatch
+     * const GrantMatch = await prisma.grantMatch.create({
+     *   data: {
+     *     // ... data to create a GrantMatch
+     *   }
+     * })
+     * 
+     */
+    create<T extends GrantMatchCreateArgs>(args: SelectSubset<T, GrantMatchCreateArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many GrantMatches.
+     * @param {GrantMatchCreateManyArgs} args - Arguments to create many GrantMatches.
+     * @example
+     * // Create many GrantMatches
+     * const grantMatch = await prisma.grantMatch.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends GrantMatchCreateManyArgs>(args?: SelectSubset<T, GrantMatchCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many GrantMatches and returns the data saved in the database.
+     * @param {GrantMatchCreateManyAndReturnArgs} args - Arguments to create many GrantMatches.
+     * @example
+     * // Create many GrantMatches
+     * const grantMatch = await prisma.grantMatch.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Create many GrantMatches and only return the `id`
+     * const grantMatchWithIdOnly = await prisma.grantMatch.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    createManyAndReturn<T extends GrantMatchCreateManyAndReturnArgs>(args?: SelectSubset<T, GrantMatchCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a GrantMatch.
+     * @param {GrantMatchDeleteArgs} args - Arguments to delete one GrantMatch.
+     * @example
+     * // Delete one GrantMatch
+     * const GrantMatch = await prisma.grantMatch.delete({
+     *   where: {
+     *     // ... filter to delete one GrantMatch
+     *   }
+     * })
+     * 
+     */
+    delete<T extends GrantMatchDeleteArgs>(args: SelectSubset<T, GrantMatchDeleteArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one GrantMatch.
+     * @param {GrantMatchUpdateArgs} args - Arguments to update one GrantMatch.
+     * @example
+     * // Update one GrantMatch
+     * const grantMatch = await prisma.grantMatch.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends GrantMatchUpdateArgs>(args: SelectSubset<T, GrantMatchUpdateArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more GrantMatches.
+     * @param {GrantMatchDeleteManyArgs} args - Arguments to filter GrantMatches to delete.
+     * @example
+     * // Delete a few GrantMatches
+     * const { count } = await prisma.grantMatch.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends GrantMatchDeleteManyArgs>(args?: SelectSubset<T, GrantMatchDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantMatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many GrantMatches
+     * const grantMatch = await prisma.grantMatch.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends GrantMatchUpdateManyArgs>(args: SelectSubset<T, GrantMatchUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more GrantMatches and returns the data updated in the database.
+     * @param {GrantMatchUpdateManyAndReturnArgs} args - Arguments to update many GrantMatches.
+     * @example
+     * // Update many GrantMatches
+     * const grantMatch = await prisma.grantMatch.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * 
+     * // Update zero or more GrantMatches and only return the `id`
+     * const grantMatchWithIdOnly = await prisma.grantMatch.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * 
+     */
+    updateManyAndReturn<T extends GrantMatchUpdateManyAndReturnArgs>(args: SelectSubset<T, GrantMatchUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one GrantMatch.
+     * @param {GrantMatchUpsertArgs} args - Arguments to update or create a GrantMatch.
+     * @example
+     * // Update or create a GrantMatch
+     * const grantMatch = await prisma.grantMatch.upsert({
+     *   create: {
+     *     // ... data to create a GrantMatch
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the GrantMatch we want to update
+     *   }
+     * })
+     */
+    upsert<T extends GrantMatchUpsertArgs>(args: SelectSubset<T, GrantMatchUpsertArgs<ExtArgs>>): Prisma__GrantMatchClient<$Result.GetResult<Prisma.$GrantMatchPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of GrantMatches.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchCountArgs} args - Arguments to filter GrantMatches to count.
+     * @example
+     * // Count the number of GrantMatches
+     * const count = await prisma.grantMatch.count({
+     *   where: {
+     *     // ... the filter for the GrantMatches we want to count
+     *   }
+     * })
+    **/
+    count<T extends GrantMatchCountArgs>(
+      args?: Subset<T, GrantMatchCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], GrantMatchCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a GrantMatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends GrantMatchAggregateArgs>(args: Subset<T, GrantMatchAggregateArgs>): Prisma.PrismaPromise<GetGrantMatchAggregateType<T>>
+
+    /**
+     * Group by GrantMatch.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {GrantMatchGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends GrantMatchGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: GrantMatchGroupByArgs['orderBy'] }
+        : { orderBy?: GrantMatchGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, GrantMatchGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetGrantMatchGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the GrantMatch model
+   */
+  readonly fields: GrantMatchFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for GrantMatch.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__GrantMatchClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    organization<T extends OrganizationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, OrganizationDefaultArgs<ExtArgs>>): Prisma__OrganizationClient<$Result.GetResult<Prisma.$OrganizationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    grant<T extends GrantDefaultArgs<ExtArgs> = {}>(args?: Subset<T, GrantDefaultArgs<ExtArgs>>): Prisma__GrantClient<$Result.GetResult<Prisma.$GrantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the GrantMatch model
+   */
+  interface GrantMatchFieldRefs {
+    readonly id: FieldRef<"GrantMatch", 'String'>
+    readonly organizationId: FieldRef<"GrantMatch", 'String'>
+    readonly grantId: FieldRef<"GrantMatch", 'String'>
+    readonly fitScore: FieldRef<"GrantMatch", 'Float'>
+    readonly version: FieldRef<"GrantMatch", 'Int'>
+    readonly computedAt: FieldRef<"GrantMatch", 'DateTime'>
+    readonly subscoresJson: FieldRef<"GrantMatch", 'Json'>
+    readonly explanation: FieldRef<"GrantMatch", 'String'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * GrantMatch findUnique
+   */
+  export type GrantMatchFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantMatch to fetch.
+     */
+    where: GrantMatchWhereUniqueInput
+  }
+
+  /**
+   * GrantMatch findUniqueOrThrow
+   */
+  export type GrantMatchFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantMatch to fetch.
+     */
+    where: GrantMatchWhereUniqueInput
+  }
+
+  /**
+   * GrantMatch findFirst
+   */
+  export type GrantMatchFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantMatch to fetch.
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantMatches to fetch.
+     */
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantMatches.
+     */
+    cursor?: GrantMatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantMatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantMatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantMatches.
+     */
+    distinct?: GrantMatchScalarFieldEnum | GrantMatchScalarFieldEnum[]
+  }
+
+  /**
+   * GrantMatch findFirstOrThrow
+   */
+  export type GrantMatchFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantMatch to fetch.
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantMatches to fetch.
+     */
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for GrantMatches.
+     */
+    cursor?: GrantMatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantMatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantMatches.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of GrantMatches.
+     */
+    distinct?: GrantMatchScalarFieldEnum | GrantMatchScalarFieldEnum[]
+  }
+
+  /**
+   * GrantMatch findMany
+   */
+  export type GrantMatchFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter, which GrantMatches to fetch.
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of GrantMatches to fetch.
+     */
+    orderBy?: GrantMatchOrderByWithRelationInput | GrantMatchOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing GrantMatches.
+     */
+    cursor?: GrantMatchWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` GrantMatches from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` GrantMatches.
+     */
+    skip?: number
+    distinct?: GrantMatchScalarFieldEnum | GrantMatchScalarFieldEnum[]
+  }
+
+  /**
+   * GrantMatch create
+   */
+  export type GrantMatchCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * The data needed to create a GrantMatch.
+     */
+    data: XOR<GrantMatchCreateInput, GrantMatchUncheckedCreateInput>
+  }
+
+  /**
+   * GrantMatch createMany
+   */
+  export type GrantMatchCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many GrantMatches.
+     */
+    data: GrantMatchCreateManyInput | GrantMatchCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * GrantMatch createManyAndReturn
+   */
+  export type GrantMatchCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * The data used to create many GrantMatches.
+     */
+    data: GrantMatchCreateManyInput | GrantMatchCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantMatch update
+   */
+  export type GrantMatchUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * The data needed to update a GrantMatch.
+     */
+    data: XOR<GrantMatchUpdateInput, GrantMatchUncheckedUpdateInput>
+    /**
+     * Choose, which GrantMatch to update.
+     */
+    where: GrantMatchWhereUniqueInput
+  }
+
+  /**
+   * GrantMatch updateMany
+   */
+  export type GrantMatchUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update GrantMatches.
+     */
+    data: XOR<GrantMatchUpdateManyMutationInput, GrantMatchUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantMatches to update
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * Limit how many GrantMatches to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantMatch updateManyAndReturn
+   */
+  export type GrantMatchUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * The data used to update GrantMatches.
+     */
+    data: XOR<GrantMatchUpdateManyMutationInput, GrantMatchUncheckedUpdateManyInput>
+    /**
+     * Filter which GrantMatches to update
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * Limit how many GrantMatches to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * GrantMatch upsert
+   */
+  export type GrantMatchUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * The filter to search for the GrantMatch to update in case it exists.
+     */
+    where: GrantMatchWhereUniqueInput
+    /**
+     * In case the GrantMatch found by the `where` argument doesn't exist, create a new GrantMatch with this data.
+     */
+    create: XOR<GrantMatchCreateInput, GrantMatchUncheckedCreateInput>
+    /**
+     * In case the GrantMatch was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<GrantMatchUpdateInput, GrantMatchUncheckedUpdateInput>
+  }
+
+  /**
+   * GrantMatch delete
+   */
+  export type GrantMatchDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+    /**
+     * Filter which GrantMatch to delete.
+     */
+    where: GrantMatchWhereUniqueInput
+  }
+
+  /**
+   * GrantMatch deleteMany
+   */
+  export type GrantMatchDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which GrantMatches to delete
+     */
+    where?: GrantMatchWhereInput
+    /**
+     * Limit how many GrantMatches to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * GrantMatch without action
+   */
+  export type GrantMatchDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the GrantMatch
+     */
+    select?: GrantMatchSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the GrantMatch
+     */
+    omit?: GrantMatchOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: GrantMatchInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -17507,6 +19057,9 @@ export namespace Prisma {
     sourceRecordId: 'sourceRecordId',
     sourceKey: 'sourceKey',
     contentHash: 'contentHash',
+    fitScore: 'fitScore',
+    fitScoreVersion: 'fitScoreVersion',
+    fitScoreComputedAt: 'fitScoreComputedAt',
     lastSeenAt: 'lastSeenAt',
     status: 'status',
     closedAt: 'closedAt',
@@ -17610,6 +19163,16 @@ export namespace Prisma {
     description: 'description',
     mission: 'mission',
     focusAreas: 'focusAreas',
+    focusKeywords: 'focusKeywords',
+    geographyKeywords: 'geographyKeywords',
+    applicantType: 'applicantType',
+    minAward: 'minAward',
+    maxAward: 'maxAward',
+    scoringVersion: 'scoringVersion',
+    matchIndexStatus: 'matchIndexStatus',
+    matchIndexedAt: 'matchIndexedAt',
+    matchIndexedCount: 'matchIndexedCount',
+    matchIndexError: 'matchIndexError',
     address1: 'address1',
     address2: 'address2',
     city: 'city',
@@ -17679,6 +19242,20 @@ export namespace Prisma {
   };
 
   export type GrantBookmarkScalarFieldEnum = (typeof GrantBookmarkScalarFieldEnum)[keyof typeof GrantBookmarkScalarFieldEnum]
+
+
+  export const GrantMatchScalarFieldEnum: {
+    id: 'id',
+    organizationId: 'organizationId',
+    grantId: 'grantId',
+    fitScore: 'fitScore',
+    version: 'version',
+    computedAt: 'computedAt',
+    subscoresJson: 'subscoresJson',
+    explanation: 'explanation'
+  };
+
+  export type GrantMatchScalarFieldEnum = (typeof GrantMatchScalarFieldEnum)[keyof typeof GrantMatchScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -17854,6 +19431,20 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'Float'
+   */
+  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+  /**
+   * Reference to a field of type 'Float[]'
+   */
+  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
+    
+
+
+  /**
    * Reference to a field of type 'GrantStatus'
    */
   export type EnumGrantStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'GrantStatus'>
@@ -17896,6 +19487,34 @@ export namespace Prisma {
 
 
   /**
+   * Reference to a field of type 'OrganizationApplicantType'
+   */
+  export type EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationApplicantType'>
+    
+
+
+  /**
+   * Reference to a field of type 'OrganizationApplicantType[]'
+   */
+  export type ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationApplicantType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'MatchIndexStatus'
+   */
+  export type EnumMatchIndexStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchIndexStatus'>
+    
+
+
+  /**
+   * Reference to a field of type 'MatchIndexStatus[]'
+   */
+  export type ListEnumMatchIndexStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'MatchIndexStatus[]'>
+    
+
+
+  /**
    * Reference to a field of type 'InvitationStatus'
    */
   export type EnumInvitationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'InvitationStatus'>
@@ -17920,20 +19539,6 @@ export namespace Prisma {
    * Reference to a field of type 'BookmarkStatus[]'
    */
   export type ListEnumBookmarkStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BookmarkStatus[]'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float'
-   */
-  export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -18069,6 +19674,9 @@ export namespace Prisma {
     sourceRecordId?: StringNullableFilter<"Grant"> | string | null
     sourceKey?: StringNullableFilter<"Grant"> | string | null
     contentHash?: StringNullableFilter<"Grant"> | string | null
+    fitScore?: FloatNullableFilter<"Grant"> | number | null
+    fitScoreVersion?: IntFilter<"Grant"> | number
+    fitScoreComputedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     lastSeenAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     status?: EnumGrantStatusFilter<"Grant"> | $Enums.GrantStatus
     closedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
@@ -18078,6 +19686,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
     bookmarks?: GrantBookmarkListRelationFilter
+    grantMatches?: GrantMatchListRelationFilter
   }
 
   export type GrantOrderByWithRelationInput = {
@@ -18113,6 +19722,9 @@ export namespace Prisma {
     sourceRecordId?: SortOrderInput | SortOrder
     sourceKey?: SortOrderInput | SortOrder
     contentHash?: SortOrderInput | SortOrder
+    fitScore?: SortOrderInput | SortOrder
+    fitScoreVersion?: SortOrder
+    fitScoreComputedAt?: SortOrderInput | SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
     status?: SortOrder
     closedAt?: SortOrderInput | SortOrder
@@ -18122,6 +19734,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentOrderByRelationAggregateInput
     changes?: GrantChangeOrderByRelationAggregateInput
     bookmarks?: GrantBookmarkOrderByRelationAggregateInput
+    grantMatches?: GrantMatchOrderByRelationAggregateInput
   }
 
   export type GrantWhereUniqueInput = Prisma.AtLeast<{
@@ -18163,6 +19776,9 @@ export namespace Prisma {
     sourceRecordId?: StringNullableFilter<"Grant"> | string | null
     sourceKey?: StringNullableFilter<"Grant"> | string | null
     contentHash?: StringNullableFilter<"Grant"> | string | null
+    fitScore?: FloatNullableFilter<"Grant"> | number | null
+    fitScoreVersion?: IntFilter<"Grant"> | number
+    fitScoreComputedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     lastSeenAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
     status?: EnumGrantStatusFilter<"Grant"> | $Enums.GrantStatus
     closedAt?: DateTimeNullableFilter<"Grant"> | Date | string | null
@@ -18172,6 +19788,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentListRelationFilter
     changes?: GrantChangeListRelationFilter
     bookmarks?: GrantBookmarkListRelationFilter
+    grantMatches?: GrantMatchListRelationFilter
   }, "id" | "source_number" | "source_sourceRecordId" | "source_sourceKey">
 
   export type GrantOrderByWithAggregationInput = {
@@ -18207,6 +19824,9 @@ export namespace Prisma {
     sourceRecordId?: SortOrderInput | SortOrder
     sourceKey?: SortOrderInput | SortOrder
     contentHash?: SortOrderInput | SortOrder
+    fitScore?: SortOrderInput | SortOrder
+    fitScoreVersion?: SortOrder
+    fitScoreComputedAt?: SortOrderInput | SortOrder
     lastSeenAt?: SortOrderInput | SortOrder
     status?: SortOrder
     closedAt?: SortOrderInput | SortOrder
@@ -18255,6 +19875,9 @@ export namespace Prisma {
     sourceRecordId?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     sourceKey?: StringNullableWithAggregatesFilter<"Grant"> | string | null
     contentHash?: StringNullableWithAggregatesFilter<"Grant"> | string | null
+    fitScore?: FloatNullableWithAggregatesFilter<"Grant"> | number | null
+    fitScoreVersion?: IntWithAggregatesFilter<"Grant"> | number
+    fitScoreComputedAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     lastSeenAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
     status?: EnumGrantStatusWithAggregatesFilter<"Grant"> | $Enums.GrantStatus
     closedAt?: DateTimeNullableWithAggregatesFilter<"Grant"> | Date | string | null
@@ -18719,6 +20342,16 @@ export namespace Prisma {
     description?: StringFilter<"Organization"> | string
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    focusKeywords?: StringNullableListFilter<"Organization">
+    geographyKeywords?: StringNullableListFilter<"Organization">
+    applicantType?: EnumOrganizationApplicantTypeNullableFilter<"Organization"> | $Enums.OrganizationApplicantType | null
+    minAward?: IntNullableFilter<"Organization"> | number | null
+    maxAward?: IntNullableFilter<"Organization"> | number | null
+    scoringVersion?: IntFilter<"Organization"> | number
+    matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
+    matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexedCount?: IntFilter<"Organization"> | number
+    matchIndexError?: StringNullableFilter<"Organization"> | string | null
     address1?: StringFilter<"Organization"> | string
     address2?: StringNullableFilter<"Organization"> | string | null
     city?: StringFilter<"Organization"> | string
@@ -18728,6 +20361,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
     invitations?: InvitationListRelationFilter
+    grantMatches?: GrantMatchListRelationFilter
   }
 
   export type OrganizationOrderByWithRelationInput = {
@@ -18736,6 +20370,16 @@ export namespace Prisma {
     description?: SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    focusKeywords?: SortOrder
+    geographyKeywords?: SortOrder
+    applicantType?: SortOrderInput | SortOrder
+    minAward?: SortOrderInput | SortOrder
+    maxAward?: SortOrderInput | SortOrder
+    scoringVersion?: SortOrder
+    matchIndexStatus?: SortOrder
+    matchIndexedAt?: SortOrderInput | SortOrder
+    matchIndexedCount?: SortOrder
+    matchIndexError?: SortOrderInput | SortOrder
     address1?: SortOrder
     address2?: SortOrderInput | SortOrder
     city?: SortOrder
@@ -18745,6 +20389,7 @@ export namespace Prisma {
     updatedAt?: SortOrder
     users?: UserOrderByRelationAggregateInput
     invitations?: InvitationOrderByRelationAggregateInput
+    grantMatches?: GrantMatchOrderByRelationAggregateInput
   }
 
   export type OrganizationWhereUniqueInput = Prisma.AtLeast<{
@@ -18756,6 +20401,16 @@ export namespace Prisma {
     description?: StringFilter<"Organization"> | string
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    focusKeywords?: StringNullableListFilter<"Organization">
+    geographyKeywords?: StringNullableListFilter<"Organization">
+    applicantType?: EnumOrganizationApplicantTypeNullableFilter<"Organization"> | $Enums.OrganizationApplicantType | null
+    minAward?: IntNullableFilter<"Organization"> | number | null
+    maxAward?: IntNullableFilter<"Organization"> | number | null
+    scoringVersion?: IntFilter<"Organization"> | number
+    matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
+    matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexedCount?: IntFilter<"Organization"> | number
+    matchIndexError?: StringNullableFilter<"Organization"> | string | null
     address1?: StringFilter<"Organization"> | string
     address2?: StringNullableFilter<"Organization"> | string | null
     city?: StringFilter<"Organization"> | string
@@ -18765,6 +20420,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Organization"> | Date | string
     users?: UserListRelationFilter
     invitations?: InvitationListRelationFilter
+    grantMatches?: GrantMatchListRelationFilter
   }, "id">
 
   export type OrganizationOrderByWithAggregationInput = {
@@ -18773,6 +20429,16 @@ export namespace Prisma {
     description?: SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    focusKeywords?: SortOrder
+    geographyKeywords?: SortOrder
+    applicantType?: SortOrderInput | SortOrder
+    minAward?: SortOrderInput | SortOrder
+    maxAward?: SortOrderInput | SortOrder
+    scoringVersion?: SortOrder
+    matchIndexStatus?: SortOrder
+    matchIndexedAt?: SortOrderInput | SortOrder
+    matchIndexedCount?: SortOrder
+    matchIndexError?: SortOrderInput | SortOrder
     address1?: SortOrder
     address2?: SortOrderInput | SortOrder
     city?: SortOrder
@@ -18781,8 +20447,10 @@ export namespace Prisma {
     createdAt?: SortOrder
     updatedAt?: SortOrder
     _count?: OrganizationCountOrderByAggregateInput
+    _avg?: OrganizationAvgOrderByAggregateInput
     _max?: OrganizationMaxOrderByAggregateInput
     _min?: OrganizationMinOrderByAggregateInput
+    _sum?: OrganizationSumOrderByAggregateInput
   }
 
   export type OrganizationScalarWhereWithAggregatesInput = {
@@ -18794,6 +20462,16 @@ export namespace Prisma {
     description?: StringWithAggregatesFilter<"Organization"> | string
     mission?: StringWithAggregatesFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    focusKeywords?: StringNullableListFilter<"Organization">
+    geographyKeywords?: StringNullableListFilter<"Organization">
+    applicantType?: EnumOrganizationApplicantTypeNullableWithAggregatesFilter<"Organization"> | $Enums.OrganizationApplicantType | null
+    minAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    maxAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    scoringVersion?: IntWithAggregatesFilter<"Organization"> | number
+    matchIndexStatus?: EnumMatchIndexStatusWithAggregatesFilter<"Organization"> | $Enums.MatchIndexStatus
+    matchIndexedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
+    matchIndexedCount?: IntWithAggregatesFilter<"Organization"> | number
+    matchIndexError?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     address1?: StringWithAggregatesFilter<"Organization"> | string
     address2?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     city?: StringWithAggregatesFilter<"Organization"> | string
@@ -19108,6 +20786,82 @@ export namespace Prisma {
     updatedAt?: DateTimeWithAggregatesFilter<"GrantBookmark"> | Date | string
   }
 
+  export type GrantMatchWhereInput = {
+    AND?: GrantMatchWhereInput | GrantMatchWhereInput[]
+    OR?: GrantMatchWhereInput[]
+    NOT?: GrantMatchWhereInput | GrantMatchWhereInput[]
+    id?: StringFilter<"GrantMatch"> | string
+    organizationId?: StringFilter<"GrantMatch"> | string
+    grantId?: StringFilter<"GrantMatch"> | string
+    fitScore?: FloatFilter<"GrantMatch"> | number
+    version?: IntFilter<"GrantMatch"> | number
+    computedAt?: DateTimeFilter<"GrantMatch"> | Date | string
+    subscoresJson?: JsonNullableFilter<"GrantMatch">
+    explanation?: StringNullableFilter<"GrantMatch"> | string | null
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }
+
+  export type GrantMatchOrderByWithRelationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    grantId?: SortOrder
+    fitScore?: SortOrder
+    version?: SortOrder
+    computedAt?: SortOrder
+    subscoresJson?: SortOrderInput | SortOrder
+    explanation?: SortOrderInput | SortOrder
+    organization?: OrganizationOrderByWithRelationInput
+    grant?: GrantOrderByWithRelationInput
+  }
+
+  export type GrantMatchWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    organizationId_grantId?: GrantMatchOrganizationIdGrantIdCompoundUniqueInput
+    AND?: GrantMatchWhereInput | GrantMatchWhereInput[]
+    OR?: GrantMatchWhereInput[]
+    NOT?: GrantMatchWhereInput | GrantMatchWhereInput[]
+    organizationId?: StringFilter<"GrantMatch"> | string
+    grantId?: StringFilter<"GrantMatch"> | string
+    fitScore?: FloatFilter<"GrantMatch"> | number
+    version?: IntFilter<"GrantMatch"> | number
+    computedAt?: DateTimeFilter<"GrantMatch"> | Date | string
+    subscoresJson?: JsonNullableFilter<"GrantMatch">
+    explanation?: StringNullableFilter<"GrantMatch"> | string | null
+    organization?: XOR<OrganizationScalarRelationFilter, OrganizationWhereInput>
+    grant?: XOR<GrantScalarRelationFilter, GrantWhereInput>
+  }, "id" | "organizationId_grantId">
+
+  export type GrantMatchOrderByWithAggregationInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    grantId?: SortOrder
+    fitScore?: SortOrder
+    version?: SortOrder
+    computedAt?: SortOrder
+    subscoresJson?: SortOrderInput | SortOrder
+    explanation?: SortOrderInput | SortOrder
+    _count?: GrantMatchCountOrderByAggregateInput
+    _avg?: GrantMatchAvgOrderByAggregateInput
+    _max?: GrantMatchMaxOrderByAggregateInput
+    _min?: GrantMatchMinOrderByAggregateInput
+    _sum?: GrantMatchSumOrderByAggregateInput
+  }
+
+  export type GrantMatchScalarWhereWithAggregatesInput = {
+    AND?: GrantMatchScalarWhereWithAggregatesInput | GrantMatchScalarWhereWithAggregatesInput[]
+    OR?: GrantMatchScalarWhereWithAggregatesInput[]
+    NOT?: GrantMatchScalarWhereWithAggregatesInput | GrantMatchScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"GrantMatch"> | string
+    organizationId?: StringWithAggregatesFilter<"GrantMatch"> | string
+    grantId?: StringWithAggregatesFilter<"GrantMatch"> | string
+    fitScore?: FloatWithAggregatesFilter<"GrantMatch"> | number
+    version?: IntWithAggregatesFilter<"GrantMatch"> | number
+    computedAt?: DateTimeWithAggregatesFilter<"GrantMatch"> | Date | string
+    subscoresJson?: JsonNullableWithAggregatesFilter<"GrantMatch">
+    explanation?: StringNullableWithAggregatesFilter<"GrantMatch"> | string | null
+  }
+
   export type AccountCreateInput = {
     id?: string
     type: string
@@ -19245,6 +20999,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -19254,6 +21011,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateInput = {
@@ -19289,6 +21047,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -19298,6 +21059,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUpdateInput = {
@@ -19333,6 +21095,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19342,6 +21107,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateInput = {
@@ -19377,6 +21143,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19386,6 +21155,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantCreateManyInput = {
@@ -19421,6 +21191,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -19461,6 +21234,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -19501,6 +21277,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -20008,6 +21787,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -20017,6 +21806,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganizationInput
     invitations?: InvitationCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateInput = {
@@ -20025,6 +21815,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -20034,6 +21834,7 @@ export namespace Prisma {
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
     invitations?: InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUpdateInput = {
@@ -20042,6 +21843,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -20051,6 +21862,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganizationNestedInput
     invitations?: InvitationUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateInput = {
@@ -20059,6 +21871,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -20068,6 +21890,7 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
     invitations?: InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationCreateManyInput = {
@@ -20076,6 +21899,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -20091,6 +21924,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -20106,6 +21949,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -20443,6 +22296,81 @@ export namespace Prisma {
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type GrantMatchCreateInput = {
+    id?: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+    organization: OrganizationCreateNestedOneWithoutGrantMatchesInput
+    grant: GrantCreateNestedOneWithoutGrantMatchesInput
+  }
+
+  export type GrantMatchUncheckedCreateInput = {
+    id?: string
+    organizationId: string
+    grantId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+  }
+
+  export type GrantMatchUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: OrganizationUpdateOneRequiredWithoutGrantMatchesNestedInput
+    grant?: GrantUpdateOneRequiredWithoutGrantMatchesNestedInput
+  }
+
+  export type GrantMatchUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GrantMatchCreateManyInput = {
+    id?: string
+    organizationId: string
+    grantId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+  }
+
+  export type GrantMatchUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GrantMatchUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -20677,6 +22605,28 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type EnumGrantStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
     in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
@@ -20718,6 +22668,12 @@ export namespace Prisma {
     none?: GrantBookmarkWhereInput
   }
 
+  export type GrantMatchListRelationFilter = {
+    every?: GrantMatchWhereInput
+    some?: GrantMatchWhereInput
+    none?: GrantMatchWhereInput
+  }
+
   export type GrantAttachmentOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -20727,6 +22683,10 @@ export namespace Prisma {
   }
 
   export type GrantBookmarkOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type GrantMatchOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -20778,6 +22738,9 @@ export namespace Prisma {
     sourceRecordId?: SortOrder
     sourceKey?: SortOrder
     contentHash?: SortOrder
+    fitScore?: SortOrder
+    fitScoreVersion?: SortOrder
+    fitScoreComputedAt?: SortOrder
     lastSeenAt?: SortOrder
     status?: SortOrder
     closedAt?: SortOrder
@@ -20790,6 +22753,8 @@ export namespace Prisma {
     awardFloor?: SortOrder
     awardCeiling?: SortOrder
     portalId?: SortOrder
+    fitScore?: SortOrder
+    fitScoreVersion?: SortOrder
   }
 
   export type GrantMaxOrderByAggregateInput = {
@@ -20824,6 +22789,9 @@ export namespace Prisma {
     sourceRecordId?: SortOrder
     sourceKey?: SortOrder
     contentHash?: SortOrder
+    fitScore?: SortOrder
+    fitScoreVersion?: SortOrder
+    fitScoreComputedAt?: SortOrder
     lastSeenAt?: SortOrder
     status?: SortOrder
     closedAt?: SortOrder
@@ -20863,6 +22831,9 @@ export namespace Prisma {
     sourceRecordId?: SortOrder
     sourceKey?: SortOrder
     contentHash?: SortOrder
+    fitScore?: SortOrder
+    fitScoreVersion?: SortOrder
+    fitScoreComputedAt?: SortOrder
     lastSeenAt?: SortOrder
     status?: SortOrder
     closedAt?: SortOrder
@@ -20875,6 +22846,8 @@ export namespace Prisma {
     awardFloor?: SortOrder
     awardCeiling?: SortOrder
     portalId?: SortOrder
+    fitScore?: SortOrder
+    fitScoreVersion?: SortOrder
   }
 
   export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -20971,6 +22944,38 @@ export namespace Prisma {
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedJsonNullableFilter<$PrismaModel>
     _max?: NestedJsonNullableFilter<$PrismaModel>
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type EnumGrantStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -21298,6 +23303,20 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
+  export type EnumOrganizationApplicantTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  }
+
+  export type EnumMatchIndexStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchIndexStatus | EnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchIndexStatusFilter<$PrismaModel> | $Enums.MatchIndexStatus
+  }
+
   export type UserListRelationFilter = {
     every?: UserWhereInput
     some?: UserWhereInput
@@ -21324,6 +23343,16 @@ export namespace Prisma {
     description?: SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    focusKeywords?: SortOrder
+    geographyKeywords?: SortOrder
+    applicantType?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
+    scoringVersion?: SortOrder
+    matchIndexStatus?: SortOrder
+    matchIndexedAt?: SortOrder
+    matchIndexedCount?: SortOrder
+    matchIndexError?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -21333,11 +23362,26 @@ export namespace Prisma {
     updatedAt?: SortOrder
   }
 
+  export type OrganizationAvgOrderByAggregateInput = {
+    minAward?: SortOrder
+    maxAward?: SortOrder
+    scoringVersion?: SortOrder
+    matchIndexedCount?: SortOrder
+  }
+
   export type OrganizationMaxOrderByAggregateInput = {
     id?: SortOrder
     name?: SortOrder
     description?: SortOrder
     mission?: SortOrder
+    applicantType?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
+    scoringVersion?: SortOrder
+    matchIndexStatus?: SortOrder
+    matchIndexedAt?: SortOrder
+    matchIndexedCount?: SortOrder
+    matchIndexError?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -21352,6 +23396,14 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     mission?: SortOrder
+    applicantType?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
+    scoringVersion?: SortOrder
+    matchIndexStatus?: SortOrder
+    matchIndexedAt?: SortOrder
+    matchIndexedCount?: SortOrder
+    matchIndexError?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -21359,6 +23411,33 @@ export namespace Prisma {
     zipCode?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
+  }
+
+  export type OrganizationSumOrderByAggregateInput = {
+    minAward?: SortOrder
+    maxAward?: SortOrder
+    scoringVersion?: SortOrder
+    matchIndexedCount?: SortOrder
+  }
+
+  export type EnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumMatchIndexStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchIndexStatus | EnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchIndexStatusWithAggregatesFilter<$PrismaModel> | $Enums.MatchIndexStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMatchIndexStatusFilter<$PrismaModel>
+    _max?: NestedEnumMatchIndexStatusFilter<$PrismaModel>
   }
 
   export type EnumInvitationStatusFilter<$PrismaModel = never> = {
@@ -21413,17 +23492,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumInvitationStatusFilter<$PrismaModel>
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
-  }
-
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type GrantSyncRunCountOrderByAggregateInput = {
@@ -21486,22 +23554,6 @@ export namespace Prisma {
     unchangedCount?: SortOrder
     closedCount?: SortOrder
     reopenedCount?: SortOrder
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type GrantSyncRunScalarRelationFilter = {
@@ -21593,6 +23645,79 @@ export namespace Prisma {
     _max?: NestedEnumBookmarkStatusFilter<$PrismaModel>
   }
 
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
+  export type GrantMatchOrganizationIdGrantIdCompoundUniqueInput = {
+    organizationId: string
+    grantId: string
+  }
+
+  export type GrantMatchCountOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    grantId?: SortOrder
+    fitScore?: SortOrder
+    version?: SortOrder
+    computedAt?: SortOrder
+    subscoresJson?: SortOrder
+    explanation?: SortOrder
+  }
+
+  export type GrantMatchAvgOrderByAggregateInput = {
+    fitScore?: SortOrder
+    version?: SortOrder
+  }
+
+  export type GrantMatchMaxOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    grantId?: SortOrder
+    fitScore?: SortOrder
+    version?: SortOrder
+    computedAt?: SortOrder
+    explanation?: SortOrder
+  }
+
+  export type GrantMatchMinOrderByAggregateInput = {
+    id?: SortOrder
+    organizationId?: SortOrder
+    grantId?: SortOrder
+    fitScore?: SortOrder
+    version?: SortOrder
+    computedAt?: SortOrder
+    explanation?: SortOrder
+  }
+
+  export type GrantMatchSumOrderByAggregateInput = {
+    fitScore?: SortOrder
+    version?: SortOrder
+  }
+
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
+  }
+
   export type UserCreateNestedOneWithoutAccountsInput = {
     create?: XOR<UserCreateWithoutAccountsInput, UserUncheckedCreateWithoutAccountsInput>
     connectOrCreate?: UserCreateOrConnectWithoutAccountsInput
@@ -21650,6 +23775,13 @@ export namespace Prisma {
     connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
   }
 
+  export type GrantMatchCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput> | GrantMatchCreateWithoutGrantInput[] | GrantMatchUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutGrantInput | GrantMatchCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantMatchCreateManyGrantInputEnvelope
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+  }
+
   export type GrantDetailUncheckedCreateNestedOneWithoutGrantInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
@@ -21675,6 +23807,13 @@ export namespace Prisma {
     connectOrCreate?: GrantBookmarkCreateOrConnectWithoutGrantInput | GrantBookmarkCreateOrConnectWithoutGrantInput[]
     createMany?: GrantBookmarkCreateManyGrantInputEnvelope
     connect?: GrantBookmarkWhereUniqueInput | GrantBookmarkWhereUniqueInput[]
+  }
+
+  export type GrantMatchUncheckedCreateNestedManyWithoutGrantInput = {
+    create?: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput> | GrantMatchCreateWithoutGrantInput[] | GrantMatchUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutGrantInput | GrantMatchCreateOrConnectWithoutGrantInput[]
+    createMany?: GrantMatchCreateManyGrantInputEnvelope
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
   }
 
   export type NullableDateTimeFieldUpdateOperationsInput = {
@@ -21703,6 +23842,22 @@ export namespace Prisma {
 
   export type EnumGrantSourceFieldUpdateOperationsInput = {
     set?: $Enums.GrantSource
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type EnumGrantStatusFieldUpdateOperationsInput = {
@@ -21765,6 +23920,20 @@ export namespace Prisma {
     deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
   }
 
+  export type GrantMatchUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput> | GrantMatchCreateWithoutGrantInput[] | GrantMatchUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutGrantInput | GrantMatchCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantMatchUpsertWithWhereUniqueWithoutGrantInput | GrantMatchUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantMatchCreateManyGrantInputEnvelope
+    set?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    disconnect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    delete?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    update?: GrantMatchUpdateWithWhereUniqueWithoutGrantInput | GrantMatchUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantMatchUpdateManyWithWhereWithoutGrantInput | GrantMatchUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
+  }
+
   export type GrantDetailUncheckedUpdateOneWithoutGrantNestedInput = {
     create?: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
     connectOrCreate?: GrantDetailCreateOrConnectWithoutGrantInput
@@ -21815,6 +23984,20 @@ export namespace Prisma {
     update?: GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput | GrantBookmarkUpdateWithWhereUniqueWithoutGrantInput[]
     updateMany?: GrantBookmarkUpdateManyWithWhereWithoutGrantInput | GrantBookmarkUpdateManyWithWhereWithoutGrantInput[]
     deleteMany?: GrantBookmarkScalarWhereInput | GrantBookmarkScalarWhereInput[]
+  }
+
+  export type GrantMatchUncheckedUpdateManyWithoutGrantNestedInput = {
+    create?: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput> | GrantMatchCreateWithoutGrantInput[] | GrantMatchUncheckedCreateWithoutGrantInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutGrantInput | GrantMatchCreateOrConnectWithoutGrantInput[]
+    upsert?: GrantMatchUpsertWithWhereUniqueWithoutGrantInput | GrantMatchUpsertWithWhereUniqueWithoutGrantInput[]
+    createMany?: GrantMatchCreateManyGrantInputEnvelope
+    set?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    disconnect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    delete?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    update?: GrantMatchUpdateWithWhereUniqueWithoutGrantInput | GrantMatchUpdateWithWhereUniqueWithoutGrantInput[]
+    updateMany?: GrantMatchUpdateManyWithWhereWithoutGrantInput | GrantMatchUpdateManyWithWhereWithoutGrantInput[]
+    deleteMany?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
   }
 
   export type GrantCreateNestedOneWithoutDetailsInput = {
@@ -22069,6 +24252,14 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type OrganizationCreatefocusKeywordsInput = {
+    set: string[]
+  }
+
+  export type OrganizationCreategeographyKeywordsInput = {
+    set: string[]
+  }
+
   export type UserCreateNestedManyWithoutOrganizationInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
@@ -22081,6 +24272,13 @@ export namespace Prisma {
     connectOrCreate?: InvitationCreateOrConnectWithoutOrganizationInput | InvitationCreateOrConnectWithoutOrganizationInput[]
     createMany?: InvitationCreateManyOrganizationInputEnvelope
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
+  }
+
+  export type GrantMatchCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput> | GrantMatchCreateWithoutOrganizationInput[] | GrantMatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutOrganizationInput | GrantMatchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: GrantMatchCreateManyOrganizationInputEnvelope
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
   }
 
   export type UserUncheckedCreateNestedManyWithoutOrganizationInput = {
@@ -22097,9 +24295,34 @@ export namespace Prisma {
     connect?: InvitationWhereUniqueInput | InvitationWhereUniqueInput[]
   }
 
+  export type GrantMatchUncheckedCreateNestedManyWithoutOrganizationInput = {
+    create?: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput> | GrantMatchCreateWithoutOrganizationInput[] | GrantMatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutOrganizationInput | GrantMatchCreateOrConnectWithoutOrganizationInput[]
+    createMany?: GrantMatchCreateManyOrganizationInputEnvelope
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+  }
+
   export type OrganizationUpdatefocusAreasInput = {
     set?: string[]
     push?: string | string[]
+  }
+
+  export type OrganizationUpdatefocusKeywordsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type OrganizationUpdategeographyKeywordsInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput = {
+    set?: $Enums.OrganizationApplicantType | null
+  }
+
+  export type EnumMatchIndexStatusFieldUpdateOperationsInput = {
+    set?: $Enums.MatchIndexStatus
   }
 
   export type UserUpdateManyWithoutOrganizationNestedInput = {
@@ -22130,6 +24353,20 @@ export namespace Prisma {
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
   }
 
+  export type GrantMatchUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput> | GrantMatchCreateWithoutOrganizationInput[] | GrantMatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutOrganizationInput | GrantMatchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: GrantMatchUpsertWithWhereUniqueWithoutOrganizationInput | GrantMatchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: GrantMatchCreateManyOrganizationInputEnvelope
+    set?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    disconnect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    delete?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    update?: GrantMatchUpdateWithWhereUniqueWithoutOrganizationInput | GrantMatchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: GrantMatchUpdateManyWithWhereWithoutOrganizationInput | GrantMatchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
+  }
+
   export type UserUncheckedUpdateManyWithoutOrganizationNestedInput = {
     create?: XOR<UserCreateWithoutOrganizationInput, UserUncheckedCreateWithoutOrganizationInput> | UserCreateWithoutOrganizationInput[] | UserUncheckedCreateWithoutOrganizationInput[]
     connectOrCreate?: UserCreateOrConnectWithoutOrganizationInput | UserCreateOrConnectWithoutOrganizationInput[]
@@ -22156,6 +24393,20 @@ export namespace Prisma {
     update?: InvitationUpdateWithWhereUniqueWithoutOrganizationInput | InvitationUpdateWithWhereUniqueWithoutOrganizationInput[]
     updateMany?: InvitationUpdateManyWithWhereWithoutOrganizationInput | InvitationUpdateManyWithWhereWithoutOrganizationInput[]
     deleteMany?: InvitationScalarWhereInput | InvitationScalarWhereInput[]
+  }
+
+  export type GrantMatchUncheckedUpdateManyWithoutOrganizationNestedInput = {
+    create?: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput> | GrantMatchCreateWithoutOrganizationInput[] | GrantMatchUncheckedCreateWithoutOrganizationInput[]
+    connectOrCreate?: GrantMatchCreateOrConnectWithoutOrganizationInput | GrantMatchCreateOrConnectWithoutOrganizationInput[]
+    upsert?: GrantMatchUpsertWithWhereUniqueWithoutOrganizationInput | GrantMatchUpsertWithWhereUniqueWithoutOrganizationInput[]
+    createMany?: GrantMatchCreateManyOrganizationInputEnvelope
+    set?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    disconnect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    delete?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    connect?: GrantMatchWhereUniqueInput | GrantMatchWhereUniqueInput[]
+    update?: GrantMatchUpdateWithWhereUniqueWithoutOrganizationInput | GrantMatchUpdateWithWhereUniqueWithoutOrganizationInput[]
+    updateMany?: GrantMatchUpdateManyWithWhereWithoutOrganizationInput | GrantMatchUpdateManyWithWhereWithoutOrganizationInput[]
+    deleteMany?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
   }
 
   export type OrganizationCreateNestedOneWithoutInvitationsInput = {
@@ -22188,14 +24439,6 @@ export namespace Prisma {
     connectOrCreate?: GrantChangeCreateOrConnectWithoutRunInput | GrantChangeCreateOrConnectWithoutRunInput[]
     createMany?: GrantChangeCreateManyRunInputEnvelope
     connect?: GrantChangeWhereUniqueInput | GrantChangeWhereUniqueInput[]
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type GrantChangeUpdateManyWithoutRunNestedInput = {
@@ -22293,6 +24536,42 @@ export namespace Prisma {
     upsert?: GrantUpsertWithoutBookmarksInput
     connect?: GrantWhereUniqueInput
     update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutBookmarksInput, GrantUpdateWithoutBookmarksInput>, GrantUncheckedUpdateWithoutBookmarksInput>
+  }
+
+  export type OrganizationCreateNestedOneWithoutGrantMatchesInput = {
+    create?: XOR<OrganizationCreateWithoutGrantMatchesInput, OrganizationUncheckedCreateWithoutGrantMatchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutGrantMatchesInput
+    connect?: OrganizationWhereUniqueInput
+  }
+
+  export type GrantCreateNestedOneWithoutGrantMatchesInput = {
+    create?: XOR<GrantCreateWithoutGrantMatchesInput, GrantUncheckedCreateWithoutGrantMatchesInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutGrantMatchesInput
+    connect?: GrantWhereUniqueInput
+  }
+
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type OrganizationUpdateOneRequiredWithoutGrantMatchesNestedInput = {
+    create?: XOR<OrganizationCreateWithoutGrantMatchesInput, OrganizationUncheckedCreateWithoutGrantMatchesInput>
+    connectOrCreate?: OrganizationCreateOrConnectWithoutGrantMatchesInput
+    upsert?: OrganizationUpsertWithoutGrantMatchesInput
+    connect?: OrganizationWhereUniqueInput
+    update?: XOR<XOR<OrganizationUpdateToOneWithWhereWithoutGrantMatchesInput, OrganizationUpdateWithoutGrantMatchesInput>, OrganizationUncheckedUpdateWithoutGrantMatchesInput>
+  }
+
+  export type GrantUpdateOneRequiredWithoutGrantMatchesNestedInput = {
+    create?: XOR<GrantCreateWithoutGrantMatchesInput, GrantUncheckedCreateWithoutGrantMatchesInput>
+    connectOrCreate?: GrantCreateOrConnectWithoutGrantMatchesInput
+    upsert?: GrantUpsertWithoutGrantMatchesInput
+    connect?: GrantWhereUniqueInput
+    update?: XOR<XOR<GrantUpdateToOneWithWhereWithoutGrantMatchesInput, GrantUpdateWithoutGrantMatchesInput>, GrantUncheckedUpdateWithoutGrantMatchesInput>
   }
 
   export type NestedStringFilter<$PrismaModel = never> = {
@@ -22567,6 +24846,49 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[] | ListIntFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
+  }
+
+  export type NestedFloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
+  }
+
   export type NestedEnumGrantStatusWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.GrantStatus | EnumGrantStatusFieldRefInput<$PrismaModel>
     in?: $Enums.GrantStatus[] | ListEnumGrantStatusFieldRefInput<$PrismaModel>
@@ -22625,6 +24947,40 @@ export namespace Prisma {
     _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
+  export type NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  }
+
+  export type NestedEnumMatchIndexStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchIndexStatus | EnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchIndexStatusFilter<$PrismaModel> | $Enums.MatchIndexStatus
+  }
+
+  export type NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumMatchIndexStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.MatchIndexStatus | EnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.MatchIndexStatus[] | ListEnumMatchIndexStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumMatchIndexStatusWithAggregatesFilter<$PrismaModel> | $Enums.MatchIndexStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumMatchIndexStatusFilter<$PrismaModel>
+    _max?: NestedEnumMatchIndexStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumInvitationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.InvitationStatus | EnumInvitationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.InvitationStatus[] | ListEnumInvitationStatusFieldRefInput<$PrismaModel>
@@ -22642,33 +24998,6 @@ export namespace Prisma {
     _max?: NestedEnumInvitationStatusFilter<$PrismaModel>
   }
 
-  export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedFloatFilter<$PrismaModel = never> = {
-    equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    lt?: number | FloatFieldRefInput<$PrismaModel>
-    lte?: number | FloatFieldRefInput<$PrismaModel>
-    gt?: number | FloatFieldRefInput<$PrismaModel>
-    gte?: number | FloatFieldRefInput<$PrismaModel>
-    not?: NestedFloatFilter<$PrismaModel> | number
-  }
-
   export type NestedEnumBookmarkStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.BookmarkStatus | EnumBookmarkStatusFieldRefInput<$PrismaModel>
     in?: $Enums.BookmarkStatus[] | ListEnumBookmarkStatusFieldRefInput<$PrismaModel>
@@ -22684,6 +25013,22 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumBookmarkStatusFilter<$PrismaModel>
     _max?: NestedEnumBookmarkStatusFilter<$PrismaModel>
+  }
+
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -22905,6 +25250,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GrantMatchCreateWithoutGrantInput = {
+    id?: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+    organization: OrganizationCreateNestedOneWithoutGrantMatchesInput
+  }
+
+  export type GrantMatchUncheckedCreateWithoutGrantInput = {
+    id?: string
+    organizationId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+  }
+
+  export type GrantMatchCreateOrConnectWithoutGrantInput = {
+    where: GrantMatchWhereUniqueInput
+    create: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantMatchCreateManyGrantInputEnvelope = {
+    data: GrantMatchCreateManyGrantInput | GrantMatchCreateManyGrantInput[]
+    skipDuplicates?: boolean
+  }
+
   export type GrantDetailUpsertWithoutGrantInput = {
     update: XOR<GrantDetailUpdateWithoutGrantInput, GrantDetailUncheckedUpdateWithoutGrantInput>
     create: XOR<GrantDetailCreateWithoutGrantInput, GrantDetailUncheckedCreateWithoutGrantInput>
@@ -23041,6 +25416,36 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"GrantBookmark"> | Date | string
   }
 
+  export type GrantMatchUpsertWithWhereUniqueWithoutGrantInput = {
+    where: GrantMatchWhereUniqueInput
+    update: XOR<GrantMatchUpdateWithoutGrantInput, GrantMatchUncheckedUpdateWithoutGrantInput>
+    create: XOR<GrantMatchCreateWithoutGrantInput, GrantMatchUncheckedCreateWithoutGrantInput>
+  }
+
+  export type GrantMatchUpdateWithWhereUniqueWithoutGrantInput = {
+    where: GrantMatchWhereUniqueInput
+    data: XOR<GrantMatchUpdateWithoutGrantInput, GrantMatchUncheckedUpdateWithoutGrantInput>
+  }
+
+  export type GrantMatchUpdateManyWithWhereWithoutGrantInput = {
+    where: GrantMatchScalarWhereInput
+    data: XOR<GrantMatchUpdateManyMutationInput, GrantMatchUncheckedUpdateManyWithoutGrantInput>
+  }
+
+  export type GrantMatchScalarWhereInput = {
+    AND?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
+    OR?: GrantMatchScalarWhereInput[]
+    NOT?: GrantMatchScalarWhereInput | GrantMatchScalarWhereInput[]
+    id?: StringFilter<"GrantMatch"> | string
+    organizationId?: StringFilter<"GrantMatch"> | string
+    grantId?: StringFilter<"GrantMatch"> | string
+    fitScore?: FloatFilter<"GrantMatch"> | number
+    version?: IntFilter<"GrantMatch"> | number
+    computedAt?: DateTimeFilter<"GrantMatch"> | Date | string
+    subscoresJson?: JsonNullableFilter<"GrantMatch">
+    explanation?: StringNullableFilter<"GrantMatch"> | string | null
+  }
+
   export type GrantCreateWithoutDetailsInput = {
     id?: string
     url: string
@@ -23074,6 +25479,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -23082,6 +25490,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutDetailsInput = {
@@ -23117,6 +25526,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -23125,6 +25537,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutDetailsInput = {
@@ -23176,6 +25589,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23184,6 +25600,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutDetailsInput = {
@@ -23219,6 +25636,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23227,6 +25647,7 @@ export namespace Prisma {
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantCreateWithoutAttachmentsInput = {
@@ -23262,6 +25683,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -23270,6 +25694,7 @@ export namespace Prisma {
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutAttachmentsInput = {
@@ -23305,6 +25730,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -23313,6 +25741,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutAttachmentsInput = {
@@ -23364,6 +25793,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23372,6 +25804,7 @@ export namespace Prisma {
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutAttachmentsInput = {
@@ -23407,6 +25840,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23415,6 +25851,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type UserCreateWithoutGrantImportRunsInput = {
@@ -23599,6 +26036,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -23607,6 +26054,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     invitations?: InvitationCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutUsersInput = {
@@ -23615,6 +26063,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -23623,6 +26081,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     invitations?: InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutUsersInput = {
@@ -23767,6 +26226,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -23775,6 +26244,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invitations?: InvitationUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutUsersInput = {
@@ -23783,6 +26253,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -23791,6 +26271,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     invitations?: InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
@@ -23971,6 +26452,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type GrantMatchCreateWithoutOrganizationInput = {
+    id?: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+    grant: GrantCreateNestedOneWithoutGrantMatchesInput
+  }
+
+  export type GrantMatchUncheckedCreateWithoutOrganizationInput = {
+    id?: string
+    grantId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+  }
+
+  export type GrantMatchCreateOrConnectWithoutOrganizationInput = {
+    where: GrantMatchWhereUniqueInput
+    create: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type GrantMatchCreateManyOrganizationInputEnvelope = {
+    data: GrantMatchCreateManyOrganizationInput | GrantMatchCreateManyOrganizationInput[]
+    skipDuplicates?: boolean
+  }
+
   export type UserUpsertWithWhereUniqueWithoutOrganizationInput = {
     where: UserWhereUniqueInput
     update: XOR<UserUpdateWithoutOrganizationInput, UserUncheckedUpdateWithoutOrganizationInput>
@@ -24033,12 +26544,38 @@ export namespace Prisma {
     updatedAt?: DateTimeFilter<"Invitation"> | Date | string
   }
 
+  export type GrantMatchUpsertWithWhereUniqueWithoutOrganizationInput = {
+    where: GrantMatchWhereUniqueInput
+    update: XOR<GrantMatchUpdateWithoutOrganizationInput, GrantMatchUncheckedUpdateWithoutOrganizationInput>
+    create: XOR<GrantMatchCreateWithoutOrganizationInput, GrantMatchUncheckedCreateWithoutOrganizationInput>
+  }
+
+  export type GrantMatchUpdateWithWhereUniqueWithoutOrganizationInput = {
+    where: GrantMatchWhereUniqueInput
+    data: XOR<GrantMatchUpdateWithoutOrganizationInput, GrantMatchUncheckedUpdateWithoutOrganizationInput>
+  }
+
+  export type GrantMatchUpdateManyWithWhereWithoutOrganizationInput = {
+    where: GrantMatchScalarWhereInput
+    data: XOR<GrantMatchUpdateManyMutationInput, GrantMatchUncheckedUpdateManyWithoutOrganizationInput>
+  }
+
   export type OrganizationCreateWithoutInvitationsInput = {
     id?: string
     name: string
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -24047,6 +26584,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationUncheckedCreateWithoutInvitationsInput = {
@@ -24055,6 +26593,16 @@ export namespace Prisma {
     description: string
     mission?: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
     address1: string
     address2?: string | null
     city: string
@@ -24063,6 +26611,7 @@ export namespace Prisma {
     createdAt?: Date | string
     updatedAt?: Date | string
     users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutOrganizationInput
   }
 
   export type OrganizationCreateOrConnectWithoutInvitationsInput = {
@@ -24087,6 +26636,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -24095,6 +26654,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutOrganizationNestedInput
   }
 
   export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
@@ -24103,6 +26663,16 @@ export namespace Prisma {
     description?: StringFieldUpdateOperationsInput | string
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -24111,6 +26681,7 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
     users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutOrganizationNestedInput
   }
 
   export type GrantChangeCreateWithoutRunInput = {
@@ -24192,6 +26763,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -24200,6 +26774,7 @@ export namespace Prisma {
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutChangesInput = {
@@ -24235,6 +26810,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -24243,6 +26821,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutChangesInput = {
@@ -24331,6 +26910,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24339,6 +26921,7 @@ export namespace Prisma {
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutChangesInput = {
@@ -24374,6 +26957,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24382,6 +26968,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantSyncRunUpsertWithoutChangesInput = {
@@ -24501,6 +27088,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -24509,6 +27099,7 @@ export namespace Prisma {
     details?: GrantDetailCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
     changes?: GrantChangeCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchCreateNestedManyWithoutGrantInput
   }
 
   export type GrantUncheckedCreateWithoutBookmarksInput = {
@@ -24544,6 +27135,9 @@ export namespace Prisma {
     sourceRecordId?: string | null
     sourceKey?: string | null
     contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
     lastSeenAt?: Date | string | null
     status?: $Enums.GrantStatus
     closedAt?: Date | string | null
@@ -24552,6 +27146,7 @@ export namespace Prisma {
     details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
     attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
     changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+    grantMatches?: GrantMatchUncheckedCreateNestedManyWithoutGrantInput
   }
 
   export type GrantCreateOrConnectWithoutBookmarksInput = {
@@ -24650,6 +27245,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24658,6 +27256,7 @@ export namespace Prisma {
     details?: GrantDetailUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantUncheckedUpdateWithoutBookmarksInput = {
@@ -24693,6 +27292,9 @@ export namespace Prisma {
     sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
     sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
     contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
     closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -24701,6 +27303,335 @@ export namespace Prisma {
     details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
     attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
     changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+    grantMatches?: GrantMatchUncheckedUpdateManyWithoutGrantNestedInput
+  }
+
+  export type OrganizationCreateWithoutGrantMatchesInput = {
+    id?: string
+    name: string
+    description: string
+    mission?: string
+    focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
+    address1: string
+    address2?: string | null
+    city: string
+    state: string
+    zipCode: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserCreateNestedManyWithoutOrganizationInput
+    invitations?: InvitationCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationUncheckedCreateWithoutGrantMatchesInput = {
+    id?: string
+    name: string
+    description: string
+    mission?: string
+    focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
+    applicantType?: $Enums.OrganizationApplicantType | null
+    minAward?: number | null
+    maxAward?: number | null
+    scoringVersion?: number
+    matchIndexStatus?: $Enums.MatchIndexStatus
+    matchIndexedAt?: Date | string | null
+    matchIndexedCount?: number
+    matchIndexError?: string | null
+    address1: string
+    address2?: string | null
+    city: string
+    state: string
+    zipCode: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    users?: UserUncheckedCreateNestedManyWithoutOrganizationInput
+    invitations?: InvitationUncheckedCreateNestedManyWithoutOrganizationInput
+  }
+
+  export type OrganizationCreateOrConnectWithoutGrantMatchesInput = {
+    where: OrganizationWhereUniqueInput
+    create: XOR<OrganizationCreateWithoutGrantMatchesInput, OrganizationUncheckedCreateWithoutGrantMatchesInput>
+  }
+
+  export type GrantCreateWithoutGrantMatchesInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentCreateNestedManyWithoutGrantInput
+    changes?: GrantChangeCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantUncheckedCreateWithoutGrantMatchesInput = {
+    id?: string
+    url: string
+    title: string
+    number?: string | null
+    deadline?: Date | string | null
+    deadlineType?: $Enums.GrantDeadlineType | null
+    openDate?: Date | string | null
+    openDateType?: $Enums.GrantOpenDateType | null
+    stateAgency?: string | null
+    matchFunding?: string | null
+    estimatedTotalFunding?: bigint | number | null
+    awardFloor?: bigint | number | null
+    awardCeiling?: bigint | number | null
+    estimatedAwardAmounts?: string | null
+    fundsDisbursment?: string | null
+    currentAsOf?: Date | string | null
+    grantor: string
+    portalId?: number | null
+    opportunityType?: string | null
+    purpose?: string | null
+    eligibleApplicants?: string | null
+    eligibleGeographies?: string | null
+    detailsStatus?: $Enums.GrantDetailsStatus
+    detailsFetchedAt?: Date | string | null
+    detailsError?: string | null
+    detailsErrorAt?: Date | string | null
+    source?: $Enums.GrantSource
+    agencyCode?: string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: string | null
+    sourceKey?: string | null
+    contentHash?: string | null
+    fitScore?: number | null
+    fitScoreVersion?: number
+    fitScoreComputedAt?: Date | string | null
+    lastSeenAt?: Date | string | null
+    status?: $Enums.GrantStatus
+    closedAt?: Date | string | null
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    details?: GrantDetailUncheckedCreateNestedOneWithoutGrantInput
+    attachments?: GrantAttachmentUncheckedCreateNestedManyWithoutGrantInput
+    changes?: GrantChangeUncheckedCreateNestedManyWithoutGrantInput
+    bookmarks?: GrantBookmarkUncheckedCreateNestedManyWithoutGrantInput
+  }
+
+  export type GrantCreateOrConnectWithoutGrantMatchesInput = {
+    where: GrantWhereUniqueInput
+    create: XOR<GrantCreateWithoutGrantMatchesInput, GrantUncheckedCreateWithoutGrantMatchesInput>
+  }
+
+  export type OrganizationUpsertWithoutGrantMatchesInput = {
+    update: XOR<OrganizationUpdateWithoutGrantMatchesInput, OrganizationUncheckedUpdateWithoutGrantMatchesInput>
+    create: XOR<OrganizationCreateWithoutGrantMatchesInput, OrganizationUncheckedCreateWithoutGrantMatchesInput>
+    where?: OrganizationWhereInput
+  }
+
+  export type OrganizationUpdateToOneWithWhereWithoutGrantMatchesInput = {
+    where?: OrganizationWhereInput
+    data: XOR<OrganizationUpdateWithoutGrantMatchesInput, OrganizationUncheckedUpdateWithoutGrantMatchesInput>
+  }
+
+  export type OrganizationUpdateWithoutGrantMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mission?: StringFieldUpdateOperationsInput | string
+    focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    address1?: StringFieldUpdateOperationsInput | string
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUpdateManyWithoutOrganizationNestedInput
+    invitations?: InvitationUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type OrganizationUncheckedUpdateWithoutGrantMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    description?: StringFieldUpdateOperationsInput | string
+    mission?: StringFieldUpdateOperationsInput | string
+    focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
+    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
+    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    scoringVersion?: IntFieldUpdateOperationsInput | number
+    matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
+    matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    address1?: StringFieldUpdateOperationsInput | string
+    address2?: NullableStringFieldUpdateOperationsInput | string | null
+    city?: StringFieldUpdateOperationsInput | string
+    state?: StringFieldUpdateOperationsInput | string
+    zipCode?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    users?: UserUncheckedUpdateManyWithoutOrganizationNestedInput
+    invitations?: InvitationUncheckedUpdateManyWithoutOrganizationNestedInput
+  }
+
+  export type GrantUpsertWithoutGrantMatchesInput = {
+    update: XOR<GrantUpdateWithoutGrantMatchesInput, GrantUncheckedUpdateWithoutGrantMatchesInput>
+    create: XOR<GrantCreateWithoutGrantMatchesInput, GrantUncheckedCreateWithoutGrantMatchesInput>
+    where?: GrantWhereInput
+  }
+
+  export type GrantUpdateToOneWithWhereWithoutGrantMatchesInput = {
+    where?: GrantWhereInput
+    data: XOR<GrantUpdateWithoutGrantMatchesInput, GrantUncheckedUpdateWithoutGrantMatchesInput>
+  }
+
+  export type GrantUpdateWithoutGrantMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUpdateManyWithoutGrantNestedInput
+    changes?: GrantChangeUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUpdateManyWithoutGrantNestedInput
+  }
+
+  export type GrantUncheckedUpdateWithoutGrantMatchesInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    url?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    number?: NullableStringFieldUpdateOperationsInput | string | null
+    deadline?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    deadlineType?: NullableEnumGrantDeadlineTypeFieldUpdateOperationsInput | $Enums.GrantDeadlineType | null
+    openDate?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    openDateType?: NullableEnumGrantOpenDateTypeFieldUpdateOperationsInput | $Enums.GrantOpenDateType | null
+    stateAgency?: NullableStringFieldUpdateOperationsInput | string | null
+    matchFunding?: NullableStringFieldUpdateOperationsInput | string | null
+    estimatedTotalFunding?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardFloor?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    awardCeiling?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    estimatedAwardAmounts?: NullableStringFieldUpdateOperationsInput | string | null
+    fundsDisbursment?: NullableStringFieldUpdateOperationsInput | string | null
+    currentAsOf?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    grantor?: StringFieldUpdateOperationsInput | string
+    portalId?: NullableIntFieldUpdateOperationsInput | number | null
+    opportunityType?: NullableStringFieldUpdateOperationsInput | string | null
+    purpose?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleApplicants?: NullableStringFieldUpdateOperationsInput | string | null
+    eligibleGeographies?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsStatus?: EnumGrantDetailsStatusFieldUpdateOperationsInput | $Enums.GrantDetailsStatus
+    detailsFetchedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    detailsError?: NullableStringFieldUpdateOperationsInput | string | null
+    detailsErrorAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    source?: EnumGrantSourceFieldUpdateOperationsInput | $Enums.GrantSource
+    agencyCode?: NullableStringFieldUpdateOperationsInput | string | null
+    cfdaList?: NullableJsonNullValueInput | InputJsonValue
+    sourceRecordId?: NullableStringFieldUpdateOperationsInput | string | null
+    sourceKey?: NullableStringFieldUpdateOperationsInput | string | null
+    contentHash?: NullableStringFieldUpdateOperationsInput | string | null
+    fitScore?: NullableFloatFieldUpdateOperationsInput | number | null
+    fitScoreVersion?: IntFieldUpdateOperationsInput | number
+    fitScoreComputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    lastSeenAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    status?: EnumGrantStatusFieldUpdateOperationsInput | $Enums.GrantStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    details?: GrantDetailUncheckedUpdateOneWithoutGrantNestedInput
+    attachments?: GrantAttachmentUncheckedUpdateManyWithoutGrantNestedInput
+    changes?: GrantChangeUncheckedUpdateManyWithoutGrantNestedInput
+    bookmarks?: GrantBookmarkUncheckedUpdateManyWithoutGrantNestedInput
   }
 
   export type GrantAttachmentCreateManyGrantInput = {
@@ -24732,6 +27663,16 @@ export namespace Prisma {
     tags?: GrantBookmarkCreatetagsInput | string[]
     createdAt?: Date | string
     updatedAt?: Date | string
+  }
+
+  export type GrantMatchCreateManyGrantInput = {
+    id?: string
+    organizationId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
   }
 
   export type GrantAttachmentUpdateWithoutGrantInput = {
@@ -24825,6 +27766,36 @@ export namespace Prisma {
     tags?: GrantBookmarkUpdatetagsInput | string[]
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantMatchUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+    organization?: OrganizationUpdateOneRequiredWithoutGrantMatchesNestedInput
+  }
+
+  export type GrantMatchUncheckedUpdateWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GrantMatchUncheckedUpdateManyWithoutGrantInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    organizationId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type AccountCreateManyUserInput = {
@@ -25009,6 +27980,16 @@ export namespace Prisma {
     updatedAt?: Date | string
   }
 
+  export type GrantMatchCreateManyOrganizationInput = {
+    id?: string
+    grantId: string
+    fitScore: number
+    version: number
+    computedAt?: Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: string | null
+  }
+
   export type UserUpdateWithoutOrganizationInput = {
     id?: StringFieldUpdateOperationsInput | string
     firstName?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25081,6 +28062,36 @@ export namespace Prisma {
     status?: EnumInvitationStatusFieldUpdateOperationsInput | $Enums.InvitationStatus
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type GrantMatchUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+    grant?: GrantUpdateOneRequiredWithoutGrantMatchesNestedInput
+  }
+
+  export type GrantMatchUncheckedUpdateWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type GrantMatchUncheckedUpdateManyWithoutOrganizationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    grantId?: StringFieldUpdateOperationsInput | string
+    fitScore?: FloatFieldUpdateOperationsInput | number
+    version?: IntFieldUpdateOperationsInput | number
+    computedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    subscoresJson?: NullableJsonNullValueInput | InputJsonValue
+    explanation?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type GrantChangeCreateManyRunInput = {

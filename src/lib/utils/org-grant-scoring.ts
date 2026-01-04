@@ -228,7 +228,9 @@ function calculatePurposeScore(params: {
 	const priorityTokens = dedupe(
 		params.priorityFocusKeywords.flatMap((keyword) => tokenize(keyword)),
 	);
-	const focusTokens = dedupe(params.focusAreas.flatMap((keyword) => tokenize(keyword)));
+	const focusTokens = dedupe(
+		params.focusAreas.flatMap((keyword) => tokenize(keyword)),
+	);
 	const purposeTokens = dedupe(tokenize(params.purpose ?? ''));
 
 	if (purposeTokens.length === 0) {
@@ -236,7 +238,9 @@ function calculatePurposeScore(params: {
 	}
 
 	const purposeSet = new Set(purposeTokens);
-	const priorityOverlap = priorityTokens.filter((token) => purposeSet.has(token));
+	const priorityOverlap = priorityTokens.filter((token) =>
+		purposeSet.has(token),
+	);
 	const focusOverlap = focusTokens.filter((token) => purposeSet.has(token));
 
 	const priorityHitRatio =
@@ -374,7 +378,11 @@ export function computeOrgGrantFitScore(
 		isLocalish,
 		isNational,
 	} = calculateGeographyScore(org.serviceAreas, grant.eligibleGeographies);
-	const { score: purpose, overlap, hasPriorityHit } = calculatePurposeScore({
+	const {
+		score: purpose,
+		overlap,
+		hasPriorityHit,
+	} = calculatePurposeScore({
 		priorityFocusKeywords: org.priorityFocusKeywords ?? [],
 		focusAreas: org.focusAreas,
 		purpose: grant.purpose,

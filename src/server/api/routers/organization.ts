@@ -66,7 +66,7 @@ export const organizationRouter = router({
 			});
 		}
 
-		const organization = await ctx.prisma.organization.findUnique({
+		const organization = (await ctx.prisma.organization.findUnique({
 			where: { id: organizationId },
 			select: {
 				entityType: true,
@@ -87,8 +87,12 @@ export const organizationRouter = router({
 				matchIndexClaimId: true,
 				matchIndexClaimedAt: true,
 				matchIndexErrorJson: true,
-			},
-		});
+			} as unknown as Prisma.OrganizationSelect,
+		})) as (typeof ctx.prisma.organization)['findUnique'] extends (
+			...args: any[]
+		) => Promise<infer R>
+			? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
+			: null;
 
 		if (!organization) {
 			throw new TRPCError({
@@ -144,13 +148,13 @@ export const organizationRouter = router({
 				});
 			}
 
-			const organization = await ctx.prisma.organization.findUnique({
-				where: { id: organizationId },
-				select: {
-					entityType: true,
-					revenueSources: true,
-					budgetRange: true,
-					staffRange: true,
+		const organization = (await ctx.prisma.organization.findUnique({
+			where: { id: organizationId },
+			select: {
+				entityType: true,
+				revenueSources: true,
+				budgetRange: true,
+				staffRange: true,
 				focusAreas: true,
 				serviceAreas: true,
 				priorityFocusKeywords: true,
@@ -159,14 +163,18 @@ export const organizationRouter = router({
 				scoringVersion: true,
 				matchIndexStatus: true,
 				matchIndexedAt: true,
-					matchIndexedCount: true,
-					matchIndexError: true,
-					matchIndexCursor: true,
-					matchIndexClaimId: true,
-					matchIndexClaimedAt: true,
-					matchIndexErrorJson: true,
-				},
-			});
+				matchIndexedCount: true,
+				matchIndexError: true,
+				matchIndexCursor: true,
+				matchIndexClaimId: true,
+				matchIndexClaimedAt: true,
+				matchIndexErrorJson: true,
+			} as unknown as Prisma.OrganizationSelect,
+		})) as (typeof ctx.prisma.organization)['findUnique'] extends (
+			...args: any[]
+		) => Promise<infer R>
+			? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
+			: null;
 
 			if (!organization) {
 				throw new TRPCError({
@@ -201,7 +209,9 @@ export const organizationRouter = router({
 			const currentRevenueSources = organization.revenueSources ?? [];
 			const currentFocusAreas = organization.focusAreas ?? [];
 			const currentServiceAreas = organization.serviceAreas ?? [];
-			const currentPriorityFocus = organization.priorityFocusKeywords ?? [];
+			const currentPriorityFocus =
+				(organization as { priorityFocusKeywords?: string[] }).priorityFocusKeywords ??
+				[];
 
 			const nextEntityType =
 				input.entityType === undefined
@@ -282,6 +292,7 @@ export const organizationRouter = router({
 				data.serviceAreas = nextServiceAreas;
 			}
 			if (priorityFocusKeywords !== undefined) {
+				// @ts-expect-error prisma client not yet regenerated with priorityFocusKeywords
 				data.priorityFocusKeywords = nextPriorityFocusKeywords;
 			}
 			if (mission !== undefined) {
@@ -313,7 +324,8 @@ export const organizationRouter = router({
 				revenueSources: updated.revenueSources ?? [],
 				focusAreas: updated.focusAreas ?? [],
 				serviceAreas: updated.serviceAreas ?? [],
-				priorityFocusKeywords: updated.priorityFocusKeywords ?? [],
+				priorityFocusKeywords:
+					(updated as { priorityFocusKeywords?: string[] }).priorityFocusKeywords ?? [],
 			};
 		}),
 });

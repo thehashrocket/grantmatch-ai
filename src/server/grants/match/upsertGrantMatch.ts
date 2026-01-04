@@ -116,8 +116,12 @@ export async function ensureGrantMatches(params: {
 			preferredAwardMin: true,
 			preferredAwardMax: true,
 			scoringVersion: true,
-		},
-	});
+		} as unknown as Prisma.OrganizationSelect,
+	}) as (typeof prisma.organization)['findUnique'] extends (...args: any[]) => Promise<
+		infer R
+	>
+		? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
+		: null;
 
 	if (!organization) {
 		return { createdCount: 0, updatedCount: 0 };
@@ -172,7 +176,12 @@ export async function ensureGrantMatches(params: {
 				};
 				await upsertGrantMatch({
 					prisma,
-					organization,
+					organization: {
+						...organization,
+						priorityFocusKeywords:
+							(organization as { priorityFocusKeywords?: string[] })
+								.priorityFocusKeywords ?? [],
+					},
 					grant: grantForMatch,
 					version: targetVersion,
 				});

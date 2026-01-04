@@ -88,11 +88,13 @@ export const organizationRouter = router({
 				matchIndexClaimedAt: true,
 				matchIndexErrorJson: true,
 			} as unknown as Prisma.OrganizationSelect,
-		})) as (typeof ctx.prisma.organization)['findUnique'] extends (
-			...args: any[]
-		) => Promise<infer R>
-			? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
-			: null;
+		})) as
+			| (Prisma.OrganizationGetPayload<{
+					select: Prisma.OrganizationSelect;
+			  }> & {
+					priorityFocusKeywords?: string[];
+			  })
+			| null;
 
 		if (!organization) {
 			throw new TRPCError({
@@ -148,33 +150,35 @@ export const organizationRouter = router({
 				});
 			}
 
-		const organization = (await ctx.prisma.organization.findUnique({
-			where: { id: organizationId },
-			select: {
-				entityType: true,
-				revenueSources: true,
-				budgetRange: true,
-				staffRange: true,
-				focusAreas: true,
-				serviceAreas: true,
-				priorityFocusKeywords: true,
-				mission: true,
-				description: true,
-				scoringVersion: true,
-				matchIndexStatus: true,
-				matchIndexedAt: true,
-				matchIndexedCount: true,
-				matchIndexError: true,
-				matchIndexCursor: true,
-				matchIndexClaimId: true,
-				matchIndexClaimedAt: true,
-				matchIndexErrorJson: true,
-			} as unknown as Prisma.OrganizationSelect,
-		})) as (typeof ctx.prisma.organization)['findUnique'] extends (
-			...args: any[]
-		) => Promise<infer R>
-			? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
-			: null;
+			const organization = (await ctx.prisma.organization.findUnique({
+				where: { id: organizationId },
+				select: {
+					entityType: true,
+					revenueSources: true,
+					budgetRange: true,
+					staffRange: true,
+					focusAreas: true,
+					serviceAreas: true,
+					priorityFocusKeywords: true,
+					mission: true,
+					description: true,
+					scoringVersion: true,
+					matchIndexStatus: true,
+					matchIndexedAt: true,
+					matchIndexedCount: true,
+					matchIndexError: true,
+					matchIndexCursor: true,
+					matchIndexClaimId: true,
+					matchIndexClaimedAt: true,
+					matchIndexErrorJson: true,
+				} as unknown as Prisma.OrganizationSelect,
+			})) as
+				| (Prisma.OrganizationGetPayload<{
+						select: Prisma.OrganizationSelect;
+				  }> & {
+						priorityFocusKeywords?: string[];
+				  })
+				| null;
 
 			if (!organization) {
 				throw new TRPCError({
@@ -210,8 +214,8 @@ export const organizationRouter = router({
 			const currentFocusAreas = organization.focusAreas ?? [];
 			const currentServiceAreas = organization.serviceAreas ?? [];
 			const currentPriorityFocus =
-				(organization as { priorityFocusKeywords?: string[] }).priorityFocusKeywords ??
-				[];
+				(organization as { priorityFocusKeywords?: string[] })
+					.priorityFocusKeywords ?? [];
 
 			const nextEntityType =
 				input.entityType === undefined
@@ -324,7 +328,8 @@ export const organizationRouter = router({
 				focusAreas: updated.focusAreas ?? [],
 				serviceAreas: updated.serviceAreas ?? [],
 				priorityFocusKeywords:
-					(updated as { priorityFocusKeywords?: string[] }).priorityFocusKeywords ?? [],
+					(updated as { priorityFocusKeywords?: string[] })
+						.priorityFocusKeywords ?? [],
 			};
 		}),
 });

@@ -174,9 +174,7 @@ export function CompanyInfoForm({
 						<Label htmlFor="priorityFocusKeywords">
 							Priority focus (top 5)
 						</Label>
-						<span className="text-xs text-muted-foreground">
-							Required
-						</span>
+						<span className="text-xs text-muted-foreground">Required</span>
 					</div>
 					<Controller
 						control={control}
@@ -191,8 +189,8 @@ export function CompanyInfoForm({
 						)}
 					/>
 					<p className="mt-1 text-sm text-muted-foreground">
-						Pick up to 5 things you’d be thrilled to get funding for. These drive
-						your matches most.
+						Pick up to 5 things you’d be thrilled to get funding for. These
+						drive your matches most.
 					</p>
 					{errors.priorityFocusKeywords && (
 						<p className="mt-1 text-sm text-red-500">

@@ -104,7 +104,7 @@ export async function ensureGrantMatches(params: {
 		return { createdCount: 0, updatedCount: 0 };
 	}
 
-	const organization = await prisma.organization.findUnique({
+	const organization = (await prisma.organization.findUnique({
 		where: { id: organizationId },
 		select: {
 			id: true,
@@ -117,11 +117,11 @@ export async function ensureGrantMatches(params: {
 			preferredAwardMax: true,
 			scoringVersion: true,
 		} as unknown as Prisma.OrganizationSelect,
-	}) as (typeof prisma.organization)['findUnique'] extends (...args: any[]) => Promise<
-		infer R
-	>
-		? (R extends null ? null : R & { priorityFocusKeywords?: string[] })
-		: null;
+	})) as
+		| (Prisma.OrganizationGetPayload<{ select: Prisma.OrganizationSelect }> & {
+				priorityFocusKeywords?: string[];
+		  })
+		| null;
 
 	if (!organization) {
 		return { createdCount: 0, updatedCount: 0 };

@@ -1,3 +1,5 @@
+// /src/server/grants/ingest/types.ts
+
 import type { $Enums } from '@/prisma/generated/client';
 
 export type NormalizedGrantDetail = {

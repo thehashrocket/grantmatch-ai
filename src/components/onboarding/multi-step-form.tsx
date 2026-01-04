@@ -111,10 +111,15 @@ export function MultiStepForm() {
 				},
 			});
 
+			// Belt-and-suspenders: ensure onboarding_complete is present for middleware
+			document.cookie =
+				'onboarding_complete=true; path=/; max-age=300; samesite=lax';
+
 			toast.success('Profile completed successfully!');
 
-			// Navigate to dashboard
-			router.push('/dashboard');
+			// Navigate to dashboard and force refresh so new session + cookie apply
+			router.replace('/dashboard');
+			router.refresh();
 		} catch (error) {
 			console.error('Form submission error:', error);
 

@@ -53,7 +53,9 @@ describe('matchRouter', () => {
 		const { ensureGrantMatches } = await import(
 			'@/server/grants/match/upsertGrantMatch'
 		);
-		const ensureMock = ensureGrantMatches as unknown as ReturnType<typeof vi.fn>;
+		const ensureMock = ensureGrantMatches as unknown as ReturnType<
+			typeof vi.fn
+		>;
 
 		expect(ensureMock).toHaveBeenCalledTimes(1);
 		const args = ensureMock.mock.calls[0][0];

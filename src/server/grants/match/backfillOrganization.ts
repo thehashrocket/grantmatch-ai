@@ -1,4 +1,4 @@
-import type { PrismaClient } from '@/prisma/generated/client';
+import type { Prisma, PrismaClient } from '@/prisma/generated/client';
 import { $Enums } from '@/prisma/generated/client';
 import { ensureGrantMatches } from '@/server/grants/match/upsertGrantMatch';
 
@@ -9,7 +9,6 @@ type BackfillParams = {
 	organizationId: string;
 	batchSize?: number;
 };
-type MatchIndexStatus = 'NOT_STARTED' | 'RUNNING' | 'COMPLETE' | 'FAILED';
 
 export async function backfillGrantMatchesForOrg({
 	prisma,
@@ -18,17 +17,19 @@ export async function backfillGrantMatchesForOrg({
 }: BackfillParams) {
 	const org = (await prisma.organization.findUnique({
 		where: { id: organizationId },
-		select: { matchIndexStatus: true } as any,
-	})) as { matchIndexStatus?: MatchIndexStatus | null } | null;
+		select: { matchIndexStatus: true },
+	})) || { matchIndexStatus: null };
 
 	if (!org) return;
 
+	const runningUpdate: Prisma.OrganizationUpdateInput = {
+		matchIndexStatus: 'RUNNING',
+		matchIndexError: null,
+	};
+
 	await prisma.organization.update({
 		where: { id: organizationId },
-		data: {
-			matchIndexStatus: 'RUNNING',
-			matchIndexError: null,
-		} as any,
+		data: runningUpdate,
 	});
 
 	const today = new Date();
@@ -59,23 +60,27 @@ export async function backfillGrantMatchesForOrg({
 			processed += grants.length;
 		}
 
+		const completeUpdate: Prisma.OrganizationUpdateInput = {
+			matchIndexStatus: 'COMPLETE',
+			matchIndexedAt: new Date(),
+			matchIndexedCount: processed,
+			matchIndexError: null,
+		};
+
 		await prisma.organization.update({
 			where: { id: organizationId },
-			data: {
-				matchIndexStatus: 'COMPLETE',
-				matchIndexedAt: new Date(),
-				matchIndexedCount: processed,
-				matchIndexError: null,
-			} as any,
+			data: completeUpdate,
 		});
 	} catch (error) {
+		const failedUpdate: Prisma.OrganizationUpdateInput = {
+			matchIndexStatus: 'FAILED',
+			matchIndexError: error instanceof Error ? error.message : 'Unknown error',
+			matchIndexedCount: processed,
+		};
+
 		await prisma.organization.update({
 			where: { id: organizationId },
-			data: {
-				matchIndexStatus: 'FAILED',
-				matchIndexError: error instanceof Error ? error.message : 'Unknown error',
-				matchIndexedCount: processed,
-			} as any,
+			data: failedUpdate,
 		});
 		throw error;
 	}

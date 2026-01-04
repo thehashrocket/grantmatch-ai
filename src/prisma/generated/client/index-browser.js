@@ -253,16 +253,22 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   description: 'description',
   mission: 'mission',
   focusAreas: 'focusAreas',
-  focusKeywords: 'focusKeywords',
-  geographyKeywords: 'geographyKeywords',
-  applicantType: 'applicantType',
-  minAward: 'minAward',
-  maxAward: 'maxAward',
+  serviceAreas: 'serviceAreas',
+  entityType: 'entityType',
+  revenueSources: 'revenueSources',
+  budgetRange: 'budgetRange',
+  staffRange: 'staffRange',
+  preferredAwardMin: 'preferredAwardMin',
+  preferredAwardMax: 'preferredAwardMax',
   scoringVersion: 'scoringVersion',
   matchIndexStatus: 'matchIndexStatus',
   matchIndexedAt: 'matchIndexedAt',
   matchIndexedCount: 'matchIndexedCount',
   matchIndexError: 'matchIndexError',
+  matchIndexCursor: 'matchIndexCursor',
+  matchIndexClaimId: 'matchIndexClaimId',
+  matchIndexClaimedAt: 'matchIndexClaimedAt',
+  matchIndexErrorJson: 'matchIndexErrorJson',
   address1: 'address1',
   address2: 'address2',
   city: 'city',
@@ -405,14 +411,32 @@ exports.UserRole = exports.$Enums.UserRole = {
   ADMIN: 'ADMIN'
 };
 
-exports.OrganizationApplicantType = exports.$Enums.OrganizationApplicantType = {
-  NONPROFIT: 'NONPROFIT',
-  SCHOOL: 'SCHOOL',
+exports.OrganizationEntityType = exports.$Enums.OrganizationEntityType = {
+  NONPROFIT_501C3: 'NONPROFIT_501C3',
+  NONPROFIT_OTHER: 'NONPROFIT_OTHER',
+  FISCAL_SPONSOR: 'FISCAL_SPONSOR',
   GOVERNMENT: 'GOVERNMENT',
   TRIBE: 'TRIBE',
+  SCHOOL: 'SCHOOL',
   FOR_PROFIT: 'FOR_PROFIT',
   INDIVIDUAL: 'INDIVIDUAL',
   OTHER: 'OTHER'
+};
+
+exports.BudgetRange = exports.$Enums.BudgetRange = {
+  LT_50K: 'LT_50K',
+  FROM_50K_TO_250K: 'FROM_50K_TO_250K',
+  FROM_250K_TO_1M: 'FROM_250K_TO_1M',
+  FROM_1M_TO_5M: 'FROM_1M_TO_5M',
+  OVER_5M: 'OVER_5M'
+};
+
+exports.StaffRange = exports.$Enums.StaffRange = {
+  ZERO: 'ZERO',
+  ONE_TO_FIVE: 'ONE_TO_FIVE',
+  SIX_TO_TWENTY: 'SIX_TO_TWENTY',
+  TWENTY_ONE_TO_ONE_HUNDRED: 'TWENTY_ONE_TO_ONE_HUNDRED',
+  OVER_ONE_HUNDRED: 'OVER_ONE_HUNDRED'
 };
 
 exports.MatchIndexStatus = exports.$Enums.MatchIndexStatus = {
@@ -420,6 +444,16 @@ exports.MatchIndexStatus = exports.$Enums.MatchIndexStatus = {
   RUNNING: 'RUNNING',
   COMPLETE: 'COMPLETE',
   FAILED: 'FAILED'
+};
+
+exports.RevenueSource = exports.$Enums.RevenueSource = {
+  DONATIONS: 'DONATIONS',
+  GRANTS: 'GRANTS',
+  GOV_CONTRACTS: 'GOV_CONTRACTS',
+  PROGRAM_FEES: 'PROGRAM_FEES',
+  MEMBERSHIPS: 'MEMBERSHIPS',
+  CORPORATE_SPONSORS: 'CORPORATE_SPONSORS',
+  OTHER: 'OTHER'
 };
 
 exports.InvitationStatus = exports.$Enums.InvitationStatus = {

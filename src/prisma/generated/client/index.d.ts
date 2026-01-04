@@ -106,17 +106,54 @@ export const UserRole: {
 export type UserRole = (typeof UserRole)[keyof typeof UserRole]
 
 
-export const OrganizationApplicantType: {
-  NONPROFIT: 'NONPROFIT',
-  SCHOOL: 'SCHOOL',
+export const OrganizationEntityType: {
+  NONPROFIT_501C3: 'NONPROFIT_501C3',
+  NONPROFIT_OTHER: 'NONPROFIT_OTHER',
+  FISCAL_SPONSOR: 'FISCAL_SPONSOR',
   GOVERNMENT: 'GOVERNMENT',
   TRIBE: 'TRIBE',
+  SCHOOL: 'SCHOOL',
   FOR_PROFIT: 'FOR_PROFIT',
   INDIVIDUAL: 'INDIVIDUAL',
   OTHER: 'OTHER'
 };
 
-export type OrganizationApplicantType = (typeof OrganizationApplicantType)[keyof typeof OrganizationApplicantType]
+export type OrganizationEntityType = (typeof OrganizationEntityType)[keyof typeof OrganizationEntityType]
+
+
+export const RevenueSource: {
+  DONATIONS: 'DONATIONS',
+  GRANTS: 'GRANTS',
+  GOV_CONTRACTS: 'GOV_CONTRACTS',
+  PROGRAM_FEES: 'PROGRAM_FEES',
+  MEMBERSHIPS: 'MEMBERSHIPS',
+  CORPORATE_SPONSORS: 'CORPORATE_SPONSORS',
+  OTHER: 'OTHER'
+};
+
+export type RevenueSource = (typeof RevenueSource)[keyof typeof RevenueSource]
+
+
+export const BudgetRange: {
+  LT_50K: 'LT_50K',
+  FROM_50K_TO_250K: 'FROM_50K_TO_250K',
+  FROM_250K_TO_1M: 'FROM_250K_TO_1M',
+  FROM_1M_TO_5M: 'FROM_1M_TO_5M',
+  OVER_5M: 'OVER_5M'
+};
+
+export type BudgetRange = (typeof BudgetRange)[keyof typeof BudgetRange]
+
+
+export const StaffRange: {
+  ZERO: 'ZERO',
+  ONE_TO_FIVE: 'ONE_TO_FIVE',
+  SIX_TO_TWENTY: 'SIX_TO_TWENTY',
+  TWENTY_ONE_TO_ONE_HUNDRED: 'TWENTY_ONE_TO_ONE_HUNDRED',
+  OVER_ONE_HUNDRED: 'OVER_ONE_HUNDRED'
+};
+
+export type StaffRange = (typeof StaffRange)[keyof typeof StaffRange]
 
 
 export const GrantDeadlineType: {
@@ -209,9 +246,21 @@ export type UserRole = $Enums.UserRole
 
 export const UserRole: typeof $Enums.UserRole
 
-export type OrganizationApplicantType = $Enums.OrganizationApplicantType
+export type OrganizationEntityType = $Enums.OrganizationEntityType
 
-export const OrganizationApplicantType: typeof $Enums.OrganizationApplicantType
+export const OrganizationEntityType: typeof $Enums.OrganizationEntityType
+
+export type RevenueSource = $Enums.RevenueSource
+
+export const RevenueSource: typeof $Enums.RevenueSource
+
+export type BudgetRange = $Enums.BudgetRange
+
+export const BudgetRange: typeof $Enums.BudgetRange
+
+export type StaffRange = $Enums.StaffRange
+
+export const StaffRange: typeof $Enums.StaffRange
 
 export type GrantDeadlineType = $Enums.GrantDeadlineType
 
@@ -11992,15 +12041,15 @@ export namespace Prisma {
   }
 
   export type OrganizationAvgAggregateOutputType = {
-    minAward: number | null
-    maxAward: number | null
+    preferredAwardMin: number | null
+    preferredAwardMax: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
   }
 
   export type OrganizationSumAggregateOutputType = {
-    minAward: number | null
-    maxAward: number | null
+    preferredAwardMin: number | null
+    preferredAwardMax: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
   }
@@ -12010,14 +12059,19 @@ export namespace Prisma {
     name: string | null
     description: string | null
     mission: string | null
-    applicantType: $Enums.OrganizationApplicantType | null
-    minAward: number | null
-    maxAward: number | null
+    entityType: $Enums.OrganizationEntityType | null
+    budgetRange: $Enums.BudgetRange | null
+    staffRange: $Enums.StaffRange | null
+    preferredAwardMin: number | null
+    preferredAwardMax: number | null
     scoringVersion: number | null
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
     matchIndexedCount: number | null
     matchIndexError: string | null
+    matchIndexCursor: string | null
+    matchIndexClaimId: string | null
+    matchIndexClaimedAt: Date | null
     address1: string | null
     address2: string | null
     city: string | null
@@ -12032,14 +12086,19 @@ export namespace Prisma {
     name: string | null
     description: string | null
     mission: string | null
-    applicantType: $Enums.OrganizationApplicantType | null
-    minAward: number | null
-    maxAward: number | null
+    entityType: $Enums.OrganizationEntityType | null
+    budgetRange: $Enums.BudgetRange | null
+    staffRange: $Enums.StaffRange | null
+    preferredAwardMin: number | null
+    preferredAwardMax: number | null
     scoringVersion: number | null
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
     matchIndexedCount: number | null
     matchIndexError: string | null
+    matchIndexCursor: string | null
+    matchIndexClaimId: string | null
+    matchIndexClaimedAt: Date | null
     address1: string | null
     address2: string | null
     city: string | null
@@ -12055,16 +12114,22 @@ export namespace Prisma {
     description: number
     mission: number
     focusAreas: number
-    focusKeywords: number
-    geographyKeywords: number
-    applicantType: number
-    minAward: number
-    maxAward: number
+    serviceAreas: number
+    entityType: number
+    revenueSources: number
+    budgetRange: number
+    staffRange: number
+    preferredAwardMin: number
+    preferredAwardMax: number
     scoringVersion: number
     matchIndexStatus: number
     matchIndexedAt: number
     matchIndexedCount: number
     matchIndexError: number
+    matchIndexCursor: number
+    matchIndexClaimId: number
+    matchIndexClaimedAt: number
+    matchIndexErrorJson: number
     address1: number
     address2: number
     city: number
@@ -12077,15 +12142,15 @@ export namespace Prisma {
 
 
   export type OrganizationAvgAggregateInputType = {
-    minAward?: true
-    maxAward?: true
+    preferredAwardMin?: true
+    preferredAwardMax?: true
     scoringVersion?: true
     matchIndexedCount?: true
   }
 
   export type OrganizationSumAggregateInputType = {
-    minAward?: true
-    maxAward?: true
+    preferredAwardMin?: true
+    preferredAwardMax?: true
     scoringVersion?: true
     matchIndexedCount?: true
   }
@@ -12095,14 +12160,19 @@ export namespace Prisma {
     name?: true
     description?: true
     mission?: true
-    applicantType?: true
-    minAward?: true
-    maxAward?: true
+    entityType?: true
+    budgetRange?: true
+    staffRange?: true
+    preferredAwardMin?: true
+    preferredAwardMax?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
     matchIndexError?: true
+    matchIndexCursor?: true
+    matchIndexClaimId?: true
+    matchIndexClaimedAt?: true
     address1?: true
     address2?: true
     city?: true
@@ -12117,14 +12187,19 @@ export namespace Prisma {
     name?: true
     description?: true
     mission?: true
-    applicantType?: true
-    minAward?: true
-    maxAward?: true
+    entityType?: true
+    budgetRange?: true
+    staffRange?: true
+    preferredAwardMin?: true
+    preferredAwardMax?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
     matchIndexError?: true
+    matchIndexCursor?: true
+    matchIndexClaimId?: true
+    matchIndexClaimedAt?: true
     address1?: true
     address2?: true
     city?: true
@@ -12140,16 +12215,22 @@ export namespace Prisma {
     description?: true
     mission?: true
     focusAreas?: true
-    focusKeywords?: true
-    geographyKeywords?: true
-    applicantType?: true
-    minAward?: true
-    maxAward?: true
+    serviceAreas?: true
+    entityType?: true
+    revenueSources?: true
+    budgetRange?: true
+    staffRange?: true
+    preferredAwardMin?: true
+    preferredAwardMax?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
     matchIndexError?: true
+    matchIndexCursor?: true
+    matchIndexClaimId?: true
+    matchIndexClaimedAt?: true
+    matchIndexErrorJson?: true
     address1?: true
     address2?: true
     city?: true
@@ -12249,19 +12330,25 @@ export namespace Prisma {
   export type OrganizationGroupByOutputType = {
     id: string
     name: string
-    description: string
+    description: string | null
     mission: string
     focusAreas: string[]
-    focusKeywords: string[]
-    geographyKeywords: string[]
-    applicantType: $Enums.OrganizationApplicantType | null
-    minAward: number | null
-    maxAward: number | null
+    serviceAreas: string[]
+    entityType: $Enums.OrganizationEntityType | null
+    revenueSources: $Enums.RevenueSource[]
+    budgetRange: $Enums.BudgetRange | null
+    staffRange: $Enums.StaffRange | null
+    preferredAwardMin: number | null
+    preferredAwardMax: number | null
     scoringVersion: number
     matchIndexStatus: $Enums.MatchIndexStatus
     matchIndexedAt: Date | null
     matchIndexedCount: number
     matchIndexError: string | null
+    matchIndexCursor: string | null
+    matchIndexClaimId: string | null
+    matchIndexClaimedAt: Date | null
+    matchIndexErrorJson: JsonValue | null
     address1: string
     address2: string | null
     city: string
@@ -12296,16 +12383,22 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
-    focusKeywords?: boolean
-    geographyKeywords?: boolean
-    applicantType?: boolean
-    minAward?: boolean
-    maxAward?: boolean
+    serviceAreas?: boolean
+    entityType?: boolean
+    revenueSources?: boolean
+    budgetRange?: boolean
+    staffRange?: boolean
+    preferredAwardMin?: boolean
+    preferredAwardMax?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
     matchIndexError?: boolean
+    matchIndexCursor?: boolean
+    matchIndexClaimId?: boolean
+    matchIndexClaimedAt?: boolean
+    matchIndexErrorJson?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12325,16 +12418,22 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
-    focusKeywords?: boolean
-    geographyKeywords?: boolean
-    applicantType?: boolean
-    minAward?: boolean
-    maxAward?: boolean
+    serviceAreas?: boolean
+    entityType?: boolean
+    revenueSources?: boolean
+    budgetRange?: boolean
+    staffRange?: boolean
+    preferredAwardMin?: boolean
+    preferredAwardMax?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
     matchIndexError?: boolean
+    matchIndexCursor?: boolean
+    matchIndexClaimId?: boolean
+    matchIndexClaimedAt?: boolean
+    matchIndexErrorJson?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12350,16 +12449,22 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
-    focusKeywords?: boolean
-    geographyKeywords?: boolean
-    applicantType?: boolean
-    minAward?: boolean
-    maxAward?: boolean
+    serviceAreas?: boolean
+    entityType?: boolean
+    revenueSources?: boolean
+    budgetRange?: boolean
+    staffRange?: boolean
+    preferredAwardMin?: boolean
+    preferredAwardMax?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
     matchIndexError?: boolean
+    matchIndexCursor?: boolean
+    matchIndexClaimId?: boolean
+    matchIndexClaimedAt?: boolean
+    matchIndexErrorJson?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12375,16 +12480,22 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
-    focusKeywords?: boolean
-    geographyKeywords?: boolean
-    applicantType?: boolean
-    minAward?: boolean
-    maxAward?: boolean
+    serviceAreas?: boolean
+    entityType?: boolean
+    revenueSources?: boolean
+    budgetRange?: boolean
+    staffRange?: boolean
+    preferredAwardMin?: boolean
+    preferredAwardMax?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
     matchIndexError?: boolean
+    matchIndexCursor?: boolean
+    matchIndexClaimId?: boolean
+    matchIndexClaimedAt?: boolean
+    matchIndexErrorJson?: boolean
     address1?: boolean
     address2?: boolean
     city?: boolean
@@ -12394,7 +12505,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "focusKeywords" | "geographyKeywords" | "applicantType" | "minAward" | "maxAward" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "preferredAwardMin" | "preferredAwardMax" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
@@ -12414,19 +12525,25 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: string
       name: string
-      description: string
+      description: string | null
       mission: string
       focusAreas: string[]
-      focusKeywords: string[]
-      geographyKeywords: string[]
-      applicantType: $Enums.OrganizationApplicantType | null
-      minAward: number | null
-      maxAward: number | null
+      serviceAreas: string[]
+      entityType: $Enums.OrganizationEntityType | null
+      revenueSources: $Enums.RevenueSource[]
+      budgetRange: $Enums.BudgetRange | null
+      staffRange: $Enums.StaffRange | null
+      preferredAwardMin: number | null
+      preferredAwardMax: number | null
       scoringVersion: number
       matchIndexStatus: $Enums.MatchIndexStatus
       matchIndexedAt: Date | null
       matchIndexedCount: number
       matchIndexError: string | null
+      matchIndexCursor: string | null
+      matchIndexClaimId: string | null
+      matchIndexClaimedAt: Date | null
+      matchIndexErrorJson: Prisma.JsonValue | null
       address1: string
       address2: string | null
       city: string
@@ -12865,16 +12982,22 @@ export namespace Prisma {
     readonly description: FieldRef<"Organization", 'String'>
     readonly mission: FieldRef<"Organization", 'String'>
     readonly focusAreas: FieldRef<"Organization", 'String[]'>
-    readonly focusKeywords: FieldRef<"Organization", 'String[]'>
-    readonly geographyKeywords: FieldRef<"Organization", 'String[]'>
-    readonly applicantType: FieldRef<"Organization", 'OrganizationApplicantType'>
-    readonly minAward: FieldRef<"Organization", 'Int'>
-    readonly maxAward: FieldRef<"Organization", 'Int'>
+    readonly serviceAreas: FieldRef<"Organization", 'String[]'>
+    readonly entityType: FieldRef<"Organization", 'OrganizationEntityType'>
+    readonly revenueSources: FieldRef<"Organization", 'RevenueSource[]'>
+    readonly budgetRange: FieldRef<"Organization", 'BudgetRange'>
+    readonly staffRange: FieldRef<"Organization", 'StaffRange'>
+    readonly preferredAwardMin: FieldRef<"Organization", 'Int'>
+    readonly preferredAwardMax: FieldRef<"Organization", 'Int'>
     readonly scoringVersion: FieldRef<"Organization", 'Int'>
     readonly matchIndexStatus: FieldRef<"Organization", 'MatchIndexStatus'>
     readonly matchIndexedAt: FieldRef<"Organization", 'DateTime'>
     readonly matchIndexedCount: FieldRef<"Organization", 'Int'>
     readonly matchIndexError: FieldRef<"Organization", 'String'>
+    readonly matchIndexCursor: FieldRef<"Organization", 'String'>
+    readonly matchIndexClaimId: FieldRef<"Organization", 'String'>
+    readonly matchIndexClaimedAt: FieldRef<"Organization", 'DateTime'>
+    readonly matchIndexErrorJson: FieldRef<"Organization", 'Json'>
     readonly address1: FieldRef<"Organization", 'String'>
     readonly address2: FieldRef<"Organization", 'String'>
     readonly city: FieldRef<"Organization", 'String'>
@@ -19163,16 +19286,22 @@ export namespace Prisma {
     description: 'description',
     mission: 'mission',
     focusAreas: 'focusAreas',
-    focusKeywords: 'focusKeywords',
-    geographyKeywords: 'geographyKeywords',
-    applicantType: 'applicantType',
-    minAward: 'minAward',
-    maxAward: 'maxAward',
+    serviceAreas: 'serviceAreas',
+    entityType: 'entityType',
+    revenueSources: 'revenueSources',
+    budgetRange: 'budgetRange',
+    staffRange: 'staffRange',
+    preferredAwardMin: 'preferredAwardMin',
+    preferredAwardMax: 'preferredAwardMax',
     scoringVersion: 'scoringVersion',
     matchIndexStatus: 'matchIndexStatus',
     matchIndexedAt: 'matchIndexedAt',
     matchIndexedCount: 'matchIndexedCount',
     matchIndexError: 'matchIndexError',
+    matchIndexCursor: 'matchIndexCursor',
+    matchIndexClaimId: 'matchIndexClaimId',
+    matchIndexClaimedAt: 'matchIndexClaimedAt',
+    matchIndexErrorJson: 'matchIndexErrorJson',
     address1: 'address1',
     address2: 'address2',
     city: 'city',
@@ -19487,16 +19616,58 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'OrganizationApplicantType'
+   * Reference to a field of type 'OrganizationEntityType'
    */
-  export type EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationApplicantType'>
+  export type EnumOrganizationEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationEntityType'>
     
 
 
   /**
-   * Reference to a field of type 'OrganizationApplicantType[]'
+   * Reference to a field of type 'OrganizationEntityType[]'
    */
-  export type ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationApplicantType[]'>
+  export type ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'OrganizationEntityType[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RevenueSource[]'
+   */
+  export type ListEnumRevenueSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RevenueSource[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'RevenueSource'
+   */
+  export type EnumRevenueSourceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RevenueSource'>
+    
+
+
+  /**
+   * Reference to a field of type 'BudgetRange'
+   */
+  export type EnumBudgetRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BudgetRange'>
+    
+
+
+  /**
+   * Reference to a field of type 'BudgetRange[]'
+   */
+  export type ListEnumBudgetRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'BudgetRange[]'>
+    
+
+
+  /**
+   * Reference to a field of type 'StaffRange'
+   */
+  export type EnumStaffRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffRange'>
+    
+
+
+  /**
+   * Reference to a field of type 'StaffRange[]'
+   */
+  export type ListEnumStaffRangeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'StaffRange[]'>
     
 
 
@@ -20339,19 +20510,25 @@ export namespace Prisma {
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
     id?: StringFilter<"Organization"> | string
     name?: StringFilter<"Organization"> | string
-    description?: StringFilter<"Organization"> | string
+    description?: StringNullableFilter<"Organization"> | string | null
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
-    focusKeywords?: StringNullableListFilter<"Organization">
-    geographyKeywords?: StringNullableListFilter<"Organization">
-    applicantType?: EnumOrganizationApplicantTypeNullableFilter<"Organization"> | $Enums.OrganizationApplicantType | null
-    minAward?: IntNullableFilter<"Organization"> | number | null
-    maxAward?: IntNullableFilter<"Organization"> | number | null
+    serviceAreas?: StringNullableListFilter<"Organization">
+    entityType?: EnumOrganizationEntityTypeNullableFilter<"Organization"> | $Enums.OrganizationEntityType | null
+    revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
+    budgetRange?: EnumBudgetRangeNullableFilter<"Organization"> | $Enums.BudgetRange | null
+    staffRange?: EnumStaffRangeNullableFilter<"Organization"> | $Enums.StaffRange | null
+    preferredAwardMin?: IntNullableFilter<"Organization"> | number | null
+    preferredAwardMax?: IntNullableFilter<"Organization"> | number | null
     scoringVersion?: IntFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntFilter<"Organization"> | number
     matchIndexError?: StringNullableFilter<"Organization"> | string | null
+    matchIndexCursor?: StringNullableFilter<"Organization"> | string | null
+    matchIndexClaimId?: StringNullableFilter<"Organization"> | string | null
+    matchIndexClaimedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexErrorJson?: JsonNullableFilter<"Organization">
     address1?: StringFilter<"Organization"> | string
     address2?: StringNullableFilter<"Organization"> | string | null
     city?: StringFilter<"Organization"> | string
@@ -20367,19 +20544,25 @@ export namespace Prisma {
   export type OrganizationOrderByWithRelationInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
-    focusKeywords?: SortOrder
-    geographyKeywords?: SortOrder
-    applicantType?: SortOrderInput | SortOrder
-    minAward?: SortOrderInput | SortOrder
-    maxAward?: SortOrderInput | SortOrder
+    serviceAreas?: SortOrder
+    entityType?: SortOrderInput | SortOrder
+    revenueSources?: SortOrder
+    budgetRange?: SortOrderInput | SortOrder
+    staffRange?: SortOrderInput | SortOrder
+    preferredAwardMin?: SortOrderInput | SortOrder
+    preferredAwardMax?: SortOrderInput | SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
     matchIndexedCount?: SortOrder
     matchIndexError?: SortOrderInput | SortOrder
+    matchIndexCursor?: SortOrderInput | SortOrder
+    matchIndexClaimId?: SortOrderInput | SortOrder
+    matchIndexClaimedAt?: SortOrderInput | SortOrder
+    matchIndexErrorJson?: SortOrderInput | SortOrder
     address1?: SortOrder
     address2?: SortOrderInput | SortOrder
     city?: SortOrder
@@ -20398,19 +20581,25 @@ export namespace Prisma {
     OR?: OrganizationWhereInput[]
     NOT?: OrganizationWhereInput | OrganizationWhereInput[]
     name?: StringFilter<"Organization"> | string
-    description?: StringFilter<"Organization"> | string
+    description?: StringNullableFilter<"Organization"> | string | null
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
-    focusKeywords?: StringNullableListFilter<"Organization">
-    geographyKeywords?: StringNullableListFilter<"Organization">
-    applicantType?: EnumOrganizationApplicantTypeNullableFilter<"Organization"> | $Enums.OrganizationApplicantType | null
-    minAward?: IntNullableFilter<"Organization"> | number | null
-    maxAward?: IntNullableFilter<"Organization"> | number | null
+    serviceAreas?: StringNullableListFilter<"Organization">
+    entityType?: EnumOrganizationEntityTypeNullableFilter<"Organization"> | $Enums.OrganizationEntityType | null
+    revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
+    budgetRange?: EnumBudgetRangeNullableFilter<"Organization"> | $Enums.BudgetRange | null
+    staffRange?: EnumStaffRangeNullableFilter<"Organization"> | $Enums.StaffRange | null
+    preferredAwardMin?: IntNullableFilter<"Organization"> | number | null
+    preferredAwardMax?: IntNullableFilter<"Organization"> | number | null
     scoringVersion?: IntFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntFilter<"Organization"> | number
     matchIndexError?: StringNullableFilter<"Organization"> | string | null
+    matchIndexCursor?: StringNullableFilter<"Organization"> | string | null
+    matchIndexClaimId?: StringNullableFilter<"Organization"> | string | null
+    matchIndexClaimedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexErrorJson?: JsonNullableFilter<"Organization">
     address1?: StringFilter<"Organization"> | string
     address2?: StringNullableFilter<"Organization"> | string | null
     city?: StringFilter<"Organization"> | string
@@ -20426,19 +20615,25 @@ export namespace Prisma {
   export type OrganizationOrderByWithAggregationInput = {
     id?: SortOrder
     name?: SortOrder
-    description?: SortOrder
+    description?: SortOrderInput | SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
-    focusKeywords?: SortOrder
-    geographyKeywords?: SortOrder
-    applicantType?: SortOrderInput | SortOrder
-    minAward?: SortOrderInput | SortOrder
-    maxAward?: SortOrderInput | SortOrder
+    serviceAreas?: SortOrder
+    entityType?: SortOrderInput | SortOrder
+    revenueSources?: SortOrder
+    budgetRange?: SortOrderInput | SortOrder
+    staffRange?: SortOrderInput | SortOrder
+    preferredAwardMin?: SortOrderInput | SortOrder
+    preferredAwardMax?: SortOrderInput | SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
     matchIndexedCount?: SortOrder
     matchIndexError?: SortOrderInput | SortOrder
+    matchIndexCursor?: SortOrderInput | SortOrder
+    matchIndexClaimId?: SortOrderInput | SortOrder
+    matchIndexClaimedAt?: SortOrderInput | SortOrder
+    matchIndexErrorJson?: SortOrderInput | SortOrder
     address1?: SortOrder
     address2?: SortOrderInput | SortOrder
     city?: SortOrder
@@ -20459,19 +20654,25 @@ export namespace Prisma {
     NOT?: OrganizationScalarWhereWithAggregatesInput | OrganizationScalarWhereWithAggregatesInput[]
     id?: StringWithAggregatesFilter<"Organization"> | string
     name?: StringWithAggregatesFilter<"Organization"> | string
-    description?: StringWithAggregatesFilter<"Organization"> | string
+    description?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     mission?: StringWithAggregatesFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
-    focusKeywords?: StringNullableListFilter<"Organization">
-    geographyKeywords?: StringNullableListFilter<"Organization">
-    applicantType?: EnumOrganizationApplicantTypeNullableWithAggregatesFilter<"Organization"> | $Enums.OrganizationApplicantType | null
-    minAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
-    maxAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    serviceAreas?: StringNullableListFilter<"Organization">
+    entityType?: EnumOrganizationEntityTypeNullableWithAggregatesFilter<"Organization"> | $Enums.OrganizationEntityType | null
+    revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
+    budgetRange?: EnumBudgetRangeNullableWithAggregatesFilter<"Organization"> | $Enums.BudgetRange | null
+    staffRange?: EnumStaffRangeNullableWithAggregatesFilter<"Organization"> | $Enums.StaffRange | null
+    preferredAwardMin?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    preferredAwardMax?: IntNullableWithAggregatesFilter<"Organization"> | number | null
     scoringVersion?: IntWithAggregatesFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusWithAggregatesFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntWithAggregatesFilter<"Organization"> | number
     matchIndexError?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    matchIndexCursor?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    matchIndexClaimId?: StringNullableWithAggregatesFilter<"Organization"> | string | null
+    matchIndexClaimedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
+    matchIndexErrorJson?: JsonNullableWithAggregatesFilter<"Organization">
     address1?: StringWithAggregatesFilter<"Organization"> | string
     address2?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     city?: StringWithAggregatesFilter<"Organization"> | string
@@ -21784,19 +21985,25 @@ export namespace Prisma {
   export type OrganizationCreateInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -21812,19 +22019,25 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -21840,19 +22053,25 @@ export namespace Prisma {
   export type OrganizationUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -21868,19 +22087,25 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -21896,19 +22121,25 @@ export namespace Prisma {
   export type OrganizationCreateManyInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -21921,19 +22152,25 @@ export namespace Prisma {
   export type OrganizationUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -21946,19 +22183,25 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -23303,11 +23546,33 @@ export namespace Prisma {
     isEmpty?: boolean
   }
 
-  export type EnumOrganizationApplicantTypeNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  export type EnumOrganizationEntityTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationEntityType | EnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel> | $Enums.OrganizationEntityType | null
+  }
+
+  export type EnumRevenueSourceNullableListFilter<$PrismaModel = never> = {
+    equals?: $Enums.RevenueSource[] | ListEnumRevenueSourceFieldRefInput<$PrismaModel> | null
+    has?: $Enums.RevenueSource | EnumRevenueSourceFieldRefInput<$PrismaModel> | null
+    hasEvery?: $Enums.RevenueSource[] | ListEnumRevenueSourceFieldRefInput<$PrismaModel>
+    hasSome?: $Enums.RevenueSource[] | ListEnumRevenueSourceFieldRefInput<$PrismaModel>
+    isEmpty?: boolean
+  }
+
+  export type EnumBudgetRangeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.BudgetRange | EnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBudgetRangeNullableFilter<$PrismaModel> | $Enums.BudgetRange | null
+  }
+
+  export type EnumStaffRangeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRange | EnumStaffRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumStaffRangeNullableFilter<$PrismaModel> | $Enums.StaffRange | null
   }
 
   export type EnumMatchIndexStatusFilter<$PrismaModel = never> = {
@@ -23343,16 +23608,22 @@ export namespace Prisma {
     description?: SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
-    focusKeywords?: SortOrder
-    geographyKeywords?: SortOrder
-    applicantType?: SortOrder
-    minAward?: SortOrder
-    maxAward?: SortOrder
+    serviceAreas?: SortOrder
+    entityType?: SortOrder
+    revenueSources?: SortOrder
+    budgetRange?: SortOrder
+    staffRange?: SortOrder
+    preferredAwardMin?: SortOrder
+    preferredAwardMax?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
     matchIndexError?: SortOrder
+    matchIndexCursor?: SortOrder
+    matchIndexClaimId?: SortOrder
+    matchIndexClaimedAt?: SortOrder
+    matchIndexErrorJson?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -23363,8 +23634,8 @@ export namespace Prisma {
   }
 
   export type OrganizationAvgOrderByAggregateInput = {
-    minAward?: SortOrder
-    maxAward?: SortOrder
+    preferredAwardMin?: SortOrder
+    preferredAwardMax?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
   }
@@ -23374,14 +23645,19 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     mission?: SortOrder
-    applicantType?: SortOrder
-    minAward?: SortOrder
-    maxAward?: SortOrder
+    entityType?: SortOrder
+    budgetRange?: SortOrder
+    staffRange?: SortOrder
+    preferredAwardMin?: SortOrder
+    preferredAwardMax?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
     matchIndexError?: SortOrder
+    matchIndexCursor?: SortOrder
+    matchIndexClaimId?: SortOrder
+    matchIndexClaimedAt?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -23396,14 +23672,19 @@ export namespace Prisma {
     name?: SortOrder
     description?: SortOrder
     mission?: SortOrder
-    applicantType?: SortOrder
-    minAward?: SortOrder
-    maxAward?: SortOrder
+    entityType?: SortOrder
+    budgetRange?: SortOrder
+    staffRange?: SortOrder
+    preferredAwardMin?: SortOrder
+    preferredAwardMax?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
     matchIndexError?: SortOrder
+    matchIndexCursor?: SortOrder
+    matchIndexClaimId?: SortOrder
+    matchIndexClaimedAt?: SortOrder
     address1?: SortOrder
     address2?: SortOrder
     city?: SortOrder
@@ -23414,20 +23695,40 @@ export namespace Prisma {
   }
 
   export type OrganizationSumOrderByAggregateInput = {
-    minAward?: SortOrder
-    maxAward?: SortOrder
+    preferredAwardMin?: SortOrder
+    preferredAwardMax?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
   }
 
-  export type EnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  export type EnumOrganizationEntityTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationEntityType | EnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationEntityTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationEntityType | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
-    _max?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+    _min?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumBudgetRangeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BudgetRange | EnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBudgetRangeNullableWithAggregatesFilter<$PrismaModel> | $Enums.BudgetRange | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumBudgetRangeNullableFilter<$PrismaModel>
+    _max?: NestedEnumBudgetRangeNullableFilter<$PrismaModel>
+  }
+
+  export type EnumStaffRangeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRange | EnumStaffRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumStaffRangeNullableWithAggregatesFilter<$PrismaModel> | $Enums.StaffRange | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumStaffRangeNullableFilter<$PrismaModel>
+    _max?: NestedEnumStaffRangeNullableFilter<$PrismaModel>
   }
 
   export type EnumMatchIndexStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -24252,12 +24553,12 @@ export namespace Prisma {
     set: string[]
   }
 
-  export type OrganizationCreatefocusKeywordsInput = {
+  export type OrganizationCreateserviceAreasInput = {
     set: string[]
   }
 
-  export type OrganizationCreategeographyKeywordsInput = {
-    set: string[]
+  export type OrganizationCreaterevenueSourcesInput = {
+    set: $Enums.RevenueSource[]
   }
 
   export type UserCreateNestedManyWithoutOrganizationInput = {
@@ -24307,18 +24608,26 @@ export namespace Prisma {
     push?: string | string[]
   }
 
-  export type OrganizationUpdatefocusKeywordsInput = {
+  export type OrganizationUpdateserviceAreasInput = {
     set?: string[]
     push?: string | string[]
   }
 
-  export type OrganizationUpdategeographyKeywordsInput = {
-    set?: string[]
-    push?: string | string[]
+  export type NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput = {
+    set?: $Enums.OrganizationEntityType | null
   }
 
-  export type NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput = {
-    set?: $Enums.OrganizationApplicantType | null
+  export type OrganizationUpdaterevenueSourcesInput = {
+    set?: $Enums.RevenueSource[]
+    push?: $Enums.RevenueSource | $Enums.RevenueSource[]
+  }
+
+  export type NullableEnumBudgetRangeFieldUpdateOperationsInput = {
+    set?: $Enums.BudgetRange | null
+  }
+
+  export type NullableEnumStaffRangeFieldUpdateOperationsInput = {
+    set?: $Enums.StaffRange | null
   }
 
   export type EnumMatchIndexStatusFieldUpdateOperationsInput = {
@@ -24947,11 +25256,25 @@ export namespace Prisma {
     _max?: NestedEnumUserRoleFilter<$PrismaModel>
   }
 
-  export type NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  export type NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationEntityType | EnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel> | $Enums.OrganizationEntityType | null
+  }
+
+  export type NestedEnumBudgetRangeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.BudgetRange | EnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBudgetRangeNullableFilter<$PrismaModel> | $Enums.BudgetRange | null
+  }
+
+  export type NestedEnumStaffRangeNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRange | EnumStaffRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumStaffRangeNullableFilter<$PrismaModel> | $Enums.StaffRange | null
   }
 
   export type NestedEnumMatchIndexStatusFilter<$PrismaModel = never> = {
@@ -24961,14 +25284,34 @@ export namespace Prisma {
     not?: NestedEnumMatchIndexStatusFilter<$PrismaModel> | $Enums.MatchIndexStatus
   }
 
-  export type NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: $Enums.OrganizationApplicantType | EnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    in?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    notIn?: $Enums.OrganizationApplicantType[] | ListEnumOrganizationApplicantTypeFieldRefInput<$PrismaModel> | null
-    not?: NestedEnumOrganizationApplicantTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationApplicantType | null
+  export type NestedEnumOrganizationEntityTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.OrganizationEntityType | EnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.OrganizationEntityType[] | ListEnumOrganizationEntityTypeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumOrganizationEntityTypeNullableWithAggregatesFilter<$PrismaModel> | $Enums.OrganizationEntityType | null
     _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
-    _max?: NestedEnumOrganizationApplicantTypeNullableFilter<$PrismaModel>
+    _min?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel>
+    _max?: NestedEnumOrganizationEntityTypeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumBudgetRangeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.BudgetRange | EnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.BudgetRange[] | ListEnumBudgetRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumBudgetRangeNullableWithAggregatesFilter<$PrismaModel> | $Enums.BudgetRange | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumBudgetRangeNullableFilter<$PrismaModel>
+    _max?: NestedEnumBudgetRangeNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumStaffRangeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.StaffRange | EnumStaffRangeFieldRefInput<$PrismaModel> | null
+    in?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.StaffRange[] | ListEnumStaffRangeFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumStaffRangeNullableWithAggregatesFilter<$PrismaModel> | $Enums.StaffRange | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumStaffRangeNullableFilter<$PrismaModel>
+    _max?: NestedEnumStaffRangeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumMatchIndexStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -26033,19 +26376,25 @@ export namespace Prisma {
   export type OrganizationCreateWithoutUsersInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -26060,19 +26409,25 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutUsersInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -26223,19 +26578,25 @@ export namespace Prisma {
   export type OrganizationUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -26250,19 +26611,25 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutUsersInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -26563,19 +26930,25 @@ export namespace Prisma {
   export type OrganizationCreateWithoutInvitationsInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -26590,19 +26963,25 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutInvitationsInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -26633,19 +27012,25 @@ export namespace Prisma {
   export type OrganizationUpdateWithoutInvitationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -26660,19 +27045,25 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutInvitationsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -27309,19 +27700,25 @@ export namespace Prisma {
   export type OrganizationCreateWithoutGrantMatchesInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -27336,19 +27733,25 @@ export namespace Prisma {
   export type OrganizationUncheckedCreateWithoutGrantMatchesInput = {
     id?: string
     name: string
-    description: string
-    mission?: string
+    description?: string | null
+    mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
-    focusKeywords?: OrganizationCreatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationCreategeographyKeywordsInput | string[]
-    applicantType?: $Enums.OrganizationApplicantType | null
-    minAward?: number | null
-    maxAward?: number | null
+    serviceAreas?: OrganizationCreateserviceAreasInput | string[]
+    entityType?: $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: $Enums.BudgetRange | null
+    staffRange?: $Enums.StaffRange | null
+    preferredAwardMin?: number | null
+    preferredAwardMax?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
     matchIndexError?: string | null
+    matchIndexCursor?: string | null
+    matchIndexClaimId?: string | null
+    matchIndexClaimedAt?: Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1: string
     address2?: string | null
     city: string
@@ -27478,19 +27881,25 @@ export namespace Prisma {
   export type OrganizationUpdateWithoutGrantMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
@@ -27505,19 +27914,25 @@ export namespace Prisma {
   export type OrganizationUncheckedUpdateWithoutGrantMatchesInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
-    description?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
-    focusKeywords?: OrganizationUpdatefocusKeywordsInput | string[]
-    geographyKeywords?: OrganizationUpdategeographyKeywordsInput | string[]
-    applicantType?: NullableEnumOrganizationApplicantTypeFieldUpdateOperationsInput | $Enums.OrganizationApplicantType | null
-    minAward?: NullableIntFieldUpdateOperationsInput | number | null
-    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
+    serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
+    entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
+    revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
+    budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
+    staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
+    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
+    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
+    matchIndexClaimedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexErrorJson?: NullableJsonNullValueInput | InputJsonValue
     address1?: StringFieldUpdateOperationsInput | string
     address2?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string

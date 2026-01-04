@@ -43,8 +43,7 @@ export async function POST(req: Request) {
 			!address1 ||
 			!city ||
 			!state ||
-			!zipCode ||
-			!description
+			!zipCode
 		) {
 			return NextResponse.json(
 				{ error: 'Missing required fields' },
@@ -59,13 +58,22 @@ export async function POST(req: Request) {
 		}
 
 		// Create or update organization
+		const normalizedDescription = description?.trim();
+		const mission =
+			normalizedDescription && normalizedDescription.length > 0
+				? normalizedDescription
+				: 'TBD';
+
 		const organization = await db.organization.create({
 			data: {
 				id: createId(),
 				name: companyName,
-				description,
-				mission: 'Not specified',
+				description:
+					normalizedDescription && normalizedDescription.length > 0
+						? normalizedDescription
+						: null,
 				focusAreas: [],
+				mission,
 				address1,
 				address2: address2 || undefined,
 				city,

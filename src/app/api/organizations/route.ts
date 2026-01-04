@@ -7,14 +7,17 @@ import { createAPIError, API_ERROR_CODES } from '@/lib/errors';
 
 const organizationSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),
-	mission: z.string().min(10, 'Mission must be at least 10 characters'),
-	focusAreas: z.array(z.string()),
-	location: z.string().min(2, 'Location must be at least 2 characters'),
-	description: z.string().optional().default(''),
-	address1: z.string().optional().default(''),
-	city: z.string().optional().default(''),
-	state: z.string().optional().default(''),
-	zipCode: z.string().optional().default(''),
+	focusAreas: z.array(z.string()).optional(),
+	location: z
+		.string()
+		.min(2, 'Location must be at least 2 characters')
+		.optional(),
+	description: z.string().optional(),
+	address1: z.string().optional(),
+	city: z.string().optional(),
+	state: z.string().optional(),
+	zipCode: z.string().optional(),
+	mission: z.string().max(2000).optional(),
 });
 
 export async function POST(req: Request) {
@@ -42,9 +45,25 @@ export async function POST(req: Request) {
 		try {
 			const body = organizationSchema.parse(json);
 
+			const normalizedDescription =
+				body.description && body.description.trim().length > 0
+					? body.description.trim()
+					: null;
+			const mission =
+				body.mission && body.mission.trim().length > 0
+					? body.mission.trim()
+					: (normalizedDescription ?? 'TBD');
+
 			const organization = await db.organization.create({
 				data: {
-					...body,
+					name: body.name,
+					description: normalizedDescription,
+					mission,
+					focusAreas: body.focusAreas ?? [],
+					address1: body.address1 ?? '',
+					city: body.city ?? '',
+					state: body.state ?? '',
+					zipCode: body.zipCode ?? '',
 					users: {
 						connect: {
 							id: session.user.id,

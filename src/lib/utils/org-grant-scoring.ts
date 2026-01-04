@@ -1,6 +1,6 @@
 // src/lib/utils/org-grant-scoring.ts
 
-export const SCORING_VERSION = 1;
+export const SCORING_VERSION = 3;
 
 type ApplicantType =
 	| 'NONPROFIT'
@@ -11,12 +11,31 @@ type ApplicantType =
 	| 'INDIVIDUAL'
 	| 'OTHER';
 
+type EntityType =
+	| 'NONPROFIT_501C3'
+	| 'NONPROFIT_OTHER'
+	| 'FISCAL_SPONSOR'
+	| 'GOVERNMENT'
+	| 'TRIBE'
+	| 'SCHOOL'
+	| 'FOR_PROFIT'
+	| 'INDIVIDUAL'
+	| 'OTHER';
+
+type BudgetRange =
+	| 'LT_50K'
+	| 'FROM_50K_TO_250K'
+	| 'FROM_250K_TO_1M'
+	| 'FROM_1M_TO_5M'
+	| 'OVER_5M';
+
 type OrganizationProfile = {
-	focusKeywords: string[];
-	geographyKeywords: string[];
-	applicantType: ApplicantType | null;
-	minAward: number | null;
-	maxAward: number | null;
+	focusAreas: string[];
+	serviceAreas: string[];
+	entityType: EntityType | null;
+	budgetRange: BudgetRange | null;
+	preferredAwardMin: number | null;
+	preferredAwardMax: number | null;
 };
 
 type GrantForScoring = {
@@ -36,20 +55,30 @@ type Subscores = {
 };
 
 const WEIGHTS = {
-	eligibility: 0.3,
-	purpose: 0.3,
-	funding: 0.2,
-	geography: 0.2,
+	purpose: 0.55,
+	eligibility: 0.25,
+	geography: 0.15,
+	funding: 0.05,
 };
 
-const applicantKeywordMap: Record<ApplicantType, string[]> = {
-	NONPROFIT: ['nonprofit', 'non-profit', '501c3', '501(c)(3)'],
-	SCHOOL: ['school', 'education', 'k-12', 'university', 'college'],
+const entityKeywordMap: Record<EntityType, string[]> = {
+	NONPROFIT_501C3: ['501c3', '501(c)(3)', 'nonprofit'],
+	NONPROFIT_OTHER: ['nonprofit', 'non-profit'],
+	FISCAL_SPONSOR: ['fiscal sponsor'],
 	GOVERNMENT: ['government', 'public agency', 'city', 'county', 'state'],
 	TRIBE: ['tribe', 'tribal', 'indigenous', 'native'],
-	FOR_PROFIT: ['for-profit', 'business', 'company', 'corporation'],
+	SCHOOL: ['school', 'education', 'k-12', 'university', 'college'],
+	FOR_PROFIT: ['for-profit', 'business', 'company', 'corporation', 'startup'],
 	INDIVIDUAL: ['individual', 'resident', 'person'],
 	OTHER: [],
+};
+
+const BUDGET_RANGE_ESTIMATE: Record<BudgetRange, number> = {
+	LT_50K: 35000,
+	FROM_50K_TO_250K: 150000,
+	FROM_250K_TO_1M: 625000,
+	FROM_1M_TO_5M: 3000000,
+	OVER_5M: 6000000,
 };
 
 const mixedEligibilityKeywords = [
@@ -73,25 +102,41 @@ function dedupe(tokens: string[]): string[] {
 	return Array.from(new Set(tokens));
 }
 
+function clamp(value: number, min: number, max: number): number {
+	return Math.min(max, Math.max(min, value));
+}
+
 function toNumber(value: number | bigint | null | undefined): number | null {
 	if (value === null || value === undefined) return null;
 	return typeof value === 'bigint' ? Number(value) : value;
 }
 
-function calculateEligibilityScore(
-	applicantType: ApplicantType | null,
-	eligibleApplicants: string | null,
-): number {
-	const normalized = normalizeText(eligibleApplicants);
-	if (!normalized) return 0.5;
+function calculateEligibilityScore(params: {
+	entityType: EntityType | null;
+	eligibleApplicants: string | null;
+}): number {
+	const normalized = normalizeText(params.eligibleApplicants);
+	const compact = normalized.replace(/[^a-z0-9]/g, '');
+	if (!normalized) return 0.6;
 
-	const keywords = applicantType
-		? (applicantKeywordMap[applicantType] ?? [])
-		: [];
-	const matchesApplicantType = keywords.some((keyword) =>
+	const profileType = params.entityType;
+	const has501c3 = compact.includes('501c3');
+
+	if (profileType === 'NONPROFIT_501C3' && has501c3) {
+		return 1;
+	}
+
+	const keywords = profileType ? (entityKeywordMap[profileType] ?? []) : [];
+	const matchesProfileType = keywords.some((keyword) =>
 		normalized.includes(keyword),
 	);
-	if (matchesApplicantType) return 1;
+	if (matchesProfileType) {
+		return profileType === 'NONPROFIT_501C3' ? 0.95 : 0.9;
+	}
+
+	if (!profileType && has501c3) {
+		return 0.85;
+	}
 
 	if (
 		mixedEligibilityKeywords.some((keyword) => normalized.includes(keyword))
@@ -99,55 +144,86 @@ function calculateEligibilityScore(
 		return 0.7;
 	}
 
-	const matchesOtherType = Object.entries(applicantKeywordMap)
-		.filter(([type]) => type !== applicantType)
+	const matchesOtherType = Object.entries(entityKeywordMap)
+		.filter(([type]) => type !== profileType)
 		.some(([, otherKeywords]) =>
 			otherKeywords.some((keyword) => normalized.includes(keyword)),
 		);
 
-	return matchesOtherType ? 0.4 : 0.5;
+	return matchesOtherType ? 0.45 : 0.55;
 }
 
 function calculateGeographyScore(
-	geographyKeywords: string[],
+	serviceAreas: string[],
 	eligibleGeographies: string | null,
-): number {
+): {
+	score: number;
+	overlap: string[];
+	isLocalish: boolean;
+	isNational: boolean;
+} {
 	const normalized = normalizeText(eligibleGeographies);
-	if (!normalized) return 0.6;
+	const normalizedAreas = dedupe(
+		serviceAreas.map((keyword) => normalizeText(keyword)).filter(Boolean),
+	);
+
+	if (!normalized) {
+		return {
+			score: normalizedAreas.length > 0 ? 0.55 : 0.6,
+			overlap: [],
+			isLocalish: false,
+			isNational: false,
+		};
+	}
 
 	const hasNationalScope =
 		normalized.includes('nationwide') || normalized.includes('national');
-	if (hasNationalScope) return 1;
+	if (hasNationalScope) {
+		return {
+			score: 0.9,
+			overlap: normalizedAreas,
+			isLocalish: false,
+			isNational: true,
+		};
+	}
 
-	const keywordOverlap = geographyKeywords.some((keyword) =>
-		normalized.includes(normalizeText(keyword)),
+	const isLocalish =
+		normalized.includes('county') ||
+		normalized.includes('local') ||
+		normalized.includes('city');
+
+	const overlap = normalizedAreas.filter((keyword) =>
+		normalized.includes(keyword),
 	);
 
 	let baseScore = 0.6;
 	if (normalized.includes('state')) {
-		baseScore = 0.85;
-	} else if (
-		normalized.includes('county') ||
-		normalized.includes('local') ||
-		normalized.includes('city')
-	) {
+		baseScore = 0.82;
+	} else if (isLocalish) {
 		baseScore = 0.7;
 	}
 
-	if (keywordOverlap) {
-		return Math.min(1, Math.max(baseScore + 0.15, 0.9));
+	if (overlap.length > 0) {
+		return {
+			score: Math.min(1, baseScore + 0.15 + overlap.length * 0.02),
+			overlap,
+			isLocalish,
+			isNational: false,
+		};
 	}
 
-	return baseScore;
+	if (isLocalish) {
+		baseScore = 0.55;
+	}
+
+	return { score: baseScore, overlap: [], isLocalish, isNational: false };
 }
 
 function calculatePurposeScore(
-	focusKeywords: string[],
+	focusAreas: string[],
 	purpose: string | null,
 ): { score: number; overlap: string[] } {
-	const orgTokens = dedupe(
-		focusKeywords.flatMap((keyword) => tokenize(keyword)),
-	);
+	const orgTokens = dedupe(focusAreas.flatMap((keyword) => tokenize(keyword)));
 	const purposeTokens = dedupe(tokenize(purpose ?? ''));
 
 	if (orgTokens.length === 0 || purposeTokens.length === 0) {
@@ -156,32 +232,58 @@ function calculatePurposeScore(
 
 	const purposeSet = new Set(purposeTokens);
 	const overlap = orgTokens.filter((token) => purposeSet.has(token));
-	const overlapRatio = overlap.length / orgTokens.length;
+	const unionSize = new Set([...orgTokens, ...purposeTokens]).size;
+	const jaccard = unionSize === 0 ? 0 : overlap.length / unionSize;
+	let score = clamp(0.25 + jaccard * 1.1, 0, 1);
+	if (overlap.length >= 3) {
+		score = clamp(score + 0.05, 0, 1);
+	}
 
-	return { score: Math.min(1, overlapRatio), overlap };
+	return { score, overlap };
 }
 
 function calculateFundingScore(
-	minAward: number | null,
-	maxAward: number | null,
+	budgetRange: BudgetRange | null,
+	preferredAwardMin: number | null,
+	preferredAwardMax: number | null,
 	grantAmount: number | null,
 ): { score: number; inRange: boolean } {
-	if (grantAmount === null || (minAward === null && maxAward === null)) {
+	if (grantAmount === null) {
 		return { score: 0.5, inRange: false };
 	}
 
-	if (minAward !== null && maxAward !== null) {
-		const inRange = grantAmount >= minAward && grantAmount <= maxAward;
+	if (budgetRange) {
+		const budgetSize = BUDGET_RANGE_ESTIMATE[budgetRange];
+		const ratio = grantAmount / budgetSize;
+		if (ratio >= 0.05 && ratio <= 0.3) {
+			return { score: 0.95, inRange: true };
+		}
+		if (ratio >= 0.03 && ratio <= 0.5) {
+			return { score: 0.85, inRange: true };
+		}
+		if (ratio >= 0.02 && ratio <= 0.8) {
+			return { score: 0.7, inRange: false };
+		}
+		return { score: 0.45, inRange: false };
+	}
+
+	if (preferredAwardMin !== null && preferredAwardMax !== null) {
+		const inRange =
+			grantAmount >= preferredAwardMin && grantAmount <= preferredAwardMax;
 		return { score: inRange ? 0.9 : 0.5, inRange };
 	}
 
-	if (minAward !== null) {
-		const inRange = grantAmount >= minAward;
+	if (preferredAwardMin !== null) {
+		const inRange = grantAmount >= preferredAwardMin;
 		return { score: inRange ? 0.8 : 0.45, inRange };
 	}
 
-	const inRange = grantAmount <= (maxAward as number);
-	return { score: inRange ? 0.8 : 0.45, inRange };
+	if (preferredAwardMax !== null) {
+		const inRange = grantAmount <= preferredAwardMax;
+		return { score: inRange ? 0.8 : 0.45, inRange };
+	}
+
+	return { score: 0.5, inRange: false };
 }
 
 function selectGrantAmount(grant: GrantForScoring): number | null {
@@ -197,12 +299,38 @@ function selectGrantAmount(grant: GrantForScoring): number | null {
 	return null;
 }
 
-function formatApplicantType(type: ApplicantType | null): string {
-	if (!type) return 'organization';
-	return type
+function formatEntityType(entityType: EntityType | null): string {
+	if (!entityType) return 'organization';
+	if (entityType === 'NONPROFIT_501C3') return '501(c)(3) nonprofit';
+	return entityType
 		.toLowerCase()
 		.replace(/_/g, ' ')
 		.replace(/(^|\s)(\w)/g, (match) => match.toUpperCase());
+}
+
+export function getApplicantType(
+	entityType: EntityType | null,
+): ApplicantType | null {
+	switch (entityType) {
+		case 'NONPROFIT_501C3':
+		case 'NONPROFIT_OTHER':
+		case 'FISCAL_SPONSOR':
+			return 'NONPROFIT';
+		case 'SCHOOL':
+			return 'SCHOOL';
+		case 'GOVERNMENT':
+			return 'GOVERNMENT';
+		case 'TRIBE':
+			return 'TRIBE';
+		case 'FOR_PROFIT':
+			return 'FOR_PROFIT';
+		case 'INDIVIDUAL':
+			return 'INDIVIDUAL';
+		case 'OTHER':
+			return 'OTHER';
+		default:
+			return null;
+	}
 }
 
 export function computeOrgGrantFitScore(
@@ -213,38 +341,59 @@ export function computeOrgGrantFitScore(
 	subscores: Subscores;
 	explanation: string;
 } {
-	const eligibility = calculateEligibilityScore(
-		org.applicantType,
-		grant.eligibleApplicants,
-	);
-	const geography = calculateGeographyScore(
-		org.geographyKeywords,
-		grant.eligibleGeographies,
-	);
+	const eligibility = calculateEligibilityScore({
+		entityType: org.entityType,
+		eligibleApplicants: grant.eligibleApplicants,
+	});
+	const {
+		score: geography,
+		overlap: geographyOverlap,
+		isLocalish,
+		isNational,
+	} = calculateGeographyScore(org.serviceAreas, grant.eligibleGeographies);
 	const { score: purpose, overlap } = calculatePurposeScore(
-		org.focusKeywords,
+		org.focusAreas,
 		grant.purpose,
 	);
 	const amount = selectGrantAmount(grant);
 	const { score: funding } = calculateFundingScore(
-		org.minAward,
-		org.maxAward,
+		org.budgetRange,
+		org.preferredAwardMin,
+		org.preferredAwardMax,
 		amount,
 	);
 
-	const weighted =
-		eligibility * WEIGHTS.eligibility +
+	const weightedBase =
 		purpose * WEIGHTS.purpose +
-		funding * WEIGHTS.funding +
-		geography * WEIGHTS.geography;
+		eligibility * WEIGHTS.eligibility +
+		geography * WEIGHTS.geography +
+		funding * WEIGHTS.funding;
+
+	// Minor bias toward purpose to keep strong mission matches high.
+	let total = weightedBase + purpose * 0.03;
+
+	if (eligibility < 0.5) {
+		total *= 0.6;
+	}
+
+	const localMismatch = isLocalish && geographyOverlap.length === 0;
+	if (localMismatch) {
+		total *= 0.7;
+	}
+
+	if (funding < 0.45) {
+		total *= 0.85;
+	}
+
+	total = clamp(total, 0, 1);
 
 	const subscores: Subscores = { eligibility, geography, purpose, funding };
-	const fitScore = weighted * 10;
+	const fitScore = total * 10;
 
 	const explanationParts: string[] = [];
 	if (eligibility >= 0.9) {
 		explanationParts.push(
-			`Matched ${formatApplicantType(org.applicantType)} eligibility`,
+			`Matched ${formatEntityType(org.entityType)} eligibility`,
 		);
 	} else if (eligibility >= 0.7) {
 		explanationParts.push('Broad organizational eligibility');
@@ -254,12 +403,19 @@ export function computeOrgGrantFitScore(
 		explanationParts.push(
 			`Shared focus keywords: ${overlap.slice(0, 3).join(', ')}`,
 		);
+		if (purpose >= 0.8) {
+			explanationParts.push('Strong mission match');
+		}
 	}
 
-	if (geography >= 0.95) {
+	if (geography >= 0.9 || isNational) {
 		explanationParts.push('Nationwide eligibility');
-	} else if (geography >= 0.85) {
+	} else if (geography >= 0.75) {
 		explanationParts.push('Geography overlap');
+	} else if (geographyOverlap.length > 0) {
+		explanationParts.push(
+			`Service area match: ${geographyOverlap.slice(0, 2).join(', ')}`,
+		);
 	}
 
 	if (funding >= 0.8) {
@@ -270,7 +426,7 @@ export function computeOrgGrantFitScore(
 
 	const explanation =
 		explanationParts.join(' + ') ||
-		`Relevance estimated for ${formatApplicantType(org.applicantType)}.`;
+		`Relevance estimated for ${formatEntityType(org.entityType)}.`;
 
 	return { fitScore, subscores, explanation };
 }

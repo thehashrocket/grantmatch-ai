@@ -1,10 +1,11 @@
 import { router, publicProcedure } from '../trpc';
 import { z } from 'zod';
 import { container } from '@/lib/container';
+import type { $Enums } from '@/prisma/generated/client';
 import type { GrantSearchFilters } from '@/lib/types/grant';
 import { backfillGrantMatchesForOrg } from '@/server/grants/match/backfillOrganization';
 
-type MatchIndexStatus = 'NOT_STARTED' | 'RUNNING' | 'COMPLETE' | 'FAILED';
+type MatchIndexStatus = $Enums.MatchIndexStatus;
 
 export const grantsRouter = router({
 	getMatches: publicProcedure
@@ -42,22 +43,26 @@ export const grantsRouter = router({
 				sort: filters.sort ?? 'FIT_DESC',
 			};
 
-			const organizationId = (ctx.session?.organizationId as string | null) ?? null;
+			const organizationId =
+				(ctx.session?.organizationId as string | null) ?? null;
 			let matchIndexStatus: MatchIndexStatus | null = null;
 			let useOrgMatches = false;
 
 			if (organizationId) {
 				const organization = (await ctx.prisma.organization.findUnique({
 					where: { id: organizationId },
-					select: { matchIndexStatus: true } as any,
-				})) as { matchIndexStatus?: MatchIndexStatus | null } | null;
+					select: { matchIndexStatus: true },
+				})) || { matchIndexStatus: null };
 				matchIndexStatus = organization?.matchIndexStatus ?? null;
 
 				if (
 					matchIndexStatus === 'NOT_STARTED' ||
 					matchIndexStatus === 'FAILED'
 				) {
-					void backfillGrantMatchesForOrg({ prisma: ctx.prisma, organizationId });
+					void backfillGrantMatchesForOrg({
+						prisma: ctx.prisma,
+						organizationId,
+					});
 				}
 
 				useOrgMatches = matchIndexStatus === 'COMPLETE';
@@ -105,22 +110,26 @@ export const grantsRouter = router({
 				sort: filters.sort ?? 'FIT_DESC',
 			};
 
-			const organizationId = (ctx.session?.organizationId as string | null) ?? null;
+			const organizationId =
+				(ctx.session?.organizationId as string | null) ?? null;
 			let matchIndexStatus: MatchIndexStatus | null = null;
 			let useOrgMatches = false;
 
 			if (organizationId) {
 				const organization = (await ctx.prisma.organization.findUnique({
 					where: { id: organizationId },
-					select: { matchIndexStatus: true } as any,
-				})) as { matchIndexStatus?: MatchIndexStatus | null } | null;
+					select: { matchIndexStatus: true },
+				})) || { matchIndexStatus: null };
 				matchIndexStatus = organization?.matchIndexStatus ?? null;
 
 				if (
 					matchIndexStatus === 'NOT_STARTED' ||
 					matchIndexStatus === 'FAILED'
 				) {
-					void backfillGrantMatchesForOrg({ prisma: ctx.prisma, organizationId });
+					void backfillGrantMatchesForOrg({
+						prisma: ctx.prisma,
+						organizationId,
+					});
 				}
 
 				useOrgMatches = matchIndexStatus === 'COMPLETE';

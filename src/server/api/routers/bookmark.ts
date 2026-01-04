@@ -7,6 +7,7 @@ import {
 	calculateDaysUntilDeadline,
 	calculateGrantFitScore,
 } from '@/lib/utils/grant-scoring';
+import { normalizeTags } from '@/lib/utils/normalizeTags';
 import type { GrantMatch } from '@/lib/types/grant';
 import { $Enums, Prisma } from '@/prisma/generated/client';
 import type { PrismaClient } from '@/prisma/generated/client';
@@ -50,33 +51,6 @@ const bookmarkGrantSelect = {
 type BookmarkGrant = Prisma.GrantGetPayload<{
 	select: typeof bookmarkGrantSelect;
 }>;
-
-const normalizeTags = (tags?: string[] | null) => {
-	if (!tags) return [];
-	const cleaned = tags
-		.map((tag) => tag.replace(/\s+/g, ' ').trim().toLowerCase())
-		.filter((tag) => tag.length > 0);
-
-	const unique = Array.from(new Set(cleaned));
-
-	if (unique.length > 10) {
-		throw new TRPCError({
-			code: 'BAD_REQUEST',
-			message: 'TAG_LIMIT_EXCEEDED',
-		});
-	}
-
-	for (const tag of unique) {
-		if (tag.length > 30) {
-			throw new TRPCError({
-				code: 'BAD_REQUEST',
-				message: 'TAG_TOO_LONG',
-			});
-		}
-	}
-
-	return unique;
-};
 
 const mapGrantToMatch = (
 	grant: BookmarkGrant,

@@ -25,14 +25,42 @@ enum UserRole {
   ADMIN
 }
 
-enum OrganizationApplicantType {
-  NONPROFIT
-  SCHOOL
+enum OrganizationEntityType {
+  NONPROFIT_501C3
+  NONPROFIT_OTHER
+  FISCAL_SPONSOR
   GOVERNMENT
   TRIBE
+  SCHOOL
   FOR_PROFIT
   INDIVIDUAL
   OTHER
+}
+
+enum RevenueSource {
+  DONATIONS
+  GRANTS
+  GOV_CONTRACTS
+  PROGRAM_FEES
+  MEMBERSHIPS
+  CORPORATE_SPONSORS
+  OTHER
+}
+
+enum BudgetRange {
+  LT_50K
+  FROM_50K_TO_250K
+  FROM_250K_TO_1M
+  FROM_1M_TO_5M
+  OVER_5M
+}
+
+enum StaffRange {
+  ZERO
+  ONE_TO_FIVE
+  SIX_TO_TWENTY
+  TWENTY_ONE_TO_ONE_HUNDRED
+  OVER_ONE_HUNDRED
 }
 
 model Account {
@@ -244,21 +272,27 @@ model VerificationToken {
 }
 
 model Organization {
-  id          String       @id @default(uuid())
-  name        String
-  description String       @db.Text
-  mission     String       @default("Not specified")
-  focusAreas  String[]
-  focusKeywords     String[]                  @default([])
-  geographyKeywords String[]                  @default([])
-  applicantType     OrganizationApplicantType?
-  minAward          Int?
-  maxAward          Int?
-  scoringVersion    Int                       @default(1)
+  id                String       @id @default(uuid())
+  name              String
+  description       String?      @db.Text
+  mission           String       @db.Text
+  focusAreas        String[]                  @default([])
+  serviceAreas      String[]                  @default([])
+  entityType        OrganizationEntityType?
+  revenueSources    RevenueSource[]           @default([])
+  budgetRange       BudgetRange?
+  staffRange        StaffRange?
+  preferredAwardMin Int?
+  preferredAwardMax Int?
+  scoringVersion    Int                       @default(2)
   matchIndexStatus  MatchIndexStatus          @default(NOT_STARTED)
   matchIndexedAt    DateTime?
   matchIndexedCount Int                       @default(0)
   matchIndexError   String?
+  matchIndexCursor     String?
+  matchIndexClaimId    String?
+  matchIndexClaimedAt  DateTime?
+  matchIndexErrorJson  Json?                  @db.JsonB
   address1          String
   address2          String?
   city              String
@@ -269,6 +303,8 @@ model Organization {
   grantMatches      GrantMatch[]
   createdAt         DateTime                  @default(now())
   updatedAt         DateTime                  @updatedAt
+
+  @@index([matchIndexStatus])
 }
 
 enum InvitationStatus {

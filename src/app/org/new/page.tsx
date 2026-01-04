@@ -21,7 +21,7 @@ import { useState } from 'react';
 
 const organizationSchema = z.object({
 	name: z.string().min(2, 'Name must be at least 2 characters'),
-	mission: z.string().min(10, 'Mission must be at least 10 characters'),
+	description: z.string().min(10, 'Description must be at least 10 characters'),
 	focusAreas: z.string().min(2, 'At least one focus area is required'),
 	location: z.string().min(2, 'Location must be at least 2 characters'),
 });
@@ -36,7 +36,7 @@ export default function NewOrganizationPage() {
 		resolver: zodResolver(organizationSchema),
 		defaultValues: {
 			name: '',
-			mission: '',
+			description: '',
 			focusAreas: '',
 			location: '',
 		},
@@ -50,6 +50,7 @@ export default function NewOrganizationPage() {
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
 					...data,
+					description: data.description,
 					focusAreas: data.focusAreas.split(',').map((area) => area.trim()),
 				}),
 			});
@@ -104,13 +105,13 @@ export default function NewOrganizationPage() {
 
 						<FormField
 							control={form.control}
-							name="mission"
+							name="description"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Mission Statement</FormLabel>
+									<FormLabel>Organization Description</FormLabel>
 									<FormControl>
 										<Textarea
-											placeholder="Describe your organization's mission"
+											placeholder="Describe your organization or mission"
 											{...field}
 										/>
 									</FormControl>

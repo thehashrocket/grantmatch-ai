@@ -2,11 +2,12 @@ import { describe, expect, it } from 'vitest';
 import { computeOrgGrantFitScore } from './org-grant-scoring';
 
 const baseOrg = {
-	focusKeywords: ['housing', 'youth services'],
-	geographyKeywords: ['california', 'bay area'],
-	applicantType: 'NONPROFIT' as const,
-	minAward: 10000,
-	maxAward: 50000,
+	focusAreas: ['housing', 'youth services'],
+	serviceAreas: ['california', 'bay area'],
+	entityType: 'NONPROFIT_501C3' as const,
+	budgetRange: 'FROM_50K_TO_250K' as const,
+	preferredAwardMin: null,
+	preferredAwardMax: null,
 };
 
 const baseGrant = {
@@ -19,15 +20,28 @@ const baseGrant = {
 };
 
 describe('computeOrgGrantFitScore', () => {
-	it('boosts eligibility for matching applicant type', () => {
+	it('boosts eligibility when entity type matches nonprofit 501(c)(3)', () => {
 		const { subscores } = computeOrgGrantFitScore(baseOrg, baseGrant);
-		expect(subscores.eligibility).toBeGreaterThanOrEqual(0.9);
+		const { subscores: nonProfitOther } = computeOrgGrantFitScore(
+			{ ...baseOrg, entityType: 'FOR_PROFIT' },
+			baseGrant,
+		);
+		expect(subscores.eligibility).toBeGreaterThan(nonProfitOther.eligibility);
 	});
 
-	it('increases purpose subscore when focus keywords overlap', () => {
+	it('detects 501(c)(3) when formatted with spaces or parentheses', () => {
+		const messyGrant = {
+			...baseGrant,
+			eligibleApplicants: 'Eligible applicants include 501 c 3 organizations.',
+		};
+		const { subscores } = computeOrgGrantFitScore(baseOrg, messyGrant);
+		expect(subscores.eligibility).toBeGreaterThan(0.9);
+	});
+
+	it('increases purpose subscore when focus areas overlap', () => {
 		const withOverlap = computeOrgGrantFitScore(baseOrg, baseGrant);
 		const withoutOverlap = computeOrgGrantFitScore(
-			{ ...baseOrg, focusKeywords: ['agriculture'] },
+			{ ...baseOrg, focusAreas: ['agriculture'] },
 			baseGrant,
 		);
 		expect(withOverlap.subscores.purpose).toBeGreaterThan(
@@ -35,25 +49,85 @@ describe('computeOrgGrantFitScore', () => {
 		);
 	});
 
-	it('boosts geography when geographyKeywords match', () => {
+	it('keeps purpose strong when overlap exists even with extra keywords', () => {
+		const extendedOrg = {
+			...baseOrg,
+			focusAreas: ['housing', 'youth services', 'community', 'development'],
+		};
+		const { subscores } = computeOrgGrantFitScore(extendedOrg, baseGrant);
+		expect(subscores.purpose).toBeGreaterThan(0.4);
+	});
+
+	it('boosts geography when service areas match and caps national scope', () => {
 		const withGeo = computeOrgGrantFitScore(baseOrg, baseGrant);
-		const withoutGeo = computeOrgGrantFitScore(
-			{ ...baseOrg, geographyKeywords: ['new york'] },
-			baseGrant,
+		const nationwide = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: ['anywhere'] },
+			{ ...baseGrant, eligibleGeographies: 'National program' },
 		);
+		expect(nationwide.subscores.geography).toBeCloseTo(0.9);
 		expect(withGeo.subscores.geography).toBeGreaterThan(
-			withoutGeo.subscores.geography,
+			nationwide.subscores.geography - 0.05,
 		);
 	});
 
-	it('favors funding within the org range', () => {
-		const inRange = computeOrgGrantFitScore(baseOrg, baseGrant);
+	it('penalizes local mismatch geography', () => {
+		const mismatch = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: ['san francisco'] },
+			{ ...baseGrant, eligibleGeographies: 'Los Angeles county only' },
+		);
+		const overlap = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: ['los angeles'] },
+			{ ...baseGrant, eligibleGeographies: 'Los Angeles county only' },
+		);
+		expect(mismatch.fitScore).toBeLessThan(overlap.fitScore);
+	});
+
+	it('favors funding within the org budget range', () => {
+		const inRange = computeOrgGrantFitScore(
+			{ ...baseOrg, budgetRange: 'FROM_50K_TO_250K' },
+			baseGrant,
+		);
 		const outOfRange = computeOrgGrantFitScore(
-			{ ...baseOrg },
+			{ ...baseOrg, budgetRange: 'LT_50K' },
 			{ ...baseGrant, estimatedTotalFunding: 500000 },
 		);
 		expect(inRange.subscores.funding).toBeGreaterThan(
 			outOfRange.subscores.funding,
 		);
+	});
+
+	it('makes purpose the dominant driver of fit', () => {
+		const purposePerfect = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: [] },
+			{
+				...baseGrant,
+				eligibleApplicants: null,
+				eligibleGeographies: null,
+				purpose: 'housing youth services',
+				estimatedTotalFunding: null,
+			},
+		);
+		expect(purposePerfect.fitScore).toBeGreaterThanOrEqual(8);
+	});
+
+	it('applies soft gate when eligibility is weak', () => {
+		const strongEligibility = computeOrgGrantFitScore(baseOrg, baseGrant);
+		const weakEligibility = computeOrgGrantFitScore(
+			{ ...baseOrg, entityType: 'FOR_PROFIT' },
+			{ ...baseGrant, eligibleApplicants: 'Nonprofit organizations only' },
+		);
+		expect(weakEligibility.fitScore).toBeLessThan(strongEligibility.fitScore);
+	});
+
+	it('reduces score for local geography mismatch', () => {
+		const mismatch = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: ['san francisco'] },
+			{ ...baseGrant, eligibleGeographies: 'Local city programs only' },
+		);
+		const generic = computeOrgGrantFitScore(
+			{ ...baseOrg, serviceAreas: ['san francisco'] },
+			{ ...baseGrant, eligibleGeographies: 'Statewide programs' },
+		);
+		expect(mismatch.fitScore).toBeLessThan(generic.fitScore);
 	});
 });

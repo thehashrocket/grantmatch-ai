@@ -1,4 +1,6 @@
-import type { Prisma, PrismaClient } from '@/prisma/generated/client';
+// src/server/grants/match/upsertGrantMatch.ts
+
+import type { Prisma, PrismaClient, $Enums } from '@/prisma/generated/client';
 import {
 	SCORING_VERSION,
 	computeOrgGrantFitScore,
@@ -8,50 +10,46 @@ type PrismaLike = Pick<PrismaClient, 'organization' | 'grant' | 'grantMatch'>;
 
 const BATCH_SIZE = 100;
 
+type OrganizationForMatch = {
+	id: string;
+	focusAreas: string[] | null;
+	serviceAreas: string[] | null;
+	entityType: Prisma.OrganizationWhereInput['entityType'];
+	budgetRange: Prisma.OrganizationWhereInput['budgetRange'];
+	preferredAwardMin: number | null;
+	preferredAwardMax: number | null;
+	scoringVersion: number | null;
+};
+
+type GrantForMatch = {
+	id: string;
+	eligibleApplicants: string | null;
+	eligibleGeographies: string | null;
+	purpose: string | null;
+	estimatedTotalFunding: bigint | number | null;
+	awardFloor: bigint | number | null;
+	awardCeiling: bigint | number | null;
+};
+
 export async function upsertGrantMatch(params: {
 	prisma: PrismaLike;
-	organizationId: string | null;
-	grantId: string;
+	organization: OrganizationForMatch;
+	grant: GrantForMatch;
+	version: number;
 }) {
-	const { prisma, organizationId, grantId } = params;
-	if (!organizationId) return null;
-
-	const organization = await prisma.organization.findUnique({
-		where: { id: organizationId },
-		select: {
-			id: true,
-			focusKeywords: true,
-			geographyKeywords: true,
-			applicantType: true,
-			minAward: true,
-			maxAward: true,
-		},
-	});
-
-	if (!organization) return null;
-
-	const grant = await prisma.grant.findUnique({
-		where: { id: grantId },
-		select: {
-			id: true,
-			eligibleApplicants: true,
-			eligibleGeographies: true,
-			purpose: true,
-			estimatedTotalFunding: true,
-			awardFloor: true,
-			awardCeiling: true,
-		},
-	});
-
-	if (!grant) return null;
+	const { prisma, organization, grant, version } = params;
 
 	const computed = computeOrgGrantFitScore(
 		{
-			focusKeywords: organization.focusKeywords ?? [],
-			geographyKeywords: organization.geographyKeywords ?? [],
-			applicantType: organization.applicantType ?? null,
-			minAward: organization.minAward ?? null,
-			maxAward: organization.maxAward ?? null,
+			focusAreas: organization.focusAreas ?? [],
+			serviceAreas: organization.serviceAreas ?? [],
+			entityType:
+				(organization.entityType as $Enums.OrganizationEntityType | null) ??
+				null,
+			budgetRange:
+				(organization.budgetRange as $Enums.BudgetRange | null) ?? null,
+			preferredAwardMin: organization.preferredAwardMin ?? null,
+			preferredAwardMax: organization.preferredAwardMax ?? null,
 		},
 		grant,
 	);
@@ -60,20 +58,23 @@ export async function upsertGrantMatch(params: {
 
 	await prisma.grantMatch.upsert({
 		where: {
-			organizationId_grantId: { organizationId: organization.id, grantId },
+			organizationId_grantId: {
+				organizationId: organization.id,
+				grantId: grant.id,
+			},
 		},
 		create: {
 			organizationId: organization.id,
-			grantId,
+			grantId: grant.id,
 			fitScore: computed.fitScore,
-			version: SCORING_VERSION,
+			version,
 			computedAt: now,
 			subscoresJson: computed.subscores as Prisma.InputJsonValue,
 			explanation: computed.explanation,
 		},
 		update: {
 			fitScore: computed.fitScore,
-			version: SCORING_VERSION,
+			version,
 			computedAt: now,
 			subscoresJson: computed.subscores as Prisma.InputJsonValue,
 			explanation: computed.explanation,
@@ -87,9 +88,10 @@ export async function ensureGrantMatches(params: {
 	prisma: PrismaLike;
 	organizationId: string | null;
 	grantIds: string[];
+	scoringVersion?: number;
 }) {
 	const { prisma, organizationId } = params;
-	let { grantIds } = params;
+	let { grantIds, scoringVersion } = params;
 
 	if (!organizationId) {
 		return { createdCount: 0, updatedCount: 0 };
@@ -99,6 +101,27 @@ export async function ensureGrantMatches(params: {
 	if (grantIds.length === 0) {
 		return { createdCount: 0, updatedCount: 0 };
 	}
+
+	const organization = await prisma.organization.findUnique({
+		where: { id: organizationId },
+		select: {
+			id: true,
+			focusAreas: true,
+			serviceAreas: true,
+			entityType: true,
+			budgetRange: true,
+			preferredAwardMin: true,
+			preferredAwardMax: true,
+			scoringVersion: true,
+		},
+	});
+
+	if (!organization) {
+		return { createdCount: 0, updatedCount: 0 };
+	}
+
+	const targetVersion =
+		scoringVersion ?? organization.scoringVersion ?? SCORING_VERSION;
 
 	const existingMatches = await prisma.grantMatch.findMany({
 		where: {
@@ -113,30 +136,54 @@ export async function ensureGrantMatches(params: {
 	);
 
 	const needsUpsert = grantIds.filter(
-		(grantId) => versionByGrant.get(grantId) !== SCORING_VERSION,
+		(grantId) => versionByGrant.get(grantId) !== targetVersion,
 	);
 
 	let createdCount = 0;
 	let updatedCount = 0;
 
 	for (const batch of chunk(needsUpsert, BATCH_SIZE)) {
-		await Promise.all(
-			batch.map(async (grantId) => {
-				const wasExisting = versionByGrant.has(grantId);
-				const result = await upsertGrantMatch({
+		const grants = await prisma.grant.findMany({
+			where: { id: { in: batch } },
+			select: {
+				id: true,
+				eligibleApplicants: true,
+				eligibleGeographies: true,
+				purpose: true,
+				estimatedTotalFunding: true,
+				awardFloor: true,
+				awardCeiling: true,
+				details: {
+					select: { purpose: true },
+				},
+			},
+		});
+
+		const results = await Promise.all(
+			grants.map(async (grant) => {
+				const wasExisting = versionByGrant.has(grant.id);
+				const { details, ...baseGrant } = grant;
+				const grantForMatch: GrantForMatch = {
+					...baseGrant,
+					purpose: details?.purpose ?? grant.purpose ?? null,
+				};
+				await upsertGrantMatch({
 					prisma,
-					organizationId,
-					grantId,
+					organization,
+					grant: grantForMatch,
+					version: targetVersion,
 				});
 
-				if (!result) return;
-				if (wasExisting) {
-					updatedCount += 1;
-				} else {
-					createdCount += 1;
-				}
+				return wasExisting
+					? { created: 0, updated: 1 }
+					: { created: 1, updated: 0 };
 			}),
 		);
+
+		for (const result of results) {
+			createdCount += result.created;
+			updatedCount += result.updated;
+		}
 	}
 
 	return { createdCount, updatedCount };

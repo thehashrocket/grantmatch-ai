@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ProfileForm } from '@/components/profile/profile-form';
 import { BookmarkedGrants } from '@/components/profile/bookmarked-grants';
+import { OrganizationMatchForm } from '@/components/profile/organization-match-form';
 
 export const metadata: Metadata = {
 	title: 'Profile - AI GrantMatch',
@@ -26,6 +27,7 @@ export default async function ProfilePage() {
 					</p>
 				</div>
 				<ProfileForm user={session.user} />
+				<OrganizationMatchForm />
 				<section className="space-y-4">
 					<div>
 						<h2 className="text-2xl font-semibold tracking-tight">

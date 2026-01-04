@@ -101,6 +101,9 @@ export function OrganizationMatchForm() {
 	>();
 	const [focusAreas, setFocusAreas] = useState<string[]>([]);
 	const [serviceAreas, setServiceAreas] = useState<string[]>([]);
+	const [priorityFocusKeywords, setPriorityFocusKeywords] = useState<string[]>(
+		[],
+	);
 
 	useEffect(() => {
 		if (!data) return;
@@ -110,6 +113,7 @@ export function OrganizationMatchForm() {
 		setStaffRange(data.staffRange ?? undefined);
 		setFocusAreas(data.focusAreas ?? []);
 		setServiceAreas(data.serviceAreas ?? []);
+		setPriorityFocusKeywords(data.priorityFocusKeywords ?? []);
 	}, [data]);
 
 	const selectedRevenueSources = useMemo(
@@ -137,6 +141,7 @@ export function OrganizationMatchForm() {
 			staffRange: staffRange ?? null,
 			focusAreas,
 			serviceAreas,
+			priorityFocusKeywords,
 		});
 	};
 
@@ -317,6 +322,19 @@ export function OrganizationMatchForm() {
 								<p className="text-sm text-muted-foreground">
 									Add topics like &quot;affordable housing&quot; or &quot;youth
 									services&quot; to improve purpose matching.
+								</p>
+							</div>
+							<div className="space-y-2">
+								<Label>Priority focus (top 5)</Label>
+								<BookmarkTagsInput
+									tags={priorityFocusKeywords}
+									onChange={setPriorityFocusKeywords}
+									disabled={mutation.isPending}
+									maxTags={5}
+								/>
+								<p className="text-sm text-muted-foreground">
+									These keywords are weighted higher for purpose matching. Keep
+									it to your top 5 priorities.
 								</p>
 							</div>
 							<div className="space-y-2">

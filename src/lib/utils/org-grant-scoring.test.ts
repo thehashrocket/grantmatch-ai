@@ -3,6 +3,7 @@ import { computeOrgGrantFitScore } from './org-grant-scoring';
 
 const baseOrg = {
 	focusAreas: ['housing', 'youth services'],
+	priorityFocusKeywords: [],
 	serviceAreas: ['california', 'bay area'],
 	entityType: 'NONPROFIT_501C3' as const,
 	budgetRange: 'FROM_50K_TO_250K' as const,
@@ -49,13 +50,52 @@ describe('computeOrgGrantFitScore', () => {
 		);
 	});
 
+	it('boosts priority focus keywords heavier than regular focus areas', () => {
+		const priorityOrg = {
+			...baseOrg,
+			priorityFocusKeywords: ['housing', 'homelessness'],
+			focusAreas: ['arts', 'music'],
+		};
+		const result = computeOrgGrantFitScore(priorityOrg, {
+			...baseGrant,
+			purpose: 'Housing stability and homelessness prevention programs',
+		});
+		expect(result.subscores.purpose).toBeGreaterThanOrEqual(0.85);
+		expect(result.explanation.toLowerCase()).toContain('priority focus');
+	});
+
+	it('scores lower when only non-priority focus areas match', () => {
+		const priorityOrg = {
+			...baseOrg,
+			priorityFocusKeywords: ['housing', 'homelessness'],
+			focusAreas: ['arts', 'music'],
+		};
+		const nonPriorityOrg = {
+			...baseOrg,
+			priorityFocusKeywords: [],
+			focusAreas: ['housing', 'homelessness'],
+		};
+
+		const grant = {
+			...baseGrant,
+			purpose: 'Housing stability and homelessness prevention programs',
+		};
+
+		const priorityScore = computeOrgGrantFitScore(priorityOrg, grant);
+		const nonPriorityScore = computeOrgGrantFitScore(nonPriorityOrg, grant);
+
+		expect(priorityScore.subscores.purpose).toBeGreaterThan(
+			nonPriorityScore.subscores.purpose,
+		);
+	});
+
 	it('keeps purpose strong when overlap exists even with extra keywords', () => {
 		const extendedOrg = {
 			...baseOrg,
 			focusAreas: ['housing', 'youth services', 'community', 'development'],
 		};
 		const { subscores } = computeOrgGrantFitScore(extendedOrg, baseGrant);
-		expect(subscores.purpose).toBeGreaterThan(0.4);
+		expect(subscores.purpose).toBeGreaterThan(0.3);
 	});
 
 	it('boosts geography when service areas match and caps national scope', () => {
@@ -98,7 +138,12 @@ describe('computeOrgGrantFitScore', () => {
 
 	it('makes purpose the dominant driver of fit', () => {
 		const purposePerfect = computeOrgGrantFitScore(
-			{ ...baseOrg, serviceAreas: [] },
+			{
+				...baseOrg,
+				serviceAreas: [],
+				priorityFocusKeywords: ['housing', 'youth', 'services'],
+				focusAreas: [],
+			},
 			{
 				...baseGrant,
 				eligibleApplicants: null,

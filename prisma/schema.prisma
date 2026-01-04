@@ -277,6 +277,7 @@ model Organization {
   description       String?      @db.Text
   mission           String       @db.Text
   focusAreas        String[]                  @default([])
+  priorityFocusKeywords String[]              @default([])
   serviceAreas      String[]                  @default([])
   entityType        OrganizationEntityType?
   revenueSources    RevenueSource[]           @default([])
@@ -284,7 +285,7 @@ model Organization {
   staffRange        StaffRange?
   preferredAwardMin Int?
   preferredAwardMax Int?
-  scoringVersion    Int                       @default(2)
+  scoringVersion    Int                       @default(4)
   matchIndexStatus  MatchIndexStatus          @default(NOT_STARTED)
   matchIndexedAt    DateTime?
   matchIndexedCount Int                       @default(0)

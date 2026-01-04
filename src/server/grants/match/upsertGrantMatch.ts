@@ -13,6 +13,7 @@ const BATCH_SIZE = 100;
 type OrganizationForMatch = {
 	id: string;
 	focusAreas: string[] | null;
+	priorityFocusKeywords: string[] | null;
 	serviceAreas: string[] | null;
 	entityType: Prisma.OrganizationWhereInput['entityType'];
 	budgetRange: Prisma.OrganizationWhereInput['budgetRange'];
@@ -42,6 +43,7 @@ export async function upsertGrantMatch(params: {
 	const computed = computeOrgGrantFitScore(
 		{
 			focusAreas: organization.focusAreas ?? [],
+			priorityFocusKeywords: organization.priorityFocusKeywords ?? [],
 			serviceAreas: organization.serviceAreas ?? [],
 			entityType:
 				(organization.entityType as $Enums.OrganizationEntityType | null) ??
@@ -107,6 +109,7 @@ export async function ensureGrantMatches(params: {
 		select: {
 			id: true,
 			focusAreas: true,
+			priorityFocusKeywords: true,
 			serviceAreas: true,
 			entityType: true,
 			budgetRange: true,

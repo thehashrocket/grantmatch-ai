@@ -10,6 +10,17 @@ import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 import { normalizeTags, normalizeText } from '@/lib/utils/normalizeTags';
 import type { Prisma } from '@/prisma/generated/client';
 
+const normalizePriorityKeywords = (values?: string[] | null) => {
+	const normalized = normalizeTags(values ?? []);
+	if (normalized.length > 5) {
+		throw new TRPCError({
+			code: 'BAD_REQUEST',
+			message: 'PRIORITY_TAG_LIMIT_EXCEEDED',
+		});
+	}
+	return normalized;
+};
+
 export const organizationRouter = router({
 	create: publicProcedure
 		.input(createOrganizationSchema)
@@ -64,6 +75,7 @@ export const organizationRouter = router({
 				staffRange: true,
 				focusAreas: true,
 				serviceAreas: true,
+				priorityFocusKeywords: true,
 				mission: true,
 				description: true,
 				scoringVersion: true,
@@ -90,6 +102,7 @@ export const organizationRouter = router({
 			revenueSources: organization.revenueSources ?? [],
 			focusAreas: organization.focusAreas ?? [],
 			serviceAreas: organization.serviceAreas ?? [],
+			priorityFocusKeywords: organization.priorityFocusKeywords ?? [],
 		};
 	}),
 	getIndexStatus: protectedProcedure.query(async ({ ctx }) => {
@@ -138,13 +151,14 @@ export const organizationRouter = router({
 					revenueSources: true,
 					budgetRange: true,
 					staffRange: true,
-					focusAreas: true,
-					serviceAreas: true,
-					mission: true,
-					description: true,
-					scoringVersion: true,
-					matchIndexStatus: true,
-					matchIndexedAt: true,
+				focusAreas: true,
+				serviceAreas: true,
+				priorityFocusKeywords: true,
+				mission: true,
+				description: true,
+				scoringVersion: true,
+				matchIndexStatus: true,
+				matchIndexedAt: true,
 					matchIndexedCount: true,
 					matchIndexError: true,
 					matchIndexCursor: true,
@@ -169,6 +183,10 @@ export const organizationRouter = router({
 				input.serviceAreas === undefined
 					? undefined
 					: normalizeTags(input.serviceAreas ?? []);
+			const priorityFocusKeywords =
+				input.priorityFocusKeywords === undefined
+					? undefined
+					: normalizePriorityKeywords(input.priorityFocusKeywords ?? []);
 			const revenueSources =
 				input.revenueSources === undefined
 					? undefined
@@ -183,6 +201,7 @@ export const organizationRouter = router({
 			const currentRevenueSources = organization.revenueSources ?? [];
 			const currentFocusAreas = organization.focusAreas ?? [];
 			const currentServiceAreas = organization.serviceAreas ?? [];
+			const currentPriorityFocus = organization.priorityFocusKeywords ?? [];
 
 			const nextEntityType =
 				input.entityType === undefined
@@ -202,6 +221,10 @@ export const organizationRouter = router({
 				focusAreas === undefined ? currentFocusAreas : focusAreas;
 			const nextServiceAreas =
 				serviceAreas === undefined ? currentServiceAreas : serviceAreas;
+			const nextPriorityFocusKeywords =
+				priorityFocusKeywords === undefined
+					? currentPriorityFocus
+					: priorityFocusKeywords;
 			const nextMission =
 				mission === undefined ? organization.mission : (mission ?? 'TBD');
 			const nextDescription =
@@ -216,7 +239,9 @@ export const organizationRouter = router({
 				nextStaffRange !== organization.staffRange ||
 				stableJoin(nextRevenueSources) !== stableJoin(currentRevenueSources) ||
 				stableJoin(nextFocusAreas) !== stableJoin(currentFocusAreas) ||
-				stableJoin(nextServiceAreas) !== stableJoin(currentServiceAreas);
+				stableJoin(nextServiceAreas) !== stableJoin(currentServiceAreas) ||
+				stableJoin(nextPriorityFocusKeywords) !==
+					stableJoin(currentPriorityFocus);
 			const missionChanged = nextMission !== organization.mission;
 			const descriptionChanged =
 				(nextDescription ?? null) !== (organization.description ?? null);
@@ -230,6 +255,7 @@ export const organizationRouter = router({
 					staffRange: nextStaffRange,
 					focusAreas: nextFocusAreas,
 					serviceAreas: nextServiceAreas,
+					priorityFocusKeywords: nextPriorityFocusKeywords,
 					mission: nextMission,
 					description: nextDescription,
 				};
@@ -254,6 +280,9 @@ export const organizationRouter = router({
 			}
 			if (serviceAreas !== undefined) {
 				data.serviceAreas = nextServiceAreas;
+			}
+			if (priorityFocusKeywords !== undefined) {
+				data.priorityFocusKeywords = nextPriorityFocusKeywords;
 			}
 			if (mission !== undefined) {
 				data.mission = nextMission;
@@ -284,6 +313,7 @@ export const organizationRouter = router({
 				revenueSources: updated.revenueSources ?? [],
 				focusAreas: updated.focusAreas ?? [],
 				serviceAreas: updated.serviceAreas ?? [],
+				priorityFocusKeywords: updated.priorityFocusKeywords ?? [],
 			};
 		}),
 });

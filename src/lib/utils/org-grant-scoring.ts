@@ -1,6 +1,6 @@
 // src/lib/utils/org-grant-scoring.ts
 
-export const SCORING_VERSION = 3;
+export const SCORING_VERSION = 4;
 
 type ApplicantType =
 	| 'NONPROFIT'
@@ -31,6 +31,7 @@ type BudgetRange =
 
 type OrganizationProfile = {
 	focusAreas: string[];
+	priorityFocusKeywords: string[];
 	serviceAreas: string[];
 	entityType: EntityType | null;
 	budgetRange: BudgetRange | null;
@@ -219,27 +220,49 @@ function calculateGeographyScore(
 	return { score: baseScore, overlap: [], isLocalish, isNational: false };
 }
 
-function calculatePurposeScore(
-	focusAreas: string[],
-	purpose: string | null,
-): { score: number; overlap: string[] } {
-	const orgTokens = dedupe(focusAreas.flatMap((keyword) => tokenize(keyword)));
-	const purposeTokens = dedupe(tokenize(purpose ?? ''));
+function calculatePurposeScore(params: {
+	priorityFocusKeywords: string[];
+	focusAreas: string[];
+	purpose: string | null;
+}): { score: number; overlap: string[]; hasPriorityHit: boolean } {
+	const priorityTokens = dedupe(
+		params.priorityFocusKeywords.flatMap((keyword) => tokenize(keyword)),
+	);
+	const focusTokens = dedupe(params.focusAreas.flatMap((keyword) => tokenize(keyword)));
+	const purposeTokens = dedupe(tokenize(params.purpose ?? ''));
 
-	if (orgTokens.length === 0 || purposeTokens.length === 0) {
-		return { score: 0.5, overlap: [] };
+	if (purposeTokens.length === 0) {
+		return { score: 0.5, overlap: [], hasPriorityHit: false };
 	}
 
 	const purposeSet = new Set(purposeTokens);
-	const overlap = orgTokens.filter((token) => purposeSet.has(token));
-	const unionSize = new Set([...orgTokens, ...purposeTokens]).size;
-	const jaccard = unionSize === 0 ? 0 : overlap.length / unionSize;
-	let score = clamp(0.25 + jaccard * 1.1, 0, 1);
-	if (overlap.length >= 3) {
+	const priorityOverlap = priorityTokens.filter((token) => purposeSet.has(token));
+	const focusOverlap = focusTokens.filter((token) => purposeSet.has(token));
+
+	const priorityHitRatio =
+		priorityTokens.length === 0
+			? 0
+			: priorityOverlap.length / priorityTokens.length;
+	const focusHitRatio =
+		focusTokens.length === 0 ? 0 : focusOverlap.length / focusTokens.length;
+
+	const combined = 0.7 * priorityHitRatio + 0.3 * focusHitRatio;
+	let score = clamp(0.25 + combined * 0.9, 0, 1);
+
+	if (priorityOverlap.length >= 3 || focusOverlap.length >= 3) {
 		score = clamp(score + 0.05, 0, 1);
 	}
 
-	return { score, overlap };
+	const orderedOverlap = [
+		...priorityOverlap,
+		...focusOverlap.filter((token) => !priorityOverlap.includes(token)),
+	];
+
+	return {
+		score,
+		overlap: orderedOverlap.slice(0, 5),
+		hasPriorityHit: priorityOverlap.length > 0,
+	};
 }
 
 function calculateFundingScore(
@@ -351,10 +374,11 @@ export function computeOrgGrantFitScore(
 		isLocalish,
 		isNational,
 	} = calculateGeographyScore(org.serviceAreas, grant.eligibleGeographies);
-	const { score: purpose, overlap } = calculatePurposeScore(
-		org.focusAreas,
-		grant.purpose,
-	);
+	const { score: purpose, overlap, hasPriorityHit } = calculatePurposeScore({
+		priorityFocusKeywords: org.priorityFocusKeywords ?? [],
+		focusAreas: org.focusAreas,
+		purpose: grant.purpose,
+	});
 	const amount = selectGrantAmount(grant);
 	const { score: funding } = calculateFundingScore(
 		org.budgetRange,
@@ -400,9 +424,15 @@ export function computeOrgGrantFitScore(
 	}
 
 	if (overlap.length > 0) {
-		explanationParts.push(
-			`Shared focus keywords: ${overlap.slice(0, 3).join(', ')}`,
-		);
+		if (hasPriorityHit) {
+			explanationParts.push(
+				`Matched priority focus: ${overlap.slice(0, 2).join(', ')}`,
+			);
+		} else {
+			explanationParts.push(
+				`Shared focus keywords: ${overlap.slice(0, 3).join(', ')}`,
+			);
+		}
 		if (purpose >= 0.8) {
 			explanationParts.push('Strong mission match');
 		}

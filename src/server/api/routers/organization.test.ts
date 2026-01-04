@@ -20,6 +20,7 @@ describe('organizationRouter.updateProfile', () => {
 			mission: 'Mission text',
 			focusAreas: ['education', 'housing'],
 			serviceAreas: ['california', 'nevada'],
+			priorityFocusKeywords: [],
 			entityType: $Enums.OrganizationEntityType.NONPROFIT_501C3,
 			revenueSources: [
 				$Enums.RevenueSource.GRANTS,
@@ -97,6 +98,7 @@ describe('organizationRouter.updateProfile', () => {
 			matchIndexedAt: new Date('2024-01-01T00:00:00.000Z'),
 			matchIndexedCount: 5,
 			matchIndexError: null,
+			priorityFocusKeywords: [],
 		};
 
 		const findUnique = vi.fn().mockResolvedValue(organization);
@@ -149,6 +151,7 @@ describe('organizationRouter.updateProfile', () => {
 			matchIndexedAt: null,
 			matchIndexedCount: 0,
 			matchIndexError: null,
+			priorityFocusKeywords: [],
 		};
 
 		const findUnique = vi.fn().mockResolvedValue(organization);
@@ -187,5 +190,49 @@ describe('organizationRouter.updateProfile', () => {
 		});
 		expect(result.mission).toBe('TBD');
 		expect(result.description).toBeNull();
+	});
+
+	it('enforces priority keyword limit server-side', async () => {
+		const organization = {
+			entityType: null,
+			revenueSources: [],
+			budgetRange: null,
+			staffRange: null,
+			focusAreas: [],
+			serviceAreas: [],
+			priorityFocusKeywords: [],
+			mission: 'Keep',
+			description: 'Existing',
+			scoringVersion: 1,
+			matchIndexStatus: $Enums.MatchIndexStatus.COMPLETE,
+			matchIndexedAt: null,
+			matchIndexedCount: 0,
+			matchIndexError: null,
+		};
+
+		const findUnique = vi.fn().mockResolvedValue(organization);
+		const update = vi.fn();
+
+		const caller = organizationRouter.createCaller({
+			prisma: {
+				organization: {
+					findUnique,
+					update,
+				},
+			} as unknown as PrismaClient,
+			session: {
+				userId: 'user-1',
+				role: 'USER',
+				organizationId: 'org-1',
+			},
+			headers: new Headers(),
+		});
+
+		await expect(
+			caller.updateProfile({
+				priorityFocusKeywords: ['one', 'two', 'three', 'four', 'five', 'six'],
+			}),
+		).rejects.toThrowError(/priorityFocusKeywords/i);
+		expect(update).not.toHaveBeenCalled();
 	});
 });

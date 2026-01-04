@@ -11,6 +11,7 @@ interface BookmarkTagsInputProps {
 	tags: string[];
 	onChange: (tags: string[]) => void;
 	disabled?: boolean;
+	maxTags?: number;
 }
 
 const sanitizeTag = (tag: string) =>
@@ -20,6 +21,7 @@ export function BookmarkTagsInput({
 	tags,
 	onChange,
 	disabled = false,
+	maxTags = 10,
 }: BookmarkTagsInputProps) {
 	const [input, setInput] = useState('');
 	const [isOpen, setIsOpen] = useState(false);
@@ -72,7 +74,7 @@ export function BookmarkTagsInput({
 			setInput('');
 			return;
 		}
-		if (tags.length >= 10) return;
+		if (tags.length >= maxTags) return;
 		onChange([...tags, tag]);
 		setInput('');
 	};

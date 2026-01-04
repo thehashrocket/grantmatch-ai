@@ -1,3 +1,5 @@
+// src/server/grants/match/tickOrgMatchIndex.ts
+
 import { randomUUID } from 'node:crypto';
 import {
 	$Enums,
@@ -5,6 +7,7 @@ import {
 	type PrismaClient,
 } from '@/prisma/generated/client';
 import { ensureGrantMatches } from './upsertGrantMatch';
+import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 
 export type OrgTickPrisma = Pick<
 	PrismaClient,
@@ -40,6 +43,7 @@ export type WorkResult = {
 	nextCursor: string | null;
 	done: boolean;
 	errors: unknown[];
+	recomputedDelta: number;
 };
 
 export const STALE_AFTER_SECONDS = 30;
@@ -161,8 +165,34 @@ export async function performOrgMatchIndexWork(
 ): Promise<WorkResult> {
 	const organization = await prisma.organization.findUnique({
 		where: { id: organizationId },
-		select: { scoringVersion: true },
+		select: {
+			id: true,
+			focusAreas: true,
+			priorityFocusKeywords: true,
+			serviceAreas: true,
+			entityType: true,
+			budgetRange: true,
+			minAward: true,
+			maxAward: true,
+			scoringVersion: true,
+		},
 	});
+
+	if (!organization) {
+		return {
+			indexedDelta: 0,
+			recomputedDelta: 0,
+			nextCursor: cursorGrantId,
+			done: true,
+			errors: ['ORG_NOT_FOUND'],
+		};
+	}
+
+	const targetVersion =
+		organization.scoringVersion !== null &&
+		organization.scoringVersion !== undefined
+			? organization.scoringVersion
+			: SCORING_VERSION;
 
 	const grants = await prisma.grant.findMany({
 		where: {
@@ -177,13 +207,36 @@ export async function performOrgMatchIndexWork(
 
 	const grantIds = grants.map((g) => g.id);
 
+	let recomputedDelta = 0;
+
 	if (grantIds.length > 0) {
-		await ensureGrantMatches({
-			prisma,
-			organizationId,
-			grantIds,
-			scoringVersion: organization?.scoringVersion ?? undefined,
+		const existingMatches = await prisma.grantMatch.findMany({
+			where: {
+				organizationId,
+				grantId: { in: grantIds },
+			},
+			select: { grantId: true, version: true },
 		});
+
+		const existingByGrant = new Map(
+			existingMatches.map((m) => [m.grantId, m.version]),
+		);
+
+		const needsUpsert = grantIds.filter((id) => {
+			const matchVersion = existingByGrant.get(id);
+			return matchVersion !== targetVersion;
+		});
+
+		if (needsUpsert.length > 0) {
+			const result = await ensureGrantMatches({
+				prisma,
+				organization,
+				grantIds: needsUpsert,
+				scoringVersion: targetVersion,
+			});
+			recomputedDelta =
+				(result?.createdCount ?? 0) + (result?.updatedCount ?? 0);
+		}
 	}
 
 	const nextCursor =
@@ -191,8 +244,9 @@ export async function performOrgMatchIndexWork(
 
 	return {
 		indexedDelta: grantIds.length,
+		recomputedDelta,
 		nextCursor,
-		done: grantIds.length === 0,
+		done: grantIds.length === 0 || grantIds.length < batchSize,
 		errors: [],
 	};
 }
@@ -203,6 +257,7 @@ export async function commitOrgMatchIndexTick(
 		organizationId: string;
 		claimId: string;
 		indexedDelta: number;
+		recomputedDelta?: number;
 		nextCursor: string | null;
 		done: boolean;
 		errors?: unknown[];

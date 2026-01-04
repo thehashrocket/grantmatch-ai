@@ -12041,15 +12041,15 @@ export namespace Prisma {
   }
 
   export type OrganizationAvgAggregateOutputType = {
-    preferredAwardMin: number | null
-    preferredAwardMax: number | null
+    minAward: number | null
+    maxAward: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
   }
 
   export type OrganizationSumAggregateOutputType = {
-    preferredAwardMin: number | null
-    preferredAwardMax: number | null
+    minAward: number | null
+    maxAward: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
   }
@@ -12062,8 +12062,8 @@ export namespace Prisma {
     entityType: $Enums.OrganizationEntityType | null
     budgetRange: $Enums.BudgetRange | null
     staffRange: $Enums.StaffRange | null
-    preferredAwardMin: number | null
-    preferredAwardMax: number | null
+    minAward: number | null
+    maxAward: number | null
     scoringVersion: number | null
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
@@ -12089,8 +12089,8 @@ export namespace Prisma {
     entityType: $Enums.OrganizationEntityType | null
     budgetRange: $Enums.BudgetRange | null
     staffRange: $Enums.StaffRange | null
-    preferredAwardMin: number | null
-    preferredAwardMax: number | null
+    minAward: number | null
+    maxAward: number | null
     scoringVersion: number | null
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
@@ -12120,8 +12120,8 @@ export namespace Prisma {
     revenueSources: number
     budgetRange: number
     staffRange: number
-    preferredAwardMin: number
-    preferredAwardMax: number
+    minAward: number
+    maxAward: number
     scoringVersion: number
     matchIndexStatus: number
     matchIndexedAt: number
@@ -12143,15 +12143,15 @@ export namespace Prisma {
 
 
   export type OrganizationAvgAggregateInputType = {
-    preferredAwardMin?: true
-    preferredAwardMax?: true
+    minAward?: true
+    maxAward?: true
     scoringVersion?: true
     matchIndexedCount?: true
   }
 
   export type OrganizationSumAggregateInputType = {
-    preferredAwardMin?: true
-    preferredAwardMax?: true
+    minAward?: true
+    maxAward?: true
     scoringVersion?: true
     matchIndexedCount?: true
   }
@@ -12164,8 +12164,8 @@ export namespace Prisma {
     entityType?: true
     budgetRange?: true
     staffRange?: true
-    preferredAwardMin?: true
-    preferredAwardMax?: true
+    minAward?: true
+    maxAward?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
@@ -12191,8 +12191,8 @@ export namespace Prisma {
     entityType?: true
     budgetRange?: true
     staffRange?: true
-    preferredAwardMin?: true
-    preferredAwardMax?: true
+    minAward?: true
+    maxAward?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
@@ -12222,8 +12222,8 @@ export namespace Prisma {
     revenueSources?: true
     budgetRange?: true
     staffRange?: true
-    preferredAwardMin?: true
-    preferredAwardMax?: true
+    minAward?: true
+    maxAward?: true
     scoringVersion?: true
     matchIndexStatus?: true
     matchIndexedAt?: true
@@ -12341,8 +12341,8 @@ export namespace Prisma {
     revenueSources: $Enums.RevenueSource[]
     budgetRange: $Enums.BudgetRange | null
     staffRange: $Enums.StaffRange | null
-    preferredAwardMin: number | null
-    preferredAwardMax: number | null
+    minAward: number | null
+    maxAward: number | null
     scoringVersion: number
     matchIndexStatus: $Enums.MatchIndexStatus
     matchIndexedAt: Date | null
@@ -12392,8 +12392,8 @@ export namespace Prisma {
     revenueSources?: boolean
     budgetRange?: boolean
     staffRange?: boolean
-    preferredAwardMin?: boolean
-    preferredAwardMax?: boolean
+    minAward?: boolean
+    maxAward?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
@@ -12428,8 +12428,8 @@ export namespace Prisma {
     revenueSources?: boolean
     budgetRange?: boolean
     staffRange?: boolean
-    preferredAwardMin?: boolean
-    preferredAwardMax?: boolean
+    minAward?: boolean
+    maxAward?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
@@ -12460,8 +12460,8 @@ export namespace Prisma {
     revenueSources?: boolean
     budgetRange?: boolean
     staffRange?: boolean
-    preferredAwardMin?: boolean
-    preferredAwardMax?: boolean
+    minAward?: boolean
+    maxAward?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
@@ -12492,8 +12492,8 @@ export namespace Prisma {
     revenueSources?: boolean
     budgetRange?: boolean
     staffRange?: boolean
-    preferredAwardMin?: boolean
-    preferredAwardMax?: boolean
+    minAward?: boolean
+    maxAward?: boolean
     scoringVersion?: boolean
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
@@ -12512,7 +12512,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "priorityFocusKeywords" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "preferredAwardMin" | "preferredAwardMax" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "priorityFocusKeywords" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "minAward" | "maxAward" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
@@ -12541,8 +12541,8 @@ export namespace Prisma {
       revenueSources: $Enums.RevenueSource[]
       budgetRange: $Enums.BudgetRange | null
       staffRange: $Enums.StaffRange | null
-      preferredAwardMin: number | null
-      preferredAwardMax: number | null
+      minAward: number | null
+      maxAward: number | null
       scoringVersion: number
       matchIndexStatus: $Enums.MatchIndexStatus
       matchIndexedAt: Date | null
@@ -12996,8 +12996,8 @@ export namespace Prisma {
     readonly revenueSources: FieldRef<"Organization", 'RevenueSource[]'>
     readonly budgetRange: FieldRef<"Organization", 'BudgetRange'>
     readonly staffRange: FieldRef<"Organization", 'StaffRange'>
-    readonly preferredAwardMin: FieldRef<"Organization", 'Int'>
-    readonly preferredAwardMax: FieldRef<"Organization", 'Int'>
+    readonly minAward: FieldRef<"Organization", 'Int'>
+    readonly maxAward: FieldRef<"Organization", 'Int'>
     readonly scoringVersion: FieldRef<"Organization", 'Int'>
     readonly matchIndexStatus: FieldRef<"Organization", 'MatchIndexStatus'>
     readonly matchIndexedAt: FieldRef<"Organization", 'DateTime'>
@@ -19301,8 +19301,8 @@ export namespace Prisma {
     revenueSources: 'revenueSources',
     budgetRange: 'budgetRange',
     staffRange: 'staffRange',
-    preferredAwardMin: 'preferredAwardMin',
-    preferredAwardMax: 'preferredAwardMax',
+    minAward: 'minAward',
+    maxAward: 'maxAward',
     scoringVersion: 'scoringVersion',
     matchIndexStatus: 'matchIndexStatus',
     matchIndexedAt: 'matchIndexedAt',
@@ -20529,8 +20529,8 @@ export namespace Prisma {
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
     budgetRange?: EnumBudgetRangeNullableFilter<"Organization"> | $Enums.BudgetRange | null
     staffRange?: EnumStaffRangeNullableFilter<"Organization"> | $Enums.StaffRange | null
-    preferredAwardMin?: IntNullableFilter<"Organization"> | number | null
-    preferredAwardMax?: IntNullableFilter<"Organization"> | number | null
+    minAward?: IntNullableFilter<"Organization"> | number | null
+    maxAward?: IntNullableFilter<"Organization"> | number | null
     scoringVersion?: IntFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
@@ -20564,8 +20564,8 @@ export namespace Prisma {
     revenueSources?: SortOrder
     budgetRange?: SortOrderInput | SortOrder
     staffRange?: SortOrderInput | SortOrder
-    preferredAwardMin?: SortOrderInput | SortOrder
-    preferredAwardMax?: SortOrderInput | SortOrder
+    minAward?: SortOrderInput | SortOrder
+    maxAward?: SortOrderInput | SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
@@ -20602,8 +20602,8 @@ export namespace Prisma {
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
     budgetRange?: EnumBudgetRangeNullableFilter<"Organization"> | $Enums.BudgetRange | null
     staffRange?: EnumStaffRangeNullableFilter<"Organization"> | $Enums.StaffRange | null
-    preferredAwardMin?: IntNullableFilter<"Organization"> | number | null
-    preferredAwardMax?: IntNullableFilter<"Organization"> | number | null
+    minAward?: IntNullableFilter<"Organization"> | number | null
+    maxAward?: IntNullableFilter<"Organization"> | number | null
     scoringVersion?: IntFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
@@ -20637,8 +20637,8 @@ export namespace Prisma {
     revenueSources?: SortOrder
     budgetRange?: SortOrderInput | SortOrder
     staffRange?: SortOrderInput | SortOrder
-    preferredAwardMin?: SortOrderInput | SortOrder
-    preferredAwardMax?: SortOrderInput | SortOrder
+    minAward?: SortOrderInput | SortOrder
+    maxAward?: SortOrderInput | SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
@@ -20677,8 +20677,8 @@ export namespace Prisma {
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
     budgetRange?: EnumBudgetRangeNullableWithAggregatesFilter<"Organization"> | $Enums.BudgetRange | null
     staffRange?: EnumStaffRangeNullableWithAggregatesFilter<"Organization"> | $Enums.StaffRange | null
-    preferredAwardMin?: IntNullableWithAggregatesFilter<"Organization"> | number | null
-    preferredAwardMax?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    minAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
+    maxAward?: IntNullableWithAggregatesFilter<"Organization"> | number | null
     scoringVersion?: IntWithAggregatesFilter<"Organization"> | number
     matchIndexStatus?: EnumMatchIndexStatusWithAggregatesFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
@@ -22009,8 +22009,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -22044,8 +22044,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -22079,8 +22079,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22114,8 +22114,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22149,8 +22149,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -22181,8 +22181,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -22213,8 +22213,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -23636,8 +23636,8 @@ export namespace Prisma {
     revenueSources?: SortOrder
     budgetRange?: SortOrder
     staffRange?: SortOrder
-    preferredAwardMin?: SortOrder
-    preferredAwardMax?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
@@ -23657,8 +23657,8 @@ export namespace Prisma {
   }
 
   export type OrganizationAvgOrderByAggregateInput = {
-    preferredAwardMin?: SortOrder
-    preferredAwardMax?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
   }
@@ -23671,8 +23671,8 @@ export namespace Prisma {
     entityType?: SortOrder
     budgetRange?: SortOrder
     staffRange?: SortOrder
-    preferredAwardMin?: SortOrder
-    preferredAwardMax?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
@@ -23698,8 +23698,8 @@ export namespace Prisma {
     entityType?: SortOrder
     budgetRange?: SortOrder
     staffRange?: SortOrder
-    preferredAwardMin?: SortOrder
-    preferredAwardMax?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
@@ -23718,8 +23718,8 @@ export namespace Prisma {
   }
 
   export type OrganizationSumOrderByAggregateInput = {
-    preferredAwardMin?: SortOrder
-    preferredAwardMax?: SortOrder
+    minAward?: SortOrder
+    maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
   }
@@ -26417,8 +26417,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -26451,8 +26451,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -26621,8 +26621,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26655,8 +26655,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -26975,8 +26975,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -27009,8 +27009,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -27059,8 +27059,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27093,8 +27093,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27749,8 +27749,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -27783,8 +27783,8 @@ export namespace Prisma {
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: $Enums.BudgetRange | null
     staffRange?: $Enums.StaffRange | null
-    preferredAwardMin?: number | null
-    preferredAwardMax?: number | null
+    minAward?: number | null
+    maxAward?: number | null
     scoringVersion?: number
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
@@ -27932,8 +27932,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -27966,8 +27966,8 @@ export namespace Prisma {
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
     budgetRange?: NullableEnumBudgetRangeFieldUpdateOperationsInput | $Enums.BudgetRange | null
     staffRange?: NullableEnumStaffRangeFieldUpdateOperationsInput | $Enums.StaffRange | null
-    preferredAwardMin?: NullableIntFieldUpdateOperationsInput | number | null
-    preferredAwardMax?: NullableIntFieldUpdateOperationsInput | number | null
+    minAward?: NullableIntFieldUpdateOperationsInput | number | null
+    maxAward?: NullableIntFieldUpdateOperationsInput | number | null
     scoringVersion?: IntFieldUpdateOperationsInput | number
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null

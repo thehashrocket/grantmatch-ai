@@ -45,6 +45,13 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 - Avoid stubbed handlers: `/api/user` PATCH is a no-op; wire it to the database if you rely on profile updates.
 - Surface fetch failures: `/api/grants/[id]/details` currently swallows errors; prefer returning an explicit error or status so the UI can react.
 
+## Organization Matching
+
+- Org profile fields used for scoring: `entityType`, `revenueSources`, `budgetRange`, `staffRange`, `minAward`/`maxAward` (preferred award range), `focusAreas`, `serviceAreas`, `priorityFocusKeywords` (priority max 5; normalize tags: trim, lowercase, collapse whitespace, dedupe).
+- Onboarding requires priority focus keywords (“Pick up to 5 things you’d be thrilled to get funding for”).
+- scoringVersion is explicitly set to `SCORING_VERSION` on org creation and bumped when any scoring fields change, to trigger recompute reliably.
+- Match index runner (`tickOrgMatchIndex`) recomputes GrantMatch rows only for OPEN/UNKNOWN grants, is claim/lease + cursor based, and uses org `scoringVersion` to skip up-to-date matches. Use `organization.kickMatchRecompute` to restart after profile changes.
+
 ## Bookmarking
 
 - Per-user bookmarks: max 100/user; statuses are `INTERESTED`, `APPLIED`, `NOT_FOR_US`.

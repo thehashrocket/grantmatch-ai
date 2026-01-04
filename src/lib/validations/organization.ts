@@ -31,4 +31,20 @@ export const updateOrganizationProfileSchema = z.object({
 	priorityFocusKeywords: z.array(z.string()).max(5).optional(),
 	mission: z.string().max(2000).nullish(),
 	description: z.string().max(5000).nullish(),
+	minAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
+	maxAward: emptyToUndefined(z.number().int().nonnegative().nullish()),
+}).superRefine((data, ctx) => {
+	if (
+		data.minAward !== null &&
+		data.minAward !== undefined &&
+		data.maxAward !== null &&
+		data.maxAward !== undefined &&
+		data.minAward > data.maxAward
+	) {
+		ctx.addIssue({
+			code: 'custom',
+			message: 'MIN_AWARD_GT_MAX_AWARD',
+			path: ['minAward'],
+		});
+	}
 });

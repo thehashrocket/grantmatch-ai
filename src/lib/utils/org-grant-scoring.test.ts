@@ -7,8 +7,8 @@ const baseOrg = {
 	serviceAreas: ['california', 'bay area'],
 	entityType: 'NONPROFIT_501C3' as const,
 	budgetRange: 'FROM_50K_TO_250K' as const,
-	preferredAwardMin: null,
-	preferredAwardMax: null,
+	minAward: null,
+	maxAward: null,
 };
 
 const baseGrant = {

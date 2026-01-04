@@ -35,8 +35,8 @@ type OrganizationProfile = {
 	serviceAreas: string[];
 	entityType: EntityType | null;
 	budgetRange: BudgetRange | null;
-	preferredAwardMin: number | null;
-	preferredAwardMax: number | null;
+	minAward: number | null;
+	maxAward: number | null;
 };
 
 type GrantForScoring = {
@@ -271,8 +271,8 @@ function calculatePurposeScore(params: {
 
 function calculateFundingScore(
 	budgetRange: BudgetRange | null,
-	preferredAwardMin: number | null,
-	preferredAwardMax: number | null,
+	minAward: number | null,
+	maxAward: number | null,
 	grantAmount: number | null,
 ): { score: number; inRange: boolean } {
 	if (grantAmount === null) {
@@ -294,19 +294,18 @@ function calculateFundingScore(
 		return { score: 0.45, inRange: false };
 	}
 
-	if (preferredAwardMin !== null && preferredAwardMax !== null) {
-		const inRange =
-			grantAmount >= preferredAwardMin && grantAmount <= preferredAwardMax;
+	if (minAward !== null && maxAward !== null) {
+		const inRange = grantAmount >= minAward && grantAmount <= maxAward;
 		return { score: inRange ? 0.9 : 0.5, inRange };
 	}
 
-	if (preferredAwardMin !== null) {
-		const inRange = grantAmount >= preferredAwardMin;
+	if (minAward !== null) {
+		const inRange = grantAmount >= minAward;
 		return { score: inRange ? 0.8 : 0.45, inRange };
 	}
 
-	if (preferredAwardMax !== null) {
-		const inRange = grantAmount <= preferredAwardMax;
+	if (maxAward !== null) {
+		const inRange = grantAmount <= maxAward;
 		return { score: inRange ? 0.8 : 0.45, inRange };
 	}
 
@@ -390,8 +389,8 @@ export function computeOrgGrantFitScore(
 	const amount = selectGrantAmount(grant);
 	const { score: funding } = calculateFundingScore(
 		org.budgetRange,
-		org.preferredAwardMin,
-		org.preferredAwardMax,
+		org.minAward,
+		org.maxAward,
 		amount,
 	);
 

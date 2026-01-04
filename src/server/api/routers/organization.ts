@@ -9,6 +9,7 @@ import {
 import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 import { normalizeTags, normalizeText } from '@/lib/utils/normalizeTags';
 import type { Prisma } from '@/prisma/generated/client';
+import { startOrgMatchIndex } from '@/server/grants/match/tickOrgMatchIndex';
 
 const normalizePriorityKeywords = (values?: string[] | null) => {
 	const normalized = normalizeTags(values ?? []);
@@ -44,6 +45,7 @@ export const organizationRouter = router({
 					description: description ?? null,
 					focusAreas,
 					mission,
+					scoringVersion: SCORING_VERSION,
 					matchIndexStatus: 'NOT_STARTED',
 					matchIndexedCount: 0,
 					matchIndexedAt: null,
@@ -78,6 +80,8 @@ export const organizationRouter = router({
 				priorityFocusKeywords: true,
 				mission: true,
 				description: true,
+				minAward: true,
+				maxAward: true,
 				scoringVersion: true,
 				matchIndexStatus: true,
 				matchIndexedAt: true,
@@ -110,6 +114,18 @@ export const organizationRouter = router({
 			serviceAreas: organization.serviceAreas ?? [],
 			priorityFocusKeywords: organization.priorityFocusKeywords ?? [],
 		};
+	}),
+	kickMatchRecompute: protectedProcedure.mutation(async ({ ctx }) => {
+		const organizationId = ctx.session?.organizationId ?? null;
+		if (!organizationId) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'MISSING_ORGANIZATION',
+			});
+		}
+
+		const summary = await startOrgMatchIndex(ctx.prisma, organizationId);
+		return summary;
 	}),
 	getIndexStatus: protectedProcedure.query(async ({ ctx }) => {
 		const organizationId = ctx.session?.organizationId ?? null;
@@ -162,6 +178,8 @@ export const organizationRouter = router({
 					priorityFocusKeywords: true,
 					mission: true,
 					description: true,
+					minAward: true,
+					maxAward: true,
 					scoringVersion: true,
 					matchIndexStatus: true,
 					matchIndexedAt: true,
@@ -216,6 +234,8 @@ export const organizationRouter = router({
 			const currentPriorityFocus =
 				(organization as { priorityFocusKeywords?: string[] })
 					.priorityFocusKeywords ?? [];
+			const currentMinAward = organization.minAward ?? null;
+			const currentMaxAward = organization.maxAward ?? null;
 
 			const nextEntityType =
 				input.entityType === undefined
@@ -245,6 +265,10 @@ export const organizationRouter = router({
 				description === undefined
 					? organization.description
 					: (description ?? null);
+			const nextMinAward =
+				input.minAward === undefined ? currentMinAward : input.minAward ?? null;
+			const nextMaxAward =
+				input.maxAward === undefined ? currentMaxAward : input.maxAward ?? null;
 
 			const stableJoin = (values: string[]) => [...values].sort().join('|');
 			const scoringChanged =
@@ -255,7 +279,9 @@ export const organizationRouter = router({
 				stableJoin(nextFocusAreas) !== stableJoin(currentFocusAreas) ||
 				stableJoin(nextServiceAreas) !== stableJoin(currentServiceAreas) ||
 				stableJoin(nextPriorityFocusKeywords) !==
-					stableJoin(currentPriorityFocus);
+					stableJoin(currentPriorityFocus) ||
+				nextMinAward !== currentMinAward ||
+				nextMaxAward !== currentMaxAward;
 			const missionChanged = nextMission !== organization.mission;
 			const descriptionChanged =
 				(nextDescription ?? null) !== (organization.description ?? null);
@@ -270,6 +296,8 @@ export const organizationRouter = router({
 					focusAreas: nextFocusAreas,
 					serviceAreas: nextServiceAreas,
 					priorityFocusKeywords: nextPriorityFocusKeywords,
+					minAward: nextMinAward,
+					maxAward: nextMaxAward,
 					mission: nextMission,
 					description: nextDescription,
 				};
@@ -297,6 +325,12 @@ export const organizationRouter = router({
 			}
 			if (priorityFocusKeywords !== undefined) {
 				data.priorityFocusKeywords = nextPriorityFocusKeywords;
+			}
+			if (input.minAward !== undefined) {
+				data.minAward = nextMinAward;
+			}
+			if (input.maxAward !== undefined) {
+				data.maxAward = nextMaxAward;
 			}
 			if (mission !== undefined) {
 				data.mission = nextMission;
@@ -330,6 +364,8 @@ export const organizationRouter = router({
 				priorityFocusKeywords:
 					(updated as { priorityFocusKeywords?: string[] })
 						.priorityFocusKeywords ?? [],
+				minAward: updated.minAward ?? null,
+				maxAward: updated.maxAward ?? null,
 			};
 		}),
 });

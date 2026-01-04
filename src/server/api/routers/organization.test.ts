@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { $Enums, type PrismaClient } from '@/prisma/generated/client';
+import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 import { organizationRouter } from './organization';
 
 vi.hoisted(() => {
@@ -28,8 +29,8 @@ describe('organizationRouter.updateProfile', () => {
 			],
 			budgetRange: $Enums.BudgetRange.FROM_50K_TO_250K,
 			staffRange: $Enums.StaffRange.SIX_TO_TWENTY,
-			preferredAwardMin: null,
-			preferredAwardMax: null,
+			minAward: null,
+			maxAward: null,
 			scoringVersion: 1,
 			matchIndexStatus: $Enums.MatchIndexStatus.COMPLETE,
 			matchIndexedAt: new Date('2024-01-01T00:00:00.000Z'),
@@ -105,7 +106,7 @@ describe('organizationRouter.updateProfile', () => {
 		const update = vi.fn().mockResolvedValue({
 			...organization,
 			focusAreas: ['youth'],
-			scoringVersion: 2,
+			scoringVersion: SCORING_VERSION,
 			matchIndexStatus: $Enums.MatchIndexStatus.NOT_STARTED,
 			matchIndexedAt: null,
 			matchIndexedCount: 0,
@@ -133,7 +134,7 @@ describe('organizationRouter.updateProfile', () => {
 
 		expect(update).toHaveBeenCalled();
 		expect(result.matchIndexStatus).toBe($Enums.MatchIndexStatus.NOT_STARTED);
-		expect(result.scoringVersion).toBe(2);
+		expect(result.scoringVersion).toBe(SCORING_VERSION);
 	});
 
 	it('normalizes mission and description text', async () => {
@@ -234,5 +235,85 @@ describe('organizationRouter.updateProfile', () => {
 			}),
 		).rejects.toThrowError(/priorityFocusKeywords/i);
 		expect(update).not.toHaveBeenCalled();
+	});
+
+	it('does not bump scoringVersion when only non-scoring fields change', async () => {
+		const organization = {
+			entityType: $Enums.OrganizationEntityType.NONPROFIT_501C3,
+			revenueSources: [$Enums.RevenueSource.GRANTS],
+			budgetRange: $Enums.BudgetRange.LT_50K,
+			staffRange: $Enums.StaffRange.ONE_TO_FIVE,
+			focusAreas: ['education'],
+			serviceAreas: ['california'],
+			priorityFocusKeywords: [],
+			mission: 'Mission',
+			description: 'Desc',
+			scoringVersion: 3,
+			matchIndexStatus: $Enums.MatchIndexStatus.COMPLETE,
+			matchIndexedAt: new Date('2024-01-01T00:00:00.000Z'),
+			matchIndexedCount: 5,
+			matchIndexError: null,
+		};
+
+		const findUnique = vi.fn().mockResolvedValue(organization);
+		const update = vi.fn().mockResolvedValue({
+			...organization,
+			description: 'Updated desc',
+		});
+
+		const caller = organizationRouter.createCaller({
+			prisma: {
+				organization: {
+					findUnique,
+					update,
+				},
+			} as unknown as PrismaClient,
+			session: {
+				userId: 'user-1',
+				role: 'USER',
+				organizationId: 'org-1',
+			},
+			headers: new Headers(),
+		});
+
+		const result = await caller.updateProfile({
+			description: 'Updated desc',
+		});
+
+		expect(update).toHaveBeenCalled();
+		expect(result.scoringVersion).toBe(3);
+		expect(result.matchIndexStatus).toBe(organization.matchIndexStatus);
+	});
+});
+
+describe('organizationRouter.create', () => {
+	it('sets scoringVersion to current SCORING_VERSION on create', async () => {
+		const create = vi.fn().mockResolvedValue({ id: 'org-1' });
+
+		const caller = organizationRouter.createCaller({
+			prisma: {
+				organization: {
+					create,
+				},
+			} as unknown as PrismaClient,
+			session: null,
+			headers: new Headers(),
+		});
+
+		await caller.create({
+			name: 'Test Org',
+			address1: '123 Main St',
+			address2: '',
+			city: 'Town',
+			state: 'CA',
+			zipCode: '90210',
+			description: 'Desc',
+			focusAreas: ['education'],
+			mission: 'Mission',
+		});
+
+		expect(create).toHaveBeenCalled();
+		const data = (create as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]?.data;
+		expect(data.scoringVersion).toBe(SCORING_VERSION);
 	});
 });

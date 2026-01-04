@@ -283,8 +283,8 @@ model Organization {
   revenueSources    RevenueSource[]           @default([])
   budgetRange       BudgetRange?
   staffRange        StaffRange?
-  preferredAwardMin Int?
-  preferredAwardMax Int?
+  minAward         Int?                     @map("preferredAwardMin")
+  maxAward         Int?                     @map("preferredAwardMax")
   scoringVersion    Int                       @default(4)
   matchIndexStatus  MatchIndexStatus          @default(NOT_STARTED)
   matchIndexedAt    DateTime?

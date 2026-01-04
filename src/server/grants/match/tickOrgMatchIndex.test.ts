@@ -64,6 +64,7 @@ const applyUpdate = (org: OrgState, data: Record<string, unknown>) => {
 function createPrismaMock(state: {
 	org: OrgState;
 	grants: { id: string; status: $Enums.GrantStatus; closedAt: Date | null }[];
+	grantMatches?: { grantId: string; version: number }[];
 }) {
 	let currentOrganizationId: string | null = null;
 
@@ -156,7 +157,19 @@ function createPrismaMock(state: {
 			),
 		},
 		grantMatch: {
-			findMany: vi.fn().mockResolvedValue([]),
+			findMany: vi.fn(
+				async ({
+					where,
+				}: {
+					where: { organizationId: string; grantId?: { in?: string[] } };
+				}) => {
+					if (where.organizationId !== state.org.id) return [];
+					const ids = where.grantId?.in;
+					const matches = state.grantMatches ?? [];
+					if (!ids) return matches;
+					return matches.filter((m) => ids.includes(m.grantId));
+				},
+			),
 			upsert: vi.fn().mockResolvedValue(null),
 		},
 	} satisfies Record<string, unknown>;
@@ -282,6 +295,43 @@ describe('tickOrgMatchIndex', () => {
 			}),
 		);
 		expect(work.indexedDelta).toBe(1);
+	});
+
+	it('only recomputes grant matches when version mismatches', async () => {
+		const mock = createPrismaMock({
+			org: {
+				id: 'org-6',
+				matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+				matchIndexedCount: 0,
+				matchIndexCursor: null,
+				matchIndexClaimId: null,
+				matchIndexClaimedAt: null,
+				matchIndexError: null,
+				matchIndexErrorJson: null,
+				matchIndexedAt: null,
+				scoringVersion: 2,
+			},
+			grants: [
+				{ id: 'A', status: $Enums.GrantStatus.OPEN, closedAt: null },
+				{ id: 'B', status: $Enums.GrantStatus.OPEN, closedAt: null },
+			],
+			grantMatches: [
+				{ grantId: 'A', version: 2 },
+				{ grantId: 'B', version: 1 },
+			],
+		});
+		mock.setOrganizationId('org-6');
+
+		const work = await performOrgMatchIndexWork(mock.prisma, 'org-6', null, 10);
+
+		const { ensureGrantMatches } = await import('./upsertGrantMatch');
+		expect(ensureGrantMatches).toHaveBeenCalledWith(
+			expect.objectContaining({
+				grantIds: ['B'],
+				scoringVersion: 2,
+			}),
+		);
+		expect(work.recomputedDelta).toBeGreaterThanOrEqual(1);
 	});
 
 	it('commit is guarded by claim id', async () => {

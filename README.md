@@ -12,6 +12,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - **Intelligent search & filtering** by deadline, funding amount, geography, and grant source
 - **Organization-based collaboration** with multi-user support and team invitations
 - **Detailed grant information** including eligibility, funding details, and application requirements
+- **Organization match profiling** (entity type, revenue sources, budget, staff size, preferred award range, focus/service areas, priority focus keywords) feeding the scoring engine
 
 ### User Journey
 
@@ -19,7 +20,7 @@ GrantMatch AI streamlines the grant discovery process by:
 2. **Registration** (`/register`) - Account creation with email/password or OAuth (Google)
 3. **Onboarding** (`/(auth)/onboarding`) - Three-step process:
    - **Personal Info** - Name, phone, avatar upload
-   - **Company Info** - Organization details, mission, address, focus areas
+   - **Company Info** - Organization details, mission/description, address, focus areas, priority focus keywords (required; up to 5, “things you’d be thrilled to get funding for”)
    - **Team Invites** - Invite colleagues to join the organization
 4. **Dashboard** (`/dashboard`) - Primary grant search interface with:
    - Advanced search filters (keyword, source, deadline, funding amount)
@@ -27,8 +28,8 @@ GrantMatch AI streamlines the grant discovery process by:
    - Paginated grant results with detailed card views
    - Grant count and real-time search feedback
 5. **Grant Details** (`/grants/[id]`) - Comprehensive grant information including purpose, eligibility, funding details, and application links
-6. **Profile** (`/profile`) - User account management
-7. **Organization** (`/org`) - Organization settings and team management
+6. **Profile** (`/profile`) - User account management plus org “Improve matches” form (entity type, revenue sources, budget/staff ranges, focus/service areas, priority focus)
+7. **Organization** (`/org`) - Organization settings and team management (legacy; match profile now lives on `/profile`)
 
 ### Technology Stack
 
@@ -38,6 +39,14 @@ GrantMatch AI streamlines the grant discovery process by:
 - **Styling**: Tailwind CSS v4+ with Shadcn UI components
 - **Forms**: React Hook Form with Zod validation
 - **State**: React Query (@tanstack/react-query) for server state management
+
+### Matching & Scoring
+
+- Organization profile signals: `entityType`, `revenueSources`, `budgetRange`, `staffRange`, `minAward`/`maxAward` (preferred award range), `focusAreas`, `serviceAreas`, `priorityFocusKeywords` (max 5, prioritized in purpose scoring)
+- Onboarding requires priority focus keywords to avoid “mushy” matching
+- Grant match scoring weights purpose, eligibility, geography, funding and is versioned via `scoringVersion`
+- New organizations and scoring-profile updates force `scoringVersion` to the current `SCORING_VERSION` to ensure recompute when the model changes
+- Match index runner: claim/resume tick that recomputes GrantMatch rows for OPEN/UNKNOWN grants only, uses org `scoringVersion`, and tracks status/cursor/claim fields on Organization
 
 ## Quick Start
 
@@ -87,7 +96,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - **User** - User accounts with auth (email/password or OAuth), role management, organization membership
 - **Account** - OAuth provider accounts (NextAuth.js adapter)
 - **Session** - User sessions (NextAuth.js adapter)
-- **Organization** - Nonprofit organizations with mission, focus areas, address info
+- **Organization** - Nonprofit organizations with mission/description, address info, and matching fields (entity type, revenue sources, budget range, staff range, focus areas, service areas, priority focus keywords; match index status/cursor/claim tracking, scoringVersion)
 - **Invitation** - Team invitations for organization collaboration (PENDING/ACCEPTED/REJECTED)
 - **Grant** - Grant opportunities with comprehensive metadata:
   - Multi-source support (FEDERAL, CALIFORNIA, OHIO, OTHER)

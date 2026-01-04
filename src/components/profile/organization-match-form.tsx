@@ -87,18 +87,15 @@ export function OrganizationMatchForm() {
 		},
 	});
 
-	const [entityType, setEntityType] = useState<
-		$Enums.OrganizationEntityType | null | undefined
-	>();
+	const [entityType, setEntityType] =
+		useState<$Enums.OrganizationEntityType | null>(null);
 	const [revenueSources, setRevenueSources] = useState<$Enums.RevenueSource[]>(
 		[],
 	);
-	const [budgetRange, setBudgetRange] = useState<
-		$Enums.BudgetRange | null | undefined
-	>();
-	const [staffRange, setStaffRange] = useState<
-		$Enums.StaffRange | null | undefined
-	>();
+	const [budgetRange, setBudgetRange] = useState<$Enums.BudgetRange | null>(
+		null,
+	);
+	const [staffRange, setStaffRange] = useState<$Enums.StaffRange | null>(null);
 	const [focusAreas, setFocusAreas] = useState<string[]>([]);
 	const [serviceAreas, setServiceAreas] = useState<string[]>([]);
 	const [priorityFocusKeywords, setPriorityFocusKeywords] = useState<string[]>(
@@ -107,10 +104,10 @@ export function OrganizationMatchForm() {
 
 	useEffect(() => {
 		if (!data) return;
-		setEntityType(data.entityType ?? undefined);
+		setEntityType(data.entityType ?? null);
 		setRevenueSources(data.revenueSources ?? []);
-		setBudgetRange(data.budgetRange ?? undefined);
-		setStaffRange(data.staffRange ?? undefined);
+		setBudgetRange(data.budgetRange ?? null);
+		setStaffRange(data.staffRange ?? null);
 		setFocusAreas(data.focusAreas ?? []);
 		setServiceAreas(data.serviceAreas ?? []);
 		setPriorityFocusKeywords(data.priorityFocusKeywords ?? []);
@@ -135,10 +132,10 @@ export function OrganizationMatchForm() {
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 		mutation.mutate({
-			entityType: entityType ?? null,
+			entityType: entityType,
 			revenueSources,
-			budgetRange: budgetRange ?? null,
-			staffRange: staffRange ?? null,
+			budgetRange,
+			staffRange,
 			focusAreas,
 			serviceAreas,
 			priorityFocusKeywords,
@@ -180,7 +177,7 @@ export function OrganizationMatchForm() {
 									value={entityType ?? ENTITY_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === ENTITY_CLEAR_VALUE
-											? setEntityType(undefined)
+											? setEntityType(null)
 											: setEntityType(value as $Enums.OrganizationEntityType)
 									}
 								>
@@ -258,7 +255,7 @@ export function OrganizationMatchForm() {
 									value={budgetRange ?? BUDGET_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === BUDGET_CLEAR_VALUE
-											? setBudgetRange(undefined)
+											? setBudgetRange(null)
 											: setBudgetRange(value as $Enums.BudgetRange)
 									}
 								>
@@ -287,7 +284,7 @@ export function OrganizationMatchForm() {
 									value={staffRange ?? STAFF_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === STAFF_CLEAR_VALUE
-											? setStaffRange(undefined)
+											? setStaffRange(null)
 											: setStaffRange(value as $Enums.StaffRange)
 									}
 								>

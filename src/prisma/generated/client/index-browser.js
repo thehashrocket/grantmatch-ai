@@ -253,6 +253,7 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   description: 'description',
   mission: 'mission',
   focusAreas: 'focusAreas',
+  priorityFocusKeywords: 'priorityFocusKeywords',
   serviceAreas: 'serviceAreas',
   entityType: 'entityType',
   revenueSources: 'revenueSources',

@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { db } from '@/lib/db';
 import { createId } from '@paralleldrive/cuid2';
 import { authOptions } from '@/lib/auth';
+import { normalizeTags } from '@/lib/utils/normalizeTags';
 
 export async function POST(req: Request) {
 	try {
@@ -29,6 +30,9 @@ export async function POST(req: Request) {
 		const state = formData.get('state') as string;
 		const zipCode = formData.get('zipCode') as string;
 		const description = formData.get('description') as string;
+		const priorityFocusKeywordsRaw = formData.get(
+			'priorityFocusKeywords',
+		) as string;
 
 		const teamEmails = formData.get('teamEmails') as string;
 		const teamEmailsArray = teamEmails
@@ -47,6 +51,27 @@ export async function POST(req: Request) {
 		) {
 			return NextResponse.json(
 				{ error: 'Missing required fields' },
+				{ status: 400 },
+			);
+		}
+
+		const priorityFocusKeywords = priorityFocusKeywordsRaw
+			? (JSON.parse(priorityFocusKeywordsRaw) as string[])
+			: [];
+
+		const normalizedPriority = normalizeTags(priorityFocusKeywords);
+		if (normalizedPriority.length === 0) {
+			return NextResponse.json(
+				{
+					error:
+						'Pick at least one priority focus so we can tailor your matches.',
+				},
+				{ status: 400 },
+			);
+		}
+		if (normalizedPriority.length > 5) {
+			return NextResponse.json(
+				{ error: 'Pick up to 5 priority focus keywords' },
 				{ status: 400 },
 			);
 		}
@@ -73,6 +98,7 @@ export async function POST(req: Request) {
 						? normalizedDescription
 						: null,
 				focusAreas: [],
+				priorityFocusKeywords: normalizedPriority,
 				mission,
 				address1,
 				address2: address2 || undefined,

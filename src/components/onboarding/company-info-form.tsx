@@ -7,7 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import { Controller } from 'react-hook-form';
 import type { FormData } from './multi-step-form';
+import { BookmarkTagsInput } from '@/components/grants/BookmarkTagsInput';
 
 const companyInfoSchema = z.object({
 	companyName: z.string().min(1, 'Company name is required'),
@@ -17,6 +19,10 @@ const companyInfoSchema = z.object({
 	state: z.string().min(1, 'State is required'),
 	zipCode: z.string().min(5, 'ZIP code must be at least 5 digits'),
 	description: z.string().min(1, 'Description is required'),
+	priorityFocusKeywords: z
+		.array(z.string().min(1))
+		.min(1, 'Add at least one priority focus')
+		.max(5, 'Pick up to 5 priorities'),
 });
 
 type CompanyInfoData = Pick<
@@ -28,6 +34,7 @@ type CompanyInfoData = Pick<
 	| 'state'
 	| 'zipCode'
 	| 'description'
+	| 'priorityFocusKeywords'
 >;
 
 interface CompanyInfoFormProps {
@@ -48,6 +55,7 @@ export function CompanyInfoForm({
 	const {
 		register,
 		handleSubmit,
+		control,
 		formState: { errors },
 	} = useForm<CompanyInfoData>({
 		resolver: zodResolver(companyInfoSchema),
@@ -59,6 +67,7 @@ export function CompanyInfoForm({
 			state: data.state,
 			zipCode: data.zipCode,
 			description: data.description,
+			priorityFocusKeywords: data.priorityFocusKeywords,
 		},
 	});
 
@@ -156,6 +165,38 @@ export function CompanyInfoForm({
 					{errors.description && (
 						<p className="mt-1 text-sm text-red-500">
 							{errors.description.message}
+						</p>
+					)}
+				</div>
+
+				<div>
+					<div className="flex items-center justify-between">
+						<Label htmlFor="priorityFocusKeywords">
+							Priority focus (top 5)
+						</Label>
+						<span className="text-xs text-muted-foreground">
+							Required
+						</span>
+					</div>
+					<Controller
+						control={control}
+						name="priorityFocusKeywords"
+						render={({ field }) => (
+							<BookmarkTagsInput
+								tags={field.value}
+								onChange={field.onChange}
+								disabled={isSubmitting}
+								maxTags={5}
+							/>
+						)}
+					/>
+					<p className="mt-1 text-sm text-muted-foreground">
+						Pick up to 5 things you’d be thrilled to get funding for. These drive
+						your matches most.
+					</p>
+					{errors.priorityFocusKeywords && (
+						<p className="mt-1 text-sm text-red-500">
+							{errors.priorityFocusKeywords.message as string}
 						</p>
 					)}
 				</div>

@@ -12114,6 +12114,7 @@ export namespace Prisma {
     description: number
     mission: number
     focusAreas: number
+    priorityFocusKeywords: number
     serviceAreas: number
     entityType: number
     revenueSources: number
@@ -12215,6 +12216,7 @@ export namespace Prisma {
     description?: true
     mission?: true
     focusAreas?: true
+    priorityFocusKeywords?: true
     serviceAreas?: true
     entityType?: true
     revenueSources?: true
@@ -12333,6 +12335,7 @@ export namespace Prisma {
     description: string | null
     mission: string
     focusAreas: string[]
+    priorityFocusKeywords: string[]
     serviceAreas: string[]
     entityType: $Enums.OrganizationEntityType | null
     revenueSources: $Enums.RevenueSource[]
@@ -12383,6 +12386,7 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    priorityFocusKeywords?: boolean
     serviceAreas?: boolean
     entityType?: boolean
     revenueSources?: boolean
@@ -12418,6 +12422,7 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    priorityFocusKeywords?: boolean
     serviceAreas?: boolean
     entityType?: boolean
     revenueSources?: boolean
@@ -12449,6 +12454,7 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    priorityFocusKeywords?: boolean
     serviceAreas?: boolean
     entityType?: boolean
     revenueSources?: boolean
@@ -12480,6 +12486,7 @@ export namespace Prisma {
     description?: boolean
     mission?: boolean
     focusAreas?: boolean
+    priorityFocusKeywords?: boolean
     serviceAreas?: boolean
     entityType?: boolean
     revenueSources?: boolean
@@ -12505,7 +12512,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "preferredAwardMin" | "preferredAwardMax" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "priorityFocusKeywords" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "preferredAwardMin" | "preferredAwardMax" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
@@ -12528,6 +12535,7 @@ export namespace Prisma {
       description: string | null
       mission: string
       focusAreas: string[]
+      priorityFocusKeywords: string[]
       serviceAreas: string[]
       entityType: $Enums.OrganizationEntityType | null
       revenueSources: $Enums.RevenueSource[]
@@ -12982,6 +12990,7 @@ export namespace Prisma {
     readonly description: FieldRef<"Organization", 'String'>
     readonly mission: FieldRef<"Organization", 'String'>
     readonly focusAreas: FieldRef<"Organization", 'String[]'>
+    readonly priorityFocusKeywords: FieldRef<"Organization", 'String[]'>
     readonly serviceAreas: FieldRef<"Organization", 'String[]'>
     readonly entityType: FieldRef<"Organization", 'OrganizationEntityType'>
     readonly revenueSources: FieldRef<"Organization", 'RevenueSource[]'>
@@ -19286,6 +19295,7 @@ export namespace Prisma {
     description: 'description',
     mission: 'mission',
     focusAreas: 'focusAreas',
+    priorityFocusKeywords: 'priorityFocusKeywords',
     serviceAreas: 'serviceAreas',
     entityType: 'entityType',
     revenueSources: 'revenueSources',
@@ -20513,6 +20523,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Organization"> | string | null
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    priorityFocusKeywords?: StringNullableListFilter<"Organization">
     serviceAreas?: StringNullableListFilter<"Organization">
     entityType?: EnumOrganizationEntityTypeNullableFilter<"Organization"> | $Enums.OrganizationEntityType | null
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
@@ -20547,6 +20558,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    priorityFocusKeywords?: SortOrder
     serviceAreas?: SortOrder
     entityType?: SortOrderInput | SortOrder
     revenueSources?: SortOrder
@@ -20584,6 +20596,7 @@ export namespace Prisma {
     description?: StringNullableFilter<"Organization"> | string | null
     mission?: StringFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    priorityFocusKeywords?: StringNullableListFilter<"Organization">
     serviceAreas?: StringNullableListFilter<"Organization">
     entityType?: EnumOrganizationEntityTypeNullableFilter<"Organization"> | $Enums.OrganizationEntityType | null
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
@@ -20618,6 +20631,7 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    priorityFocusKeywords?: SortOrder
     serviceAreas?: SortOrder
     entityType?: SortOrderInput | SortOrder
     revenueSources?: SortOrder
@@ -20657,6 +20671,7 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     mission?: StringWithAggregatesFilter<"Organization"> | string
     focusAreas?: StringNullableListFilter<"Organization">
+    priorityFocusKeywords?: StringNullableListFilter<"Organization">
     serviceAreas?: StringNullableListFilter<"Organization">
     entityType?: EnumOrganizationEntityTypeNullableWithAggregatesFilter<"Organization"> | $Enums.OrganizationEntityType | null
     revenueSources?: EnumRevenueSourceNullableListFilter<"Organization">
@@ -21988,6 +22003,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22022,6 +22038,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22056,6 +22073,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22090,6 +22108,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22124,6 +22143,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22155,6 +22175,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -22186,6 +22207,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -23608,6 +23630,7 @@ export namespace Prisma {
     description?: SortOrder
     mission?: SortOrder
     focusAreas?: SortOrder
+    priorityFocusKeywords?: SortOrder
     serviceAreas?: SortOrder
     entityType?: SortOrder
     revenueSources?: SortOrder
@@ -24553,6 +24576,10 @@ export namespace Prisma {
     set: string[]
   }
 
+  export type OrganizationCreatepriorityFocusKeywordsInput = {
+    set: string[]
+  }
+
   export type OrganizationCreateserviceAreasInput = {
     set: string[]
   }
@@ -24604,6 +24631,11 @@ export namespace Prisma {
   }
 
   export type OrganizationUpdatefocusAreasInput = {
+    set?: string[]
+    push?: string | string[]
+  }
+
+  export type OrganizationUpdatepriorityFocusKeywordsInput = {
     set?: string[]
     push?: string | string[]
   }
@@ -26379,6 +26411,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -26412,6 +26445,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -26581,6 +26615,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -26614,6 +26649,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -26933,6 +26969,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -26966,6 +27003,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27015,6 +27053,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27048,6 +27087,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27703,6 +27743,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27736,6 +27777,7 @@ export namespace Prisma {
     description?: string | null
     mission: string
     focusAreas?: OrganizationCreatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationCreatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationCreateserviceAreasInput | string[]
     entityType?: $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationCreaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27884,6 +27926,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]
@@ -27917,6 +27960,7 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     mission?: StringFieldUpdateOperationsInput | string
     focusAreas?: OrganizationUpdatefocusAreasInput | string[]
+    priorityFocusKeywords?: OrganizationUpdatepriorityFocusKeywordsInput | string[]
     serviceAreas?: OrganizationUpdateserviceAreasInput | string[]
     entityType?: NullableEnumOrganizationEntityTypeFieldUpdateOperationsInput | $Enums.OrganizationEntityType | null
     revenueSources?: OrganizationUpdaterevenueSourcesInput | $Enums.RevenueSource[]

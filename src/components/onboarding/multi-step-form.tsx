@@ -25,6 +25,7 @@ export interface FormData {
 	state: string;
 	zipCode: string;
 	description: string;
+	priorityFocusKeywords: string[];
 
 	// Team Members
 	teamEmails: string[];
@@ -45,6 +46,7 @@ export function MultiStepForm() {
 		state: '',
 		zipCode: '',
 		description: '',
+		priorityFocusKeywords: [],
 		teamEmails: [],
 	});
 
@@ -78,6 +80,8 @@ export function MultiStepForm() {
 			// Add all form fields
 			Object.entries(formData).forEach(([key, value]) => {
 				if (key === 'teamEmails') {
+					submitData.append(key, JSON.stringify(value));
+				} else if (key === 'priorityFocusKeywords') {
 					submitData.append(key, JSON.stringify(value));
 				} else if (key === 'avatar' && value instanceof File) {
 					submitData.append(key, value);

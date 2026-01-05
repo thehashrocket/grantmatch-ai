@@ -91,18 +91,18 @@ export async function startOrgMatchIndex(
 ) {
 	const org = await prisma.organization.update({
 		where: { id: organizationId },
-	data: {
-		matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
-		matchIndexedCount: 0,
-		matchIndexedAt: null,
-		matchIndexLastTickAt: new Date(),
-		matchIndexLastTickIndexedDelta: 0,
-		matchIndexLastTickRecomputedDelta: 0,
-		matchIndexError: null,
-		matchIndexErrorJson: [],
-		matchIndexCursor: null,
-		matchIndexClaimId: null,
-		matchIndexClaimedAt: null,
+		data: {
+			matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+			matchIndexedCount: 0,
+			matchIndexedAt: null,
+			matchIndexLastTickAt: new Date(),
+			matchIndexLastTickIndexedDelta: 0,
+			matchIndexLastTickRecomputedDelta: 0,
+			matchIndexError: null,
+			matchIndexErrorJson: [],
+			matchIndexCursor: null,
+			matchIndexClaimId: null,
+			matchIndexClaimedAt: null,
 		},
 		select: orgSelect,
 	});

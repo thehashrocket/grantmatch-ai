@@ -15,6 +15,7 @@ import {
 	calculateDaysUntilDeadline,
 	calculateGrantFitScore,
 } from '@/lib/utils/grant-scoring';
+import { deriveScorePresentation } from '@/lib/services/score-presentation';
 
 export interface GrantService {
 	searchGrants(
@@ -37,7 +38,11 @@ export class GrantServiceImpl implements GrantService {
 
 	private mapGrantToMatch(
 		grant: GrantRecord,
-		override?: { fitScore?: number; explanation?: string | null },
+		override?: {
+			fitScore?: number;
+			explanation?: string | null;
+			subscoresJson?: Record<string, number | boolean | string | null> | null;
+		},
 	): GrantMatch {
 		const fitScore =
 			override?.fitScore ??
@@ -61,6 +66,42 @@ export class GrantServiceImpl implements GrantService {
 			grant.awardCeiling !== null && grant.awardCeiling !== undefined
 				? Number(grant.awardCeiling)
 				: null;
+		const fundingAmount =
+			grant.estimatedTotalFunding !== null &&
+			grant.estimatedTotalFunding !== undefined
+				? Number(grant.estimatedTotalFunding)
+				: null;
+		const fundingVaries =
+			typeof grant.estimatedAwardAmounts === 'string' &&
+			/vary/i.test(grant.estimatedAwardAmounts);
+		const subscores =
+			override?.subscoresJson &&
+			typeof override.subscoresJson === 'object' &&
+			!Array.isArray(override.subscoresJson)
+				? (override.subscoresJson as Record<
+						string,
+						number | boolean | string | null
+					>)
+				: null;
+		const baseExplanation =
+			override?.explanation ??
+			'Preliminary score based on limited fields (purpose/eligibility may be missing).';
+		const scorePresentation = deriveScorePresentation({
+			grant: {
+				fitScore,
+				purpose: grant.purpose,
+				eligibleApplicants: grant.eligibleApplicants,
+				eligibleGeographies: grant.eligibleGeographies,
+				estimatedTotalFunding,
+				awardFloor,
+				awardCeiling,
+				fundingAmount,
+				deadline: grant.deadline,
+				fundingVaries,
+			},
+			subscores,
+			fallbackExplanation: baseExplanation,
+		});
 
 		return {
 			id: grant.id,
@@ -68,10 +109,12 @@ export class GrantServiceImpl implements GrantService {
 			url: grant.url,
 			internalUrl: `/grants/${grant.id}`,
 			fitScore,
-			explanation:
-				override?.explanation ??
-				`This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
-			fundingAmount: estimatedTotalFunding,
+			explanation: baseExplanation,
+			subscores,
+			confidence: scorePresentation.confidence,
+			scoreSummary: scorePresentation.scoreSummary,
+			scoreReasons: scorePresentation.scoreReasons,
+			fundingAmount,
 			estimatedTotalFunding,
 			awardFloor,
 			awardCeiling,
@@ -119,6 +162,10 @@ export class GrantServiceImpl implements GrantService {
 				this.mapGrantToMatch(match.grant, {
 					fitScore: match.fitScore,
 					explanation: match.explanation,
+					subscoresJson: match.subscoresJson as Record<
+						string,
+						number | boolean | string | null
+					> | null,
 				}),
 			);
 

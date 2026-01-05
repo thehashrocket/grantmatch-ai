@@ -7,6 +7,10 @@ export interface GrantMatch {
 	internalUrl: string;
 	fitScore: number;
 	explanation: string;
+	subscores?: Record<string, number | boolean | string | null> | null;
+	confidence?: 'HIGH' | 'MEDIUM' | 'LOW';
+	scoreSummary?: string;
+	scoreReasons?: { matched: string[]; missing: string[]; unknown: string[] };
 	fundingAmount: number | null;
 	estimatedTotalFunding?: number | null;
 	awardFloor?: number | null;

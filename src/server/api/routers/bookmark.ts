@@ -7,6 +7,7 @@ import {
 	calculateDaysUntilDeadline,
 	calculateGrantFitScore,
 } from '@/lib/utils/grant-scoring';
+import { deriveScorePresentation } from '@/lib/services/score-presentation';
 import { normalizeTags } from '@/lib/utils/normalizeTags';
 import type { GrantMatch } from '@/lib/types/grant';
 import { $Enums, Prisma } from '@/prisma/generated/client';
@@ -40,6 +41,7 @@ const bookmarkGrantSelect = {
 	estimatedTotalFunding: true,
 	awardFloor: true,
 	awardCeiling: true,
+	estimatedAwardAmounts: true,
 	eligibleApplicants: true,
 	eligibleGeographies: true,
 	status: true,
@@ -54,7 +56,11 @@ type BookmarkGrant = Prisma.GrantGetPayload<{
 
 const mapGrantToMatch = (
 	grant: BookmarkGrant,
-	override?: { fitScore?: number; explanation?: string | null },
+	override?: {
+		fitScore?: number;
+		explanation?: string | null;
+		subscoresJson?: Record<string, number | boolean | string | null> | null;
+	},
 ): GrantMatch => {
 	const fitScore =
 		override?.fitScore ??
@@ -65,6 +71,50 @@ const mapGrantToMatch = (
 			eligibleGeographies: grant.eligibleGeographies ?? null,
 			purpose: grant.purpose ?? null,
 		});
+	const estimatedTotalFunding =
+		grant.estimatedTotalFunding === null ||
+		grant.estimatedTotalFunding === undefined
+			? null
+			: Number(grant.estimatedTotalFunding);
+	const awardFloor =
+		grant.awardFloor === null || grant.awardFloor === undefined
+			? null
+			: Number(grant.awardFloor);
+	const awardCeiling =
+		grant.awardCeiling === null || grant.awardCeiling === undefined
+			? null
+			: Number(grant.awardCeiling);
+	const fundingVaries =
+		typeof grant.estimatedAwardAmounts === 'string' &&
+		/vary/i.test(grant.estimatedAwardAmounts);
+	const subscores =
+		override?.subscoresJson &&
+		typeof override.subscoresJson === 'object' &&
+		!Array.isArray(override.subscoresJson)
+			? (override.subscoresJson as Record<
+					string,
+					number | boolean | string | null
+				>)
+			: null;
+	const explanation =
+		override?.explanation ??
+		'Preliminary score based on limited fields (purpose/eligibility may be missing).';
+	const scorePresentation = deriveScorePresentation({
+		grant: {
+			fitScore,
+			purpose: grant.purpose,
+			eligibleApplicants: grant.eligibleApplicants,
+			eligibleGeographies: grant.eligibleGeographies,
+			estimatedTotalFunding,
+			awardFloor,
+			awardCeiling,
+			fundingAmount: estimatedTotalFunding,
+			deadline: grant.deadline,
+			fundingVaries,
+		},
+		subscores,
+		fallbackExplanation: explanation,
+	});
 
 	return {
 		id: grant.id,
@@ -72,27 +122,15 @@ const mapGrantToMatch = (
 		url: grant.url,
 		internalUrl: `/grants/${grant.id}`,
 		fitScore,
-		explanation:
-			override?.explanation ??
-			`This grant matches your organization's profile with a fit score of ${fitScore.toFixed(1)}/10. ${grant.purpose || 'No description available.'}`,
-		fundingAmount:
-			grant.estimatedTotalFunding === null ||
-			grant.estimatedTotalFunding === undefined
-				? null
-				: Number(grant.estimatedTotalFunding),
-		estimatedTotalFunding:
-			grant.estimatedTotalFunding === null ||
-			grant.estimatedTotalFunding === undefined
-				? null
-				: Number(grant.estimatedTotalFunding),
-		awardFloor:
-			grant.awardFloor === null || grant.awardFloor === undefined
-				? null
-				: Number(grant.awardFloor),
-		awardCeiling:
-			grant.awardCeiling === null || grant.awardCeiling === undefined
-				? null
-				: Number(grant.awardCeiling),
+		explanation,
+		subscores,
+		confidence: scorePresentation.confidence,
+		scoreSummary: scorePresentation.scoreSummary,
+		scoreReasons: scorePresentation.scoreReasons,
+		fundingAmount: estimatedTotalFunding,
+		estimatedTotalFunding,
+		awardFloor,
+		awardCeiling,
 		deadline: grant.deadline ? grant.deadline.toISOString() : null,
 		daysUntilDeadline: calculateDaysUntilDeadline(grant.deadline ?? null),
 		source: grant.source,
@@ -356,7 +394,10 @@ export const bookmarkRouter = router({
 				{
 					fitScore: number;
 					explanation: string | null;
-					subscoresJson?: unknown;
+					subscoresJson: Record<
+						string,
+						number | boolean | string | null
+					> | null;
 				}
 			> = {};
 
@@ -384,7 +425,13 @@ export const bookmarkRouter = router({
 					acc[match.grantId] = {
 						fitScore: match.fitScore,
 						explanation: match.explanation ?? null,
-						subscoresJson: match.subscoresJson ?? undefined,
+						subscoresJson:
+							typeof match.subscoresJson === 'object' && match.subscoresJson
+								? (match.subscoresJson as Record<
+										string,
+										number | boolean | string | null
+									>)
+								: null,
 					};
 					return acc;
 				}, {});
@@ -416,6 +463,7 @@ export const bookmarkRouter = router({
 						grant: mapGrantToMatch(bookmark.grant, {
 							fitScore: match?.fitScore,
 							explanation: match?.explanation ?? undefined,
+							subscoresJson: match?.subscoresJson ?? null,
 						}),
 					};
 				}),

@@ -615,11 +615,14 @@ export function OrganizationMatchForm() {
 												• Last update: {lastUpdateText}
 											</span>
 										) : null}
-										{statusSource.matchIndexLastTickIndexedDelta !== undefined && (
+										{statusSource.matchIndexLastTickIndexedDelta !==
+											undefined && (
 											<span className="text-xs text-muted-foreground">
 												• Last tick: +
-												{statusSource.matchIndexLastTickIndexedDelta ?? 0} scanned, +
-												{statusSource.matchIndexLastTickRecomputedDelta ?? 0} updated
+												{statusSource.matchIndexLastTickIndexedDelta ?? 0}{' '}
+												scanned, +
+												{statusSource.matchIndexLastTickRecomputedDelta ?? 0}{' '}
+												updated
 											</span>
 										)}
 										<button

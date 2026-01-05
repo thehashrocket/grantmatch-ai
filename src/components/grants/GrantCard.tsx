@@ -37,6 +37,7 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
 	const flagInfo = getFlagInfo(grant.source);
+	const summaryText = grant.scoreSummary ?? grant.explanation;
 	const deadlineLabel = grant.deadline
 		? formatDate(grant.deadline)
 		: 'Deadline not provided';
@@ -74,14 +75,32 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 			className: 'bg-emerald-100 text-emerald-800',
 		};
 	})();
+	const fitLabel =
+		category === 'high'
+			? 'Strong'
+			: category === 'medium'
+				? 'Moderate'
+				: 'Weak';
+	const confidence = grant.confidence ?? 'MEDIUM';
+	const confidenceClass =
+		confidence === 'HIGH'
+			? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
+			: confidence === 'LOW'
+				? 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100'
+				: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100';
+	const hasScoreReasons =
+		grant.scoreReasons &&
+		(grant.scoreReasons.matched.length > 0 ||
+			grant.scoreReasons.missing.length > 0 ||
+			grant.scoreReasons.unknown.length > 0);
 
 	return (
 		<div className="relative">
 			<Card className="transition-shadow hover:shadow-lg">
 				<CardHeader>
 					<div className="flex items-start justify-between gap-4">
-						<div className="space-y-1.5">
-							<CardTitle className="text-xl flex items-center gap-2">
+						<div className="space-y-2 flex-1">
+							<CardTitle className="text-xl flex items-start gap-2 leading-snug">
 								{flagInfo && (
 									<Image
 										src={flagInfo.flagPath}
@@ -91,13 +110,25 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 										className=""
 									/>
 								)}
-								<Link href={grant.internalUrl} className="hover:underline">
+								<Link
+									href={grant.internalUrl}
+									className="hover:underline line-clamp-2"
+								>
 									{grant.title}
 								</Link>
 							</CardTitle>
 							<CardDescription className="flex flex-wrap items-center gap-2">
 								<Badge className={colorClasses}>
-									Fit Score: {grant.fitScore.toFixed(1)}
+									{fitLabel} • {grant.fitScore.toFixed(1)}/10
+								</Badge>
+								<Badge
+									className={confidenceClass}
+									title="Confidence reflects how much eligibility, funding, and deadline info we have for this grant."
+								>
+									Confidence:{' '}
+									{confidence
+										.toLowerCase()
+										.replace(/^\w/, (c) => c.toUpperCase())}
 								</Badge>
 								{deadlineBadge ? (
 									<Badge className={deadlineBadge.className}>
@@ -105,6 +136,11 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 									</Badge>
 								) : null}
 								<DetailsStatusBadge status={grant.detailsStatus} />
+							</CardDescription>
+						</div>
+						<div className="flex flex-col items-end gap-3 text-right min-w-[180px]">
+							<div className="flex items-center gap-2">
+								{actionSlot}
 								<a
 									href={grant.url}
 									target="_blank"
@@ -114,26 +150,86 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 									<ExternalLink className="h-3 w-3" />
 									<span>View Original</span>
 								</a>
-							</CardDescription>
-						</div>
-						<div className="flex flex-col items-end gap-3 text-right">
-							{actionSlot}
+							</div>
 							<FundingAmount
 								estimatedTotalFunding={grant.estimatedTotalFunding}
 								awardFloor={grant.awardFloor}
 								awardCeiling={grant.awardCeiling}
 								fundingAmount={grant.fundingAmount}
 							/>
-							<div className="text-sm text-muted-foreground">
-								{grant.deadline
-									? `Deadline: ${deadlineLabel}`
-									: 'Deadline not provided'}
-							</div>
+							{grant.deadline ? (
+								<div className="text-sm text-muted-foreground">
+									Deadline: {deadlineLabel}
+								</div>
+							) : null}
 						</div>
 					</div>
 				</CardHeader>
-				<CardContent>
-					<p className="text-muted-foreground">{grant.explanation}</p>
+				<CardContent className="space-y-3">
+					<p className="text-muted-foreground text-sm leading-relaxed">
+						{summaryText}
+					</p>
+					{hasScoreReasons ? (
+						<details className="rounded-md bg-muted/60 p-3 text-sm">
+							<summary className="cursor-pointer select-none font-semibold text-foreground">
+								Why this score
+							</summary>
+							<div className="mt-2 space-y-2 text-muted-foreground">
+								{grant.scoreReasons?.matched.length ? (
+									<div className="space-y-1.5">
+										<div className="font-semibold text-foreground flex items-center gap-2">
+											<span aria-hidden>✅</span>
+											<span>Matched</span>
+										</div>
+										<ul className="space-y-1">
+											{grant.scoreReasons.matched.map((reason) => (
+												<li key={`matched-${reason}`} className="flex gap-2">
+													<span aria-hidden>•</span>
+													<span className="leading-snug">{reason}</span>
+												</li>
+											))}
+										</ul>
+									</div>
+								) : null}
+								{grant.scoreReasons?.missing.length ? (
+									<div className="space-y-1.5">
+										<div className="font-semibold text-foreground flex items-center gap-2">
+											<span aria-hidden>⚠️</span>
+											<span>Missing</span>
+										</div>
+										<ul className="space-y-1">
+											{grant.scoreReasons.missing.map((reason) => (
+												<li key={`missing-${reason}`} className="flex gap-2">
+													<span aria-hidden>•</span>
+													<span className="leading-snug">{reason}</span>
+												</li>
+											))}
+										</ul>
+									</div>
+								) : null}
+								{grant.scoreReasons?.unknown.length ? (
+									<div className="space-y-1.5">
+										<div className="font-semibold text-foreground flex items-center gap-2">
+											<span aria-hidden>❓</span>
+											<span>Unknown</span>
+										</div>
+										<ul className="space-y-1">
+											{grant.scoreReasons.unknown.map((reason) => (
+												<li key={`unknown-${reason}`} className="flex gap-2">
+													<span aria-hidden>•</span>
+													<span className="leading-snug">{reason}</span>
+												</li>
+											))}
+										</ul>
+									</div>
+								) : null}
+							</div>
+						</details>
+					) : grant.explanation ? (
+						<p className="text-muted-foreground text-sm leading-relaxed">
+							{grant.explanation}
+						</p>
+					) : null}
 				</CardContent>
 			</Card>
 		</div>

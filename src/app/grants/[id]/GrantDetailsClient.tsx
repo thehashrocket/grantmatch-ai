@@ -109,8 +109,8 @@ export default function GrantDetailsClient({
 		<div className="space-y-6">
 			<div className="space-y-2">
 				<Button
-					variant="ghost"
-					className="px-0 text-sm"
+					variant="outline"
+					className="px-2 text-sm"
 					onClick={() => {
 						if (returnToParam) {
 							router.push(backTarget);

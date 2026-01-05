@@ -67,6 +67,9 @@ export async function upsertGrantMatch(params: {
 	const subscoresJson = {
 		...computed.subscores,
 		reasons: computed.reasons,
+		confidence: computed.confidence,
+		missing: computed.missing,
+		matches: computed.matches,
 	} as Prisma.InputJsonValue;
 
 	const existing = await prisma.grantMatch.findUnique({
@@ -91,8 +94,6 @@ export async function upsertGrantMatch(params: {
 			data: {
 				version,
 				computedAt: now,
-				explanation: computed.explanation,
-				subscoresJson,
 			},
 		});
 

@@ -20,6 +20,7 @@ interface GrantResultsProps {
 	bookmarkStatusMap?: Record<string, BookmarkStatusRecord>;
 	statusMapInput?: { grantIds: string[] };
 	returnTo?: string;
+	returnQuery?: string;
 }
 
 export function GrantResults({
@@ -34,6 +35,7 @@ export function GrantResults({
 	bookmarkStatusMap,
 	statusMapInput,
 	returnTo,
+	returnQuery,
 }: GrantResultsProps) {
 	if (isLoading) {
 		return <GrantResultsSkeleton />;
@@ -62,6 +64,7 @@ export function GrantResults({
 						key={grant.id}
 						grant={grant}
 						returnTo={returnTo}
+						returnQuery={returnQuery}
 						actionSlot={
 							<div className="flex items-start gap-2">
 								<div className="flex flex-col items-end gap-2">

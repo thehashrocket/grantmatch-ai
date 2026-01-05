@@ -120,12 +120,12 @@ const deriveConfidence = (
 	signalsMissing: number,
 ) => {
 	if (!subscores) {
-		return signalsMissing > 1 ? 'LOW' : 'MEDIUM';
+		return signalsMissing > 1 ? 'LOW' : 'MED';
 	}
 
 	if (signalsMissing >= 3) return 'LOW';
-	if (signalsMissing >= 1) return 'MEDIUM';
-	return 'HIGH';
+	if (signalsMissing >= 1) return 'MED';
+	return 'HIGH' as const;
 };
 
 export const deriveScorePresentation = ({
@@ -137,7 +137,7 @@ export const deriveScorePresentation = ({
 	subscores?: Record<string, unknown> | null;
 	fallbackExplanation?: string;
 }): {
-	confidence: 'HIGH' | 'MEDIUM' | 'LOW';
+	confidence: 'HIGH' | 'MED' | 'LOW';
 	scoreSummary: string;
 	scoreReasons: ScoreReasonBuckets;
 } => {
@@ -228,7 +228,7 @@ export const deriveScorePresentation = ({
 
 	const confidence = deriveConfidence(subscores ?? null, signalsMissing) as
 		| 'HIGH'
-		| 'MEDIUM'
+		| 'MED'
 		| 'LOW';
 
 	const scoreSummary = buildSummary(

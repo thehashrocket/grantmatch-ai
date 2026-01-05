@@ -1,7 +1,6 @@
 // src/components/grants/GrantCard.tsx
 
 import Link from 'next/link';
-import { useState } from 'react';
 import {
 	Card,
 	CardContent,
@@ -11,21 +10,35 @@ import {
 } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from '@/components/ui/popover';
+import { Progress } from '@/components/ui/progress';
+import {
 	getFitScoreCategory,
 	getFitScoreColor,
 	type GrantMatch,
 } from '@/lib/types/grant';
-import { AlertTriangle, Check, ExternalLink, Minus } from 'lucide-react';
+import { AlertTriangle, ExternalLink } from 'lucide-react';
 import { getFlagInfo } from '@/lib/utils/flag-utils';
 import Image from 'next/image';
 import DetailsStatusBadge from '@/components/grants/DetailsStatusBadge';
 import { FundingAmount } from '@/components/grants/FundingAmount';
 import { applyReturnTo } from '@/lib/utils/return-to';
+import { parseSubscoresJson } from '@/lib/utils/match-explanation';
+import { cn } from '@/lib/utils';
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface GrantCardProps {
 	grant: GrantMatch;
 	actionSlot?: React.ReactNode;
 	returnTo?: string;
+	returnQuery?: string;
 }
 
 function formatDate(dateString: string): string {
@@ -36,12 +49,42 @@ function formatDate(dateString: string): string {
 	});
 }
 
-export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
-	const [showReasons, setShowReasons] = useState(false);
+export function GrantCard({
+	grant,
+	actionSlot,
+	returnTo,
+	returnQuery,
+}: GrantCardProps) {
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
 	const flagInfo = getFlagInfo(grant.source);
-	const summaryText = grant.scoreSummary ?? grant.explanation;
+	const parsed = parseSubscoresJson(grant.subscoresJson ?? grant.subscores);
+	const fallbackSubscores =
+		grant.subscores &&
+		typeof grant.subscores === 'object' &&
+		!Array.isArray(grant.subscores)
+			? (grant.subscores as Record<string, number>)
+			: null;
+	const subscores =
+		parsed && Object.keys(parsed.subscores).length > 0
+			? parsed.subscores
+			: fallbackSubscores;
+	const reasons =
+		parsed?.reasons ?? (grant.reasons ? grant.reasons.slice(0, 4) : []);
+	const rawConfidence = grant.confidence as string | undefined;
+	const normalizedConfidence =
+		rawConfidence === 'HIGH' || rawConfidence === 'MED' || rawConfidence === 'LOW'
+			? rawConfidence
+			: rawConfidence === 'MEDIUM'
+				? 'MED'
+				: undefined;
+	const confidence = parsed?.confidence ?? normalizedConfidence ?? 'MED';
+	const missingSignals = parsed?.missing ?? grant.missing ?? [];
+	const matches = parsed?.matches ?? grant.matches;
+	const hasStructured = Boolean(parsed) || reasons.length > 0;
+	const summaryText = hasStructured
+		? null
+		: (grant.scoreSummary ?? grant.explanation);
 	const deadlineLabel = grant.deadline
 		? formatDate(grant.deadline)
 		: 'Deadline not provided';
@@ -85,31 +128,55 @@ export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
 			: category === 'medium'
 				? 'Moderate'
 				: 'Weak';
-	const confidence = grant.confidence ?? 'MEDIUM';
 	const confidenceClass =
 		confidence === 'HIGH'
 			? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
 			: confidence === 'LOW'
 				? 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100'
 				: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100';
-	const reasonPreview =
-		grant.reasons
-			?.slice(0, 2)
-			.map((reason) => reason.label)
-			.join(' • ') ?? 'See details';
-
-	const reasonIcon = (strength: string) => {
+	const confidenceLabel =
+		confidence === 'MED'
+			? 'Med'
+			: confidence.charAt(0) + confidence.slice(1).toLowerCase();
+	const reasonTone = (strength: string) => {
 		switch (strength) {
 			case 'strong':
-				return <Check className="h-4 w-4 text-emerald-600" />;
+				return 'bg-emerald-50 text-emerald-800 border-emerald-200';
 			case 'medium':
-				return <Check className="h-4 w-4 text-emerald-500" />;
+				return 'bg-blue-50 text-blue-800 border-blue-200';
 			case 'weak':
-				return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+				return 'bg-amber-50 text-amber-800 border-amber-200';
 			default:
-				return <Minus className="h-4 w-4 text-muted-foreground" />;
+				return 'bg-slate-50 text-slate-800 border-slate-200';
 		}
 	};
+
+	const missingLabels: Record<string, string> = {
+		PURPOSE: 'Purpose',
+		APPLICANTS: 'Eligible applicants',
+		GEOGRAPHY: 'Geography',
+		FUNDING: 'Funding amount',
+	};
+
+	const subscoreEntries: Array<{
+		key: keyof NonNullable<typeof subscores>;
+		label: string;
+		value: number | undefined;
+	}> = [
+		{ key: 'purpose', label: 'Purpose', value: subscores?.purpose },
+		{
+			key: 'eligibility',
+			label: 'Eligibility',
+			value: subscores?.eligibility,
+		},
+		{ key: 'geography', label: 'Geography', value: subscores?.geography },
+		{ key: 'funding', label: 'Funding', value: subscores?.funding },
+	];
+
+	const detailHref = returnQuery
+		? `${grant.internalUrl}${grant.internalUrl.includes('?') ? '&' : '?'}${returnQuery}`
+		: grant.internalUrl;
+	const grantHref = applyReturnTo(detailHref, returnTo);
 
 	return (
 		<div className="relative">
@@ -127,10 +194,7 @@ export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
 										className=""
 									/>
 								)}
-								<Link
-									href={applyReturnTo(grant.internalUrl, returnTo)}
-									className="hover:underline line-clamp-2"
-								>
+								<Link href={grantHref} className="hover:underline line-clamp-2">
 									{grant.title}
 								</Link>
 							</CardTitle>
@@ -138,15 +202,17 @@ export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
 								<Badge className={colorClasses}>
 									{fitLabel} • {grant.fitScore.toFixed(1)}/10
 								</Badge>
-								<Badge
-									className={confidenceClass}
-									title="Confidence reflects how much eligibility, funding, and deadline info we have for this grant."
-								>
-									Confidence:{' '}
-									{confidence
-										.toLowerCase()
-										.replace(/^\w/, (c) => c.toUpperCase())}
-								</Badge>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Badge className={confidenceClass}>
+											Confidence: {confidenceLabel}
+										</Badge>
+									</TooltipTrigger>
+									<TooltipContent align="start" className="max-w-xs text-xs">
+										Confidence is lower when grants omit eligibility, geography,
+										purpose, or funding details.
+									</TooltipContent>
+								</Tooltip>
 								{deadlineBadge ? (
 									<Badge className={deadlineBadge.className}>
 										{deadlineBadge.label}
@@ -183,46 +249,91 @@ export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
 					</div>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					{grant.reasons?.length ? (
-						<div className="space-y-2 text-sm">
-							<div className="flex items-center gap-2">
-								<span className="text-muted-foreground">
-									Why: {reasonPreview}
-								</span>
-								<button
-									type="button"
-									onClick={() => setShowReasons((prev) => !prev)}
-									className="text-xs font-medium text-primary hover:underline"
-								>
-									{showReasons ? 'Hide' : 'Details'}
-								</button>
+					{hasStructured ? (
+						<div className="space-y-3">
+							<div className="flex flex-wrap items-center gap-2">
+								{reasons.slice(0, 4).map((reason, index) => (
+									<Badge
+										key={`${reason.label}-${index}`}
+										variant="outline"
+										className={cn(
+											'flex items-center gap-1 border',
+											reasonTone(reason.strength),
+										)}
+									>
+										<span>
+											{reason.label}
+											{reason.detail ? `: ${reason.detail}` : ''}
+										</span>
+									</Badge>
+								))}
 							</div>
-							{showReasons ? (
-								<ul className="space-y-2">
-									{grant.reasons.map((reason, index) => (
-										<li key={`${reason.label}-${index}`} className="flex gap-2">
-											<span className="mt-0.5">
-												{reasonIcon(reason.strength)}
-											</span>
-											<div className="space-y-0.5">
-												<div className="font-medium leading-tight">
-													{reason.label}
-												</div>
-												{reason.detail ? (
-													<div className="text-muted-foreground leading-tight">
-														{reason.detail}
-													</div>
-												) : null}
+							<div className="flex items-center gap-3 text-sm">
+								<Popover>
+									<PopoverTrigger asChild>
+										<button
+											type="button"
+											className="text-primary hover:underline font-medium text-xs"
+										>
+											Why this match?
+										</button>
+									</PopoverTrigger>
+									<PopoverContent align="start">
+										<div className="space-y-3">
+											<div className="space-y-1">
+												<p className="text-sm font-medium">Match breakdown</p>
+												<p className="text-xs text-muted-foreground leading-snug">
+													{grant.explanation}
+												</p>
 											</div>
-										</li>
-									))}
-								</ul>
-							) : null}
-							{summaryText ? (
-								<p className="text-muted-foreground leading-relaxed">
-									{summaryText}
-								</p>
-							) : null}
+											<div className="grid grid-cols-2 gap-3">
+												{subscoreEntries.map((entry) => (
+													<div key={entry.key} className="space-y-1">
+														<div className="flex items-center justify-between text-xs font-medium">
+															<span>{entry.label}</span>
+															<span className="text-muted-foreground">
+																{typeof entry.value === 'number'
+																	? `${Math.round(entry.value * 100)}%`
+																	: '—'}
+															</span>
+														</div>
+														<Progress
+															value={
+																typeof entry.value === 'number'
+																	? entry.value * 100
+																	: 0
+															}
+														/>
+													</div>
+												))}
+											</div>
+											{matches?.amountInRange === false ? (
+												<div className="flex items-center gap-2 text-xs text-amber-700">
+													<AlertTriangle className="h-4 w-4" />
+													<span>
+														Funding may sit outside your preferred range.
+													</span>
+												</div>
+											) : null}
+											{missingSignals.length > 0 ? (
+												<div className="space-y-1">
+													<p className="text-xs font-medium">Missing signals</p>
+													<div className="flex flex-wrap gap-1 text-[11px] text-muted-foreground">
+														{missingSignals.map((signal) => (
+															<span
+																key={signal}
+																className="rounded-full bg-muted px-2 py-0.5"
+															>
+																{missingLabels[signal] ?? signal.toLowerCase()}
+															</span>
+														))}
+													</div>
+												</div>
+											) : null}
+										</div>
+									</PopoverContent>
+								</Popover>
+							</div>
 						</div>
 					) : (
 						<p className="text-muted-foreground text-sm leading-relaxed">

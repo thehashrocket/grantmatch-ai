@@ -227,7 +227,7 @@ describe('ensureGrantMatches concurrency', () => {
 });
 
 describe('upsertGrantMatch cheap bump', () => {
-	it('refreshes explanation and subscoresJson on cheap bump', async () => {
+	it('only bumps version/timestamp on cheap bump', async () => {
 		const prisma = buildPrisma({
 			grantMatch: {
 				findUnique: vi.fn().mockResolvedValue({ fitScore: 5 }),
@@ -240,6 +240,14 @@ describe('upsertGrantMatch cheap bump', () => {
 			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
 			explanation: 'NEW EXPLANATION',
 			reasons: [{ label: 'reason', strength: 'strong' }],
+			confidence: 'HIGH',
+			missing: [],
+			matches: {
+				priorityMatches: [],
+				focusMatches: [],
+				geographyOverlap: [],
+				amountInRange: null,
+			},
 		});
 
 		await matchModule.upsertGrantMatch({
@@ -263,16 +271,8 @@ describe('upsertGrantMatch cheap bump', () => {
 				.calls[0]?.[0]?.data ?? {};
 		expect(data.version).toBe(3);
 		expect(data.computedAt).toBeInstanceOf(Date);
-		expect(data.explanation).toBe('NEW EXPLANATION');
-		expect(data.subscoresJson).toEqual(
-			expect.objectContaining({
-				eligibility: 1,
-				geography: 1,
-				purpose: 1,
-				funding: 1,
-				reasons: [{ label: 'reason', strength: 'strong' }],
-			}),
-		);
+		expect(data.explanation).toBeUndefined();
+		expect(data.subscoresJson).toBeUndefined();
 		expect(prisma.grantMatch.upsert).not.toHaveBeenCalled();
 	});
 
@@ -289,6 +289,14 @@ describe('upsertGrantMatch cheap bump', () => {
 			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
 			explanation: 'new',
 			reasons: [],
+			confidence: 'HIGH',
+			missing: [],
+			matches: {
+				priorityMatches: [],
+				focusMatches: [],
+				geographyOverlap: [],
+				amountInRange: null,
+			},
 		});
 
 		await matchModule.upsertGrantMatch({
@@ -328,6 +336,14 @@ describe('upsertGrantMatch cheap bump', () => {
 			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
 			explanation: 'exp',
 			reasons: [],
+			confidence: 'HIGH',
+			missing: [],
+			matches: {
+				priorityMatches: [],
+				focusMatches: [],
+				geographyOverlap: [],
+				amountInRange: null,
+			},
 		});
 
 		await matchModule.upsertGrantMatch({

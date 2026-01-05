@@ -13,6 +13,7 @@ import type { GrantMatch } from '@/lib/types/grant';
 import { $Enums, Prisma } from '@/prisma/generated/client';
 import type { PrismaClient } from '@/prisma/generated/client';
 import { ensureGrantMatches } from '@/server/grants/match/upsertGrantMatch';
+import { parseSubscoresJson } from '@/lib/utils/match-explanation';
 
 const BOOKMARK_LIMIT = 100;
 
@@ -57,47 +58,9 @@ type BookmarkGrant = Prisma.GrantGetPayload<{
 const extractReasonsFromSubscores = (
 	subscoresJson: unknown,
 ): GrantMatch['reasons'] | undefined => {
-	if (
-		!subscoresJson ||
-		typeof subscoresJson !== 'object' ||
-		Array.isArray(subscoresJson)
-	) {
-		return undefined;
-	}
-
-	const maybeReasons = (subscoresJson as Record<string, unknown>).reasons;
-	if (!Array.isArray(maybeReasons)) return undefined;
-
-	const allowedStrengths = new Set(['strong', 'medium', 'neutral', 'weak']);
-	const normalized = maybeReasons
-		.map((reason) => {
-			if (!reason || typeof reason !== 'object') return null;
-			const { label, detail, strength } = reason as {
-				label?: unknown;
-				detail?: unknown;
-				strength?: unknown;
-			};
-			if (typeof label !== 'string') return null;
-			if (typeof strength !== 'string' || !allowedStrengths.has(strength)) {
-				return null;
-			}
-			const normalizedDetail =
-				typeof detail === 'string'
-					? detail
-					: detail === null
-						? null
-						: undefined;
-			return {
-				label,
-				detail: normalizedDetail,
-				strength: strength as 'strong' | 'medium' | 'neutral' | 'weak',
-			};
-		})
-		.filter(Boolean) as GrantMatch['reasons'];
-
-	if (!normalized?.length) return undefined;
-
-	return normalized.slice(0, 5);
+	const parsed = parseSubscoresJson(subscoresJson);
+	if (!parsed?.reasons?.length) return undefined;
+	return parsed.reasons;
 };
 
 const mapGrantToMatch = (
@@ -134,14 +97,10 @@ const mapGrantToMatch = (
 	const fundingVaries =
 		typeof grant.estimatedAwardAmounts === 'string' &&
 		/vary/i.test(grant.estimatedAwardAmounts);
+	const parsedExplanation = parseSubscoresJson(override?.subscoresJson);
 	const subscores =
-		override?.subscoresJson &&
-		typeof override.subscoresJson === 'object' &&
-		!Array.isArray(override.subscoresJson)
-			? (override.subscoresJson as Record<
-					string,
-					number | boolean | string | null
-				>)
+		parsedExplanation && Object.keys(parsedExplanation.subscores).length > 0
+			? parsedExplanation.subscores
 			: null;
 	const explanation =
 		override?.explanation ??
@@ -171,14 +130,18 @@ const mapGrantToMatch = (
 		fitScore,
 		explanation,
 		subscores,
-		confidence: scorePresentation.confidence,
+		subscoresJson: override?.subscoresJson,
+		confidence: parsedExplanation?.confidence ?? scorePresentation.confidence,
 		scoreSummary: scorePresentation.scoreSummary,
 		scoreReasons: scorePresentation.scoreReasons,
 		reasons:
 			override?.reasons ??
+			parsedExplanation?.reasons ??
 			(override?.subscoresJson
 				? extractReasonsFromSubscores(override.subscoresJson)
 				: undefined),
+		missing: parsedExplanation?.missing,
+		matches: parsedExplanation?.matches,
 		fundingAmount: estimatedTotalFunding,
 		estimatedTotalFunding,
 		awardFloor,

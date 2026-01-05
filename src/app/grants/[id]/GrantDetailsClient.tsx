@@ -83,7 +83,19 @@ export default function GrantDetailsClient({
 		fitScoreCategory !== null
 			? getFitScoreColor(fitScoreCategory)
 			: 'bg-muted text-muted-foreground';
-	const backTarget = resolveBackTarget(searchParams?.get('returnTo'));
+	const returnToParam = searchParams?.get('returnTo');
+	const searchParamsWithoutReturnTo = searchParams
+		? (() => {
+				const next = new URLSearchParams(searchParams.toString());
+				next.delete('returnTo');
+				return next.toString();
+			})()
+		: '';
+	const backTarget = returnToParam
+		? resolveBackTarget(returnToParam)
+		: searchParamsWithoutReturnTo
+			? `/dashboard?${searchParamsWithoutReturnTo}`
+			: '/dashboard';
 
 	useEffect(() => {
 		if (scoreError) return;
@@ -99,7 +111,17 @@ export default function GrantDetailsClient({
 				<Button
 					variant="ghost"
 					className="px-0 text-sm"
-					onClick={() => router.push(backTarget)}
+					onClick={() => {
+						if (returnToParam) {
+							router.push(backTarget);
+							return;
+						}
+						if (window.history.length > 1) {
+							router.back();
+							return;
+						}
+						router.push(backTarget);
+					}}
 				>
 					← Back to results
 				</Button>
@@ -126,7 +148,6 @@ export default function GrantDetailsClient({
 						) : null}
 					</div>
 				</div>
-				<p className="text-muted-foreground">Portal ID: {grant.portalId}</p>
 				<div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
 					<span>Fit score:</span>
 					<span

@@ -16,6 +16,7 @@ import {
 	calculateGrantFitScore,
 } from '@/lib/utils/grant-scoring';
 import { deriveScorePresentation } from '@/lib/services/score-presentation';
+import { parseSubscoresJson } from '@/lib/utils/match-explanation';
 
 export interface GrantService {
 	searchGrants(
@@ -35,58 +36,6 @@ export interface GrantService {
 
 export class GrantServiceImpl implements GrantService {
 	constructor(private grantRepository: GrantRepository) {}
-
-	private extractReasons(
-		subscoresJson: unknown,
-	): GrantMatch['reasons'] | undefined {
-		if (
-			!subscoresJson ||
-			typeof subscoresJson !== 'object' ||
-			Array.isArray(subscoresJson)
-		) {
-			return undefined;
-		}
-
-		const maybeReasons = (subscoresJson as Record<string, unknown>).reasons;
-		if (!Array.isArray(maybeReasons)) return undefined;
-
-		const allowedStrengths = new Set(['strong', 'medium', 'neutral', 'weak']);
-
-		const normalized = maybeReasons
-			.map((reason) => {
-				if (!reason || typeof reason !== 'object') return null;
-				const { label, detail, strength } = reason as {
-					label?: unknown;
-					detail?: unknown;
-					strength?: unknown;
-				};
-				if (typeof label !== 'string') return null;
-				if (typeof strength !== 'string' || !allowedStrengths.has(strength)) {
-					return null;
-				}
-				const normalizedDetail =
-					typeof detail === 'string'
-						? detail
-						: detail === null
-							? null
-							: undefined;
-
-				return {
-					label,
-					detail: normalizedDetail,
-					strength: strength as 'strong' | 'medium' | 'neutral' | 'weak',
-				};
-			})
-			.filter(Boolean) as Array<{
-			label: string;
-			detail?: string | null;
-			strength: 'strong' | 'medium' | 'neutral' | 'weak';
-		}>;
-
-		if (normalized.length === 0) return undefined;
-
-		return normalized.slice(0, 5);
-	}
 
 	private mapGrantToMatch(
 		grant: GrantRecord,
@@ -127,15 +76,14 @@ export class GrantServiceImpl implements GrantService {
 		const fundingVaries =
 			typeof grant.estimatedAwardAmounts === 'string' &&
 			/vary/i.test(grant.estimatedAwardAmounts);
+		const parsedExplanation = parseSubscoresJson(override?.subscoresJson);
 		const subscores =
-			override?.subscoresJson &&
-			typeof override.subscoresJson === 'object' &&
-			!Array.isArray(override.subscoresJson)
-				? (override.subscoresJson as Record<string, unknown>)
+			parsedExplanation && Object.keys(parsedExplanation.subscores).length > 0
+				? parsedExplanation.subscores
 				: null;
 		const reasons =
 			override?.reasons ??
-			(this.extractReasons(override?.subscoresJson) as GrantMatch['reasons']);
+			(parsedExplanation?.reasons as GrantMatch['reasons'] | undefined);
 		const baseExplanation =
 			override?.explanation ??
 			'Preliminary score based on limited fields (purpose/eligibility may be missing).';
@@ -164,10 +112,13 @@ export class GrantServiceImpl implements GrantService {
 			fitScore,
 			explanation: baseExplanation,
 			subscores,
-			confidence: scorePresentation.confidence,
+			subscoresJson: override?.subscoresJson,
+			confidence: parsedExplanation?.confidence ?? scorePresentation.confidence,
 			scoreSummary: scorePresentation.scoreSummary,
 			scoreReasons: scorePresentation.scoreReasons,
 			reasons,
+			missing: parsedExplanation?.missing,
+			matches: parsedExplanation?.matches,
 			fundingAmount,
 			estimatedTotalFunding,
 			awardFloor,
@@ -216,7 +167,6 @@ export class GrantServiceImpl implements GrantService {
 				this.mapGrantToMatch(match.grant, {
 					fitScore: match.fitScore,
 					explanation: match.explanation,
-					reasons: this.extractReasons(match.subscoresJson),
 					subscoresJson: match.subscoresJson as Record<string, unknown> | null,
 				}),
 			);

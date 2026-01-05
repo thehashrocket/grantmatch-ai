@@ -30,6 +30,7 @@ export default function DashboardPage() {
 		handlePageChange,
 		bookmarkStatusMap,
 		statusMapInput,
+		matchIndexStatus,
 	} = useGrantSearch();
 
 	// Handler for removing a single filter
@@ -56,6 +57,7 @@ export default function DashboardPage() {
 	};
 
 	const returnTo = buildReturnTo(pathname, searchParams?.toString() ?? '');
+	const returnQuery = searchParams?.toString() ?? '';
 
 	useEffect(() => {
 		const key = `dashboard-scroll:${searchParams?.toString() ?? ''}`;
@@ -82,6 +84,15 @@ export default function DashboardPage() {
 	return (
 		<div className="container mx-auto space-y-4">
 			<h1 className="text-3xl font-bold">Grant Matches</h1>
+			{matchIndexStatus === 'RUNNING' ? (
+				<div className="rounded-md border border-amber-200 bg-amber-50 px-4 py-2 text-sm text-amber-800 flex items-center gap-2">
+					<span className="font-medium">Recompute in progress</span>
+					<span className="text-amber-700">
+						We’re refreshing matches for your org—scores and explanations may
+						update soon.
+					</span>
+				</div>
+			) : null}
 
 			<GrantSearchForm
 				filters={searchFilters}
@@ -109,6 +120,7 @@ export default function DashboardPage() {
 				bookmarkStatusMap={bookmarkStatusMap}
 				statusMapInput={statusMapInput}
 				returnTo={returnTo}
+				returnQuery={returnQuery}
 			/>
 		</div>
 	);

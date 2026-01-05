@@ -153,6 +153,7 @@ export function useGrantSearch() {
 		statusMapInput,
 		currentPage,
 		pageSize,
+		matchIndexStatus: paginatedData?.matchIndexStatus ?? null,
 
 		// Actions
 		handleSearch,

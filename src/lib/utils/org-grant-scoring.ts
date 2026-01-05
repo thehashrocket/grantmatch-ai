@@ -1,11 +1,26 @@
 // src/lib/utils/org-grant-scoring.ts
 
-export const SCORING_VERSION = 4;
+export const SCORING_VERSION = 5;
+
+export type Confidence = 'HIGH' | 'MED' | 'LOW';
+export type MissingSignal = 'PURPOSE' | 'APPLICANTS' | 'GEOGRAPHY' | 'FUNDING';
 
 export type Reason = {
 	label: string;
 	detail?: string;
 	strength: 'strong' | 'medium' | 'neutral' | 'weak';
+};
+
+export type MatchExplain = {
+	reasons: Reason[];
+	confidence: Confidence;
+	missing: MissingSignal[];
+	matches?: {
+		priorityMatches: string[];
+		focusMatches: string[];
+		geographyOverlap: string[];
+		amountInRange: boolean | null;
+	};
 };
 
 type ApplicantType =
@@ -118,7 +133,7 @@ function toNumber(value: number | bigint | null | undefined): number | null {
 	return typeof value === 'bigint' ? Number(value) : value;
 }
 
-function escapeRegExp(value: string): string {
+function _escapeRegExp(value: string): string {
 	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
@@ -241,9 +256,9 @@ function calculatePurposeScore(params: {
 	focusMatches: string[];
 	hasPriorityHit: boolean;
 } {
-	const priorityPhrases = params.priorityFocusKeywords.map((keyword) =>
-		normalizeText(keyword),
-	);
+	const priorityPhrases = params.priorityFocusKeywords
+		.map((keyword) => normalizeText(keyword))
+		.filter((phrase) => phrase.length >= 3);
 	const priorityTokens = dedupe(
 		params.priorityFocusKeywords.flatMap((keyword) => tokenize(keyword)),
 	);
@@ -269,13 +284,8 @@ function calculatePurposeScore(params: {
 			phrase,
 			original: params.priorityFocusKeywords[index],
 		}))
-		.filter(
-			(entry) =>
-				entry.phrase.length > 0 &&
-				new RegExp(`\\b${escapeRegExp(entry.phrase)}\\b`, 'i').test(
-					purposeNormalized,
-				),
-		)
+		.filter((entry) => entry.phrase.length > 0)
+		.filter((entry) => purposeNormalized.includes(entry.phrase))
 		.map((entry) => entry.original.trim() || entry.phrase);
 
 	const purposeSet = new Set(purposeTokens);
@@ -439,6 +449,14 @@ export function computeOrgGrantFitScore(
 	subscores: Subscores;
 	explanation: string;
 	reasons: Reason[];
+	confidence: Confidence;
+	missing: MissingSignal[];
+	matches: {
+		priorityMatches: string[];
+		focusMatches: string[];
+		geographyOverlap: string[];
+		amountInRange: boolean | null;
+	};
 } {
 	const eligibility = calculateEligibilityScore({
 		entityType: org.entityType,
@@ -469,6 +487,15 @@ export function computeOrgGrantFitScore(
 		amount,
 	);
 
+	const missing: MissingSignal[] = [];
+	if (!normalizeText(grant.purpose)) missing.push('PURPOSE');
+	if (!normalizeText(grant.eligibleApplicants)) missing.push('APPLICANTS');
+	if (!normalizeText(grant.eligibleGeographies)) missing.push('GEOGRAPHY');
+	if (amount === null) missing.push('FUNDING');
+
+	const confidence: Confidence =
+		missing.length <= 1 ? 'HIGH' : missing.length === 2 ? 'MED' : 'LOW';
+
 	const weightedBase =
 		purpose * WEIGHTS.purpose +
 		eligibility * WEIGHTS.eligibility +
@@ -496,152 +523,174 @@ export function computeOrgGrantFitScore(
 	const subscores: Subscores = { eligibility, geography, purpose, funding };
 	const fitScore = total * 10;
 
-	const reasons: Reason[] = [];
+	type ReasonCategory =
+		| 'purpose'
+		| 'eligibility'
+		| 'geography'
+		| 'funding'
+		| 'penalty';
+
+	const candidateReasons: Array<
+		Reason & { category: ReasonCategory; order: number }
+	> = [];
 
 	if (hasPriorityHit && displayMatches.length > 0) {
-		reasons.push({
+		candidateReasons.push({
 			label: 'Priority focus match',
 			detail: (priorityMatches.length > 0 ? priorityMatches : displayMatches)
 				.slice(0, 3)
 				.join(', '),
 			strength: 'strong',
+			category: 'purpose',
+			order: candidateReasons.length,
 		});
 	} else if (focusMatches.length > 0) {
-		reasons.push({
+		candidateReasons.push({
 			label: 'Focus area match',
 			detail: focusMatches.slice(0, 3).join(', '),
 			strength: 'medium',
+			category: 'purpose',
+			order: candidateReasons.length,
 		});
 	}
 
-	if (purpose >= 0.8) {
-		reasons.push({
+	if (
+		purpose >= 0.85 &&
+		!candidateReasons.some((reason) => reason.category === 'purpose')
+	) {
+		const detail = displayMatches.slice(0, 3).join(', ');
+		candidateReasons.push({
 			label: 'Strong mission match',
-			detail: displayMatches.slice(0, 2).join(', '),
+			detail: detail.length > 0 ? detail : undefined,
 			strength: 'strong',
+			category: 'purpose',
+			order: candidateReasons.length,
 		});
 	}
 
 	if (eligibility >= 0.9) {
-		reasons.push({
-			label: `Matched ${formatEntityType(org.entityType)} eligibility`,
+		candidateReasons.push({
+			label: `Eligible for ${formatEntityType(org.entityType)}`,
 			strength: 'strong',
+			category: 'eligibility',
+			order: candidateReasons.length,
 		});
 	} else if (eligibility >= 0.7) {
-		reasons.push({
-			label: 'Likely eligible for your org type',
+		candidateReasons.push({
+			label: 'Likely eligible',
 			strength: 'medium',
-		});
-	} else if (eligibility >= 0.5) {
-		reasons.push({
-			label: 'Eligibility unclear for your org type',
-			strength: 'neutral',
-		});
-	} else {
-		reasons.push({
-			label: 'Eligibility may not fit your org type',
-			strength: 'weak',
+			category: 'eligibility',
+			order: candidateReasons.length,
 		});
 	}
 
 	if (geography >= 0.9 || isNational) {
-		reasons.push({ label: 'Nationwide eligibility', strength: 'strong' });
+		candidateReasons.push({
+			label: 'Nationwide eligibility',
+			strength: 'strong',
+			category: 'geography',
+			order: candidateReasons.length,
+		});
 	} else if (geographyOverlap.length > 0) {
-		reasons.push({
+		candidateReasons.push({
 			label: 'Service area overlap',
-			detail: geographyOverlap.slice(0, 2).join(', '),
+			detail: geographyOverlap.slice(0, 3).join(', '),
 			strength: 'medium',
+			category: 'geography',
+			order: candidateReasons.length,
 		});
 	}
 
 	if (localMismatch) {
-		reasons.push({
+		candidateReasons.push({
 			label: 'Local eligibility mismatch',
 			strength: 'weak',
+			category: 'penalty',
+			order: candidateReasons.length,
 		});
 	}
 
-	const hasPreferredRange = org.minAward !== null || org.maxAward !== null;
+	const hasPreferredRange =
+		org.budgetRange !== null || org.minAward !== null || org.maxAward !== null;
 	if (amount === null) {
-		reasons.push({
-			label: 'Funding amount not listed',
+		candidateReasons.push({
+			label: 'Funding not listed',
 			strength: 'neutral',
+			category: 'funding',
+			order: candidateReasons.length,
 		});
 	} else if (inRange && hasPreferredRange) {
-		reasons.push({
-			label: 'Funding within your preferred range',
-			strength: 'strong',
-		});
-	} else if (!inRange && hasPreferredRange) {
-		reasons.push({
-			label: 'Funding likely outside your preferred range',
-			strength: 'weak',
+		candidateReasons.push({
+			label: org.budgetRange
+				? 'Funding fits your budget range'
+				: 'Funding within your preferred range',
+			strength: org.budgetRange ? 'strong' : 'medium',
+			category: 'funding',
+			order: candidateReasons.length,
 		});
 	} else if (amount !== null) {
-		reasons.push({
-			label: 'Funding amount listed',
+		candidateReasons.push({
+			label: 'Funding listed',
 			strength: 'neutral',
+			category: 'funding',
+			order: candidateReasons.length,
 		});
 	}
 
-	const explanationParts: string[] = [];
-	const formattedReasons = (input: Reason | undefined) =>
-		input
-			? input.detail && input.detail.length > 0
-				? `${input.label}: ${input.detail}`
-				: input.label
-			: null;
-
-	const priorityReason = reasons.find(
-		(reason) => reason.label === 'Priority focus match',
-	);
-	const focusReason = reasons.find(
-		(reason) => reason.label === 'Focus area match',
-	);
-	const missionReason = reasons.find(
-		(reason) => reason.label === 'Strong mission match',
-	);
-	const eligibilityReason = reasons.find((reason) =>
-		reason.label.toLowerCase().includes('eligibility'),
-	);
-	const geographyReason =
-		reasons.find((reason) => reason.label === 'Nationwide eligibility') ??
-		reasons.find((reason) => reason.label === 'Service area overlap');
-	const fundingReason = reasons.find((reason) =>
-		reason.label.toLowerCase().includes('funding'),
-	);
-	const weakReason = reasons.find((reason) => reason.strength === 'weak');
-
-	[
-		priorityReason,
-		missionReason,
-		focusReason,
-		eligibilityReason,
-		geographyReason,
-		fundingReason,
-	].forEach((reason) => {
-		if (!reason || explanationParts.length >= 3) return;
-		const formatted = formattedReasons(reason);
-		if (formatted) explanationParts.push(formatted);
-	});
-
-	if (weakReason) {
-		const formattedWeak = formattedReasons(weakReason);
-		if (formattedWeak) {
-			const alreadyIncluded = explanationParts.includes(formattedWeak);
-			if (!alreadyIncluded) {
-				if (explanationParts.length >= 3) {
-					explanationParts[explanationParts.length - 1] = formattedWeak;
-				} else {
-					explanationParts.push(formattedWeak);
-				}
-			}
-		}
+	if (amount !== null && hasPreferredRange && !inRange) {
+		candidateReasons.push({
+			label: 'Funding likely outside your preferred range',
+			strength: 'weak',
+			category: 'penalty',
+			order: candidateReasons.length,
+		});
 	}
 
-	const explanation =
-		explanationParts.slice(0, 3).join(' • ') ||
-		`Relevance estimated for ${formatEntityType(org.entityType)}.`;
+	const strengthRank: Record<Reason['strength'], number> = {
+		strong: 0,
+		medium: 1,
+		neutral: 2,
+		weak: 3,
+	};
+	const categoryRank: Record<ReasonCategory, number> = {
+		purpose: 0,
+		eligibility: 1,
+		geography: 2,
+		funding: 3,
+		penalty: 4,
+	};
 
-	return { fitScore, subscores, explanation, reasons };
+	const reasons = candidateReasons
+		.slice()
+		.sort((a, b) => {
+			const strengthDiff = strengthRank[a.strength] - strengthRank[b.strength];
+			if (strengthDiff !== 0) return strengthDiff;
+			const categoryDiff = categoryRank[a.category] - categoryRank[b.category];
+			if (categoryDiff !== 0) return categoryDiff;
+			return a.order - b.order;
+		})
+		.slice(0, 4)
+		.map(({ category: _category, order: _order, ...reason }) => reason);
+
+	const explanation =
+		hasPriorityHit || focusMatches.length > 0
+			? 'Strong alignment with your priorities and eligibility.'
+			: 'Relevance estimated from mission, eligibility, geography, and funding.';
+
+	const matches = {
+		priorityMatches,
+		focusMatches,
+		geographyOverlap,
+		amountInRange: amount === null ? null : inRange,
+	};
+
+	return {
+		fitScore,
+		subscores,
+		explanation,
+		reasons,
+		confidence,
+		missing,
+		matches,
+	};
 }

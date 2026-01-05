@@ -1,5 +1,7 @@
 // src/lib/types/grant.ts
 
+import type { Confidence, MissingSignal } from '@/lib/utils/org-grant-scoring';
+
 export interface GrantMatch {
 	id: string;
 	title: string;
@@ -8,10 +10,18 @@ export interface GrantMatch {
 	fitScore: number;
 	explanation: string;
 	subscores?: Record<string, unknown> | null;
-	confidence?: 'HIGH' | 'MEDIUM' | 'LOW';
+	subscoresJson?: unknown | null;
+	confidence?: Confidence;
 	scoreSummary?: string;
 	scoreReasons?: { matched: string[]; missing: string[]; unknown: string[] };
 	reasons?: MatchReason[];
+	missing?: MissingSignal[];
+	matches?: {
+		priorityMatches: string[];
+		focusMatches: string[];
+		geographyOverlap: string[];
+		amountInRange: boolean | null;
+	};
 	fundingAmount: number | null;
 	estimatedTotalFunding?: number | null;
 	awardFloor?: number | null;

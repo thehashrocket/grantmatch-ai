@@ -224,9 +224,7 @@ export function OrganizationMatchForm() {
 								>
 									<SelectTrigger>
 										<SelectValue
-											placeholder={
-												selectedEntityLabel ?? 'Select entity type'
-											}
+											placeholder={selectedEntityLabel ?? 'Select entity type'}
 										/>
 									</SelectTrigger>
 									<SelectContent>

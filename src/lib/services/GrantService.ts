@@ -36,12 +36,65 @@ export interface GrantService {
 export class GrantServiceImpl implements GrantService {
 	constructor(private grantRepository: GrantRepository) {}
 
+	private extractReasons(
+		subscoresJson: unknown,
+	): GrantMatch['reasons'] | undefined {
+		if (
+			!subscoresJson ||
+			typeof subscoresJson !== 'object' ||
+			Array.isArray(subscoresJson)
+		) {
+			return undefined;
+		}
+
+		const maybeReasons = (subscoresJson as Record<string, unknown>).reasons;
+		if (!Array.isArray(maybeReasons)) return undefined;
+
+		const allowedStrengths = new Set(['strong', 'medium', 'neutral', 'weak']);
+
+		const normalized = maybeReasons
+			.map((reason) => {
+				if (!reason || typeof reason !== 'object') return null;
+				const { label, detail, strength } = reason as {
+					label?: unknown;
+					detail?: unknown;
+					strength?: unknown;
+				};
+				if (typeof label !== 'string') return null;
+				if (typeof strength !== 'string' || !allowedStrengths.has(strength)) {
+					return null;
+				}
+				const normalizedDetail =
+					typeof detail === 'string'
+						? detail
+						: detail === null
+							? null
+							: undefined;
+
+				return {
+					label,
+					detail: normalizedDetail,
+					strength: strength as 'strong' | 'medium' | 'neutral' | 'weak',
+				};
+			})
+			.filter(Boolean) as Array<{
+			label: string;
+			detail?: string | null;
+			strength: 'strong' | 'medium' | 'neutral' | 'weak';
+		}>;
+
+		if (normalized.length === 0) return undefined;
+
+		return normalized.slice(0, 5);
+	}
+
 	private mapGrantToMatch(
 		grant: GrantRecord,
 		override?: {
 			fitScore?: number;
 			explanation?: string | null;
-			subscoresJson?: Record<string, number | boolean | string | null> | null;
+			subscoresJson?: Record<string, unknown> | null;
+			reasons?: GrantMatch['reasons'];
 		},
 	): GrantMatch {
 		const fitScore =
@@ -78,11 +131,11 @@ export class GrantServiceImpl implements GrantService {
 			override?.subscoresJson &&
 			typeof override.subscoresJson === 'object' &&
 			!Array.isArray(override.subscoresJson)
-				? (override.subscoresJson as Record<
-						string,
-						number | boolean | string | null
-					>)
+				? (override.subscoresJson as Record<string, unknown>)
 				: null;
+		const reasons =
+			override?.reasons ??
+			(this.extractReasons(override?.subscoresJson) as GrantMatch['reasons']);
 		const baseExplanation =
 			override?.explanation ??
 			'Preliminary score based on limited fields (purpose/eligibility may be missing).';
@@ -114,6 +167,7 @@ export class GrantServiceImpl implements GrantService {
 			confidence: scorePresentation.confidence,
 			scoreSummary: scorePresentation.scoreSummary,
 			scoreReasons: scorePresentation.scoreReasons,
+			reasons,
 			fundingAmount,
 			estimatedTotalFunding,
 			awardFloor,
@@ -162,10 +216,8 @@ export class GrantServiceImpl implements GrantService {
 				this.mapGrantToMatch(match.grant, {
 					fitScore: match.fitScore,
 					explanation: match.explanation,
-					subscoresJson: match.subscoresJson as Record<
-						string,
-						number | boolean | string | null
-					> | null,
+					reasons: this.extractReasons(match.subscoresJson),
+					subscoresJson: match.subscoresJson as Record<string, unknown> | null,
 				}),
 			);
 

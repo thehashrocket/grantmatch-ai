@@ -7,10 +7,11 @@ export interface GrantMatch {
 	internalUrl: string;
 	fitScore: number;
 	explanation: string;
-	subscores?: Record<string, number | boolean | string | null> | null;
+	subscores?: Record<string, unknown> | null;
 	confidence?: 'HIGH' | 'MEDIUM' | 'LOW';
 	scoreSummary?: string;
 	scoreReasons?: { matched: string[]; missing: string[]; unknown: string[] };
+	reasons?: MatchReason[];
 	fundingAmount: number | null;
 	estimatedTotalFunding?: number | null;
 	awardFloor?: number | null;
@@ -56,6 +57,14 @@ export type GrantSortOption =
 	| 'NEWEST';
 
 export type FitScoreCategory = 'high' | 'medium' | 'low';
+
+export type MatchReasonStrength = 'strong' | 'medium' | 'neutral' | 'weak';
+
+export type MatchReason = {
+	label: string;
+	detail?: string | null;
+	strength: MatchReasonStrength;
+};
 
 export const getFitScoreCategory = (score: number): FitScoreCategory => {
 	if (score >= 8) return 'high';

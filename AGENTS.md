@@ -51,6 +51,7 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 - Onboarding requires priority focus keywords (“Pick up to 5 things you’d be thrilled to get funding for”).
 - scoringVersion is explicitly set to `SCORING_VERSION` on org creation and bumped when any scoring fields change, to trigger recompute reliably.
 - Match index runner (`tickOrgMatchIndex`) recomputes GrantMatch rows only for OPEN/UNKNOWN grants, is claim/lease + cursor based, and uses org `scoringVersion` to skip up-to-date matches. Use `organization.kickMatchRecompute` to restart after profile changes.
+- Scoring now emits structured reasons (label/detail/strength) stored under `grantMatch.subscoresJson.reasons`; even when the fitScore is unchanged, cheap bumps refresh explanation + subscoresJson to keep text honest.
 
 ## Bookmarking
 

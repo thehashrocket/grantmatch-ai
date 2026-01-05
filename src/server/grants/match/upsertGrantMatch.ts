@@ -18,6 +18,7 @@ export type PrismaLike = Pick<
 
 const BATCH_SIZE = 100;
 const DEFAULT_CONCURRENCY = 15;
+const EPSILON = 0.0001;
 
 export type OrganizationForMatch = {
 	id: string;
@@ -63,21 +64,41 @@ export async function upsertGrantMatch(params: {
 	);
 
 	const now = new Date();
+	const subscoresJson = {
+		...computed.subscores,
+		reasons: computed.reasons,
+	} as Prisma.InputJsonValue;
 
-	const bumped = await prisma.grantMatch.updateMany({
+	const existing = await prisma.grantMatch.findUnique({
 		where: {
-			organizationId: organization.id,
-			grantId: grant.id,
-			fitScore: computed.fitScore,
+			organizationId_grantId: {
+				organizationId: organization.id,
+				grantId: grant.id,
+			},
 		},
-		data: {
-			version,
-			computedAt: now,
-		},
+		select: { fitScore: true },
 	});
 
-	if (bumped.count > 0) {
-		return computed;
+	if (
+		existing &&
+		Math.abs((existing.fitScore ?? 0) - computed.fitScore) < EPSILON
+	) {
+		const bumped = await prisma.grantMatch.updateMany({
+			where: {
+				organizationId: organization.id,
+				grantId: grant.id,
+			},
+			data: {
+				version,
+				computedAt: now,
+				explanation: computed.explanation,
+				subscoresJson,
+			},
+		});
+
+		if (bumped.count > 0) {
+			return computed;
+		}
 	}
 
 	await prisma.grantMatch.upsert({
@@ -93,14 +114,14 @@ export async function upsertGrantMatch(params: {
 			fitScore: computed.fitScore,
 			version,
 			computedAt: now,
-			subscoresJson: computed.subscores as Prisma.InputJsonValue,
+			subscoresJson,
 			explanation: computed.explanation,
 		},
 		update: {
 			fitScore: computed.fitScore,
 			version,
 			computedAt: now,
-			subscoresJson: computed.subscores as Prisma.InputJsonValue,
+			subscoresJson,
 			explanation: computed.explanation,
 		},
 	});

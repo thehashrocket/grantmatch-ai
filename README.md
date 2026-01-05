@@ -47,6 +47,7 @@ GrantMatch AI streamlines the grant discovery process by:
 - Grant match scoring weights purpose, eligibility, geography, funding and is versioned via `scoringVersion`
 - New organizations and scoring-profile updates force `scoringVersion` to the current `SCORING_VERSION` to ensure recompute when the model changes
 - Match index runner: claim/resume tick that recomputes GrantMatch rows for OPEN/UNKNOWN grants only, uses org `scoringVersion`, and tracks status/cursor/claim fields on Organization
+- Scoring emits structured reasons (labels + optional details + strength) stored in `grantMatch.subscoresJson.reasons`; the cheap “score unchanged” bump now refreshes explanation and reasons so UI always sees updated copy without requiring a full upsert
 
 ## Quick Start
 

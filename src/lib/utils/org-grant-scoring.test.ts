@@ -61,7 +61,9 @@ describe('computeOrgGrantFitScore', () => {
 			purpose: 'Housing stability and homelessness prevention programs',
 		});
 		expect(result.subscores.purpose).toBeGreaterThanOrEqual(0.85);
-		expect(result.explanation.toLowerCase()).toContain('priority focus');
+		expect(
+			result.reasons.some((reason) => reason.label === 'Priority focus match'),
+		).toBe(true);
 	});
 
 	it('scores lower when only non-priority focus areas match', () => {
@@ -134,6 +136,61 @@ describe('computeOrgGrantFitScore', () => {
 		expect(inRange.subscores.funding).toBeGreaterThan(
 			outOfRange.subscores.funding,
 		);
+	});
+
+	it('matches priority phrases with word boundaries', () => {
+		const result = computeOrgGrantFitScore(
+			{
+				...baseOrg,
+				priorityFocusKeywords: ['affordable housing'],
+			},
+			{
+				...baseGrant,
+				purpose: 'New affordable housing program',
+			},
+		);
+
+		const priorityReason = result.reasons.find(
+			(reason) => reason.label === 'Priority focus match',
+		);
+
+		expect(priorityReason?.detail?.toLowerCase()).toContain(
+			'affordable housing',
+		);
+	});
+
+	it('does not match tokens inside other words', () => {
+		const result = computeOrgGrantFitScore(
+			{
+				...baseOrg,
+				priorityFocusKeywords: ['art'],
+			},
+			{
+				...baseGrant,
+				purpose: 'Cartography program for schools',
+			},
+		);
+
+		expect(
+			result.reasons.some((reason) => reason.label === 'Priority focus match'),
+		).toBe(false);
+	});
+
+	it('adds a funding not listed reason when amount is missing', () => {
+		const result = computeOrgGrantFitScore(baseOrg, {
+			...baseGrant,
+			estimatedTotalFunding: null,
+			awardCeiling: null,
+			awardFloor: null,
+		});
+
+		expect(
+			result.reasons.some(
+				(reason) =>
+					reason.label === 'Funding amount not listed' &&
+					reason.strength === 'neutral',
+			),
+		).toBe(true);
 	});
 
 	it('makes purpose the dominant driver of fit', () => {

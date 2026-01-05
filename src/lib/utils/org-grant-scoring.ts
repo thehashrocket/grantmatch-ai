@@ -2,6 +2,12 @@
 
 export const SCORING_VERSION = 4;
 
+export type Reason = {
+	label: string;
+	detail?: string;
+	strength: 'strong' | 'medium' | 'neutral' | 'weak';
+};
+
 type ApplicantType =
 	| 'NONPROFIT'
 	| 'SCHOOL'
@@ -110,6 +116,10 @@ function clamp(value: number, min: number, max: number): number {
 function toNumber(value: number | bigint | null | undefined): number | null {
 	if (value === null || value === undefined) return null;
 	return typeof value === 'bigint' ? Number(value) : value;
+}
+
+function escapeRegExp(value: string): string {
+	return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
 
 function calculateEligibilityScore(params: {
@@ -224,48 +234,110 @@ function calculatePurposeScore(params: {
 	priorityFocusKeywords: string[];
 	focusAreas: string[];
 	purpose: string | null;
-}): { score: number; overlap: string[]; hasPriorityHit: boolean } {
+}): {
+	score: number;
+	displayMatches: string[];
+	priorityMatches: string[];
+	focusMatches: string[];
+	hasPriorityHit: boolean;
+} {
+	const priorityPhrases = params.priorityFocusKeywords.map((keyword) =>
+		normalizeText(keyword),
+	);
 	const priorityTokens = dedupe(
 		params.priorityFocusKeywords.flatMap((keyword) => tokenize(keyword)),
 	);
 	const focusTokens = dedupe(
 		params.focusAreas.flatMap((keyword) => tokenize(keyword)),
 	);
+
+	const purposeNormalized = normalizeText(params.purpose ?? '');
 	const purposeTokens = dedupe(tokenize(params.purpose ?? ''));
 
-	if (purposeTokens.length === 0) {
-		return { score: 0.5, overlap: [], hasPriorityHit: false };
+	if (purposeTokens.length === 0 && purposeNormalized.length === 0) {
+		return {
+			score: 0.5,
+			displayMatches: [],
+			priorityMatches: [],
+			focusMatches: [],
+			hasPriorityHit: false,
+		};
 	}
 
+	const phraseMatches = priorityPhrases
+		.map((phrase, index) => ({
+			phrase,
+			original: params.priorityFocusKeywords[index],
+		}))
+		.filter(
+			(entry) =>
+				entry.phrase.length > 0 &&
+				new RegExp(`\\b${escapeRegExp(entry.phrase)}\\b`, 'i').test(
+					purposeNormalized,
+				),
+		)
+		.map((entry) => entry.original.trim() || entry.phrase);
+
 	const purposeSet = new Set(purposeTokens);
-	const priorityOverlap = priorityTokens.filter((token) =>
+	const priorityTokenMatches = priorityTokens.filter((token) =>
 		purposeSet.has(token),
 	);
-	const focusOverlap = focusTokens.filter((token) => purposeSet.has(token));
+	const focusTokenMatches = focusTokens.filter((token) =>
+		purposeSet.has(token),
+	);
 
-	const priorityHitRatio =
+	let priorityHitRatio =
 		priorityTokens.length === 0
 			? 0
-			: priorityOverlap.length / priorityTokens.length;
+			: priorityTokenMatches.length / priorityTokens.length;
 	const focusHitRatio =
-		focusTokens.length === 0 ? 0 : focusOverlap.length / focusTokens.length;
+		focusTokens.length === 0
+			? 0
+			: focusTokenMatches.length / focusTokens.length;
+
+	if (phraseMatches.length > 0) {
+		priorityHitRatio = Math.max(priorityHitRatio, 0.9);
+	}
 
 	const combined = 0.7 * priorityHitRatio + 0.3 * focusHitRatio;
-	let score = clamp(0.25 + combined * 0.9, 0, 1);
+	let score = clamp(
+		0.25 + combined * 0.9 + (phraseMatches.length > 0 ? 0.05 : 0),
+		0,
+		1,
+	);
 
-	if (priorityOverlap.length >= 3 || focusOverlap.length >= 3) {
+	if (priorityTokenMatches.length >= 3 || focusTokenMatches.length >= 3) {
 		score = clamp(score + 0.05, 0, 1);
 	}
 
-	const orderedOverlap = [
-		...priorityOverlap,
-		...focusOverlap.filter((token) => !priorityOverlap.includes(token)),
-	];
+	const displayMatches = [
+		...phraseMatches,
+		...priorityTokenMatches.filter(
+			(token) =>
+				!phraseMatches.some((phrase) => phrase.toLowerCase() === token),
+		),
+		...focusTokenMatches.filter(
+			(token) =>
+				!phraseMatches.some((phrase) => phrase.toLowerCase() === token),
+		),
+	].slice(0, 5);
+
+	const priorityMatches = [
+		...phraseMatches,
+		...priorityTokenMatches.filter(
+			(token) =>
+				!phraseMatches.some((phrase) => phrase.toLowerCase() === token),
+		),
+	].slice(0, 3);
+
+	const focusMatches = focusTokenMatches.slice(0, 3);
 
 	return {
 		score,
-		overlap: orderedOverlap.slice(0, 5),
-		hasPriorityHit: priorityOverlap.length > 0,
+		displayMatches,
+		priorityMatches,
+		focusMatches,
+		hasPriorityHit: phraseMatches.length > 0 || priorityTokenMatches.length > 0,
 	};
 }
 
@@ -366,6 +438,7 @@ export function computeOrgGrantFitScore(
 	fitScore: number;
 	subscores: Subscores;
 	explanation: string;
+	reasons: Reason[];
 } {
 	const eligibility = calculateEligibilityScore({
 		entityType: org.entityType,
@@ -379,7 +452,9 @@ export function computeOrgGrantFitScore(
 	} = calculateGeographyScore(org.serviceAreas, grant.eligibleGeographies);
 	const {
 		score: purpose,
-		overlap,
+		displayMatches,
+		priorityMatches,
+		focusMatches,
 		hasPriorityHit,
 	} = calculatePurposeScore({
 		priorityFocusKeywords: org.priorityFocusKeywords ?? [],
@@ -387,7 +462,7 @@ export function computeOrgGrantFitScore(
 		purpose: grant.purpose,
 	});
 	const amount = selectGrantAmount(grant);
-	const { score: funding } = calculateFundingScore(
+	const { score: funding, inRange } = calculateFundingScore(
 		org.budgetRange,
 		org.minAward,
 		org.maxAward,
@@ -421,49 +496,152 @@ export function computeOrgGrantFitScore(
 	const subscores: Subscores = { eligibility, geography, purpose, funding };
 	const fitScore = total * 10;
 
-	const explanationParts: string[] = [];
-	if (eligibility >= 0.9) {
-		explanationParts.push(
-			`Matched ${formatEntityType(org.entityType)} eligibility`,
-		);
-	} else if (eligibility >= 0.7) {
-		explanationParts.push('Broad organizational eligibility');
+	const reasons: Reason[] = [];
+
+	if (hasPriorityHit && displayMatches.length > 0) {
+		reasons.push({
+			label: 'Priority focus match',
+			detail: (priorityMatches.length > 0 ? priorityMatches : displayMatches)
+				.slice(0, 3)
+				.join(', '),
+			strength: 'strong',
+		});
+	} else if (focusMatches.length > 0) {
+		reasons.push({
+			label: 'Focus area match',
+			detail: focusMatches.slice(0, 3).join(', '),
+			strength: 'medium',
+		});
 	}
 
-	if (overlap.length > 0) {
-		if (hasPriorityHit) {
-			explanationParts.push(
-				`Matched priority focus: ${overlap.slice(0, 2).join(', ')}`,
-			);
-		} else {
-			explanationParts.push(
-				`Shared focus keywords: ${overlap.slice(0, 3).join(', ')}`,
-			);
-		}
-		if (purpose >= 0.8) {
-			explanationParts.push('Strong mission match');
-		}
+	if (purpose >= 0.8) {
+		reasons.push({
+			label: 'Strong mission match',
+			detail: displayMatches.slice(0, 2).join(', '),
+			strength: 'strong',
+		});
+	}
+
+	if (eligibility >= 0.9) {
+		reasons.push({
+			label: `Matched ${formatEntityType(org.entityType)} eligibility`,
+			strength: 'strong',
+		});
+	} else if (eligibility >= 0.7) {
+		reasons.push({
+			label: 'Likely eligible for your org type',
+			strength: 'medium',
+		});
+	} else if (eligibility >= 0.5) {
+		reasons.push({
+			label: 'Eligibility unclear for your org type',
+			strength: 'neutral',
+		});
+	} else {
+		reasons.push({
+			label: 'Eligibility may not fit your org type',
+			strength: 'weak',
+		});
 	}
 
 	if (geography >= 0.9 || isNational) {
-		explanationParts.push('Nationwide eligibility');
-	} else if (geography >= 0.75) {
-		explanationParts.push('Geography overlap');
+		reasons.push({ label: 'Nationwide eligibility', strength: 'strong' });
 	} else if (geographyOverlap.length > 0) {
-		explanationParts.push(
-			`Service area match: ${geographyOverlap.slice(0, 2).join(', ')}`,
-		);
+		reasons.push({
+			label: 'Service area overlap',
+			detail: geographyOverlap.slice(0, 2).join(', '),
+			strength: 'medium',
+		});
 	}
 
-	if (funding >= 0.8) {
-		explanationParts.push('Funding within your range');
-	} else if (amount === null) {
-		explanationParts.push('Funding amount unavailable');
+	if (localMismatch) {
+		reasons.push({
+			label: 'Local eligibility mismatch',
+			strength: 'weak',
+		});
+	}
+
+	const hasPreferredRange = org.minAward !== null || org.maxAward !== null;
+	if (amount === null) {
+		reasons.push({
+			label: 'Funding amount not listed',
+			strength: 'neutral',
+		});
+	} else if (inRange && hasPreferredRange) {
+		reasons.push({
+			label: 'Funding within your preferred range',
+			strength: 'strong',
+		});
+	} else if (!inRange && hasPreferredRange) {
+		reasons.push({
+			label: 'Funding likely outside your preferred range',
+			strength: 'weak',
+		});
+	} else if (amount !== null) {
+		reasons.push({
+			label: 'Funding amount listed',
+			strength: 'neutral',
+		});
+	}
+
+	const explanationParts: string[] = [];
+	const formattedReasons = (input: Reason | undefined) =>
+		input
+			? input.detail && input.detail.length > 0
+				? `${input.label}: ${input.detail}`
+				: input.label
+			: null;
+
+	const priorityReason = reasons.find(
+		(reason) => reason.label === 'Priority focus match',
+	);
+	const focusReason = reasons.find(
+		(reason) => reason.label === 'Focus area match',
+	);
+	const missionReason = reasons.find(
+		(reason) => reason.label === 'Strong mission match',
+	);
+	const eligibilityReason = reasons.find((reason) =>
+		reason.label.toLowerCase().includes('eligibility'),
+	);
+	const geographyReason =
+		reasons.find((reason) => reason.label === 'Nationwide eligibility') ??
+		reasons.find((reason) => reason.label === 'Service area overlap');
+	const fundingReason = reasons.find((reason) =>
+		reason.label.toLowerCase().includes('funding'),
+	);
+	const weakReason = reasons.find((reason) => reason.strength === 'weak');
+
+	[
+		priorityReason,
+		missionReason,
+		focusReason,
+		eligibilityReason,
+		geographyReason,
+		fundingReason,
+	].forEach((reason) => {
+		if (!reason || explanationParts.length >= 3) return;
+		const formatted = formattedReasons(reason);
+		if (formatted) explanationParts.push(formatted);
+	});
+
+	if (weakReason) {
+		const formattedWeak = formattedReasons(weakReason);
+		if (formattedWeak) {
+			const alreadyIncluded = explanationParts.includes(formattedWeak);
+			if (!alreadyIncluded) {
+				if (explanationParts.length >= 3) {
+					explanationParts[explanationParts.length - 1] = formattedWeak;
+				} else {
+					explanationParts.push(formattedWeak);
+				}
+			}
+		}
 	}
 
 	const explanation =
-		explanationParts.join(' + ') ||
+		explanationParts.slice(0, 3).join(' • ') ||
 		`Relevance estimated for ${formatEntityType(org.entityType)}.`;
 
-	return { fitScore, subscores, explanation };
+	return { fitScore, subscores, explanation, reasons };
 }

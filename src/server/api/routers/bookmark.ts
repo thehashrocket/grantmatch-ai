@@ -54,12 +54,59 @@ type BookmarkGrant = Prisma.GrantGetPayload<{
 	select: typeof bookmarkGrantSelect;
 }>;
 
+const extractReasonsFromSubscores = (
+	subscoresJson: unknown,
+): GrantMatch['reasons'] | undefined => {
+	if (
+		!subscoresJson ||
+		typeof subscoresJson !== 'object' ||
+		Array.isArray(subscoresJson)
+	) {
+		return undefined;
+	}
+
+	const maybeReasons = (subscoresJson as Record<string, unknown>).reasons;
+	if (!Array.isArray(maybeReasons)) return undefined;
+
+	const allowedStrengths = new Set(['strong', 'medium', 'neutral', 'weak']);
+	const normalized = maybeReasons
+		.map((reason) => {
+			if (!reason || typeof reason !== 'object') return null;
+			const { label, detail, strength } = reason as {
+				label?: unknown;
+				detail?: unknown;
+				strength?: unknown;
+			};
+			if (typeof label !== 'string') return null;
+			if (typeof strength !== 'string' || !allowedStrengths.has(strength)) {
+				return null;
+			}
+			const normalizedDetail =
+				typeof detail === 'string'
+					? detail
+					: detail === null
+						? null
+						: undefined;
+			return {
+				label,
+				detail: normalizedDetail,
+				strength: strength as 'strong' | 'medium' | 'neutral' | 'weak',
+			};
+		})
+		.filter(Boolean) as GrantMatch['reasons'];
+
+	if (!normalized?.length) return undefined;
+
+	return normalized.slice(0, 5);
+};
+
 const mapGrantToMatch = (
 	grant: BookmarkGrant,
 	override?: {
 		fitScore?: number;
 		explanation?: string | null;
-		subscoresJson?: Record<string, number | boolean | string | null> | null;
+		subscoresJson?: Record<string, unknown> | null;
+		reasons?: GrantMatch['reasons'];
 	},
 ): GrantMatch => {
 	const fitScore =
@@ -127,6 +174,11 @@ const mapGrantToMatch = (
 		confidence: scorePresentation.confidence,
 		scoreSummary: scorePresentation.scoreSummary,
 		scoreReasons: scorePresentation.scoreReasons,
+		reasons:
+			override?.reasons ??
+			(override?.subscoresJson
+				? extractReasonsFromSubscores(override.subscoresJson)
+				: undefined),
 		fundingAmount: estimatedTotalFunding,
 		estimatedTotalFunding,
 		awardFloor,
@@ -394,10 +446,8 @@ export const bookmarkRouter = router({
 				{
 					fitScore: number;
 					explanation: string | null;
-					subscoresJson: Record<
-						string,
-						number | boolean | string | null
-					> | null;
+					subscoresJson: Record<string, unknown> | null;
+					reasons?: GrantMatch['reasons'];
 				}
 			> = {};
 
@@ -422,16 +472,15 @@ export const bookmarkRouter = router({
 				});
 
 				matchMap = matches.reduce<typeof matchMap>((acc, match) => {
+					const reasons = extractReasonsFromSubscores(match.subscoresJson);
 					acc[match.grantId] = {
 						fitScore: match.fitScore,
 						explanation: match.explanation ?? null,
 						subscoresJson:
 							typeof match.subscoresJson === 'object' && match.subscoresJson
-								? (match.subscoresJson as Record<
-										string,
-										number | boolean | string | null
-									>)
+								? (match.subscoresJson as Record<string, unknown>)
 								: null,
+						reasons,
 					};
 					return acc;
 				}, {});
@@ -464,6 +513,7 @@ export const bookmarkRouter = router({
 							fitScore: match?.fitScore,
 							explanation: match?.explanation ?? undefined,
 							subscoresJson: match?.subscoresJson ?? null,
+							reasons: match?.reasons,
 						}),
 					};
 				}),

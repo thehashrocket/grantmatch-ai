@@ -30,7 +30,7 @@ const lowercaseFirst = (text: string) =>
 const uniqueList = (items: string[]) => Array.from(new Set(items));
 
 const extractSubscore = (
-	subscores?: Record<string, number | boolean | string | null> | null,
+	subscores?: Record<string, unknown> | null,
 	key?: string,
 ): number | null => {
 	if (!subscores || !key) return null;
@@ -116,7 +116,7 @@ const buildSummary = (
 };
 
 const deriveConfidence = (
-	subscores: Record<string, number | boolean | string | null> | null,
+	subscores: Record<string, unknown> | null,
 	signalsMissing: number,
 ) => {
 	if (!subscores) {
@@ -134,7 +134,7 @@ export const deriveScorePresentation = ({
 	fallbackExplanation,
 }: {
 	grant: ScorePresentationGrant;
-	subscores?: Record<string, number | boolean | string | null> | null;
+	subscores?: Record<string, unknown> | null;
 	fallbackExplanation?: string;
 }): {
 	confidence: 'HIGH' | 'MEDIUM' | 'LOW';

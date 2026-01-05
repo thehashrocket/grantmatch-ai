@@ -1,6 +1,7 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import { $Enums } from '@/prisma/generated/client';
 import * as matchModule from './upsertGrantMatch';
+import * as scoring from '@/lib/utils/org-grant-scoring';
 
 type MockPrisma = {
 	organization: {
@@ -8,6 +9,7 @@ type MockPrisma = {
 	};
 	grantMatch: {
 		findMany: ReturnType<typeof vi.fn>;
+		findUnique: ReturnType<typeof vi.fn>;
 		updateMany: ReturnType<typeof vi.fn>;
 		upsert: ReturnType<typeof vi.fn>;
 	};
@@ -51,6 +53,7 @@ const buildPrisma = (overrides?: {
 		},
 		grantMatch: {
 			findMany: vi.fn().mockResolvedValue([]),
+			findUnique: vi.fn().mockResolvedValue(null),
 			updateMany: vi.fn().mockResolvedValue({ count: 0 }),
 			upsert: vi.fn().mockResolvedValue(null),
 		},
@@ -103,6 +106,7 @@ const buildPrisma = (overrides?: {
 			...base.grantMatch,
 			...overrides.grantMatch,
 			findMany: overrides.grantMatch.findMany ?? base.grantMatch.findMany,
+			findUnique: overrides.grantMatch.findUnique ?? base.grantMatch.findUnique,
 			updateMany: overrides.grantMatch.updateMany ?? base.grantMatch.updateMany,
 			upsert: overrides.grantMatch.upsert ?? base.grantMatch.upsert,
 		};
@@ -223,74 +227,86 @@ describe('ensureGrantMatches concurrency', () => {
 });
 
 describe('upsertGrantMatch cheap bump', () => {
-	it('bumps version/computedAt without full upsert when score unchanged', async () => {
+	it('refreshes explanation and subscoresJson on cheap bump', async () => {
 		const prisma = buildPrisma({
 			grantMatch: {
+				findUnique: vi.fn().mockResolvedValue({ fitScore: 5 }),
 				updateMany: vi.fn().mockResolvedValue({ count: 1 }),
 				upsert: vi.fn().mockResolvedValue(null),
 			},
 		});
-
-		const grant = {
-			id: 'g1',
-			eligibleApplicants: null,
-			eligibleGeographies: null,
-			purpose: 'purpose',
-			estimatedTotalFunding: null,
-			awardFloor: null,
-			awardCeiling: null,
-		};
+		vi.spyOn(scoring, 'computeOrgGrantFitScore').mockReturnValue({
+			fitScore: 5,
+			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
+			explanation: 'NEW EXPLANATION',
+			reasons: [{ label: 'reason', strength: 'strong' }],
+		});
 
 		await matchModule.upsertGrantMatch({
 			prisma: prisma as unknown as matchModule.PrismaLike,
 			organization: baseOrganization as matchModule.OrganizationForMatch,
-			grant,
+			grant: {
+				id: 'g1',
+				eligibleApplicants: null,
+				eligibleGeographies: null,
+				purpose: 'purpose',
+				estimatedTotalFunding: null,
+				awardFloor: null,
+				awardCeiling: null,
+			},
 			version: 3,
 		});
 
 		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
-		const where =
-			(prisma.grantMatch.updateMany as ReturnType<typeof vi.fn>).mock
-				.calls[0]?.[0]?.where ?? {};
-		expect(where).toMatchObject({
-			organizationId: 'org-1',
-			grantId: 'g1',
-			fitScore: expect.any(Number),
-		});
 		const data =
 			(prisma.grantMatch.updateMany as ReturnType<typeof vi.fn>).mock
 				.calls[0]?.[0]?.data ?? {};
 		expect(data.version).toBe(3);
 		expect(data.computedAt).toBeInstanceOf(Date);
+		expect(data.explanation).toBe('NEW EXPLANATION');
+		expect(data.subscoresJson).toEqual(
+			expect.objectContaining({
+				eligibility: 1,
+				geography: 1,
+				purpose: 1,
+				funding: 1,
+				reasons: [{ label: 'reason', strength: 'strong' }],
+			}),
+		);
 		expect(prisma.grantMatch.upsert).not.toHaveBeenCalled();
 	});
 
 	it('falls back to upsert when score differs', async () => {
 		const prisma = buildPrisma({
 			grantMatch: {
+				findUnique: vi.fn().mockResolvedValue({ fitScore: 4.5 }),
 				updateMany: vi.fn().mockResolvedValue({ count: 0 }),
 				upsert: vi.fn().mockResolvedValue(null),
 			},
 		});
-
-		const grant = {
-			id: 'g1',
-			eligibleApplicants: null,
-			eligibleGeographies: null,
-			purpose: 'different purpose',
-			estimatedTotalFunding: null,
-			awardFloor: null,
-			awardCeiling: null,
-		};
+		vi.spyOn(scoring, 'computeOrgGrantFitScore').mockReturnValue({
+			fitScore: 5.1,
+			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
+			explanation: 'new',
+			reasons: [],
+		});
 
 		await matchModule.upsertGrantMatch({
 			prisma: prisma as unknown as matchModule.PrismaLike,
 			organization: baseOrganization as matchModule.OrganizationForMatch,
-			grant,
+			grant: {
+				id: 'g1',
+				eligibleApplicants: null,
+				eligibleGeographies: null,
+				purpose: 'different purpose',
+				estimatedTotalFunding: null,
+				awardFloor: null,
+				awardCeiling: null,
+			},
 			version: 3,
 		});
 
-		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
+		expect(prisma.grantMatch.updateMany).not.toHaveBeenCalled();
 		expect(prisma.grantMatch.upsert).toHaveBeenCalledTimes(1);
 		const upsertArgs =
 			(prisma.grantMatch.upsert as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]
@@ -302,29 +318,34 @@ describe('upsertGrantMatch cheap bump', () => {
 	it('falls back to upsert create when row does not exist', async () => {
 		const prisma = buildPrisma({
 			grantMatch: {
+				findUnique: vi.fn().mockResolvedValue(null),
 				updateMany: vi.fn().mockResolvedValue({ count: 0 }),
 				upsert: vi.fn().mockResolvedValue(null),
 			},
 		});
-
-		const grant = {
-			id: 'g9',
-			eligibleApplicants: null,
-			eligibleGeographies: null,
-			purpose: 'purpose',
-			estimatedTotalFunding: null,
-			awardFloor: null,
-			awardCeiling: null,
-		};
+		vi.spyOn(scoring, 'computeOrgGrantFitScore').mockReturnValue({
+			fitScore: 6,
+			subscores: { eligibility: 1, geography: 1, purpose: 1, funding: 1 },
+			explanation: 'exp',
+			reasons: [],
+		});
 
 		await matchModule.upsertGrantMatch({
 			prisma: prisma as unknown as matchModule.PrismaLike,
 			organization: baseOrganization as matchModule.OrganizationForMatch,
-			grant,
+			grant: {
+				id: 'g9',
+				eligibleApplicants: null,
+				eligibleGeographies: null,
+				purpose: 'purpose',
+				estimatedTotalFunding: null,
+				awardFloor: null,
+				awardCeiling: null,
+			},
 			version: 4,
 		});
 
-		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
+		expect(prisma.grantMatch.updateMany).not.toHaveBeenCalled();
 		expect(prisma.grantMatch.upsert).toHaveBeenCalledTimes(1);
 		const createArgs =
 			(prisma.grantMatch.upsert as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]

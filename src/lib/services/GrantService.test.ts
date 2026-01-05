@@ -120,4 +120,48 @@ describe('GrantServiceImpl', () => {
 		expect(repo.usedLegacyPath).toBe(true);
 		expect(result.grants[0].fitScore).not.toBeNull();
 	});
+
+	it('maps reasons from subscoresJson onto GrantMatch', async () => {
+		class ReasonsRepo extends MockGrantRepository {
+			async findWithFiltersPaginatedForOrg(
+				_filters: GrantSearchFilters,
+				_page: number,
+				_pageSize: number,
+				_organizationId: string,
+			): Promise<{ matches: GrantMatchRecord[]; total: number }> {
+				this.usedOrgPath = true;
+				return {
+					matches: [
+						{
+							fitScore: 7.2,
+							subscoresJson: {
+								eligibility: 0.8,
+								geography: 0.6,
+								purpose: 0.9,
+								funding: 0.5,
+								reasons: [
+									{
+										label: 'Focus area match',
+										detail: 'housing',
+										strength: 'medium',
+									},
+								],
+							},
+							explanation: 'Org-specific match',
+							grant: { ...baseGrant },
+						},
+					],
+					total: 1,
+				};
+			}
+		}
+
+		const repo = new ReasonsRepo();
+		const service: GrantService = new GrantServiceImpl(repo);
+
+		const result = await service.searchGrantsPaginated(filters, 1, 10, 'org-1');
+
+		expect(repo.usedOrgPath).toBe(true);
+		expect(result.grants[0].reasons?.[0].label).toBe('Focus area match');
+	});
 });

@@ -1,6 +1,7 @@
 // src/components/grants/GrantCard.tsx
 
 import Link from 'next/link';
+import { useState } from 'react';
 import {
 	Card,
 	CardContent,
@@ -14,7 +15,7 @@ import {
 	getFitScoreColor,
 	type GrantMatch,
 } from '@/lib/types/grant';
-import { ExternalLink } from 'lucide-react';
+import { AlertTriangle, Check, ExternalLink, Minus } from 'lucide-react';
 import { getFlagInfo } from '@/lib/utils/flag-utils';
 import Image from 'next/image';
 import DetailsStatusBadge from '@/components/grants/DetailsStatusBadge';
@@ -34,6 +35,7 @@ function formatDate(dateString: string): string {
 }
 
 export function GrantCard({ grant, actionSlot }: GrantCardProps) {
+	const [showReasons, setShowReasons] = useState(false);
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
 	const flagInfo = getFlagInfo(grant.source);
@@ -88,11 +90,24 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 			: confidence === 'LOW'
 				? 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100'
 				: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100';
-	const hasScoreReasons =
-		grant.scoreReasons &&
-		(grant.scoreReasons.matched.length > 0 ||
-			grant.scoreReasons.missing.length > 0 ||
-			grant.scoreReasons.unknown.length > 0);
+	const reasonPreview =
+		grant.reasons
+			?.slice(0, 2)
+			.map((reason) => reason.label)
+			.join(' • ') ?? 'See details';
+
+	const reasonIcon = (strength: string) => {
+		switch (strength) {
+			case 'strong':
+				return <Check className="h-4 w-4 text-emerald-600" />;
+			case 'medium':
+				return <Check className="h-4 w-4 text-emerald-500" />;
+			case 'weak':
+				return <AlertTriangle className="h-4 w-4 text-amber-500" />;
+			default:
+				return <Minus className="h-4 w-4 text-muted-foreground" />;
+		}
+	};
 
 	return (
 		<div className="relative">
@@ -166,70 +181,52 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 					</div>
 				</CardHeader>
 				<CardContent className="space-y-3">
-					<p className="text-muted-foreground text-sm leading-relaxed">
-						{summaryText}
-					</p>
-					{hasScoreReasons ? (
-						<details className="rounded-md bg-muted/60 p-3 text-sm">
-							<summary className="cursor-pointer select-none font-semibold text-foreground">
-								Why this score
-							</summary>
-							<div className="mt-2 space-y-2 text-muted-foreground">
-								{grant.scoreReasons?.matched.length ? (
-									<div className="space-y-1.5">
-										<div className="font-semibold text-foreground flex items-center gap-2">
-											<span aria-hidden>✅</span>
-											<span>Matched</span>
-										</div>
-										<ul className="space-y-1">
-											{grant.scoreReasons.matched.map((reason) => (
-												<li key={`matched-${reason}`} className="flex gap-2">
-													<span aria-hidden>•</span>
-													<span className="leading-snug">{reason}</span>
-												</li>
-											))}
-										</ul>
-									</div>
-								) : null}
-								{grant.scoreReasons?.missing.length ? (
-									<div className="space-y-1.5">
-										<div className="font-semibold text-foreground flex items-center gap-2">
-											<span aria-hidden>⚠️</span>
-											<span>Missing</span>
-										</div>
-										<ul className="space-y-1">
-											{grant.scoreReasons.missing.map((reason) => (
-												<li key={`missing-${reason}`} className="flex gap-2">
-													<span aria-hidden>•</span>
-													<span className="leading-snug">{reason}</span>
-												</li>
-											))}
-										</ul>
-									</div>
-								) : null}
-								{grant.scoreReasons?.unknown.length ? (
-									<div className="space-y-1.5">
-										<div className="font-semibold text-foreground flex items-center gap-2">
-											<span aria-hidden>❓</span>
-											<span>Unknown</span>
-										</div>
-										<ul className="space-y-1">
-											{grant.scoreReasons.unknown.map((reason) => (
-												<li key={`unknown-${reason}`} className="flex gap-2">
-													<span aria-hidden>•</span>
-													<span className="leading-snug">{reason}</span>
-												</li>
-											))}
-										</ul>
-									</div>
-								) : null}
+					{grant.reasons?.length ? (
+						<div className="space-y-2 text-sm">
+							<div className="flex items-center gap-2">
+								<span className="text-muted-foreground">
+									Why: {reasonPreview}
+								</span>
+								<button
+									type="button"
+									onClick={() => setShowReasons((prev) => !prev)}
+									className="text-xs font-medium text-primary hover:underline"
+								>
+									{showReasons ? 'Hide' : 'Details'}
+								</button>
 							</div>
-						</details>
-					) : grant.explanation ? (
+							{showReasons ? (
+								<ul className="space-y-2">
+									{grant.reasons.map((reason, index) => (
+										<li key={`${reason.label}-${index}`} className="flex gap-2">
+											<span className="mt-0.5">
+												{reasonIcon(reason.strength)}
+											</span>
+											<div className="space-y-0.5">
+												<div className="font-medium leading-tight">
+													{reason.label}
+												</div>
+												{reason.detail ? (
+													<div className="text-muted-foreground leading-tight">
+														{reason.detail}
+													</div>
+												) : null}
+											</div>
+										</li>
+									))}
+								</ul>
+							) : null}
+							{summaryText ? (
+								<p className="text-muted-foreground leading-relaxed">
+									{summaryText}
+								</p>
+							) : null}
+						</div>
+					) : (
 						<p className="text-muted-foreground text-sm leading-relaxed">
-							{grant.explanation}
+							{summaryText}
 						</p>
-					) : null}
+					)}
 				</CardContent>
 			</Card>
 		</div>

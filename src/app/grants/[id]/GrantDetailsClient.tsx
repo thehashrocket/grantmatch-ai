@@ -18,6 +18,9 @@ import type { BookmarkStatus } from '@/lib/types/bookmark';
 import { BookmarkMetaEditor } from '@/components/grants/BookmarkMetaEditor';
 import { useEffect } from 'react';
 import { getFitScoreCategory, getFitScoreColor } from '@/lib/types/grant';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { resolveBackTarget } from '@/lib/utils/return-to';
 
 type GrantData = Prisma.GrantGetPayload<{
 	include: { details: true; attachments: true };
@@ -32,6 +35,8 @@ export default function GrantDetailsClient({
 	grantId,
 	initialGrant,
 }: GrantDetailsClientProps) {
+	const router = useRouter();
+	const searchParams = useSearchParams();
 	const grant = initialGrant;
 	const statusMapInput = { grantIds: [grantId] };
 	const { data: statusMap } = trpc.bookmark.statusMap.useQuery(statusMapInput, {
@@ -78,6 +83,7 @@ export default function GrantDetailsClient({
 		fitScoreCategory !== null
 			? getFitScoreColor(fitScoreCategory)
 			: 'bg-muted text-muted-foreground';
+	const backTarget = resolveBackTarget(searchParams?.get('returnTo'));
 
 	useEffect(() => {
 		if (scoreError) return;
@@ -90,6 +96,13 @@ export default function GrantDetailsClient({
 	return (
 		<div className="space-y-6">
 			<div className="space-y-2">
+				<Button
+					variant="ghost"
+					className="px-0 text-sm"
+					onClick={() => router.push(backTarget)}
+				>
+					← Back to results
+				</Button>
 				<div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
 					<div className="flex flex-wrap items-center gap-2">
 						<h1 className="text-3xl font-bold tracking-tight">{grant.title}</h1>

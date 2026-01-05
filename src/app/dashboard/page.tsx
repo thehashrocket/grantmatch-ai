@@ -5,19 +5,24 @@ import { useGrantSearch } from '@/lib/hooks/useGrantSearch';
 import { ActiveFilters } from '@/components/grants/ActiveFilters';
 import { GrantResults } from '@/components/grants/GrantResults';
 import type { GrantSearchFilters } from '@/lib/types/grant';
+import { useEffect, useRef } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { buildReturnTo } from '@/lib/utils/return-to';
 
 // Make a fetch grants button
 // Makes a request to the /api/gp/start route
 // Redirects to the /dashboard page
 
 export default function DashboardPage() {
+	const searchParams = useSearchParams();
+	const pathname = usePathname();
+	const scrollRestored = useRef(false);
 	const {
 		grants,
 		isLoading,
 		error,
 		handleSearch,
 		handleClearSearch,
-		updateFilter,
 		searchFilters,
 		resultsCount,
 		currentPage,
@@ -32,13 +37,6 @@ export default function DashboardPage() {
 		field: keyof GrantSearchFilters,
 		value?: string,
 	) => {
-		if (field === 'source') {
-			updateFilter(field, value || 'ALL');
-		} else if (field === 'sort') {
-			updateFilter(field, 'FIT_DESC');
-		} else {
-			updateFilter(field, '');
-		}
 		const newFilters = {
 			...searchFilters,
 			[field]:
@@ -57,11 +55,36 @@ export default function DashboardPage() {
 		handleSearch(searchFilters);
 	};
 
+	const returnTo = buildReturnTo(pathname, searchParams?.toString() ?? '');
+
+	useEffect(() => {
+		const key = `dashboard-scroll:${searchParams?.toString() ?? ''}`;
+		if (scrollRestored.current) return;
+		const saved =
+			typeof window !== 'undefined' ? sessionStorage.getItem(key) : null;
+		if (saved) {
+			scrollRestored.current = true;
+			window.scrollTo({ top: Number(saved) || 0 });
+		}
+	}, [searchParams]);
+
+	useEffect(() => {
+		const key = `dashboard-scroll:${searchParams?.toString() ?? ''}`;
+		return () => {
+			try {
+				sessionStorage.setItem(key, String(window.scrollY));
+			} catch {
+				// ignore storage failures
+			}
+		};
+	}, [searchParams]);
+
 	return (
 		<div className="container mx-auto space-y-4">
 			<h1 className="text-3xl font-bold">Grant Matches</h1>
 
 			<GrantSearchForm
+				filters={searchFilters}
 				onSearch={handleSearch}
 				onClear={handleClearSearch}
 				isLoading={isLoading}
@@ -85,6 +108,7 @@ export default function DashboardPage() {
 				onPageChange={handlePageChange}
 				bookmarkStatusMap={bookmarkStatusMap}
 				statusMapInput={statusMapInput}
+				returnTo={returnTo}
 			/>
 		</div>
 	);

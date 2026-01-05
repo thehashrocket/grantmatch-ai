@@ -20,10 +20,12 @@ import { getFlagInfo } from '@/lib/utils/flag-utils';
 import Image from 'next/image';
 import DetailsStatusBadge from '@/components/grants/DetailsStatusBadge';
 import { FundingAmount } from '@/components/grants/FundingAmount';
+import { applyReturnTo } from '@/lib/utils/return-to';
 
 interface GrantCardProps {
 	grant: GrantMatch;
 	actionSlot?: React.ReactNode;
+	returnTo?: string;
 }
 
 function formatDate(dateString: string): string {
@@ -34,7 +36,7 @@ function formatDate(dateString: string): string {
 	});
 }
 
-export function GrantCard({ grant, actionSlot }: GrantCardProps) {
+export function GrantCard({ grant, actionSlot, returnTo }: GrantCardProps) {
 	const [showReasons, setShowReasons] = useState(false);
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
@@ -126,7 +128,7 @@ export function GrantCard({ grant, actionSlot }: GrantCardProps) {
 									/>
 								)}
 								<Link
-									href={grant.internalUrl}
+									href={applyReturnTo(grant.internalUrl, returnTo)}
 									className="hover:underline line-clamp-2"
 								>
 									{grant.title}

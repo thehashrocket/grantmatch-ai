@@ -19,6 +19,7 @@ interface GrantResultsProps {
 	onPageChange?: (page: number) => void;
 	bookmarkStatusMap?: Record<string, BookmarkStatusRecord>;
 	statusMapInput?: { grantIds: string[] };
+	returnTo?: string;
 }
 
 export function GrantResults({
@@ -32,6 +33,7 @@ export function GrantResults({
 	onPageChange,
 	bookmarkStatusMap,
 	statusMapInput,
+	returnTo,
 }: GrantResultsProps) {
 	if (isLoading) {
 		return <GrantResultsSkeleton />;
@@ -59,6 +61,7 @@ export function GrantResults({
 					<GrantCard
 						key={grant.id}
 						grant={grant}
+						returnTo={returnTo}
 						actionSlot={
 							<div className="flex items-start gap-2">
 								<div className="flex flex-col items-end gap-2">

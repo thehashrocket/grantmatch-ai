@@ -276,6 +276,18 @@ export async function commitOrgMatchIndexTick(
 			return { committed: false as const, reason: 'STALE_CLAIM' as const };
 		}
 
+		const eligibleCount =
+			!args.failedMessage && args.done
+				? await tx.grant.count({
+						where: {
+							status: {
+								in: [$Enums.GrantStatus.OPEN, $Enums.GrantStatus.UNKNOWN],
+							},
+							closedAt: null,
+						},
+					})
+				: 0;
+
 		const existingErrors = Array.isArray(current.matchIndexErrorJson)
 			? (current.matchIndexErrorJson as unknown[])
 			: [];
@@ -283,6 +295,9 @@ export async function commitOrgMatchIndexTick(
 			0,
 			MAX_TICK_ERRORS,
 		);
+
+		const totalIndexed =
+			(current.matchIndexedCount ?? 0) + (args.indexedDelta ?? 0);
 
 		const data: Prisma.OrganizationUpdateInput = {
 			matchIndexedCount: {
@@ -300,8 +315,13 @@ export async function commitOrgMatchIndexTick(
 		} else {
 			data.matchIndexError = null;
 			if (args.done) {
-				data.matchIndexStatus = $Enums.MatchIndexStatus.COMPLETE;
-				data.matchIndexedAt = new Date();
+				if (totalIndexed === 0 && eligibleCount > 0) {
+					data.matchIndexStatus = $Enums.MatchIndexStatus.FAILED;
+					data.matchIndexError = 'INDEX_COMPLETE_WITH_ZERO_PROGRESS';
+				} else {
+					data.matchIndexStatus = $Enums.MatchIndexStatus.COMPLETE;
+					data.matchIndexedAt = new Date();
+				}
 			} else {
 				data.matchIndexStatus = $Enums.MatchIndexStatus.RUNNING;
 			}
@@ -364,4 +384,41 @@ export async function runOrgMatchIndexTick(
 		});
 		throw error;
 	}
+}
+
+export async function runOrgMatchIndexToCompletion(
+	prisma: OrgTickPrisma,
+	organizationId: string,
+	opts?: { maxTicks?: number; batchSize?: number; start?: boolean },
+) {
+	const maxTicks = opts?.maxTicks ?? 20;
+	if (opts?.start ?? true) {
+		await startOrgMatchIndex(prisma, organizationId);
+	}
+
+	let last: Awaited<ReturnType<typeof runOrgMatchIndexTick>> | null = null;
+
+	for (let i = 0; i < maxTicks; i += 1) {
+		last = await runOrgMatchIndexTick(prisma, organizationId, {
+			batchSize: opts?.batchSize,
+		});
+
+		if (!last.claimed) {
+			break;
+		}
+
+		const status =
+			last.commit?.committed === true
+				? last.commit.organization.status
+				: last.claim.status;
+
+		if (
+			status === $Enums.MatchIndexStatus.COMPLETE ||
+			status === $Enums.MatchIndexStatus.FAILED
+		) {
+			break;
+		}
+	}
+
+	return last;
 }

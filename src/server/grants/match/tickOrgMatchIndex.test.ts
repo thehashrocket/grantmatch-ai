@@ -155,6 +155,28 @@ function createPrismaMock(state: {
 					return filtered;
 				},
 			),
+			count: vi.fn(
+				async ({
+					where,
+				}: {
+					where: {
+						status?: { in?: $Enums.GrantStatus[] };
+						closedAt?: null;
+					};
+				}) => {
+					const allowed = where.status?.in ?? [];
+					const allowClosedNull = where.closedAt === null;
+					return state.grants.filter((g) => {
+						if (allowed.length > 0 && !allowed.includes(g.status)) {
+							return false;
+						}
+						if (allowClosedNull && g.closedAt !== null) {
+							return false;
+						}
+						return true;
+					}).length;
+				},
+			),
 		},
 		grantMatch: {
 			findMany: vi.fn(
@@ -394,6 +416,47 @@ describe('tickOrgMatchIndex', () => {
 		if (result.committed) {
 			expect(result.organization.status).toBe($Enums.MatchIndexStatus.COMPLETE);
 			expect(result.organization.indexedAt).not.toBeNull();
+		}
+	});
+
+	it('does not mark COMPLETE when zero progress but eligible grants exist', async () => {
+		const mock = createPrismaMock({
+			org: {
+				id: 'org-7',
+				matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+				matchIndexedCount: 0,
+				matchIndexCursor: null,
+				matchIndexClaimId: 'claim-7',
+				matchIndexClaimedAt: new Date(),
+				matchIndexError: null,
+				matchIndexErrorJson: null,
+				matchIndexedAt: null,
+				scoringVersion: 1,
+			},
+			grants: [
+				{ id: 'g-1', status: $Enums.GrantStatus.OPEN, closedAt: null },
+				{
+					id: 'g-2',
+					status: $Enums.GrantStatus.CLOSED,
+					closedAt: new Date(),
+				},
+			],
+		});
+
+		const result = await commitOrgMatchIndexTick(mock.prisma, {
+			organizationId: 'org-7',
+			claimId: 'claim-7',
+			indexedDelta: 0,
+			nextCursor: null,
+			done: true,
+		});
+
+		expect(result.committed).toBe(true);
+		if (result.committed) {
+			expect(result.organization.status).toBe($Enums.MatchIndexStatus.FAILED);
+			expect(result.organization.error).toBe(
+				'INDEX_COMPLETE_WITH_ZERO_PROGRESS',
+			);
 		}
 	});
 });

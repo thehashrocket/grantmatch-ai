@@ -82,6 +82,7 @@ describe('organizationRouter.updateProfile', () => {
 		expect(result.matchIndexStatus).toBe(organization.matchIndexStatus);
 		expect(result.matchIndexedAt).toBe(organization.matchIndexedAt);
 		expect(result.scoringVersion).toBe(organization.scoringVersion);
+		expect(result.matchIndexedCount).toBe(organization.matchIndexedCount);
 	});
 
 	it('resets match indexing when scoring fields change', async () => {
@@ -135,6 +136,7 @@ describe('organizationRouter.updateProfile', () => {
 		expect(update).toHaveBeenCalled();
 		expect(result.matchIndexStatus).toBe($Enums.MatchIndexStatus.NOT_STARTED);
 		expect(result.scoringVersion).toBe(SCORING_VERSION);
+		expect(result.matchIndexedCount).toBe(0);
 	});
 
 	it('normalizes mission and description text', async () => {
@@ -283,6 +285,7 @@ describe('organizationRouter.updateProfile', () => {
 		expect(update).toHaveBeenCalled();
 		expect(result.scoringVersion).toBe(3);
 		expect(result.matchIndexStatus).toBe(organization.matchIndexStatus);
+		expect(result.matchIndexedCount).toBe(organization.matchIndexedCount);
 	});
 });
 

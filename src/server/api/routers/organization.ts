@@ -9,7 +9,11 @@ import {
 import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 import { normalizeTags, normalizeText } from '@/lib/utils/normalizeTags';
 import type { Prisma } from '@/prisma/generated/client';
-import { startOrgMatchIndex } from '@/server/grants/match/tickOrgMatchIndex';
+import {
+	startOrgMatchIndex,
+	runOrgMatchIndexTick,
+	runOrgMatchIndexToCompletion,
+} from '@/server/grants/match/tickOrgMatchIndex';
 
 const normalizePriorityKeywords = (values?: string[] | null) => {
 	const normalized = normalizeTags(values ?? []);
@@ -124,8 +128,28 @@ export const organizationRouter = router({
 			});
 		}
 
-		const summary = await startOrgMatchIndex(ctx.prisma, organizationId);
-		return summary;
+		const started = await startOrgMatchIndex(ctx.prisma, organizationId);
+		const tick = await runOrgMatchIndexTick(ctx.prisma, organizationId);
+
+		return { started, tick };
+	}),
+	runMatchIndexToCompletion: protectedProcedure.mutation(async ({ ctx }) => {
+		if (process.env.NODE_ENV === 'production') {
+			throw new TRPCError({
+				code: 'FORBIDDEN',
+				message: 'RUN_MATCH_INDEX_DEV_ONLY',
+			});
+		}
+
+		const organizationId = ctx.session?.organizationId ?? null;
+		if (!organizationId) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'MISSING_ORGANIZATION',
+			});
+		}
+
+		return runOrgMatchIndexToCompletion(ctx.prisma, organizationId);
 	}),
 	getIndexStatus: protectedProcedure.query(async ({ ctx }) => {
 		const organizationId = ctx.session?.organizationId ?? null;

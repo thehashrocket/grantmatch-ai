@@ -68,7 +68,6 @@ export async function upsertGrantMatch(params: {
 		where: {
 			organizationId: organization.id,
 			grantId: grant.id,
-			version: { not: version },
 			fitScore: computed.fitScore,
 		},
 		data: {

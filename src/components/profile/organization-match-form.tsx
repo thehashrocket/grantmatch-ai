@@ -102,6 +102,47 @@ export function OrganizationMatchForm() {
 		[],
 	);
 
+	const resolvedEntityType = useMemo(
+		() => entityType ?? data?.entityType ?? null,
+		[data?.entityType, entityType],
+	);
+	const resolvedBudgetRange = useMemo(
+		() => budgetRange ?? data?.budgetRange ?? null,
+		[data?.budgetRange, budgetRange],
+	);
+	const resolvedStaffRange = useMemo(
+		() => staffRange ?? data?.staffRange ?? null,
+		[data?.staffRange, staffRange],
+	);
+
+	const selectedEntityLabel = useMemo(
+		() =>
+			entityTypeOptions.find((option) => option.value === entityType)?.label ??
+			entityTypeOptions.find((option) => option.value === data?.entityType)
+				?.label ??
+			undefined,
+		[data?.entityType, entityType],
+	);
+
+	const selectedBudgetLabel = useMemo(
+		() =>
+			budgetRangeOptions.find((option) => option.value === budgetRange)
+				?.label ??
+			budgetRangeOptions.find((option) => option.value === data?.budgetRange)
+				?.label ??
+			undefined,
+		[budgetRange, data?.budgetRange],
+	);
+
+	const selectedStaffLabel = useMemo(
+		() =>
+			staffRangeOptions.find((option) => option.value === staffRange)?.label ??
+			staffRangeOptions.find((option) => option.value === data?.staffRange)
+				?.label ??
+			undefined,
+		[data?.staffRange, staffRange],
+	);
+
 	useEffect(() => {
 		if (!data) return;
 		setEntityType(data.entityType ?? null);
@@ -174,7 +215,7 @@ export function OrganizationMatchForm() {
 							<div className="space-y-2">
 								<Label>Entity type</Label>
 								<Select
-									value={entityType ?? ENTITY_CLEAR_VALUE}
+									value={resolvedEntityType ?? ENTITY_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === ENTITY_CLEAR_VALUE
 											? setEntityType(null)
@@ -182,7 +223,11 @@ export function OrganizationMatchForm() {
 									}
 								>
 									<SelectTrigger>
-										<SelectValue placeholder="Select entity type" />
+										<SelectValue
+											placeholder={
+												selectedEntityLabel ?? 'Select entity type'
+											}
+										/>
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value={ENTITY_CLEAR_VALUE}>
@@ -252,7 +297,7 @@ export function OrganizationMatchForm() {
 							<div className="space-y-2">
 								<Label>Budget range</Label>
 								<Select
-									value={budgetRange ?? BUDGET_CLEAR_VALUE}
+									value={resolvedBudgetRange ?? BUDGET_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === BUDGET_CLEAR_VALUE
 											? setBudgetRange(null)
@@ -260,7 +305,9 @@ export function OrganizationMatchForm() {
 									}
 								>
 									<SelectTrigger>
-										<SelectValue placeholder="Select range" />
+										<SelectValue
+											placeholder={selectedBudgetLabel ?? 'Select range'}
+										/>
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value={BUDGET_CLEAR_VALUE}>
@@ -281,7 +328,7 @@ export function OrganizationMatchForm() {
 							<div className="space-y-2">
 								<Label>Team size</Label>
 								<Select
-									value={staffRange ?? STAFF_CLEAR_VALUE}
+									value={resolvedStaffRange ?? STAFF_CLEAR_VALUE}
 									onValueChange={(value) =>
 										value === STAFF_CLEAR_VALUE
 											? setStaffRange(null)
@@ -289,7 +336,9 @@ export function OrganizationMatchForm() {
 									}
 								>
 									<SelectTrigger>
-										<SelectValue placeholder="Select staff range" />
+										<SelectValue
+											placeholder={selectedStaffLabel ?? 'Select staff range'}
+										/>
 									</SelectTrigger>
 									<SelectContent>
 										<SelectItem value={STAFF_CLEAR_VALUE}>

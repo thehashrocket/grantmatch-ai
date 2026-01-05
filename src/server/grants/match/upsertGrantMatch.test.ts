@@ -255,8 +255,13 @@ describe('upsertGrantMatch cheap bump', () => {
 		expect(where).toMatchObject({
 			organizationId: 'org-1',
 			grantId: 'g1',
-			version: { not: 3 },
+			fitScore: expect.any(Number),
 		});
+		const data =
+			(prisma.grantMatch.updateMany as ReturnType<typeof vi.fn>).mock
+				.calls[0]?.[0]?.data ?? {};
+		expect(data.version).toBe(3);
+		expect(data.computedAt).toBeInstanceOf(Date);
 		expect(prisma.grantMatch.upsert).not.toHaveBeenCalled();
 	});
 
@@ -287,5 +292,45 @@ describe('upsertGrantMatch cheap bump', () => {
 
 		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
 		expect(prisma.grantMatch.upsert).toHaveBeenCalledTimes(1);
+		const upsertArgs =
+			(prisma.grantMatch.upsert as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]
+				?.update ?? {};
+		expect(upsertArgs).toHaveProperty('subscoresJson');
+		expect(upsertArgs).toHaveProperty('explanation');
+	});
+
+	it('falls back to upsert create when row does not exist', async () => {
+		const prisma = buildPrisma({
+			grantMatch: {
+				updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+				upsert: vi.fn().mockResolvedValue(null),
+			},
+		});
+
+		const grant = {
+			id: 'g9',
+			eligibleApplicants: null,
+			eligibleGeographies: null,
+			purpose: 'purpose',
+			estimatedTotalFunding: null,
+			awardFloor: null,
+			awardCeiling: null,
+		};
+
+		await matchModule.upsertGrantMatch({
+			prisma: prisma as unknown as matchModule.PrismaLike,
+			organization: baseOrganization as matchModule.OrganizationForMatch,
+			grant,
+			version: 4,
+		});
+
+		expect(prisma.grantMatch.updateMany).toHaveBeenCalledTimes(1);
+		expect(prisma.grantMatch.upsert).toHaveBeenCalledTimes(1);
+		const createArgs =
+			(prisma.grantMatch.upsert as ReturnType<typeof vi.fn>).mock.calls[0]?.[0]
+				?.create ?? {};
+		expect(createArgs.organizationId).toBe('org-1');
+		expect(createArgs.grantId).toBe('g9');
+		expect(createArgs.version).toBe(4);
 	});
 });

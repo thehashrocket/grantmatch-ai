@@ -1,3 +1,9 @@
+// /src/components/grants/GrantDetailedDescription.tsx
+'use client';
+
+import DOMPurify from 'dompurify';
+// /src/components/grants/GrantDetailedDescription.tsx
+
 // GrantDetailedDescription.tsx
 // This component is used to display the detailed description of a grant.
 // It checks to see if the description is in a json format and if so, it displays the description in a readable format.
@@ -23,6 +29,49 @@ interface GrantJsonData {
 }
 
 type ParsedData = GrantJsonData | string[] | null;
+
+const allowedTags = [
+	'p',
+	'br',
+	'strong',
+	'em',
+	'ul',
+	'ol',
+	'li',
+	'a',
+	'h3',
+	'h4',
+	'blockquote',
+];
+
+const looksLikeHtml = (value: string) =>
+	/<\/?[a-z][\s\S]*>/i.test(value) ||
+	value.includes('&nbsp;') ||
+	value.includes('<br') ||
+	value.includes('<p');
+
+const sanitizeHtml = (value: string) => {
+	const cleaned = value.replace(/&nbsp;/g, ' ');
+	return DOMPurify.sanitize(cleaned, {
+		ALLOWED_TAGS: allowedTags,
+		ALLOWED_ATTR: ['href', 'target', 'rel'],
+	});
+};
+
+const renderRichText = (value: string) => {
+	if (looksLikeHtml(value)) {
+		return (
+			<div
+				className="prose prose-sm text-muted-foreground max-w-none"
+				/* biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized HTML */
+				dangerouslySetInnerHTML={{ __html: sanitizeHtml(value) }}
+			/>
+		);
+	}
+	return (
+		<p className="text-sm text-muted-foreground leading-relaxed">{value}</p>
+	);
+};
 
 export default function GrantDetailedDescription({
 	description,
@@ -128,9 +177,7 @@ export default function GrantDetailedDescription({
 				{overview && (
 					<div>
 						<h3 className="font-medium mb-2">Overview</h3>
-						<p className="text-sm text-muted-foreground leading-relaxed">
-							{overview}
-						</p>
+						{renderRichText(overview)}
 					</div>
 				)}
 
@@ -151,9 +198,9 @@ export default function GrantDetailedDescription({
 												</h4>
 												<div className="flex items-start">
 													<span className="inline-block w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-													<p className="text-sm text-muted-foreground leading-relaxed">
-														{projectDescription}
-													</p>
+													<div className="text-sm text-muted-foreground leading-relaxed">
+														{renderRichText(projectDescription)}
+													</div>
 												</div>
 											</div>
 										),
@@ -175,9 +222,7 @@ export default function GrantDetailedDescription({
 				{(jsonData.overview || jsonData.description) && (
 					<div>
 						<h3 className="font-medium mb-2">Overview</h3>
-						<p className="text-sm text-muted-foreground">
-							{jsonData.overview || jsonData.description}
-						</p>
+						{renderRichText(jsonData.overview || jsonData.description || '')}
 					</div>
 				)}
 
@@ -192,9 +237,9 @@ export default function GrantDetailedDescription({
 								{jsonData.features.map((feature, index) => (
 									<li key={index} className="flex items-start">
 										<span className="inline-block w-2 h-2 bg-primary rounded-full mt-2 mr-3 flex-shrink-0" />
-										<span className="text-sm text-muted-foreground">
-											{feature}
-										</span>
+										<div className="text-sm text-muted-foreground">
+											{renderRichText(feature)}
+										</div>
 									</li>
 								))}
 							</ul>
@@ -214,9 +259,9 @@ export default function GrantDetailedDescription({
 									{jsonData.eligibleApplicants.map((applicant, index) => (
 										<li key={index} className="flex items-start">
 											<span className="inline-block w-2 h-2 bg-green-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-											<span className="text-sm text-muted-foreground leading-relaxed">
-												{applicant}
-											</span>
+											<div className="text-sm text-muted-foreground leading-relaxed">
+												{renderRichText(applicant)}
+											</div>
 										</li>
 									))}
 								</ul>
@@ -235,9 +280,9 @@ export default function GrantDetailedDescription({
 								{jsonData.eligibleProjects.map((project, index) => (
 									<li key={index} className="flex items-start">
 										<span className="inline-block w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0" />
-										<span className="text-sm text-muted-foreground leading-relaxed">
-											{project}
-										</span>
+										<div className="text-sm text-muted-foreground leading-relaxed">
+											{renderRichText(project)}
+										</div>
 									</li>
 								))}
 							</ul>
@@ -259,9 +304,9 @@ export default function GrantDetailedDescription({
 									<h4 className="font-medium text-sm mb-1">
 										Application Deadline
 									</h4>
-									<p className="text-sm text-muted-foreground">
-										{jsonData.applicationInfo.applicationDeadline}
-									</p>
+									{renderRichText(
+										jsonData.applicationInfo.applicationDeadline ?? '',
+									)}
 								</div>
 							)}
 							{jsonData.applicationInfo.howToApply && (
@@ -309,9 +354,5 @@ export default function GrantDetailedDescription({
 	}
 
 	// Fallback for plain text
-	return (
-		<div>
-			<p className="text-sm text-muted-foreground">{description}</p>
-		</div>
-	);
+	return <div>{renderRichText(description)}</div>;
 }

@@ -25,6 +25,15 @@ const matchesSchema = z
 	.partial()
 	.default({});
 
+const overlapSchema = z
+	.object({
+		priority: z.array(z.string()).default([]),
+		focus: z.array(z.string()).default([]),
+		geography: z.array(z.string()).default([]),
+	})
+	.partial()
+	.default({});
+
 const explanationSchema = z
 	.object({
 		eligibility: z.number().optional(),
@@ -34,9 +43,18 @@ const explanationSchema = z
 		reasons: z.array(reasonSchema).max(10).optional(),
 		confidence: z.enum(['HIGH', 'MED', 'LOW']).optional(),
 		missing: z
-			.array(z.enum(['PURPOSE', 'APPLICANTS', 'GEOGRAPHY', 'FUNDING']))
+			.union([
+				z.array(z.enum(['PURPOSE', 'APPLICANTS', 'GEOGRAPHY', 'FUNDING'])),
+				z.object({
+					purpose: z.boolean().optional(),
+					eligibleApplicants: z.boolean().optional(),
+					eligibleGeographies: z.boolean().optional(),
+					fundingAmount: z.boolean().optional(),
+				}),
+			])
 			.optional(),
 		matches: matchesSchema.optional(),
+		overlap: overlapSchema.optional(),
 	})
 	.passthrough();
 
@@ -50,6 +68,11 @@ export type ParsedExplanation = {
 		focusMatches: string[];
 		geographyOverlap: string[];
 		amountInRange: boolean | null;
+	};
+	overlap?: {
+		priority: string[];
+		focus: string[];
+		geography: string[];
 	};
 };
 
@@ -66,6 +89,7 @@ export function parseSubscoresJson(raw: unknown): ParsedExplanation | null {
 		confidence,
 		missing,
 		matches,
+		overlap,
 	} = parsed.data;
 
 	const subscores: Record<string, number> = {};
@@ -74,11 +98,22 @@ export function parseSubscoresJson(raw: unknown): ParsedExplanation | null {
 	if (typeof purpose === 'number') subscores.purpose = purpose;
 	if (typeof funding === 'number') subscores.funding = funding;
 
+	const missingArray: MissingSignal[] | undefined = (() => {
+		if (!missing) return undefined;
+		if (Array.isArray(missing)) return missing as MissingSignal[];
+		const derived: MissingSignal[] = [];
+		if (missing.purpose) derived.push('PURPOSE');
+		if (missing.eligibleApplicants) derived.push('APPLICANTS');
+		if (missing.eligibleGeographies) derived.push('GEOGRAPHY');
+		if (missing.fundingAmount) derived.push('FUNDING');
+		return derived.length ? derived : undefined;
+	})();
+
 	return {
 		subscores,
 		reasons: (reasons ?? []).slice(0, 4),
 		confidence,
-		missing,
+		missing: missingArray,
 		matches: matches
 			? {
 					priorityMatches: matches.priorityMatches ?? [],
@@ -88,6 +123,13 @@ export function parseSubscoresJson(raw: unknown): ParsedExplanation | null {
 						matches.amountInRange === undefined
 							? null
 							: (matches.amountInRange ?? null),
+				}
+			: undefined,
+		overlap: overlap
+			? {
+					priority: overlap.priority ?? [],
+					focus: overlap.focus ?? [],
+					geography: overlap.geography ?? [],
 				}
 			: undefined,
 	};

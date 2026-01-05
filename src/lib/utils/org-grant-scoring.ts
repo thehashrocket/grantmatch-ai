@@ -4,6 +4,12 @@ export const SCORING_VERSION = 5;
 
 export type Confidence = 'HIGH' | 'MED' | 'LOW';
 export type MissingSignal = 'PURPOSE' | 'APPLICANTS' | 'GEOGRAPHY' | 'FUNDING';
+export type MissingFlags = {
+	purpose: boolean;
+	eligibleApplicants: boolean;
+	eligibleGeographies: boolean;
+	fundingAmount: boolean;
+};
 
 export type Reason = {
 	label: string;
@@ -14,12 +20,17 @@ export type Reason = {
 export type MatchExplain = {
 	reasons: Reason[];
 	confidence: Confidence;
-	missing: MissingSignal[];
+	missing: MissingFlags | MissingSignal[];
 	matches?: {
 		priorityMatches: string[];
 		focusMatches: string[];
 		geographyOverlap: string[];
 		amountInRange: boolean | null;
+	};
+	overlap?: {
+		priority: string[];
+		focus: string[];
+		geography: string[];
 	};
 };
 
@@ -450,12 +461,17 @@ export function computeOrgGrantFitScore(
 	explanation: string;
 	reasons: Reason[];
 	confidence: Confidence;
-	missing: MissingSignal[];
+	missing: MissingFlags;
 	matches: {
 		priorityMatches: string[];
 		focusMatches: string[];
 		geographyOverlap: string[];
 		amountInRange: boolean | null;
+	};
+	overlap: {
+		priority: string[];
+		focus: string[];
+		geography: string[];
 	};
 } {
 	const eligibility = calculateEligibilityScore({
@@ -487,14 +503,26 @@ export function computeOrgGrantFitScore(
 		amount,
 	);
 
-	const missing: MissingSignal[] = [];
-	if (!normalizeText(grant.purpose)) missing.push('PURPOSE');
-	if (!normalizeText(grant.eligibleApplicants)) missing.push('APPLICANTS');
-	if (!normalizeText(grant.eligibleGeographies)) missing.push('GEOGRAPHY');
-	if (amount === null) missing.push('FUNDING');
+	const missing: MissingFlags = {
+		purpose: !normalizeText(grant.purpose),
+		eligibleApplicants: !normalizeText(grant.eligibleApplicants),
+		eligibleGeographies: !normalizeText(grant.eligibleGeographies),
+		fundingAmount: amount === null,
+	};
 
-	const confidence: Confidence =
-		missing.length <= 1 ? 'HIGH' : missing.length === 2 ? 'MED' : 'LOW';
+	const criticalMissingCount =
+		(missing.purpose ? 1 : 0) +
+		(missing.eligibleApplicants ? 1 : 0) +
+		(missing.eligibleGeographies ? 1 : 0);
+	let confidence: Confidence =
+		criticalMissingCount === 0
+			? 'HIGH'
+			: criticalMissingCount === 1
+				? 'MED'
+				: 'LOW';
+	if (missing.fundingAmount && confidence !== 'LOW') {
+		confidence = confidence === 'HIGH' ? 'MED' : 'LOW';
+	}
 
 	const weightedBase =
 		purpose * WEIGHTS.purpose +
@@ -683,6 +711,11 @@ export function computeOrgGrantFitScore(
 		geographyOverlap,
 		amountInRange: amount === null ? null : inRange,
 	};
+	const overlap = {
+		priority: priorityMatches,
+		focus: focusMatches,
+		geography: geographyOverlap,
+	};
 
 	return {
 		fitScore,
@@ -692,5 +725,6 @@ export function computeOrgGrantFitScore(
 		confidence,
 		missing,
 		matches,
+		overlap,
 	};
 }

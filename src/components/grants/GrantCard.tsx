@@ -71,14 +71,13 @@ export function GrantCard({
 			: fallbackSubscores;
 	const reasons =
 		parsed?.reasons ?? (grant.reasons ? grant.reasons.slice(0, 4) : []);
-	const rawConfidence = grant.confidence as string | undefined;
-	const normalizedConfidence =
-		rawConfidence === 'HIGH' || rawConfidence === 'MED' || rawConfidence === 'LOW'
+	const rawConfidence = parsed?.confidence;
+	const confidence =
+		rawConfidence === 'HIGH' ||
+		rawConfidence === 'MED' ||
+		rawConfidence === 'LOW'
 			? rawConfidence
-			: rawConfidence === 'MEDIUM'
-				? 'MED'
-				: undefined;
-	const confidence = parsed?.confidence ?? normalizedConfidence ?? 'MED';
+			: undefined;
 	const missingSignals = parsed?.missing ?? grant.missing ?? [];
 	const matches = parsed?.matches ?? grant.matches;
 	const hasStructured = Boolean(parsed) || reasons.length > 0;
@@ -128,16 +127,18 @@ export function GrantCard({
 			: category === 'medium'
 				? 'Moderate'
 				: 'Weak';
-	const confidenceClass =
-		confidence === 'HIGH'
+	const confidenceClass = confidence
+		? confidence === 'HIGH'
 			? 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-100'
 			: confidence === 'LOW'
 				? 'bg-slate-100 text-slate-800 dark:bg-slate-900 dark:text-slate-100'
-				: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100';
-	const confidenceLabel =
-		confidence === 'MED'
+				: 'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-100'
+		: '';
+	const confidenceLabel = confidence
+		? confidence === 'MED'
 			? 'Med'
-			: confidence.charAt(0) + confidence.slice(1).toLowerCase();
+			: confidence.charAt(0) + confidence.slice(1).toLowerCase()
+		: '';
 	const reasonTone = (strength: string) => {
 		switch (strength) {
 			case 'strong':
@@ -202,17 +203,19 @@ export function GrantCard({
 								<Badge className={colorClasses}>
 									{fitLabel} • {grant.fitScore.toFixed(1)}/10
 								</Badge>
-								<Tooltip>
-									<TooltipTrigger asChild>
-										<Badge className={confidenceClass}>
-											Confidence: {confidenceLabel}
-										</Badge>
-									</TooltipTrigger>
-									<TooltipContent align="start" className="max-w-xs text-xs">
-										Confidence is lower when grants omit eligibility, geography,
-										purpose, or funding details.
-									</TooltipContent>
-								</Tooltip>
+								{confidence ? (
+									<Tooltip>
+										<TooltipTrigger asChild>
+											<Badge className={confidenceClass}>
+												Confidence: {confidenceLabel}
+											</Badge>
+										</TooltipTrigger>
+										<TooltipContent align="start" className="max-w-xs text-xs">
+											Confidence is lower when grants omit eligibility,
+											geography, purpose, or funding details.
+										</TooltipContent>
+									</Tooltip>
+								) : null}
 								{deadlineBadge ? (
 									<Badge className={deadlineBadge.className}>
 										{deadlineBadge.label}
@@ -280,6 +283,14 @@ export function GrantCard({
 									</PopoverTrigger>
 									<PopoverContent align="start">
 										<div className="space-y-3">
+											<div className="flex items-center gap-2 text-sm font-medium">
+												<span>Fit score: {grant.fitScore.toFixed(1)}/10</span>
+												{confidence ? (
+													<Badge className={confidenceClass}>
+														Confidence: {confidenceLabel}
+													</Badge>
+												) : null}
+											</div>
 											<div className="space-y-1">
 												<p className="text-sm font-medium">Match breakdown</p>
 												<p className="text-xs text-muted-foreground leading-snug">

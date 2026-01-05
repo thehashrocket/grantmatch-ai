@@ -5,3 +5,5 @@ onlyBuiltDependencies:
   - prisma
   - sharp
   - unrs-resolver
+
+storeDir: .pnpm-store

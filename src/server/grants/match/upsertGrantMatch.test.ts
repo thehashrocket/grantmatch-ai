@@ -241,13 +241,19 @@ describe('upsertGrantMatch cheap bump', () => {
 			explanation: 'NEW EXPLANATION',
 			reasons: [{ label: 'reason', strength: 'strong' }],
 			confidence: 'HIGH',
-			missing: [],
+			missing: {
+				purpose: false,
+				eligibleApplicants: false,
+				eligibleGeographies: false,
+				fundingAmount: false,
+			},
 			matches: {
 				priorityMatches: [],
 				focusMatches: [],
 				geographyOverlap: [],
 				amountInRange: null,
 			},
+			overlap: { priority: [], focus: [], geography: [] },
 		});
 
 		await matchModule.upsertGrantMatch({
@@ -290,13 +296,19 @@ describe('upsertGrantMatch cheap bump', () => {
 			explanation: 'new',
 			reasons: [],
 			confidence: 'HIGH',
-			missing: [],
+			missing: {
+				purpose: false,
+				eligibleApplicants: false,
+				eligibleGeographies: false,
+				fundingAmount: false,
+			},
 			matches: {
 				priorityMatches: [],
 				focusMatches: [],
 				geographyOverlap: [],
 				amountInRange: null,
 			},
+			overlap: { priority: [], focus: [], geography: [] },
 		});
 
 		await matchModule.upsertGrantMatch({
@@ -337,13 +349,19 @@ describe('upsertGrantMatch cheap bump', () => {
 			explanation: 'exp',
 			reasons: [],
 			confidence: 'HIGH',
-			missing: [],
+			missing: {
+				purpose: false,
+				eligibleApplicants: false,
+				eligibleGeographies: false,
+				fundingAmount: false,
+			},
 			matches: {
 				priorityMatches: [],
 				focusMatches: [],
 				geographyOverlap: [],
 				amountInRange: null,
 			},
+			overlap: { priority: [], focus: [], geography: [] },
 		});
 
 		await matchModule.upsertGrantMatch({

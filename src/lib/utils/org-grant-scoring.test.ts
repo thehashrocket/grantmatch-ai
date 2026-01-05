@@ -38,7 +38,7 @@ describe('computeOrgGrantFitScore', () => {
 			awardFloor: null,
 		});
 
-		expect(result.missing).toContain('FUNDING');
+		expect(result.missing.fundingAmount).toBe(true);
 		expect(result.confidence).toBe('HIGH');
 		expect(
 			result.reasons.some(
@@ -59,7 +59,7 @@ describe('computeOrgGrantFitScore', () => {
 				awardFloor: null,
 			},
 		);
-		expect(withMoreMissing.missing).toContain('GEOGRAPHY');
+		expect(withMoreMissing.missing.eligibleGeographies).toBe(true);
 		expect(withMoreMissing.confidence).toBe('MED');
 	});
 

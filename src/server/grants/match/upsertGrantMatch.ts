@@ -70,6 +70,8 @@ export async function upsertGrantMatch(params: {
 		confidence: computed.confidence,
 		missing: computed.missing,
 		matches: computed.matches,
+		overlap: computed.overlap,
+		scoringVersion: version,
 	} as Prisma.InputJsonValue;
 
 	const existing = await prisma.grantMatch.findUnique({

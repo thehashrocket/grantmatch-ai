@@ -22,6 +22,11 @@ export interface GrantMatch {
 		geographyOverlap: string[];
 		amountInRange: boolean | null;
 	};
+	overlap?: {
+		priority: string[];
+		focus: string[];
+		geography: string[];
+	};
 	fundingAmount: number | null;
 	estimatedTotalFunding?: number | null;
 	awardFloor?: number | null;

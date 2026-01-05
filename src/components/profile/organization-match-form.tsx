@@ -77,15 +77,9 @@ const STAFF_CLEAR_VALUE = 'NONE';
 export function OrganizationMatchForm() {
 	const { data, isLoading, isError, refetch, error } =
 		trpc.organization.getProfile.useQuery();
-	const mutation = trpc.organization.updateProfile.useMutation({
-		onSuccess: () => {
-			toast.success('Organization profile updated');
-			void refetch();
-		},
-		onError: (mutationError) => {
-			toast.error(mutationError.message ?? 'Failed to save profile');
-		},
-	});
+	const mutation = trpc.organization.updateProfile.useMutation();
+	const kickMutation = trpc.organization.kickMatchRecompute.useMutation();
+	const utils = trpc.useUtils();
 
 	const [entityType, setEntityType] =
 		useState<$Enums.OrganizationEntityType | null>(null);
@@ -170,17 +164,101 @@ export function OrganizationMatchForm() {
 		);
 	};
 
-	const handleSubmit = (event: React.FormEvent) => {
+	const pollIndexStatus = async () => {
+		const start = Date.now();
+		const POLL_MS = 2000;
+		const POLL_MAX_MS = 20000;
+
+		while (Date.now() - start < POLL_MAX_MS) {
+			const status = await utils.organization.getIndexStatus.fetch();
+			if (status.matchIndexStatus === 'COMPLETE') {
+				return 'COMPLETE' as const;
+			}
+			if (status.matchIndexStatus === 'FAILED') {
+				return 'FAILED' as const;
+			}
+			await new Promise((resolve) => setTimeout(resolve, POLL_MS));
+		}
+		return 'TIMEOUT' as const;
+	};
+
+	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
-		mutation.mutate({
-			entityType: entityType,
-			revenueSources,
-			budgetRange,
-			staffRange,
-			focusAreas,
-			serviceAreas,
-			priorityFocusKeywords,
-		});
+		try {
+			const result = await mutation.mutateAsync({
+				entityType,
+				revenueSources,
+				budgetRange,
+				staffRange,
+				focusAreas,
+				serviceAreas,
+				priorityFocusKeywords,
+			});
+
+			toast.success('Organization profile updated');
+			void refetch();
+
+			if (result?.didTriggerRescore) {
+				const loadingId = toast.loading('Re-ranking grants…', {
+					description:
+						'We’re refreshing rankings in the background. This may take a moment.',
+				});
+
+				try {
+					await kickMutation.mutateAsync();
+					const status = await pollIndexStatus();
+
+					if (status === 'COMPLETE') {
+						toast.dismiss(loadingId);
+						toast.success('Grant rankings updated', {
+							action: {
+								label: 'Refresh',
+								onClick: async () => {
+									await Promise.all([
+										utils.organization.getProfile.invalidate(),
+										utils.organization.getIndexStatus.invalidate(),
+									]);
+								},
+							},
+						});
+						return;
+					}
+
+					if (status === 'FAILED') {
+						toast.dismiss(loadingId);
+						toast.error('Re-ranking failed', {
+							action: {
+								label: 'Retry',
+								onClick: () => {
+									void kickMutation.mutateAsync().catch((err) => {
+										console.error('Retry kick failed', err);
+									});
+								},
+							},
+						});
+						return;
+					}
+
+					toast.dismiss(loadingId);
+					toast.message('Re-ranking is still running', {
+						description: 'We’ll keep working in the background.',
+					});
+				} catch (rescoreError) {
+					toast.dismiss();
+					toast.error(
+						rescoreError instanceof Error
+							? rescoreError.message
+							: 'Failed to kick off re-ranking',
+					);
+				}
+			}
+		} catch (mutationError) {
+			toast.error(
+				mutationError instanceof Error
+					? mutationError.message
+					: 'Failed to save profile',
+			);
+		}
 	};
 
 	return (

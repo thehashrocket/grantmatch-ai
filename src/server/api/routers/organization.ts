@@ -167,6 +167,8 @@ export const organizationRouter = router({
 				matchIndexedCount: true,
 				matchIndexedAt: true,
 				matchIndexError: true,
+				matchIndexCursor: true,
+				scoringVersion: true,
 			},
 		});
 
@@ -328,6 +330,10 @@ export const organizationRouter = router({
 					maxAward: nextMaxAward,
 					mission: nextMission,
 					description: nextDescription,
+					matchIndexStatus: organization.matchIndexStatus,
+					matchIndexedCount: organization.matchIndexedCount,
+					matchIndexError: organization.matchIndexError,
+					didTriggerRescore: false,
 				};
 			}
 
@@ -394,6 +400,10 @@ export const organizationRouter = router({
 						.priorityFocusKeywords ?? [],
 				minAward: updated.minAward ?? null,
 				maxAward: updated.maxAward ?? null,
+				matchIndexStatus: updated.matchIndexStatus,
+				matchIndexedCount: updated.matchIndexedCount,
+				matchIndexError: updated.matchIndexError,
+				didTriggerRescore: scoringChanged,
 			};
 		}),
 });

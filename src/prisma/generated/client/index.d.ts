@@ -12045,6 +12045,8 @@ export namespace Prisma {
     maxAward: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
+    matchIndexLastTickIndexedDelta: number | null
+    matchIndexLastTickRecomputedDelta: number | null
   }
 
   export type OrganizationSumAggregateOutputType = {
@@ -12052,6 +12054,8 @@ export namespace Prisma {
     maxAward: number | null
     scoringVersion: number | null
     matchIndexedCount: number | null
+    matchIndexLastTickIndexedDelta: number | null
+    matchIndexLastTickRecomputedDelta: number | null
   }
 
   export type OrganizationMinAggregateOutputType = {
@@ -12068,6 +12072,9 @@ export namespace Prisma {
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
     matchIndexedCount: number | null
+    matchIndexLastTickAt: Date | null
+    matchIndexLastTickIndexedDelta: number | null
+    matchIndexLastTickRecomputedDelta: number | null
     matchIndexError: string | null
     matchIndexCursor: string | null
     matchIndexClaimId: string | null
@@ -12095,6 +12102,9 @@ export namespace Prisma {
     matchIndexStatus: $Enums.MatchIndexStatus | null
     matchIndexedAt: Date | null
     matchIndexedCount: number | null
+    matchIndexLastTickAt: Date | null
+    matchIndexLastTickIndexedDelta: number | null
+    matchIndexLastTickRecomputedDelta: number | null
     matchIndexError: string | null
     matchIndexCursor: string | null
     matchIndexClaimId: string | null
@@ -12126,6 +12136,9 @@ export namespace Prisma {
     matchIndexStatus: number
     matchIndexedAt: number
     matchIndexedCount: number
+    matchIndexLastTickAt: number
+    matchIndexLastTickIndexedDelta: number
+    matchIndexLastTickRecomputedDelta: number
     matchIndexError: number
     matchIndexCursor: number
     matchIndexClaimId: number
@@ -12147,6 +12160,8 @@ export namespace Prisma {
     maxAward?: true
     scoringVersion?: true
     matchIndexedCount?: true
+    matchIndexLastTickIndexedDelta?: true
+    matchIndexLastTickRecomputedDelta?: true
   }
 
   export type OrganizationSumAggregateInputType = {
@@ -12154,6 +12169,8 @@ export namespace Prisma {
     maxAward?: true
     scoringVersion?: true
     matchIndexedCount?: true
+    matchIndexLastTickIndexedDelta?: true
+    matchIndexLastTickRecomputedDelta?: true
   }
 
   export type OrganizationMinAggregateInputType = {
@@ -12170,6 +12187,9 @@ export namespace Prisma {
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
+    matchIndexLastTickAt?: true
+    matchIndexLastTickIndexedDelta?: true
+    matchIndexLastTickRecomputedDelta?: true
     matchIndexError?: true
     matchIndexCursor?: true
     matchIndexClaimId?: true
@@ -12197,6 +12217,9 @@ export namespace Prisma {
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
+    matchIndexLastTickAt?: true
+    matchIndexLastTickIndexedDelta?: true
+    matchIndexLastTickRecomputedDelta?: true
     matchIndexError?: true
     matchIndexCursor?: true
     matchIndexClaimId?: true
@@ -12228,6 +12251,9 @@ export namespace Prisma {
     matchIndexStatus?: true
     matchIndexedAt?: true
     matchIndexedCount?: true
+    matchIndexLastTickAt?: true
+    matchIndexLastTickIndexedDelta?: true
+    matchIndexLastTickRecomputedDelta?: true
     matchIndexError?: true
     matchIndexCursor?: true
     matchIndexClaimId?: true
@@ -12347,6 +12373,9 @@ export namespace Prisma {
     matchIndexStatus: $Enums.MatchIndexStatus
     matchIndexedAt: Date | null
     matchIndexedCount: number
+    matchIndexLastTickAt: Date | null
+    matchIndexLastTickIndexedDelta: number
+    matchIndexLastTickRecomputedDelta: number
     matchIndexError: string | null
     matchIndexCursor: string | null
     matchIndexClaimId: string | null
@@ -12398,6 +12427,9 @@ export namespace Prisma {
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
+    matchIndexLastTickAt?: boolean
+    matchIndexLastTickIndexedDelta?: boolean
+    matchIndexLastTickRecomputedDelta?: boolean
     matchIndexError?: boolean
     matchIndexCursor?: boolean
     matchIndexClaimId?: boolean
@@ -12434,6 +12466,9 @@ export namespace Prisma {
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
+    matchIndexLastTickAt?: boolean
+    matchIndexLastTickIndexedDelta?: boolean
+    matchIndexLastTickRecomputedDelta?: boolean
     matchIndexError?: boolean
     matchIndexCursor?: boolean
     matchIndexClaimId?: boolean
@@ -12466,6 +12501,9 @@ export namespace Prisma {
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
+    matchIndexLastTickAt?: boolean
+    matchIndexLastTickIndexedDelta?: boolean
+    matchIndexLastTickRecomputedDelta?: boolean
     matchIndexError?: boolean
     matchIndexCursor?: boolean
     matchIndexClaimId?: boolean
@@ -12498,6 +12536,9 @@ export namespace Prisma {
     matchIndexStatus?: boolean
     matchIndexedAt?: boolean
     matchIndexedCount?: boolean
+    matchIndexLastTickAt?: boolean
+    matchIndexLastTickIndexedDelta?: boolean
+    matchIndexLastTickRecomputedDelta?: boolean
     matchIndexError?: boolean
     matchIndexCursor?: boolean
     matchIndexClaimId?: boolean
@@ -12512,7 +12553,7 @@ export namespace Prisma {
     updatedAt?: boolean
   }
 
-  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "priorityFocusKeywords" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "minAward" | "maxAward" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
+  export type OrganizationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "mission" | "focusAreas" | "priorityFocusKeywords" | "serviceAreas" | "entityType" | "revenueSources" | "budgetRange" | "staffRange" | "minAward" | "maxAward" | "scoringVersion" | "matchIndexStatus" | "matchIndexedAt" | "matchIndexedCount" | "matchIndexLastTickAt" | "matchIndexLastTickIndexedDelta" | "matchIndexLastTickRecomputedDelta" | "matchIndexError" | "matchIndexCursor" | "matchIndexClaimId" | "matchIndexClaimedAt" | "matchIndexErrorJson" | "address1" | "address2" | "city" | "state" | "zipCode" | "createdAt" | "updatedAt", ExtArgs["result"]["organization"]>
   export type OrganizationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     users?: boolean | Organization$usersArgs<ExtArgs>
     invitations?: boolean | Organization$invitationsArgs<ExtArgs>
@@ -12547,6 +12588,9 @@ export namespace Prisma {
       matchIndexStatus: $Enums.MatchIndexStatus
       matchIndexedAt: Date | null
       matchIndexedCount: number
+      matchIndexLastTickAt: Date | null
+      matchIndexLastTickIndexedDelta: number
+      matchIndexLastTickRecomputedDelta: number
       matchIndexError: string | null
       matchIndexCursor: string | null
       matchIndexClaimId: string | null
@@ -13002,6 +13046,9 @@ export namespace Prisma {
     readonly matchIndexStatus: FieldRef<"Organization", 'MatchIndexStatus'>
     readonly matchIndexedAt: FieldRef<"Organization", 'DateTime'>
     readonly matchIndexedCount: FieldRef<"Organization", 'Int'>
+    readonly matchIndexLastTickAt: FieldRef<"Organization", 'DateTime'>
+    readonly matchIndexLastTickIndexedDelta: FieldRef<"Organization", 'Int'>
+    readonly matchIndexLastTickRecomputedDelta: FieldRef<"Organization", 'Int'>
     readonly matchIndexError: FieldRef<"Organization", 'String'>
     readonly matchIndexCursor: FieldRef<"Organization", 'String'>
     readonly matchIndexClaimId: FieldRef<"Organization", 'String'>
@@ -19307,6 +19354,9 @@ export namespace Prisma {
     matchIndexStatus: 'matchIndexStatus',
     matchIndexedAt: 'matchIndexedAt',
     matchIndexedCount: 'matchIndexedCount',
+    matchIndexLastTickAt: 'matchIndexLastTickAt',
+    matchIndexLastTickIndexedDelta: 'matchIndexLastTickIndexedDelta',
+    matchIndexLastTickRecomputedDelta: 'matchIndexLastTickRecomputedDelta',
     matchIndexError: 'matchIndexError',
     matchIndexCursor: 'matchIndexCursor',
     matchIndexClaimId: 'matchIndexClaimId',
@@ -20535,6 +20585,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntFilter<"Organization"> | number
+    matchIndexLastTickAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFilter<"Organization"> | number
+    matchIndexLastTickRecomputedDelta?: IntFilter<"Organization"> | number
     matchIndexError?: StringNullableFilter<"Organization"> | string | null
     matchIndexCursor?: StringNullableFilter<"Organization"> | string | null
     matchIndexClaimId?: StringNullableFilter<"Organization"> | string | null
@@ -20570,6 +20623,9 @@ export namespace Prisma {
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickAt?: SortOrderInput | SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
     matchIndexError?: SortOrderInput | SortOrder
     matchIndexCursor?: SortOrderInput | SortOrder
     matchIndexClaimId?: SortOrderInput | SortOrder
@@ -20608,6 +20664,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntFilter<"Organization"> | number
+    matchIndexLastTickAt?: DateTimeNullableFilter<"Organization"> | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFilter<"Organization"> | number
+    matchIndexLastTickRecomputedDelta?: IntFilter<"Organization"> | number
     matchIndexError?: StringNullableFilter<"Organization"> | string | null
     matchIndexCursor?: StringNullableFilter<"Organization"> | string | null
     matchIndexClaimId?: StringNullableFilter<"Organization"> | string | null
@@ -20643,6 +20702,9 @@ export namespace Prisma {
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrderInput | SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickAt?: SortOrderInput | SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
     matchIndexError?: SortOrderInput | SortOrder
     matchIndexCursor?: SortOrderInput | SortOrder
     matchIndexClaimId?: SortOrderInput | SortOrder
@@ -20683,6 +20745,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusWithAggregatesFilter<"Organization"> | $Enums.MatchIndexStatus
     matchIndexedAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
     matchIndexedCount?: IntWithAggregatesFilter<"Organization"> | number
+    matchIndexLastTickAt?: DateTimeNullableWithAggregatesFilter<"Organization"> | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntWithAggregatesFilter<"Organization"> | number
+    matchIndexLastTickRecomputedDelta?: IntWithAggregatesFilter<"Organization"> | number
     matchIndexError?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     matchIndexCursor?: StringNullableWithAggregatesFilter<"Organization"> | string | null
     matchIndexClaimId?: StringNullableWithAggregatesFilter<"Organization"> | string | null
@@ -22015,6 +22080,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -22050,6 +22118,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -22085,6 +22156,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22120,6 +22194,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22155,6 +22232,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -22187,6 +22267,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -22219,6 +22302,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23642,6 +23728,9 @@ export namespace Prisma {
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickAt?: SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
     matchIndexError?: SortOrder
     matchIndexCursor?: SortOrder
     matchIndexClaimId?: SortOrder
@@ -23661,6 +23750,8 @@ export namespace Prisma {
     maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
   }
 
   export type OrganizationMaxOrderByAggregateInput = {
@@ -23677,6 +23768,9 @@ export namespace Prisma {
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickAt?: SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
     matchIndexError?: SortOrder
     matchIndexCursor?: SortOrder
     matchIndexClaimId?: SortOrder
@@ -23704,6 +23798,9 @@ export namespace Prisma {
     matchIndexStatus?: SortOrder
     matchIndexedAt?: SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickAt?: SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
     matchIndexError?: SortOrder
     matchIndexCursor?: SortOrder
     matchIndexClaimId?: SortOrder
@@ -23722,6 +23819,8 @@ export namespace Prisma {
     maxAward?: SortOrder
     scoringVersion?: SortOrder
     matchIndexedCount?: SortOrder
+    matchIndexLastTickIndexedDelta?: SortOrder
+    matchIndexLastTickRecomputedDelta?: SortOrder
   }
 
   export type EnumOrganizationEntityTypeNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -26423,6 +26522,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -26457,6 +26559,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -26627,6 +26732,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26661,6 +26769,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26981,6 +27092,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -27015,6 +27129,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -27065,6 +27182,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27099,6 +27219,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27755,6 +27878,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -27789,6 +27915,9 @@ export namespace Prisma {
     matchIndexStatus?: $Enums.MatchIndexStatus
     matchIndexedAt?: Date | string | null
     matchIndexedCount?: number
+    matchIndexLastTickAt?: Date | string | null
+    matchIndexLastTickIndexedDelta?: number
+    matchIndexLastTickRecomputedDelta?: number
     matchIndexError?: string | null
     matchIndexCursor?: string | null
     matchIndexClaimId?: string | null
@@ -27938,6 +28067,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27972,6 +28104,9 @@ export namespace Prisma {
     matchIndexStatus?: EnumMatchIndexStatusFieldUpdateOperationsInput | $Enums.MatchIndexStatus
     matchIndexedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     matchIndexedCount?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    matchIndexLastTickIndexedDelta?: IntFieldUpdateOperationsInput | number
+    matchIndexLastTickRecomputedDelta?: IntFieldUpdateOperationsInput | number
     matchIndexError?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexCursor?: NullableStringFieldUpdateOperationsInput | string | null
     matchIndexClaimId?: NullableStringFieldUpdateOperationsInput | string | null

@@ -24,6 +24,9 @@ export type OrgMatchTickSummary = {
 	indexedAt: Date | null;
 	error: string | null;
 	claimId: string | null;
+	lastTickAt: Date | null;
+	lastTickIndexedDelta: number;
+	lastTickRecomputedDelta: number;
 };
 
 export type ClaimResult =
@@ -60,6 +63,9 @@ const orgSelect = {
 	matchIndexClaimedAt: true,
 	matchIndexError: true,
 	matchIndexErrorJson: true,
+	matchIndexLastTickAt: true,
+	matchIndexLastTickIndexedDelta: true,
+	matchIndexLastTickRecomputedDelta: true,
 } satisfies Prisma.OrganizationSelect;
 
 type OrgRow = Prisma.OrganizationGetPayload<{ select: typeof orgSelect }>;
@@ -74,6 +80,9 @@ const mapSummary = (org: OrgRow): OrgMatchTickSummary => ({
 	indexedAt: org.matchIndexedAt,
 	error: org.matchIndexError ?? null,
 	claimId: org.matchIndexClaimId ?? null,
+	lastTickAt: org.matchIndexLastTickAt ?? null,
+	lastTickIndexedDelta: org.matchIndexLastTickIndexedDelta ?? 0,
+	lastTickRecomputedDelta: org.matchIndexLastTickRecomputedDelta ?? 0,
 });
 
 export async function startOrgMatchIndex(
@@ -82,15 +91,18 @@ export async function startOrgMatchIndex(
 ) {
 	const org = await prisma.organization.update({
 		where: { id: organizationId },
-		data: {
-			matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
-			matchIndexedCount: 0,
-			matchIndexedAt: null,
-			matchIndexError: null,
-			matchIndexErrorJson: [],
-			matchIndexCursor: null,
-			matchIndexClaimId: null,
-			matchIndexClaimedAt: null,
+	data: {
+		matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+		matchIndexedCount: 0,
+		matchIndexedAt: null,
+		matchIndexLastTickAt: new Date(),
+		matchIndexLastTickIndexedDelta: 0,
+		matchIndexLastTickRecomputedDelta: 0,
+		matchIndexError: null,
+		matchIndexErrorJson: [],
+		matchIndexCursor: null,
+		matchIndexClaimId: null,
+		matchIndexClaimedAt: null,
 		},
 		select: orgSelect,
 	});
@@ -126,7 +138,10 @@ export async function claimOrgMatchIndexTick(
 			"matchIndexClaimId",
 			"matchIndexClaimedAt",
 			"matchIndexError",
-			"matchIndexErrorJson";
+			"matchIndexErrorJson",
+			"matchIndexLastTickAt",
+			"matchIndexLastTickIndexedDelta",
+			"matchIndexLastTickRecomputedDelta";
 	`;
 
 	if (claim.length > 0) {
@@ -307,6 +322,9 @@ export async function commitOrgMatchIndexTick(
 			matchIndexErrorJson: mergedErrors as Prisma.InputJsonValue,
 			matchIndexClaimId: null,
 			matchIndexClaimedAt: null,
+			matchIndexLastTickAt: new Date(),
+			matchIndexLastTickIndexedDelta: args.indexedDelta,
+			matchIndexLastTickRecomputedDelta: args.recomputedDelta ?? 0,
 		};
 
 		if (args.failedMessage) {
@@ -369,6 +387,7 @@ export async function runOrgMatchIndexTick(
 			nextCursor: work.nextCursor,
 			done: work.done,
 			errors: work.errors,
+			recomputedDelta: work.recomputedDelta,
 		});
 
 		return { claimed: true as const, claim: claim.organization, work, commit };

@@ -27,6 +27,9 @@ type OrgState = {
 	matchIndexErrorJson: unknown[] | null;
 	matchIndexedAt: Date | null;
 	scoringVersion: number | null;
+	matchIndexLastTickAt?: Date | null;
+	matchIndexLastTickIndexedDelta?: number;
+	matchIndexLastTickRecomputedDelta?: number;
 };
 
 const cloneOrg = (org: OrgState) => ({ ...org });
@@ -251,6 +254,7 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 1,
+				matchIndexLastTickAt: null,
 			},
 			grants: [
 				{ id: 'A', status: $Enums.GrantStatus.OPEN, closedAt: null },
@@ -294,6 +298,7 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 2,
+				matchIndexLastTickAt: null,
 			},
 			grants: [
 				{ id: 'open', status: $Enums.GrantStatus.OPEN, closedAt: null },
@@ -332,6 +337,7 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 2,
+				matchIndexLastTickAt: null,
 			},
 			grants: [
 				{ id: 'A', status: $Enums.GrantStatus.OPEN, closedAt: null },
@@ -369,6 +375,7 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 1,
+				matchIndexLastTickAt: null,
 			},
 			grants: [],
 		});
@@ -400,6 +407,9 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 1,
+				matchIndexLastTickAt: null,
+				matchIndexLastTickIndexedDelta: 0,
+				matchIndexLastTickRecomputedDelta: 0,
 			},
 			grants: [],
 		});
@@ -407,7 +417,7 @@ describe('tickOrgMatchIndex', () => {
 		const result = await commitOrgMatchIndexTick(mock.prisma, {
 			organizationId: 'org-5',
 			claimId: 'claim-5',
-			indexedDelta: 0,
+			indexedDelta: 2,
 			nextCursor: null,
 			done: true,
 		});
@@ -416,6 +426,9 @@ describe('tickOrgMatchIndex', () => {
 		if (result.committed) {
 			expect(result.organization.status).toBe($Enums.MatchIndexStatus.COMPLETE);
 			expect(result.organization.indexedAt).not.toBeNull();
+			expect(result.organization.lastTickAt).not.toBeNull();
+			expect(result.organization.lastTickIndexedDelta).toBe(2);
+			expect(result.organization.lastTickRecomputedDelta).toBe(0);
 		}
 	});
 
@@ -432,6 +445,9 @@ describe('tickOrgMatchIndex', () => {
 				matchIndexErrorJson: null,
 				matchIndexedAt: null,
 				scoringVersion: 1,
+				matchIndexLastTickAt: null,
+				matchIndexLastTickIndexedDelta: 0,
+				matchIndexLastTickRecomputedDelta: 0,
 			},
 			grants: [
 				{ id: 'g-1', status: $Enums.GrantStatus.OPEN, closedAt: null },
@@ -457,6 +473,44 @@ describe('tickOrgMatchIndex', () => {
 			expect(result.organization.error).toBe(
 				'INDEX_COMPLETE_WITH_ZERO_PROGRESS',
 			);
+			expect(result.organization.lastTickIndexedDelta).toBe(0);
+			expect(result.organization.lastTickRecomputedDelta).toBe(0);
+		}
+	});
+
+	it('records last tick deltas on commit', async () => {
+		const mock = createPrismaMock({
+			org: {
+				id: 'org-9',
+				matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+				matchIndexedCount: 0,
+				matchIndexCursor: null,
+				matchIndexClaimId: 'claim-9',
+				matchIndexClaimedAt: new Date(),
+				matchIndexError: null,
+				matchIndexErrorJson: null,
+				matchIndexedAt: null,
+				scoringVersion: 1,
+				matchIndexLastTickAt: null,
+				matchIndexLastTickIndexedDelta: 0,
+				matchIndexLastTickRecomputedDelta: 0,
+			},
+			grants: [],
+		});
+
+		const result = await commitOrgMatchIndexTick(mock.prisma, {
+			organizationId: 'org-9',
+			claimId: 'claim-9',
+			indexedDelta: 5,
+			recomputedDelta: 3,
+			nextCursor: null,
+			done: false,
+		});
+
+		expect(result.committed).toBe(true);
+		if (result.committed) {
+			expect(result.organization.lastTickIndexedDelta).toBe(5);
+			expect(result.organization.lastTickRecomputedDelta).toBe(3);
 		}
 	});
 });

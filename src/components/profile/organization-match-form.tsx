@@ -1,6 +1,8 @@
+// /src/components/profile/organization-match-form.tsx
+
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { Sparkles, Loader2 } from 'lucide-react';
 import { trpc } from '@/lib/trpc/client';
@@ -74,12 +76,34 @@ const ENTITY_CLEAR_VALUE = 'NONE';
 const BUDGET_CLEAR_VALUE = 'NONE';
 const STAFF_CLEAR_VALUE = 'NONE';
 
+const formatAgo = (ts: Date | string | null | undefined, nowMs: number) => {
+	if (!ts) return null;
+	const t = typeof ts === 'string' ? new Date(ts).getTime() : ts.getTime();
+	if (Number.isNaN(t)) return null;
+	const deltaSec = Math.max(0, Math.floor((nowMs - t) / 1000));
+	if (deltaSec < 60) return `${deltaSec}s ago`;
+	const deltaMin = Math.floor(deltaSec / 60);
+	if (deltaMin < 60) return `${deltaMin}m ago`;
+	const deltaHr = Math.floor(deltaMin / 60);
+	return `${deltaHr}h ago`;
+};
+
 export function OrganizationMatchForm() {
 	const { data, isLoading, isError, refetch, error } =
 		trpc.organization.getProfile.useQuery();
+	const indexStatusQuery = trpc.organization.getIndexStatus.useQuery(
+		undefined,
+		{
+			refetchOnWindowFocus: false,
+		},
+	);
 	const mutation = trpc.organization.updateProfile.useMutation();
 	const kickMutation = trpc.organization.kickMatchRecompute.useMutation();
 	const utils = trpc.useUtils();
+	const pollCancelRef = useRef(false);
+	const inProgressRef = useRef(false);
+	const mountedToastShownRef = useRef(false);
+	const [now, setNow] = useState(() => Date.now());
 
 	const [entityType, setEntityType] =
 		useState<$Enums.OrganizationEntityType | null>(null);
@@ -164,22 +188,54 @@ export function OrganizationMatchForm() {
 		);
 	};
 
+	useEffect(() => {
+		return () => {
+			pollCancelRef.current = true;
+		};
+	}, []);
+
+	useEffect(() => {
+		if (
+			!mountedToastShownRef.current &&
+			indexStatusQuery.data?.matchIndexStatus === 'RUNNING'
+		) {
+			toast.message('Grant rankings are updating in the background.');
+			mountedToastShownRef.current = true;
+		}
+	}, [indexStatusQuery.data?.matchIndexStatus]);
+
+	useEffect(() => {
+		const status =
+			indexStatusQuery.data?.matchIndexStatus ?? data?.matchIndexStatus;
+		if (status !== 'RUNNING') return;
+		const id = setInterval(() => setNow(Date.now()), 1000);
+		return () => clearInterval(id);
+	}, [data?.matchIndexStatus, indexStatusQuery.data?.matchIndexStatus]);
+
 	const pollIndexStatus = async () => {
+		pollCancelRef.current = false;
 		const start = Date.now();
 		const POLL_MS = 2000;
-		const POLL_MAX_MS = 20000;
+		const POLL_MAX_MS = 60000;
+		let lastStatus: Awaited<
+			ReturnType<typeof utils.organization.getIndexStatus.fetch>
+		> | null = null;
 
 		while (Date.now() - start < POLL_MAX_MS) {
+			if (pollCancelRef.current) return { outcome: 'CANCELLED' as const };
+
 			const status = await utils.organization.getIndexStatus.fetch();
+			utils.organization.getIndexStatus.setData(undefined, status);
+			lastStatus = status;
 			if (status.matchIndexStatus === 'COMPLETE') {
-				return 'COMPLETE' as const;
+				return { outcome: 'COMPLETE' as const, status: lastStatus };
 			}
 			if (status.matchIndexStatus === 'FAILED') {
-				return 'FAILED' as const;
+				return { outcome: 'FAILED' as const, status: lastStatus };
 			}
 			await new Promise((resolve) => setTimeout(resolve, POLL_MS));
 		}
-		return 'TIMEOUT' as const;
+		return { outcome: 'TIMEOUT' as const, status: lastStatus };
 	};
 
 	const handleSubmit = async (event: React.FormEvent) => {
@@ -199,18 +255,23 @@ export function OrganizationMatchForm() {
 			void refetch();
 
 			if (result?.didTriggerRescore) {
-				const loadingId = toast.loading('Re-ranking grants…', {
+				inProgressRef.current = true;
+				const loadingId = toast.loading('Updating grant rankings…', {
 					description:
 						'We’re refreshing rankings in the background. This may take a moment.',
 				});
 
 				try {
 					await kickMutation.mutateAsync();
-					const status = await pollIndexStatus();
+					const { outcome, status } = await pollIndexStatus();
 
-					if (status === 'COMPLETE') {
-						toast.dismiss(loadingId);
+					if (outcome === 'COMPLETE') {
+						await Promise.all([
+							utils.organization.getProfile.invalidate(),
+							utils.organization.getIndexStatus.invalidate(),
+						]);
 						toast.success('Grant rankings updated', {
+							id: loadingId,
 							action: {
 								label: 'Refresh',
 								onClick: async () => {
@@ -224,9 +285,13 @@ export function OrganizationMatchForm() {
 						return;
 					}
 
-					if (status === 'FAILED') {
-						toast.dismiss(loadingId);
-						toast.error('Re-ranking failed', {
+					if (outcome === 'FAILED') {
+						const description =
+							status?.matchIndexError?.toString().slice(0, 120) ??
+							'Re-ranking failed';
+						toast.error('Grant re-ranking failed', {
+							id: loadingId,
+							description,
 							action: {
 								label: 'Retry',
 								onClick: () => {
@@ -239,17 +304,27 @@ export function OrganizationMatchForm() {
 						return;
 					}
 
-					toast.dismiss(loadingId);
-					toast.message('Re-ranking is still running', {
-						description: 'We’ll keep working in the background.',
-					});
+					toast.message(
+						'Grant re-ranking is still running in the background.',
+						{
+							id: loadingId,
+							action: {
+								label: 'Refresh status',
+								onClick: async () => {
+									await indexStatusQuery.refetch();
+								},
+							},
+						},
+					);
 				} catch (rescoreError) {
-					toast.dismiss();
 					toast.error(
 						rescoreError instanceof Error
 							? rescoreError.message
 							: 'Failed to kick off re-ranking',
+						{ id: loadingId },
 					);
+				} finally {
+					inProgressRef.current = false;
 				}
 			}
 		} catch (mutationError) {
@@ -258,8 +333,55 @@ export function OrganizationMatchForm() {
 					? mutationError.message
 					: 'Failed to save profile',
 			);
+		} finally {
+			inProgressRef.current = false;
 		}
 	};
+
+	const matchStatusText = useMemo(() => {
+		const source =
+			indexStatusQuery.data ??
+			({
+				matchIndexStatus: data?.matchIndexStatus,
+				matchIndexedCount: data?.matchIndexedCount,
+				matchIndexError: data?.matchIndexError,
+				eligibleGrantCount: undefined,
+				matchIndexLastTickAt: data?.matchIndexLastTickAt ?? null,
+			} as const);
+		if (!source?.matchIndexStatus) return null;
+		const count = source.matchIndexedCount ?? 0;
+		const eligible = source.eligibleGrantCount;
+		const suffix =
+			eligible && eligible > 0
+				? ` (${count} / ${eligible} processed)`
+				: count
+					? ` (${count} processed)`
+					: '';
+		return `Ranking status: ${source.matchIndexStatus}${suffix}`;
+	}, [
+		data?.matchIndexStatus,
+		data?.matchIndexedCount,
+		data?.matchIndexError,
+		indexStatusQuery.data?.matchIndexStatus,
+		indexStatusQuery.data?.matchIndexedCount,
+		indexStatusQuery.data?.matchIndexError,
+		indexStatusQuery.data?.eligibleGrantCount,
+		indexStatusQuery.data,
+		data,
+	]);
+	const statusSource = (indexStatusQuery.data ?? data ?? {}) as {
+		matchIndexStatus?: string | null;
+		matchIndexedCount?: number | null;
+		matchIndexError?: string | null;
+		eligibleGrantCount?: number | null;
+		matchIndexLastTickAt?: Date | string | null;
+		matchIndexLastTickIndexedDelta?: number | null;
+		matchIndexLastTickRecomputedDelta?: number | null;
+	};
+	const lastUpdateText = useMemo(
+		() => formatAgo(statusSource.matchIndexLastTickAt ?? null, now),
+		[statusSource.matchIndexLastTickAt, now],
+	);
 
 	return (
 		<Card>
@@ -475,12 +597,51 @@ export function OrganizationMatchForm() {
 						</div>
 
 						<div className="flex justify-end">
-							<Button type="submit" disabled={mutation.isPending}>
+							<Button
+								type="submit"
+								disabled={mutation.isPending || inProgressRef.current}
+							>
 								{mutation.isPending && (
 									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
 								)}
 								Save match profile
 							</Button>
+							{matchStatusText && (
+								<div className="ml-4 text-sm text-muted-foreground space-y-1">
+									<div className="flex items-center gap-2">
+										<span>{matchStatusText}</span>
+										{lastUpdateText ? (
+											<span className="text-xs text-muted-foreground">
+												• Last update: {lastUpdateText}
+											</span>
+										) : null}
+										{statusSource.matchIndexLastTickIndexedDelta !== undefined && (
+											<span className="text-xs text-muted-foreground">
+												• Last tick: +
+												{statusSource.matchIndexLastTickIndexedDelta ?? 0} scanned, +
+												{statusSource.matchIndexLastTickRecomputedDelta ?? 0} updated
+											</span>
+										)}
+										<button
+											type="button"
+											className="underline hover:text-primary"
+											onClick={async () => {
+												await indexStatusQuery.refetch();
+											}}
+											disabled={inProgressRef.current}
+										>
+											Refresh
+										</button>
+									</div>
+									{statusSource?.matchIndexStatus === 'RUNNING' &&
+										statusSource?.eligibleGrantCount && (
+											<div className="text-xs text-muted-foreground">
+												This may take a minute. You can leave this page and come
+												back.
+											</div>
+										)}
+								</div>
+							)}
 						</div>
 					</form>
 				)}

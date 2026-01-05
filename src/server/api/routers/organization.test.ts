@@ -289,6 +289,52 @@ describe('organizationRouter.updateProfile', () => {
 	});
 });
 
+describe('organizationRouter.getIndexStatus', () => {
+	it('returns eligibleGrantCount with status fields', async () => {
+		const findUnique = vi.fn().mockResolvedValue({
+			matchIndexStatus: $Enums.MatchIndexStatus.RUNNING,
+			matchIndexedCount: 5,
+			matchIndexedAt: null,
+			matchIndexError: null,
+			matchIndexCursor: null,
+			scoringVersion: 3,
+			matchIndexLastTickAt: new Date('2024-01-01T00:00:00.000Z'),
+			matchIndexLastTickIndexedDelta: 10,
+			matchIndexLastTickRecomputedDelta: 7,
+		});
+		const count = vi.fn().mockResolvedValue(42);
+
+		const caller = organizationRouter.createCaller({
+			prisma: {
+				organization: {
+					findUnique,
+				},
+				grant: {
+					count,
+				},
+			} as unknown as PrismaClient,
+			session: {
+				userId: 'user-1',
+				role: 'USER',
+				organizationId: 'org-1',
+			},
+			headers: new Headers(),
+		});
+
+		const result = await caller.getIndexStatus();
+
+		expect(result.matchIndexStatus).toBe($Enums.MatchIndexStatus.RUNNING);
+		expect(result.matchIndexedCount).toBe(5);
+		expect(result.eligibleGrantCount).toBe(42);
+		expect(result.matchIndexLastTickAt).toEqual(
+			new Date('2024-01-01T00:00:00.000Z'),
+		);
+		expect(result.matchIndexLastTickIndexedDelta).toBe(10);
+		expect(result.matchIndexLastTickRecomputedDelta).toBe(7);
+		expect(count).toHaveBeenCalled();
+	});
+});
+
 describe('organizationRouter.create', () => {
 	it('sets scoringVersion to current SCORING_VERSION on create', async () => {
 		const create = vi.fn().mockResolvedValue({ id: 'org-1' });

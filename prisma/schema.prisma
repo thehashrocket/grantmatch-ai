@@ -289,6 +289,9 @@ model Organization {
   matchIndexStatus  MatchIndexStatus          @default(NOT_STARTED)
   matchIndexedAt    DateTime?
   matchIndexedCount Int                       @default(0)
+  matchIndexLastTickAt DateTime?
+  matchIndexLastTickIndexedDelta Int @default(0)
+  matchIndexLastTickRecomputedDelta Int @default(0)
   matchIndexError   String?
   matchIndexCursor     String?
   matchIndexClaimId    String?

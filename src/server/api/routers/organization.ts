@@ -8,7 +8,7 @@ import {
 } from '@/lib/validations/organization';
 import { SCORING_VERSION } from '@/lib/utils/org-grant-scoring';
 import { normalizeTags, normalizeText } from '@/lib/utils/normalizeTags';
-import type { Prisma } from '@/prisma/generated/client';
+import { $Enums, type Prisma } from '@/prisma/generated/client';
 import {
 	startOrgMatchIndex,
 	runOrgMatchIndexTick,
@@ -95,6 +95,9 @@ export const organizationRouter = router({
 				matchIndexClaimId: true,
 				matchIndexClaimedAt: true,
 				matchIndexErrorJson: true,
+				matchIndexLastTickAt: true,
+				matchIndexLastTickIndexedDelta: true,
+				matchIndexLastTickRecomputedDelta: true,
 			} as unknown as Prisma.OrganizationSelect,
 		})) as
 			| (Prisma.OrganizationGetPayload<{
@@ -160,17 +163,30 @@ export const organizationRouter = router({
 			});
 		}
 
-		const organization = await ctx.prisma.organization.findUnique({
-			where: { id: organizationId },
-			select: {
-				matchIndexStatus: true,
-				matchIndexedCount: true,
-				matchIndexedAt: true,
-				matchIndexError: true,
-				matchIndexCursor: true,
-				scoringVersion: true,
-			},
-		});
+		const [organization, eligibleGrantCount] = await Promise.all([
+			ctx.prisma.organization.findUnique({
+				where: { id: organizationId },
+				select: {
+					matchIndexStatus: true,
+					matchIndexedCount: true,
+					matchIndexedAt: true,
+					matchIndexError: true,
+					matchIndexCursor: true,
+					scoringVersion: true,
+					matchIndexLastTickAt: true,
+					matchIndexLastTickIndexedDelta: true,
+					matchIndexLastTickRecomputedDelta: true,
+				},
+			}),
+			ctx.prisma.grant.count({
+				where: {
+					status: {
+						in: [$Enums.GrantStatus.OPEN, $Enums.GrantStatus.UNKNOWN],
+					},
+					closedAt: null,
+				},
+			}),
+		]);
 
 		if (!organization) {
 			throw new TRPCError({
@@ -179,7 +195,7 @@ export const organizationRouter = router({
 			});
 		}
 
-		return organization;
+		return { ...organization, eligibleGrantCount };
 	}),
 	updateProfile: protectedProcedure
 		.input(updateOrganizationProfileSchema)
@@ -215,6 +231,7 @@ export const organizationRouter = router({
 					matchIndexClaimId: true,
 					matchIndexClaimedAt: true,
 					matchIndexErrorJson: true,
+					matchIndexLastTickAt: true,
 				} as unknown as Prisma.OrganizationSelect,
 			})) as
 				| (Prisma.OrganizationGetPayload<{
@@ -332,6 +349,7 @@ export const organizationRouter = router({
 					description: nextDescription,
 					matchIndexStatus: organization.matchIndexStatus,
 					matchIndexedCount: organization.matchIndexedCount,
+					matchIndexedAt: organization.matchIndexedAt,
 					matchIndexError: organization.matchIndexError,
 					didTriggerRescore: false,
 				};
@@ -402,6 +420,7 @@ export const organizationRouter = router({
 				maxAward: updated.maxAward ?? null,
 				matchIndexStatus: updated.matchIndexStatus,
 				matchIndexedCount: updated.matchIndexedCount,
+				matchIndexedAt: updated.matchIndexedAt,
 				matchIndexError: updated.matchIndexError,
 				didTriggerRescore: scoringChanged,
 			};

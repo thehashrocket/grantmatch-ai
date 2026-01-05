@@ -42,6 +42,9 @@ describe('runOrgMatchIndexSweep', () => {
 				indexedAt: null,
 				error: null,
 				claimId: 'claim-1',
+				lastTickAt: null,
+				lastTickIndexedDelta: 0,
+				lastTickRecomputedDelta: 0,
 			},
 			work: {
 				indexedDelta: 0,
@@ -62,6 +65,9 @@ describe('runOrgMatchIndexSweep', () => {
 					indexedAt: new Date(),
 					error: null,
 					claimId: 'claim-1',
+					lastTickAt: new Date(),
+					lastTickIndexedDelta: 0,
+					lastTickRecomputedDelta: 0,
 				},
 			},
 		} as Awaited<ReturnType<typeof runOrgMatchIndexTick>>);

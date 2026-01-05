@@ -272,38 +272,41 @@ model VerificationToken {
 }
 
 model Organization {
-  id                    String                  @id @default(uuid())
-  name                  String
-  description           String?                 @db.Text
-  mission               String                  @db.Text
-  focusAreas            String[]                @default([])
-  priorityFocusKeywords String[]                @default([])
-  serviceAreas          String[]                @default([])
-  entityType            OrganizationEntityType?
-  revenueSources        RevenueSource[]         @default([])
-  budgetRange           BudgetRange?
-  staffRange            StaffRange?
-  minAward              Int?                    @map("preferredAwardMin")
-  maxAward              Int?                    @map("preferredAwardMax")
-  scoringVersion        Int                     @default(4)
-  matchIndexStatus      MatchIndexStatus        @default(NOT_STARTED)
-  matchIndexedAt        DateTime?
-  matchIndexedCount     Int                     @default(0)
-  matchIndexError       String?
-  matchIndexCursor      String?
-  matchIndexClaimId     String?
-  matchIndexClaimedAt   DateTime?
-  matchIndexErrorJson   Json?                   @db.JsonB
-  address1              String
-  address2              String?
-  city                  String
-  state                 String
-  zipCode               String
-  users                 User[]
-  invitations           Invitation[]
-  grantMatches          GrantMatch[]
-  createdAt             DateTime                @default(now())
-  updatedAt             DateTime                @updatedAt
+  id                                String                  @id @default(uuid())
+  name                              String
+  description                       String?                 @db.Text
+  mission                           String                  @db.Text
+  focusAreas                        String[]                @default([])
+  priorityFocusKeywords             String[]                @default([])
+  serviceAreas                      String[]                @default([])
+  entityType                        OrganizationEntityType?
+  revenueSources                    RevenueSource[]         @default([])
+  budgetRange                       BudgetRange?
+  staffRange                        StaffRange?
+  minAward                          Int?                    @map("preferredAwardMin")
+  maxAward                          Int?                    @map("preferredAwardMax")
+  scoringVersion                    Int                     @default(4)
+  matchIndexStatus                  MatchIndexStatus        @default(NOT_STARTED)
+  matchIndexedAt                    DateTime?
+  matchIndexedCount                 Int                     @default(0)
+  matchIndexLastTickAt              DateTime?
+  matchIndexLastTickIndexedDelta    Int                     @default(0)
+  matchIndexLastTickRecomputedDelta Int                     @default(0)
+  matchIndexError                   String?
+  matchIndexCursor                  String?
+  matchIndexClaimId                 String?
+  matchIndexClaimedAt               DateTime?
+  matchIndexErrorJson               Json?                   @db.JsonB
+  address1                          String
+  address2                          String?
+  city                              String
+  state                             String
+  zipCode                           String
+  users                             User[]
+  invitations                       Invitation[]
+  grantMatches                      GrantMatch[]
+  createdAt                         DateTime                @default(now())
+  updatedAt                         DateTime                @updatedAt
 
   @@index([matchIndexStatus])
 }

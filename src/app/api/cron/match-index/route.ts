@@ -1,3 +1,5 @@
+// /src/app/api/cron/match-index/route.ts
+// Vercel Cron hits `/api/cron/match-index` every 5 minutes (see `vercel.json`).
 import { type NextRequest, NextResponse } from 'next/server';
 import { validateCronAuth } from '@/server/cron/assertCronAuth';
 import { runOrgMatchIndexSweep } from '@/server/grants/match/runOrgMatchIndexSweep';
@@ -13,8 +15,9 @@ export async function GET(request: NextRequest) {
 
 	try {
 		const result = await runOrgMatchIndexSweep(prisma, {
-			maxOrgs: 5,
-			maxTicksPerOrg: 2,
+			maxOrgs: 3,
+			maxTicksPerOrg: 5,
+			batchSize: 250,
 		});
 
 		return NextResponse.json({ ok: true, ...result });

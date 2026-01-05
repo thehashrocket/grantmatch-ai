@@ -8,6 +8,7 @@ import { NextAuthProvider } from '@/components/providers/next-auth-provider';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Header } from '@/components/layout/Header';
 import { getServerSession } from 'next-auth';
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
 	title: 'AI GrantMatch',
@@ -94,6 +95,7 @@ export default async function RootLayout({
 					</TRPCProvider>
 					<Toaster position="top-center" />
 				</NextAuthProvider>
+				<Analytics />
 			</body>
 		</html>
 	);

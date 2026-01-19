@@ -16,9 +16,16 @@ export type BookmarkSort =
 	| 'AMOUNT_DESC';
 
 export type BookmarkFilters = {
-	bookmarkStatus?: BookmarkStatus[];
-	grantStatus?: ('OPEN' | 'CLOSED' | 'UNKNOWN')[];
-	search?: string;
+	search: string;
+	bookmarkStatus: BookmarkStatus | 'ALL';
+	grantStatus: 'ALL' | 'OPEN' | 'CLOSED' | 'UNKNOWN';
+	sort: BookmarkSort;
+	tags: string[];
+	tagMatchMode: 'ANY' | 'ALL';
+	hasNote: 'ALL' | 'HAS' | 'NONE';
+	dueSoon: boolean;
+	minFitScore: number | null;
+	needsReview: boolean;
 };
 
 export interface BookmarkStatusRecord {

@@ -171,6 +171,7 @@ const createPrismaMock = (store: {
 			where: {
 				userId?: string;
 				grantId?: { in?: string[] };
+				id?: { in?: string[] };
 			};
 			select?: { grantId?: boolean; status?: boolean };
 			include?: { grant?: { select: Record<string, boolean> } };
@@ -184,6 +185,11 @@ const createPrismaMock = (store: {
 			if (where?.grantId?.in) {
 				results = results.filter((bookmark) =>
 					where.grantId?.in?.includes(bookmark.grantId),
+				);
+			}
+			if (where?.id?.in) {
+				results = results.filter((bookmark) =>
+					where.id?.in?.includes(bookmark.id),
 				);
 			}
 			if ((where as { note?: unknown }).note !== undefined) {
@@ -227,17 +233,38 @@ const createPrismaMock = (store: {
 				return bookmark;
 			});
 		},
+		updateMany: ({
+			where,
+			data,
+		}: {
+			where: { userId?: string; id?: { in?: string[] } };
+			data: Partial<TestBookmark>;
+		}) => {
+			let count = 0;
+			for (const bookmark of store.bookmarks) {
+				if (where.userId && bookmark.userId !== where.userId) continue;
+				if (where.id?.in && !where.id.in.includes(bookmark.id)) continue;
+				Object.assign(bookmark, data, { updatedAt: new Date() });
+				count += 1;
+			}
+			return { count };
+		},
 		deleteMany: ({
 			where,
 		}: {
 			where: {
 				userId?: string;
 				grant?: { status?: { in?: string[] } };
+				id?: { in?: string[] };
 			};
 		}) => {
 			const before = store.bookmarks.length;
 			store.bookmarks = store.bookmarks.filter((bookmark) => {
-				if (where.userId && bookmark.userId !== where.userId) return true;
+				const matchesUser =
+					!where.userId || bookmark.userId === where.userId;
+				const matchesId =
+					!where.id?.in || where.id.in.includes(bookmark.id);
+				let matchesGrantStatus = true;
 				if (where.grant?.status) {
 					const grant = store.grants.find((g) => g.id === bookmark.grantId);
 					const statuses = Array.isArray(
@@ -245,9 +272,11 @@ const createPrismaMock = (store: {
 					)
 						? ((where.grant.status as { in?: string[] }).in as string[])
 						: [where.grant.status as string];
-					if (grant && statuses.includes(grant.status)) return false;
+					matchesGrantStatus = Boolean(
+						grant && statuses.includes(grant.status),
+					);
 				}
-				return true;
+				return !(matchesUser && matchesId && matchesGrantStatus);
 			});
 			return { count: before - store.bookmarks.length };
 		},
@@ -566,5 +595,68 @@ describe('bookmarkRouter', () => {
 
 		const noNotes = await caller.list({ filters: { hasNote: false } });
 		expect(noNotes.items).toHaveLength(2);
+	});
+
+	it('bulk updates status and tags', async () => {
+		addGrant('bulk-a', $Enums.GrantStatus.OPEN);
+		addGrant('bulk-b', $Enums.GrantStatus.OPEN);
+		state.bookmarks.push(
+			{
+				id: 'bm-bulk-a',
+				userId: 'user-1',
+				grantId: 'bulk-a',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: null,
+				tags: ['alpha'],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			{
+				id: 'bm-bulk-b',
+				userId: 'user-1',
+				grantId: 'bulk-b',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: null,
+				tags: [],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+		);
+
+		const caller = createCaller();
+		const result = await caller.bulkUpdate({
+			ids: ['bm-bulk-a', 'bm-bulk-b'],
+			setStatus: $Enums.BookmarkStatus.APPLIED,
+			addTags: ['Review'],
+		});
+
+		expect(result.updatedCount).toBe(2);
+		expect(state.bookmarks[0]?.status).toBe($Enums.BookmarkStatus.APPLIED);
+		expect(state.bookmarks[1]?.status).toBe($Enums.BookmarkStatus.APPLIED);
+		expect(state.bookmarks[0]?.tags).toEqual(['alpha', 'review']);
+		expect(state.bookmarks[1]?.tags).toEqual(['review']);
+	});
+
+	it('bulk removes bookmarks', async () => {
+		addGrant('bulk-remove', $Enums.GrantStatus.OPEN);
+		state.bookmarks.push({
+			id: 'bm-bulk-remove',
+			userId: 'user-1',
+			grantId: 'bulk-remove',
+			status: $Enums.BookmarkStatus.INTERESTED,
+			note: null,
+			tags: [],
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const caller = createCaller();
+		const result = await caller.bulkUpdate({
+			ids: ['bm-bulk-remove'],
+			remove: true,
+		});
+
+		expect(result.removedCount).toBe(1);
+		expect(state.bookmarks).toHaveLength(0);
 	});
 });

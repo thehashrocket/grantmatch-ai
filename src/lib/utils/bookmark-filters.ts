@@ -12,6 +12,9 @@ export type BookmarkFilterState = {
 	tags: string[];
 	tagMatchMode: BookmarkTagMatchMode;
 	hasNote: BookmarkNoteFilter;
+	dueSoon: boolean;
+	minFitScore: number | null;
+	needsReview: boolean;
 };
 
 export const defaultBookmarkFilters: BookmarkFilterState = {
@@ -22,6 +25,9 @@ export const defaultBookmarkFilters: BookmarkFilterState = {
 	tags: [],
 	tagMatchMode: 'ANY',
 	hasNote: 'ALL',
+	dueSoon: false,
+	minFitScore: null,
+	needsReview: false,
 };
 
 const normalizeTagList = (values: string[]) => {
@@ -72,6 +78,15 @@ const coerceTagMatchMode = (value: string | null): BookmarkTagMatchMode =>
 const coerceNoteFilter = (value: string | null): BookmarkNoteFilter =>
 	value === 'HAS' || value === 'NONE' ? value : 'ALL';
 
+const coerceMinFitScore = (value: string | null) => {
+	if (!value) return null;
+	const parsed = Number(value);
+	return Number.isNaN(parsed) ? null : parsed;
+};
+
+const coerceFlag = (value: string | null) =>
+	value === '1' || value === 'true';
+
 export const parseBookmarkFilters = (
 	params: URLSearchParams | null | undefined,
 ): BookmarkFilterState => {
@@ -85,6 +100,9 @@ export const parseBookmarkFilters = (
 		tags,
 		tagMatchMode: coerceTagMatchMode(params.get('b_tag_mode')),
 		hasNote: coerceNoteFilter(params.get('b_note')),
+		dueSoon: coerceFlag(params.get('b_due_soon')),
+		minFitScore: coerceMinFitScore(params.get('b_min_fit')),
+		needsReview: coerceFlag(params.get('b_needs_review')),
 	};
 };
 
@@ -124,6 +142,12 @@ export const applyBookmarkFiltersToParams = (
 			: null,
 	);
 	setOrDelete('b_note', filters.hasNote !== 'ALL' ? filters.hasNote : null);
+	setOrDelete('b_due_soon', filters.dueSoon ? '1' : null);
+	setOrDelete(
+		'b_min_fit',
+		filters.minFitScore !== null ? String(filters.minFitScore) : null,
+	);
+	setOrDelete('b_needs_review', filters.needsReview ? '1' : null);
 
 	return params;
 };

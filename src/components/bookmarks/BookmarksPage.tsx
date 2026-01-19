@@ -2,82 +2,56 @@
 
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
-import type { BookmarkSort, BookmarkStatus } from '@/lib/types/bookmark';
+import type { BookmarkStatus } from '@/lib/types/bookmark';
 import { BOOKMARK_STATUS_LABELS } from '@/lib/types/bookmark';
 import { GrantCard } from '@/components/grants/GrantCard';
 import { BookmarkButton } from '@/components/grants/BookmarkButton';
 import { BookmarkStatusSelect } from '@/components/grants/BookmarkStatusSelect';
 import { Pagination } from '@/components/grants/Pagination';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { buildReturnTo } from '@/lib/utils/return-to';
-import {
-	applyBookmarkFiltersToParams,
-	parseBookmarkFilters,
-} from '@/lib/utils/bookmark-filters';
 import { BookmarkFilters } from '@/components/bookmarks/BookmarkFilters';
 import { TagFacets } from '@/components/bookmarks/TagFacets';
 import { BookmarkCardExtras } from '@/components/bookmarks/BookmarkCardExtras';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Label } from '@/components/ui/label';
+import { DEFAULT_SAVED_VIEWS } from '@/lib/bookmarks/saved-views';
+import { BulkActionBar } from '@/components/bookmarks/BulkActionBar';
+import { useBookmarkFilters } from '@/components/bookmarks/useBookmarkFilters';
+import { defaultBookmarkFilters } from '@/lib/utils/bookmark-filters';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select';
 
-const needsFollowUpTag = 'needs follow-up';
-
-const sortLabels: Record<BookmarkSort, string> = {
+const sortLabels = {
 	BOOKMARKED_AT_DESC: 'Bookmarked (newest)',
 	DEADLINE_ASC: 'Deadline ↑',
 	DEADLINE_DESC: 'Deadline ↓',
 	TITLE_ASC: 'Title A–Z',
 	AMOUNT_DESC: 'Amount ↓',
-};
-
-const normalizeQueryString = (params: URLSearchParams) => {
-	const entries = Array.from(params.entries()).sort(([keyA, valueA], [keyB, valueB]) => {
-		if (keyA !== keyB) return keyA.localeCompare(keyB);
-		return valueA.localeCompare(valueB);
-	});
-	const normalized = new URLSearchParams();
-	for (const [key, value] of entries) {
-		normalized.append(key, value);
-	}
-	return normalized.toString();
-};
+} as const;
 
 export function BookmarksPage() {
-	const searchParams = useSearchParams();
-	const router = useRouter();
 	const pathname = usePathname();
-	const searchParamsString = searchParams?.toString() ?? '';
-	const initialFilters = useMemo(
-		() => parseBookmarkFilters(new URLSearchParams(searchParamsString)),
-		[searchParamsString],
-	);
-	const [search, setSearch] = useState(initialFilters.search);
-	const [bookmarkStatus, setBookmarkStatus] = useState<
-		BookmarkStatus | 'ALL'
-	>(initialFilters.bookmarkStatus);
-	const [grantStatus, setGrantStatus] = useState<
-		'ALL' | 'OPEN' | 'CLOSED' | 'UNKNOWN'
-	>(initialFilters.grantStatus);
-	const [sort, setSort] = useState<BookmarkSort>(initialFilters.sort);
+	const { filters, setFilters, resetFilters, searchParamsString } =
+		useBookmarkFilters();
 	const [page, setPage] = useState(1);
 	const pageSize = 10;
-	const [selectedTags, setSelectedTags] = useState<string[]>(
-		initialFilters.tags,
-	);
-	const [tagMatchMode, setTagMatchMode] = useState<'ANY' | 'ALL'>(
-		initialFilters.tagMatchMode,
-	);
-	const [hasNoteFilter, setHasNoteFilter] = useState<'ALL' | 'HAS' | 'NONE'>(
-		initialFilters.hasNote,
-	);
-	const lastWrittenQueryRef = useRef<string | null>(null);
 	const [filtersOpen, setFiltersOpen] = useState(false);
+	const [selectedViewId, setSelectedViewId] = useState<string | null>(null);
 	const [notesOpenById, setNotesOpenById] = useState<Record<string, boolean>>(
 		{},
 	);
+	const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
 	useEffect(() => {
 		try {
@@ -101,74 +75,34 @@ export function BookmarksPage() {
 	};
 
 	const clearFilters = () => {
-		setSearch('');
-		setBookmarkStatus('ALL');
-		setGrantStatus('ALL');
-		setSort('BOOKMARKED_AT_DESC');
-		setSelectedTags([]);
-		setTagMatchMode('ANY');
-		setHasNoteFilter('ALL');
+		resetFilters();
 	};
-	useEffect(() => {
-		const normalizedQuery = normalizeQueryString(
-			new URLSearchParams(searchParamsString),
-		);
-		if (normalizedQuery === lastWrittenQueryRef.current) {
-			lastWrittenQueryRef.current = null;
-			return;
-		}
-		const parsed = parseBookmarkFilters(
-			new URLSearchParams(searchParamsString),
-		);
-		setSearch(parsed.search);
-		setBookmarkStatus(parsed.bookmarkStatus);
-		setGrantStatus(parsed.grantStatus);
-		setSort(parsed.sort);
-		setSelectedTags(parsed.tags);
-		setTagMatchMode(parsed.tagMatchMode);
-		setHasNoteFilter(parsed.hasNote);
-	}, [searchParamsString]);
 
-	useEffect(() => {
-		const nextParams = applyBookmarkFiltersToParams(
-			new URLSearchParams(searchParamsString),
-			{
-			search,
-			bookmarkStatus,
-			grantStatus,
-			sort,
-			tags: selectedTags,
-			tagMatchMode,
-			hasNote: hasNoteFilter,
-		},
-		);
-		const nextQuery = normalizeQueryString(nextParams);
-		const currentQuery = normalizeQueryString(
-			new URLSearchParams(searchParamsString),
-		);
-		if (nextQuery === currentQuery) return;
-		lastWrittenQueryRef.current = nextQuery;
-		const url = nextQuery ? `${pathname}?${nextQuery}` : pathname;
-		router.replace(url);
-	}, [
+	const updateFilters = (
+		next: Partial<typeof filters>,
+	) => {
+		setFilters((prev) => ({ ...prev, ...next }));
+	};
+
+	const {
 		search,
 		bookmarkStatus,
 		grantStatus,
 		sort,
-		selectedTags,
+		tags: selectedTags,
 		tagMatchMode,
-		hasNoteFilter,
-		pathname,
-		router,
-		searchParamsString,
-	]);
+		hasNote,
+		dueSoon,
+		minFitScore,
+		needsReview,
+	} = filters;
 
 	const filtersInput =
 		bookmarkStatus !== 'ALL' ||
 		grantStatus !== 'ALL' ||
 		search.trim() ||
 		selectedTags.length > 0 ||
-		hasNoteFilter !== 'ALL'
+		hasNote !== 'ALL'
 			? {
 					bookmarkStatus:
 						bookmarkStatus !== 'ALL' ? [bookmarkStatus] : undefined,
@@ -183,9 +117,9 @@ export function BookmarksPage() {
 							? selectedTags
 							: undefined,
 					hasNote:
-						hasNoteFilter === 'HAS'
+						hasNote === 'HAS'
 							? true
-							: hasNoteFilter === 'NONE'
+							: hasNote === 'NONE'
 								? false
 								: undefined,
 				}
@@ -198,7 +132,37 @@ export function BookmarksPage() {
 		},
 	);
 
+	const utils = trpc.useUtils();
+
 	const bookmarks = listQuery.data?.items ?? [];
+	const totalBookmarks = bookmarks.length;
+	const filteredBookmarks = useMemo(() => {
+		let next = bookmarks;
+		if (dueSoon) {
+			const now = new Date();
+			const cutoff = new Date(now);
+			cutoff.setDate(now.getDate() + 14);
+			next = next.filter((bookmark) => {
+				if (!bookmark.grant.deadline) return false;
+				const deadline = new Date(bookmark.grant.deadline);
+				return deadline >= now && deadline <= cutoff;
+			});
+		}
+		if (minFitScore !== null) {
+			next = next.filter(
+				(bookmark) => bookmark.grant.fitScore >= minFitScore,
+			);
+		}
+		if (needsReview) {
+			next = next.filter((bookmark) => {
+				const noteText = (bookmark.note ?? '').trim();
+				const noNotes = noteText.length === 0;
+				const lowConfidence = bookmark.grant.confidence === 'LOW';
+				return noNotes || lowConfidence;
+			});
+		}
+		return next;
+	}, [bookmarks, dueSoon, minFitScore, needsReview]);
 	const {
 		data: closedSummary,
 		refetch: refetchClosedSummary,
@@ -216,6 +180,23 @@ export function BookmarksPage() {
 		},
 	});
 
+	const bulkUpdate = trpc.bookmark.bulkUpdate.useMutation({
+		onSuccess: (data) => {
+			if (data.removedCount > 0) {
+				toast.success(`Removed ${data.removedCount} bookmark(s).`);
+			} else {
+				toast.success(`Updated ${data.updatedCount} bookmark(s).`);
+			}
+			setSelectedIds(new Set());
+			utils.bookmark.list.invalidate();
+			utils.bookmark.getMyTags.invalidate();
+			refetchClosedSummary();
+		},
+		onError: () => {
+			toast.error('Bulk update failed. Please try again.');
+		},
+	});
+
 	const returnTo = buildReturnTo(pathname, searchParamsString);
 
 	const filterKey = useMemo(
@@ -227,7 +208,10 @@ export function BookmarksPage() {
 				sort,
 				selectedTags.join(','),
 				tagMatchMode,
-				hasNoteFilter,
+				hasNote,
+				dueSoon,
+				minFitScore ?? '',
+				needsReview,
 			].join('|'),
 		[
 			search,
@@ -236,26 +220,37 @@ export function BookmarksPage() {
 			sort,
 			selectedTags,
 			tagMatchMode,
-			hasNoteFilter,
+			hasNote,
+			dueSoon,
+			minFitScore,
+			needsReview,
 		],
 	);
 
 	useEffect(() => {
 		void filterKey;
 		setPage(1);
+		setSelectedIds(new Set());
 	}, [filterKey]);
 
-	const total = bookmarks.length;
+	const total = filteredBookmarks.length;
 	const totalPages = Math.max(1, Math.ceil(total / pageSize));
 	const currentPage = Math.min(page, totalPages);
-	const paginated = bookmarks.slice(
+	const paginated = filteredBookmarks.slice(
 		(currentPage - 1) * pageSize,
 		currentPage * pageSize,
 	);
+	const pageIds = useMemo(
+		() => paginated.map((bookmark) => bookmark.id),
+		[paginated],
+	);
+	const allSelectedOnPage =
+		pageIds.length > 0 && pageIds.every((id) => selectedIds.has(id));
+	const selectedCount = selectedIds.size;
 
 	const tagFacets = useMemo(() => {
 		const counts = new Map<string, number>();
-		for (const bookmark of bookmarks) {
+		for (const bookmark of filteredBookmarks) {
 			for (const tag of bookmark.tags ?? []) {
 				counts.set(tag, (counts.get(tag) ?? 0) + 1);
 			}
@@ -269,27 +264,58 @@ export function BookmarksPage() {
 				if (b.count !== a.count) return b.count - a.count;
 				return a.tag.localeCompare(b.tag);
 			});
-	}, [bookmarks, selectedTags]);
+	}, [filteredBookmarks, selectedTags]);
 
 	const primaryFacets = tagFacets.slice(0, 12);
 	const overflowFacets = tagFacets.slice(12);
 
-	const savedViewValue = useMemo(() => {
-		if (
-			bookmarkStatus === 'ALL' &&
-			selectedTags.length === 1 &&
-			selectedTags[0] === needsFollowUpTag
-		) {
-			return 'NEEDS_FOLLOW_UP';
+	const filtersEqual = useCallback(
+		(left: typeof filters, right: typeof filters) => {
+		const tagsEqual =
+			left.tags.length === right.tags.length &&
+			left.tags.every((tag, index) => tag === right.tags[index]);
+		return (
+			left.search === right.search &&
+			left.bookmarkStatus === right.bookmarkStatus &&
+			left.grantStatus === right.grantStatus &&
+			left.sort === right.sort &&
+			tagsEqual &&
+			left.tagMatchMode === right.tagMatchMode &&
+			left.hasNote === right.hasNote &&
+			left.dueSoon === right.dueSoon &&
+			left.minFitScore === right.minFitScore &&
+			left.needsReview === right.needsReview
+		);
+	},
+	[],
+	);
+
+	const matchedView = useMemo(() => {
+		return DEFAULT_SAVED_VIEWS.find((view) => {
+			const target = { ...defaultBookmarkFilters, ...view.filters };
+			return filtersEqual(filters, target);
+		});
+	}, [filters, filtersEqual]);
+
+	useEffect(() => {
+		if (!selectedViewId) {
+			setSelectedViewId(matchedView?.id ?? 'CUSTOM');
+			return;
 		}
-		if (selectedTags.length === 0) {
-			if (bookmarkStatus === 'ALL') return 'ALL';
-			if (bookmarkStatus === 'INTERESTED') return 'INTERESTED';
-			if (bookmarkStatus === 'APPLIED') return 'APPLIED';
-			if (bookmarkStatus === 'NOT_FOR_US') return 'NOT_FOR_US';
+		if (selectedViewId === 'CUSTOM' && matchedView) {
+			setSelectedViewId(matchedView.id);
 		}
-		return 'CUSTOM';
-	}, [bookmarkStatus, selectedTags]);
+	}, [matchedView, selectedViewId]);
+
+	const activeView = DEFAULT_SAVED_VIEWS.find(
+		(view) => view.id === selectedViewId,
+	);
+	const activeViewFilters = activeView
+		? { ...defaultBookmarkFilters, ...activeView.filters }
+		: null;
+	const isModified = activeViewFilters
+		? !filtersEqual(filters, activeViewFilters)
+		: false;
 
 	const filterSummary = useMemo(() => {
 		const parts: string[] = [];
@@ -313,11 +339,20 @@ export function BookmarksPage() {
 		if (selectedTags.length > 0 && tagMatchMode === 'ALL') {
 			parts.push('Tag match: all');
 		}
-		if (hasNoteFilter === 'HAS') {
+		if (hasNote === 'HAS') {
 			parts.push('Notes: with notes');
 		}
-		if (hasNoteFilter === 'NONE') {
+		if (hasNote === 'NONE') {
 			parts.push('Notes: without notes');
+		}
+		if (dueSoon) {
+			parts.push('Due soon');
+		}
+		if (minFitScore !== null) {
+			parts.push(`High fit: >=${minFitScore}`);
+		}
+		if (needsReview) {
+			parts.push('Needs review');
 		}
 		if (sort !== 'BOOKMARKED_AT_DESC') {
 			parts.push(`Sort: ${sortLabels[sort]}`);
@@ -329,40 +364,71 @@ export function BookmarksPage() {
 		grantStatus,
 		selectedTags,
 		tagMatchMode,
-		hasNoteFilter,
+		hasNote,
+		dueSoon,
+		minFitScore,
+		needsReview,
 		sort,
 	]);
 
+	const handleResetToView = () => {
+		if (!activeViewFilters) return;
+		setFilters(activeViewFilters);
+	};
+
+	const toggleSelected = (id: string) => {
+		setSelectedIds((prev) => {
+			const next = new Set(prev);
+			if (next.has(id)) {
+				next.delete(id);
+			} else {
+				next.add(id);
+			}
+			return next;
+		});
+	};
+
+	const handleSelectAll = () => {
+		setSelectedIds((prev) => {
+			const next = new Set(prev);
+			if (allSelectedOnPage) {
+				for (const id of pageIds) {
+					next.delete(id);
+				}
+				return next;
+			}
+			for (const id of pageIds) {
+				next.add(id);
+			}
+			return next;
+		});
+	};
+
+	const selectedIdList = Array.from(selectedIds);
+
+	const handleBulkStatus = (status: BookmarkStatus) => {
+		if (selectedIdList.length === 0) return;
+		bulkUpdate.mutate({ ids: selectedIdList, setStatus: status });
+	};
+
+	const handleBulkAddTag = (tag: string) => {
+		if (selectedIdList.length === 0) return;
+		bulkUpdate.mutate({ ids: selectedIdList, addTags: [tag] });
+	};
+
+	const handleBulkRemove = () => {
+		if (selectedIdList.length === 0) return;
+		bulkUpdate.mutate({ ids: selectedIdList, remove: true });
+	};
+
 	const handleSavedViewChange = (value: string) => {
-		if (value === 'ALL') {
-			setBookmarkStatus('ALL');
-			setSelectedTags([]);
-			setTagMatchMode('ANY');
+		const view = DEFAULT_SAVED_VIEWS.find((item) => item.id === value);
+		if (!view) {
+			setSelectedViewId('CUSTOM');
 			return;
 		}
-		if (value === 'INTERESTED') {
-			setBookmarkStatus('INTERESTED');
-			setSelectedTags([]);
-			setTagMatchMode('ANY');
-			return;
-		}
-		if (value === 'APPLIED') {
-			setBookmarkStatus('APPLIED');
-			setSelectedTags([]);
-			setTagMatchMode('ANY');
-			return;
-		}
-		if (value === 'NOT_FOR_US') {
-			setBookmarkStatus('NOT_FOR_US');
-			setSelectedTags([]);
-			setTagMatchMode('ANY');
-			return;
-		}
-		if (value === 'NEEDS_FOLLOW_UP') {
-			setBookmarkStatus('ALL');
-			setSelectedTags([needsFollowUpTag]);
-			setTagMatchMode('ANY');
-		}
+		setSelectedViewId(view.id);
+		setFilters({ ...defaultBookmarkFilters, ...view.filters });
 	};
 
 	return (
@@ -370,7 +436,8 @@ export function BookmarksPage() {
 			<div className="flex flex-col gap-1">
 				<h1 className="text-2xl font-semibold tracking-tight">Saved Grants</h1>
 				<p className="text-sm text-muted-foreground">
-					You have {total} bookmarked grant{total === 1 ? '' : 's'}
+					You have {totalBookmarks} bookmarked grant
+					{totalBookmarks === 1 ? '' : 's'}
 					{closedSummary?.closedCount
 						? ` • ${closedSummary.closedCount} closed`
 						: ''}
@@ -380,7 +447,26 @@ export function BookmarksPage() {
 
 			<div className="rounded-md border bg-card p-3">
 				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-					<div className="text-sm text-muted-foreground">{filterSummary}</div>
+					<div className="space-y-2">
+						<div className="text-sm text-muted-foreground">{filterSummary}</div>
+						<div className="flex flex-wrap items-center gap-2">
+							{activeView && activeView.id !== 'ALL' ? (
+								<Badge variant="secondary">View: {activeView.label}</Badge>
+							) : null}
+							{isModified ? (
+								<Badge variant="outline">Modified</Badge>
+							) : null}
+							{isModified && activeViewFilters ? (
+								<Button
+									variant="ghost"
+									size="sm"
+									onClick={handleResetToView}
+								>
+									Reset to view
+								</Button>
+							) : null}
+						</div>
+					</div>
 					<div className="flex items-center gap-2">
 						<Button variant="outline" size="sm" onClick={clearFilters}>
 							Clear
@@ -395,17 +481,53 @@ export function BookmarksPage() {
 				</div>
 				{filtersOpen && (
 					<div className="mt-4 space-y-3">
+						<div className="flex flex-wrap items-center gap-3">
+							<Label
+								className="text-sm font-medium text-muted-foreground"
+								htmlFor="bookmarks-saved-view"
+							>
+								Saved view
+							</Label>
+							<Select
+								value={selectedViewId ?? 'CUSTOM'}
+								onValueChange={handleSavedViewChange}
+							>
+								<SelectTrigger
+									className="w-[220px]"
+									id="bookmarks-saved-view"
+									aria-labelledby="bookmarks-saved-view"
+								>
+									<SelectValue placeholder="Saved view" />
+								</SelectTrigger>
+								<SelectContent>
+									{DEFAULT_SAVED_VIEWS.map((view) => (
+										<SelectItem key={view.id} value={view.id}>
+											{view.label}
+										</SelectItem>
+									))}
+									<SelectItem value="CUSTOM" disabled>
+										Custom
+									</SelectItem>
+								</SelectContent>
+							</Select>
+						</div>
 						<BookmarkFilters
 							search={search}
 							bookmarkStatus={bookmarkStatus}
 							grantStatus={grantStatus}
 							sort={sort}
-							hasNoteFilter={hasNoteFilter}
-							onSearchChange={setSearch}
-							onBookmarkStatusChange={setBookmarkStatus}
-							onGrantStatusChange={setGrantStatus}
-							onSortChange={setSort}
-							onHasNoteFilterChange={setHasNoteFilter}
+							hasNoteFilter={hasNote}
+							onSearchChange={(value) => updateFilters({ search: value })}
+							onBookmarkStatusChange={(value) =>
+								updateFilters({ bookmarkStatus: value })
+							}
+							onGrantStatusChange={(value) =>
+								updateFilters({ grantStatus: value })
+							}
+							onSortChange={(value) => updateFilters({ sort: value })}
+							onHasNoteFilterChange={(value) =>
+								updateFilters({ hasNote: value })
+							}
 							onRemoveClosed={() => {
 								const count = closedSummary?.closedCount ?? 0;
 								if (count === 0) return;
@@ -426,30 +548,45 @@ export function BookmarksPage() {
 							overflowFacets={overflowFacets}
 							selectedTags={selectedTags}
 							tagMatchMode={tagMatchMode}
-							savedViewValue={savedViewValue}
 							onToggleTag={(tag) => {
-								setSelectedTags((prev) =>
-									prev.includes(tag)
-										? prev.filter((t) => t !== tag)
-										: [...prev, tag],
-								);
+								setFilters((prev) => ({
+									...prev,
+									tags: prev.tags.includes(tag)
+										? prev.tags.filter((value) => value !== tag)
+										: [...prev.tags, tag],
+								}));
 							}}
 							onClearTags={() => {
-								setSelectedTags([]);
-								setTagMatchMode('ANY');
+								setFilters((prev) => ({
+									...prev,
+									tags: [],
+									tagMatchMode: 'ANY',
+								}));
 							}}
-							onTagMatchModeChange={setTagMatchMode}
-							onSavedViewChange={handleSavedViewChange}
+							onTagMatchModeChange={(value) =>
+								updateFilters({ tagMatchMode: value })
+							}
 						/>
 					</div>
 				)}
 			</div>
 
+			<BulkActionBar
+				selectedCount={selectedCount}
+				allSelected={allSelectedOnPage}
+				onSelectAll={handleSelectAll}
+				onClearSelection={() => setSelectedIds(new Set())}
+				onSetStatus={handleBulkStatus}
+				onAddTag={handleBulkAddTag}
+				onRemove={handleBulkRemove}
+				isPending={bulkUpdate.isPending}
+			/>
+
 			{listQuery.isLoading ? (
 				<div className="flex justify-center py-12">
 					<span className="text-sm text-muted-foreground">Loading...</span>
 				</div>
-			) : bookmarks.length === 0 ? (
+			) : filteredBookmarks.length === 0 ? (
 				<p className="text-center py-12 text-muted-foreground">
 					No bookmarked grants yet.
 				</p>
@@ -463,26 +600,37 @@ export function BookmarksPage() {
 								notesOpenById[bookmark.id] ?? defaultOpen;
 							return (
 								<div key={bookmark.id} className="space-y-3">
-									<GrantCard
-										grant={bookmark.grant}
-										summaryTags={bookmark.tags}
-										returnTo={returnTo}
-										actionSlot={
-											<div className="flex flex-col items-end gap-2">
-												<BookmarkStatusSelect
-													grantId={bookmark.grant.id}
-													status={bookmark.status as BookmarkStatus}
-													statusMapInput={{ grantIds: [bookmark.grant.id] }}
-												/>
-												<BookmarkButton
-													grantId={bookmark.grant.id}
-													isBookmarked
-													status={bookmark.status}
-													statusMapInput={{ grantIds: [bookmark.grant.id] }}
-												/>
-											</div>
-										}
-									/>
+									<div className="relative">
+										<div className="absolute left-3 top-3 z-10">
+											<input
+												type="checkbox"
+												className="h-4 w-4 rounded border-input"
+												checked={selectedIds.has(bookmark.id)}
+												onChange={() => toggleSelected(bookmark.id)}
+												aria-label={`Select ${bookmark.grant.title}`}
+											/>
+										</div>
+										<GrantCard
+											grant={bookmark.grant}
+											summaryTags={bookmark.tags}
+											returnTo={returnTo}
+											actionSlot={
+												<div className="flex flex-col items-end gap-2">
+													<BookmarkStatusSelect
+														grantId={bookmark.grant.id}
+														status={bookmark.status as BookmarkStatus}
+														statusMapInput={{ grantIds: [bookmark.grant.id] }}
+													/>
+													<BookmarkButton
+														grantId={bookmark.grant.id}
+														isBookmarked
+														status={bookmark.status}
+														statusMapInput={{ grantIds: [bookmark.grant.id] }}
+													/>
+												</div>
+											}
+										/>
+									</div>
 									<BookmarkCardExtras
 										grantId={bookmark.grant.id}
 										initialNote={bookmark.note}

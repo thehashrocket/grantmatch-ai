@@ -642,6 +642,78 @@ export const bookmarkRouter = router({
 			return { tags: updated.tags };
 		}),
 
+	bulkUpdate: protectedProcedure
+		.input(
+			z.object({
+				ids: z.array(z.string()).min(1),
+				setStatus: bookmarkStatusSchema.optional(),
+				addTags: z.array(z.string()).optional(),
+				removeTags: z.array(z.string()).optional(),
+				remove: z.boolean().optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = requireUserId(ctx);
+			const prismaClient = ctx.prisma;
+			const addTags = normalizeTags(input.addTags);
+			const removeTags = normalizeTags(input.removeTags);
+
+			if (input.remove) {
+				const removed = await prismaClient.grantBookmark.deleteMany({
+					where: {
+						userId,
+						id: { in: input.ids },
+					},
+				});
+				return { removedCount: removed.count, updatedCount: 0 };
+			}
+
+			const updatedIds = new Set<string>();
+			const needsLookup = Boolean(input.setStatus || addTags.length || removeTags.length);
+			const bookmarks = needsLookup
+				? await prismaClient.grantBookmark.findMany({
+						where: { userId, id: { in: input.ids } },
+						select: { id: true, tags: true },
+					})
+				: [];
+
+			if (input.setStatus) {
+				await prismaClient.grantBookmark.updateMany({
+					where: {
+						userId,
+						id: { in: input.ids },
+					},
+					data: { status: input.setStatus },
+				});
+				for (const bookmark of bookmarks) {
+					updatedIds.add(bookmark.id);
+				}
+			}
+
+			if (addTags.length || removeTags.length) {
+				for (const bookmark of bookmarks) {
+					let nextTags = bookmark.tags;
+					if (removeTags.length) {
+						nextTags = nextTags.filter((tag) => !removeTags.includes(tag));
+					}
+					if (addTags.length) {
+						nextTags = normalizeTags([...nextTags, ...addTags]);
+					}
+					const unchanged =
+						nextTags.length === bookmark.tags.length &&
+						nextTags.every((tag, index) => tag === bookmark.tags[index]);
+					if (unchanged) continue;
+					await prismaClient.grantBookmark.update({
+						where: { id: bookmark.id },
+						data: { tags: nextTags },
+					});
+					updatedIds.add(bookmark.id);
+				}
+			}
+
+			return { removedCount: 0, updatedCount: updatedIds.size };
+		}),
+
 	getMyTags: protectedProcedure.query(async ({ ctx }) => {
 		const userId = requireUserId(ctx);
 		const prismaClient = ctx.prisma;

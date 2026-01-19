@@ -2,7 +2,6 @@
 
 'use client';
 
-import { BOOKMARK_STATUS_LABELS } from '@/lib/types/bookmark';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
@@ -30,11 +29,9 @@ interface TagFacetsProps {
 	overflowFacets: TagFacet[];
 	selectedTags: string[];
 	tagMatchMode: 'ANY' | 'ALL';
-	savedViewValue: string;
 	onToggleTag: (tag: string) => void;
 	onClearTags: () => void;
 	onTagMatchModeChange: (value: 'ANY' | 'ALL') => void;
-	onSavedViewChange: (value: string) => void;
 }
 
 export function TagFacets({
@@ -42,15 +39,12 @@ export function TagFacets({
 	overflowFacets,
 	selectedTags,
 	tagMatchMode,
-	savedViewValue,
 	onToggleTag,
 	onClearTags,
 	onTagMatchModeChange,
-	onSavedViewChange,
 }: TagFacetsProps) {
 	const tagFilterId = 'bookmarked-grants-tag-filter';
 	const tagModeId = 'bookmarked-grants-tag-mode';
-	const savedViewId = 'bookmarked-grants-saved-view';
 
 	return (
 		<div className="space-y-2">
@@ -118,39 +112,6 @@ export function TagFacets({
 					)}
 				</div>
 			</div>
-			<div className="flex flex-wrap items-center gap-3">
-				<Label
-					className="text-sm font-medium text-muted-foreground"
-					htmlFor={savedViewId}
-				>
-					Saved view
-				</Label>
-				<Select value={savedViewValue} onValueChange={onSavedViewChange}>
-					<SelectTrigger
-						className="w-[200px]"
-						id={savedViewId}
-						aria-labelledby={savedViewId}
-					>
-						<SelectValue placeholder="Saved views" />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectItem value="ALL">All bookmarked</SelectItem>
-						<SelectItem value="INTERESTED">
-							{BOOKMARK_STATUS_LABELS.INTERESTED}
-						</SelectItem>
-						<SelectItem value="APPLIED">
-							{BOOKMARK_STATUS_LABELS.APPLIED}
-						</SelectItem>
-						<SelectItem value="NOT_FOR_US">
-							{BOOKMARK_STATUS_LABELS.NOT_FOR_US}
-						</SelectItem>
-						<SelectItem value="NEEDS_FOLLOW_UP">Needs follow-up</SelectItem>
-						<SelectItem value="CUSTOM" disabled>
-							Custom
-						</SelectItem>
-					</SelectContent>
-				</Select>
-			</div>
 			{selectedTags.length > 0 && (
 				<div className="flex flex-wrap items-center gap-3">
 					<Label
@@ -165,13 +126,13 @@ export function TagFacets({
 							onTagMatchModeChange(value as 'ANY' | 'ALL')
 						}
 					>
-					<SelectTrigger
-						className="w-[200px]"
-						id={tagModeId}
-						aria-labelledby={tagModeId}
-					>
-						<SelectValue placeholder="Match mode" />
-					</SelectTrigger>
+						<SelectTrigger
+							className="w-[200px]"
+							id={tagModeId}
+							aria-labelledby={tagModeId}
+						>
+							<SelectValue placeholder="Match mode" />
+						</SelectTrigger>
 						<SelectContent>
 							<SelectItem value="ANY">Match any selected tag</SelectItem>
 							<SelectItem value="ALL">Match all selected tags</SelectItem>

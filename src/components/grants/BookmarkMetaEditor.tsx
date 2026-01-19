@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { cn } from '@/lib/utils';
 import { BookmarkTagsInput } from '@/components/grants/BookmarkTagsInput';
 import { Tag } from 'lucide-react';
 
@@ -15,6 +16,8 @@ interface BookmarkMetaEditorProps {
 	initialNote?: string | null;
 	initialTags?: string[];
 	statusMapInput?: { grantIds: string[] };
+	onSaved?: () => void;
+	className?: string;
 }
 
 const MAX_NOTE_LENGTH = 2000;
@@ -32,6 +35,8 @@ export function BookmarkMetaEditor({
 	initialNote,
 	initialTags,
 	statusMapInput,
+	onSaved,
+	className,
 }: BookmarkMetaEditorProps) {
 	const utils = trpc.useUtils();
 	const [note, setNote] = useState(initialNote ?? '');
@@ -83,6 +88,7 @@ export function BookmarkMetaEditor({
 			});
 			setIsDirty(false);
 			setSaveState('saved');
+			onSaved?.();
 			if (savedTimerRef.current) window.clearTimeout(savedTimerRef.current);
 			savedTimerRef.current = window.setTimeout(
 				() => setSaveState((s) => (s === 'saved' ? 'idle' : s)),
@@ -134,7 +140,7 @@ export function BookmarkMetaEditor({
 	};
 
 	return (
-		<div className="space-y-3 rounded-md border p-3">
+		<div className={cn('space-y-3 rounded-md border p-3', className)}>
 			<div className="flex items-center gap-2 text-sm font-semibold text-muted-foreground">
 				<Tag className="h-4 w-4" />
 				<span>Bookmark notes & tags</span>

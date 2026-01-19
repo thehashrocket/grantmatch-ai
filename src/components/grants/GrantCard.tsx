@@ -241,7 +241,7 @@ export function GrantCard({
 							</CardDescription>
 						</div>
 						<div className="flex flex-col items-end gap-3 text-right min-w-[180px]">
-							<div className="flex items-center gap-2">
+							<div className="flex flex-col items-end gap-2">
 								{actionSlot}
 								<a
 									href={grant.url}

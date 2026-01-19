@@ -3,9 +3,11 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
 import type { BookmarkSort, BookmarkStatus } from '@/lib/types/bookmark';
+import { BOOKMARK_STATUS_LABELS } from '@/lib/types/bookmark';
 import { GrantCard } from '@/components/grants/GrantCard';
 import { BookmarkButton } from '@/components/grants/BookmarkButton';
 import { BookmarkStatusSelect } from '@/components/grants/BookmarkStatusSelect';
@@ -19,8 +21,17 @@ import {
 import { BookmarkFilters } from '@/components/bookmarks/BookmarkFilters';
 import { TagFacets } from '@/components/bookmarks/TagFacets';
 import { BookmarkCardExtras } from '@/components/bookmarks/BookmarkCardExtras';
+import { Button } from '@/components/ui/button';
 
 const needsFollowUpTag = 'needs follow-up';
+
+const sortLabels: Record<BookmarkSort, string> = {
+	BOOKMARKED_AT_DESC: 'Bookmarked (newest)',
+	DEADLINE_ASC: 'Deadline ↑',
+	DEADLINE_DESC: 'Deadline ↓',
+	TITLE_ASC: 'Title A–Z',
+	AMOUNT_DESC: 'Amount ↓',
+};
 
 const normalizeQueryString = (params: URLSearchParams) => {
 	const entries = Array.from(params.entries()).sort(([keyA, valueA], [keyB, valueB]) => {
@@ -63,7 +74,41 @@ export function BookmarksPage() {
 		initialFilters.hasNote,
 	);
 	const lastWrittenQueryRef = useRef<string | null>(null);
+	const [filtersOpen, setFiltersOpen] = useState(false);
+	const [notesOpenById, setNotesOpenById] = useState<Record<string, boolean>>(
+		{},
+	);
 
+	useEffect(() => {
+		try {
+			const stored = sessionStorage.getItem('bookmarks.filtersOpen');
+			setFiltersOpen(stored === 'true');
+		} catch {
+			setFiltersOpen(false);
+		}
+	}, []);
+
+	const handleToggleFilters = () => {
+		setFiltersOpen((prev) => {
+			const next = !prev;
+			try {
+				sessionStorage.setItem('bookmarks.filtersOpen', String(next));
+			} catch {
+				// ignore storage failures
+			}
+			return next;
+		});
+	};
+
+	const clearFilters = () => {
+		setSearch('');
+		setBookmarkStatus('ALL');
+		setGrantStatus('ALL');
+		setSort('BOOKMARKED_AT_DESC');
+		setSelectedTags([]);
+		setTagMatchMode('ANY');
+		setHasNoteFilter('ALL');
+	};
 	useEffect(() => {
 		const normalizedQuery = normalizeQueryString(
 			new URLSearchParams(searchParamsString),
@@ -246,6 +291,48 @@ export function BookmarksPage() {
 		return 'CUSTOM';
 	}, [bookmarkStatus, selectedTags]);
 
+	const filterSummary = useMemo(() => {
+		const parts: string[] = [];
+		const trimmedSearch = search.trim();
+		if (trimmedSearch) {
+			parts.push(`Search: ${trimmedSearch}`);
+		}
+		if (bookmarkStatus !== 'ALL') {
+			parts.push(`Status: ${BOOKMARK_STATUS_LABELS[bookmarkStatus]}`);
+		}
+		if (grantStatus !== 'ALL') {
+			parts.push(`Grant: ${grantStatus.toLowerCase()}`);
+		}
+		if (selectedTags.length > 0) {
+			const previewTags = selectedTags.slice(0, 2);
+			const extra = selectedTags.length - previewTags.length;
+			parts.push(
+				`Tags: ${previewTags.join(', ')}${extra > 0 ? ` +${extra}` : ''}`,
+			);
+		}
+		if (selectedTags.length > 0 && tagMatchMode === 'ALL') {
+			parts.push('Tag match: all');
+		}
+		if (hasNoteFilter === 'HAS') {
+			parts.push('Notes: with notes');
+		}
+		if (hasNoteFilter === 'NONE') {
+			parts.push('Notes: without notes');
+		}
+		if (sort !== 'BOOKMARKED_AT_DESC') {
+			parts.push(`Sort: ${sortLabels[sort]}`);
+		}
+		return parts.length > 0 ? `Filters: ${parts.join(' · ')}` : 'Filters: none';
+	}, [
+		search,
+		bookmarkStatus,
+		grantStatus,
+		selectedTags,
+		tagMatchMode,
+		hasNoteFilter,
+		sort,
+	]);
+
 	const handleSavedViewChange = (value: string) => {
 		if (value === 'ALL') {
 			setBookmarkStatus('ALL');
@@ -291,50 +378,72 @@ export function BookmarksPage() {
 				</p>
 			</div>
 
-			<BookmarkFilters
-				search={search}
-				bookmarkStatus={bookmarkStatus}
-				grantStatus={grantStatus}
-				sort={sort}
-				hasNoteFilter={hasNoteFilter}
-				onSearchChange={setSearch}
-				onBookmarkStatusChange={setBookmarkStatus}
-				onGrantStatusChange={setGrantStatus}
-				onSortChange={setSort}
-				onHasNoteFilterChange={setHasNoteFilter}
-				onRemoveClosed={() => {
-					const count = closedSummary?.closedCount ?? 0;
-					if (count === 0) return;
-					toast.message(`Remove ${count} closed grant(s)?`, {
-						action: {
-							label: 'Confirm',
-							onClick: () => removeClosed.mutate(),
-						},
-					});
-				}}
-				removeClosedCount={closedSummary?.closedCount ?? 0}
-				removeClosedPending={removeClosed.isPending}
-				isClosedSummaryLoading={isClosedSummaryLoading}
-			/>
+			<div className="rounded-md border bg-card p-3">
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+					<div className="text-sm text-muted-foreground">{filterSummary}</div>
+					<div className="flex items-center gap-2">
+						<Button variant="outline" size="sm" onClick={clearFilters}>
+							Clear
+						</Button>
+						<Button variant="secondary" size="sm" onClick={handleToggleFilters}>
+							{filtersOpen ? 'Hide filters' : 'Show filters'}
+							<ChevronDown
+								className={`ml-2 h-4 w-4 transition-transform ${filtersOpen ? 'rotate-180' : ''}`}
+							/>
+						</Button>
+					</div>
+				</div>
+				{filtersOpen && (
+					<div className="mt-4 space-y-3">
+						<BookmarkFilters
+							search={search}
+							bookmarkStatus={bookmarkStatus}
+							grantStatus={grantStatus}
+							sort={sort}
+							hasNoteFilter={hasNoteFilter}
+							onSearchChange={setSearch}
+							onBookmarkStatusChange={setBookmarkStatus}
+							onGrantStatusChange={setGrantStatus}
+							onSortChange={setSort}
+							onHasNoteFilterChange={setHasNoteFilter}
+							onRemoveClosed={() => {
+								const count = closedSummary?.closedCount ?? 0;
+								if (count === 0) return;
+								toast.message(`Remove ${count} closed grant(s)?`, {
+									action: {
+										label: 'Confirm',
+										onClick: () => removeClosed.mutate(),
+									},
+								});
+							}}
+							removeClosedCount={closedSummary?.closedCount ?? 0}
+							removeClosedPending={removeClosed.isPending}
+							isClosedSummaryLoading={isClosedSummaryLoading}
+						/>
 
-			<TagFacets
-				tagFacets={primaryFacets}
-				overflowFacets={overflowFacets}
-				selectedTags={selectedTags}
-				tagMatchMode={tagMatchMode}
-				savedViewValue={savedViewValue}
-				onToggleTag={(tag) => {
-					setSelectedTags((prev) =>
-						prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-					);
-				}}
-				onClearTags={() => {
-					setSelectedTags([]);
-					setTagMatchMode('ANY');
-				}}
-				onTagMatchModeChange={setTagMatchMode}
-				onSavedViewChange={handleSavedViewChange}
-			/>
+						<TagFacets
+							tagFacets={primaryFacets}
+							overflowFacets={overflowFacets}
+							selectedTags={selectedTags}
+							tagMatchMode={tagMatchMode}
+							savedViewValue={savedViewValue}
+							onToggleTag={(tag) => {
+								setSelectedTags((prev) =>
+									prev.includes(tag)
+										? prev.filter((t) => t !== tag)
+										: [...prev, tag],
+								);
+							}}
+							onClearTags={() => {
+								setSelectedTags([]);
+								setTagMatchMode('ANY');
+							}}
+							onTagMatchModeChange={setTagMatchMode}
+							onSavedViewChange={handleSavedViewChange}
+						/>
+					</div>
+				)}
+			</div>
 
 			{listQuery.isLoading ? (
 				<div className="flex justify-center py-12">
@@ -347,35 +456,54 @@ export function BookmarksPage() {
 			) : (
 				<div className="space-y-4">
 					<div className="grid gap-4 md:grid-cols-2">
-						{paginated.map((bookmark) => (
-							<div key={bookmark.id} className="space-y-3">
-								<GrantCard
-									grant={bookmark.grant}
-									summaryTags={bookmark.tags}
-									returnTo={returnTo}
-									actionSlot={
-										<div className="flex flex-col items-end gap-2">
-											<BookmarkButton
-												grantId={bookmark.grant.id}
-												isBookmarked
-												status={bookmark.status}
-												statusMapInput={{ grantIds: [bookmark.grant.id] }}
-											/>
-											<BookmarkStatusSelect
-												grantId={bookmark.grant.id}
-												status={bookmark.status as BookmarkStatus}
-												statusMapInput={{ grantIds: [bookmark.grant.id] }}
-											/>
-										</div>
-									}
-								/>
-								<BookmarkCardExtras
-									grantId={bookmark.grant.id}
-									initialNote={bookmark.note}
-									initialTags={bookmark.tags}
-								/>
-							</div>
-						))}
+						{paginated.map((bookmark) => {
+							const hasNote = (bookmark.note ?? '').trim().length > 0;
+							const defaultOpen = hasNote;
+							const isOpen =
+								notesOpenById[bookmark.id] ?? defaultOpen;
+							return (
+								<div key={bookmark.id} className="space-y-3">
+									<GrantCard
+										grant={bookmark.grant}
+										summaryTags={bookmark.tags}
+										returnTo={returnTo}
+										actionSlot={
+											<div className="flex flex-col items-end gap-2">
+												<BookmarkStatusSelect
+													grantId={bookmark.grant.id}
+													status={bookmark.status as BookmarkStatus}
+													statusMapInput={{ grantIds: [bookmark.grant.id] }}
+												/>
+												<BookmarkButton
+													grantId={bookmark.grant.id}
+													isBookmarked
+													status={bookmark.status}
+													statusMapInput={{ grantIds: [bookmark.grant.id] }}
+												/>
+											</div>
+										}
+									/>
+									<BookmarkCardExtras
+										grantId={bookmark.grant.id}
+										initialNote={bookmark.note}
+										initialTags={bookmark.tags}
+										isOpen={isOpen}
+										onOpenChange={(open) =>
+											setNotesOpenById((prev) => ({
+												...prev,
+												[bookmark.id]: open,
+											}))
+										}
+										onSaved={() =>
+											setNotesOpenById((prev) => ({
+												...prev,
+												[bookmark.id]: true,
+											}))
+										}
+									/>
+								</div>
+							);
+						})}
 					</div>
 					<Pagination
 						page={currentPage}

@@ -65,7 +65,10 @@ export function BookmarkCardExtras({
 						className={`h-4 w-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
 					/>
 				</CollapsibleTrigger>
-				<CollapsibleContent className="border-t p-3" forceMount>
+				<CollapsibleContent
+					className="border-t p-3 data-[state=closed]:hidden"
+					forceMount
+				>
 					<BookmarkMetaEditor
 						grantId={grantId}
 						initialNote={initialNote}

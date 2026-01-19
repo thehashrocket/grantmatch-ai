@@ -368,6 +368,26 @@ export function BookmarksPage() {
 		setFilters(activeViewFilters);
 	};
 
+	const handleCollapseNotes = () => {
+		setNotesOpenById((prev) => {
+			const next = { ...prev };
+			for (const bookmark of paginated) {
+				next[bookmark.id] = false;
+			}
+			return next;
+		});
+	};
+
+	const handleExpandNotes = () => {
+		setNotesOpenById((prev) => {
+			const next = { ...prev };
+			for (const bookmark of paginated) {
+				next[bookmark.id] = true;
+			}
+			return next;
+		});
+	};
+
 	const toggleSelected = (id: string) => {
 		setSelectedIds((prev) => {
 			const next = new Set(prev);
@@ -456,6 +476,12 @@ export function BookmarksPage() {
 					<div className="flex items-center gap-2">
 						<Button variant="outline" size="sm" onClick={clearFilters}>
 							Clear
+						</Button>
+						<Button variant="ghost" size="sm" onClick={handleCollapseNotes}>
+							Collapse notes
+						</Button>
+						<Button variant="ghost" size="sm" onClick={handleExpandNotes}>
+							Expand notes
 						</Button>
 						<Button variant="secondary" size="sm" onClick={handleToggleFilters}>
 							{filtersOpen ? 'Hide filters' : 'Show filters'}

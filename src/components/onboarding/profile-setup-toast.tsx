@@ -18,9 +18,7 @@ export function ProfileSetupToast() {
 		if (!session?.user) return;
 		if (session.user.role === 'ADMIN') return;
 		if (session.user.organizationId) return;
-		if (
-			EXCLUDED_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))
-		) {
+		if (EXCLUDED_PATH_PREFIXES.some((prefix) => pathname.startsWith(prefix))) {
 			return;
 		}
 

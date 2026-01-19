@@ -84,8 +84,7 @@ const coerceMinFitScore = (value: string | null) => {
 	return Number.isNaN(parsed) ? null : parsed;
 };
 
-const coerceFlag = (value: string | null) =>
-	value === '1' || value === 'true';
+const coerceFlag = (value: string | null) => value === '1' || value === 'true';
 
 export const parseBookmarkFilters = (
 	params: URLSearchParams | null | undefined,
@@ -137,9 +136,7 @@ export const applyBookmarkFiltersToParams = (
 	setOrDelete('b_tags', tags.length ? tags.join(',') : null);
 	setOrDelete(
 		'b_tag_mode',
-		tags.length && filters.tagMatchMode !== 'ANY'
-			? filters.tagMatchMode
-			: null,
+		tags.length && filters.tagMatchMode !== 'ANY' ? filters.tagMatchMode : null,
 	);
 	setOrDelete('b_note', filters.hasNote !== 'ALL' ? filters.hasNote : null);
 	setOrDelete('b_due_soon', filters.dueSoon ? '1' : null);

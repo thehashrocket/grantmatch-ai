@@ -77,9 +77,7 @@ export function BulkActionBar({
 						Clear selection
 					</Button>
 					<Select
-						onValueChange={(value) =>
-							onSetStatus(value as BookmarkStatus)
-						}
+						onValueChange={(value) => onSetStatus(value as BookmarkStatus)}
 						disabled={isPending}
 					>
 						<SelectTrigger className="w-[180px]">
@@ -138,9 +136,7 @@ export function BulkActionBar({
 							</AlertDialogHeader>
 							<AlertDialogFooter>
 								<AlertDialogCancel>Cancel</AlertDialogCancel>
-								<AlertDialogAction onClick={onRemove}>
-									Remove
-								</AlertDialogAction>
+								<AlertDialogAction onClick={onRemove}>Remove</AlertDialogAction>
 							</AlertDialogFooter>
 						</AlertDialogContent>
 					</AlertDialog>

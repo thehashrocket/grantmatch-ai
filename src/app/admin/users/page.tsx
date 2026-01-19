@@ -28,9 +28,11 @@ type UserRow = {
 	bookmarks: number;
 };
 
-function formatUserName(user: Pick<UserRow, 'firstName' | 'lastName' | 'email'>) {
+function formatUserName(
+	user: Pick<UserRow, 'firstName' | 'lastName' | 'email'>,
+) {
 	const name = [user.firstName, user.lastName].filter(Boolean).join(' ');
-	return name.length > 0 ? name : user.email ?? 'Unknown user';
+	return name.length > 0 ? name : (user.email ?? 'Unknown user');
 }
 
 const dateFormatter = new Intl.DateTimeFormat('en-US', {
@@ -134,7 +136,10 @@ export default async function AdminUsersPage({
 		where.organization = { is: null };
 	} else if (organizationFilter === 'with') {
 		where.organization = {
-			is: organizationConditions.length > 0 ? { AND: organizationConditions } : {},
+			is:
+				organizationConditions.length > 0
+					? { AND: organizationConditions }
+					: {},
 		};
 	} else if (organizationConditions.length > 0) {
 		where.organization = {
@@ -221,9 +226,7 @@ export default async function AdminUsersPage({
 	if (sort === 'bookmarks') {
 		rows.sort((a, b) => b.bookmarks - a.bookmarks);
 	} else if (sort === 'name') {
-		rows.sort((a, b) =>
-			formatUserName(a).localeCompare(formatUserName(b)),
-		);
+		rows.sort((a, b) => formatUserName(a).localeCompare(formatUserName(b)));
 	} else {
 		rows.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 	}
@@ -232,8 +235,7 @@ export default async function AdminUsersPage({
 	const totalPages = Math.ceil(totalCount / pageSize);
 	const page = clampPage(pageValue, totalPages);
 	const startIndex = totalCount === 0 ? 0 : (page - 1) * pageSize + 1;
-	const endIndex =
-		totalCount === 0 ? 0 : Math.min(page * pageSize, totalCount);
+	const endIndex = totalCount === 0 ? 0 : Math.min(page * pageSize, totalCount);
 	const pagedRows = rows.slice((page - 1) * pageSize, page * pageSize);
 	const queryParams = params ?? {};
 	const prevQuery = buildQueryString(queryParams, {
@@ -261,9 +263,7 @@ export default async function AdminUsersPage({
 
 			<form className="grid gap-4 rounded-lg border border-border bg-background p-4 md:grid-cols-9">
 				<div className="md:col-span-2">
-					<Label htmlFor="user-search">
-						Search
-					</Label>
+					<Label htmlFor="user-search">Search</Label>
 					<Input
 						id="user-search"
 						name="q"
@@ -272,9 +272,7 @@ export default async function AdminUsersPage({
 					/>
 				</div>
 				<div>
-					<Label htmlFor="user-role">
-						Role
-					</Label>
+					<Label htmlFor="user-role">Role</Label>
 					<select
 						id="user-role"
 						name="role"
@@ -287,9 +285,7 @@ export default async function AdminUsersPage({
 					</select>
 				</div>
 				<div>
-					<Label htmlFor="user-state">
-						State
-					</Label>
+					<Label htmlFor="user-state">State</Label>
 					<Input
 						id="user-state"
 						name="state"
@@ -298,9 +294,7 @@ export default async function AdminUsersPage({
 					/>
 				</div>
 				<div className="md:col-span-2">
-					<Label htmlFor="user-org">
-						Organization
-					</Label>
+					<Label htmlFor="user-org">Organization</Label>
 					<Input
 						id="user-org"
 						name="org"
@@ -309,9 +303,7 @@ export default async function AdminUsersPage({
 					/>
 				</div>
 				<div>
-					<Label htmlFor="user-org-status">
-						Org status
-					</Label>
+					<Label htmlFor="user-org-status">Org status</Label>
 					<select
 						id="user-org-status"
 						name="orgFilter"
@@ -324,9 +316,7 @@ export default async function AdminUsersPage({
 					</select>
 				</div>
 				<div>
-					<Label htmlFor="user-min-bookmarks">
-						Min bookmarks
-					</Label>
+					<Label htmlFor="user-min-bookmarks">Min bookmarks</Label>
 					<Input
 						id="user-min-bookmarks"
 						name="minBookmarks"
@@ -338,9 +328,7 @@ export default async function AdminUsersPage({
 					/>
 				</div>
 				<div>
-					<Label htmlFor="user-max-bookmarks">
-						Max bookmarks
-					</Label>
+					<Label htmlFor="user-max-bookmarks">Max bookmarks</Label>
 					<Input
 						id="user-max-bookmarks"
 						name="maxBookmarks"
@@ -352,9 +340,7 @@ export default async function AdminUsersPage({
 					/>
 				</div>
 				<div>
-					<Label htmlFor="user-sort">
-						Sort
-					</Label>
+					<Label htmlFor="user-sort">Sort</Label>
 					<select
 						id="user-sort"
 						name="sort"
@@ -367,9 +353,7 @@ export default async function AdminUsersPage({
 					</select>
 				</div>
 				<div>
-					<Label htmlFor="user-page-size">
-						Page size
-					</Label>
+					<Label htmlFor="user-page-size">Page size</Label>
 					<select
 						id="user-page-size"
 						name="pageSize"
@@ -423,9 +407,7 @@ export default async function AdminUsersPage({
 								pagedRows.map((user) => (
 									<tr key={user.id} className="hover:bg-muted/30">
 										<td className="px-4 py-3">
-											<div className="font-medium">
-												{formatUserName(user)}
-											</div>
+											<div className="font-medium">{formatUserName(user)}</div>
 											<div className="text-xs text-muted-foreground">
 												{user.email ?? '—'}
 											</div>
@@ -451,12 +433,7 @@ export default async function AdminUsersPage({
 
 			{totalPages > 1 ? (
 				<div className="flex items-center justify-between">
-					<Button
-						asChild
-						variant="outline"
-						size="sm"
-						disabled={page <= 1}
-					>
+					<Button asChild variant="outline" size="sm" disabled={page <= 1}>
 						<Link href={`/admin/users?${prevQuery}`}>Previous</Link>
 					</Button>
 					<p className="text-sm text-muted-foreground">

@@ -669,7 +669,9 @@ export const bookmarkRouter = router({
 			}
 
 			const updatedIds = new Set<string>();
-			const needsLookup = Boolean(input.setStatus || addTags.length || removeTags.length);
+			const needsLookup = Boolean(
+				input.setStatus || addTags.length || removeTags.length,
+			);
 			const bookmarks = needsLookup
 				? await prismaClient.grantBookmark.findMany({
 						where: { userId, id: { in: input.ids } },

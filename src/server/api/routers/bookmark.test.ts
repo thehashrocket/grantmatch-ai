@@ -48,11 +48,7 @@ const createPrismaMock = (store: {
 	grants: TestGrant[];
 }) => ({
 	grantBookmark: {
-		findFirst: ({
-			where,
-		}: {
-			where: { id?: string; userId?: string };
-		}) =>
+		findFirst: ({ where }: { where: { id?: string; userId?: string } }) =>
 			store.bookmarks.find((bookmark) => {
 				if (where.id && bookmark.id !== where.id) return false;
 				if (where.userId && bookmark.userId !== where.userId) return false;
@@ -260,10 +256,8 @@ const createPrismaMock = (store: {
 		}) => {
 			const before = store.bookmarks.length;
 			store.bookmarks = store.bookmarks.filter((bookmark) => {
-				const matchesUser =
-					!where.userId || bookmark.userId === where.userId;
-				const matchesId =
-					!where.id?.in || where.id.in.includes(bookmark.id);
+				const matchesUser = !where.userId || bookmark.userId === where.userId;
+				const matchesId = !where.id?.in || where.id.in.includes(bookmark.id);
 				let matchesGrantStatus = true;
 				if (where.grant?.status) {
 					const grant = store.grants.find((g) => g.id === bookmark.grantId);

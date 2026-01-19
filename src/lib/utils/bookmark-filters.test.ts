@@ -24,17 +24,14 @@ describe('bookmark filter url helpers', () => {
 	});
 
 	it('serializes non-default filters into query params', () => {
-		const next = applyBookmarkFiltersToParams(
-			new URLSearchParams(),
-			{
-				...defaultBookmarkFilters,
-				search: 'community',
-				bookmarkStatus: 'INTERESTED',
-				tags: ['local programs', 'community'],
-				dueSoon: true,
-				minFitScore: 7.5,
-			},
-		);
+		const next = applyBookmarkFiltersToParams(new URLSearchParams(), {
+			...defaultBookmarkFilters,
+			search: 'community',
+			bookmarkStatus: 'INTERESTED',
+			tags: ['local programs', 'community'],
+			dueSoon: true,
+			minFitScore: 7.5,
+		});
 		expect(next.get('b_search')).toBe('community');
 		expect(next.get('b_status')).toBe('INTERESTED');
 		expect(next.get('b_tags')).toBe('local programs,community');

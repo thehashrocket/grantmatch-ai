@@ -219,9 +219,7 @@ export function BookmarkFilters({
 						Removing...
 					</>
 				) : (
-					<>
-						Remove closed grants ({removeClosedCount.toString()})
-					</>
+					<>Remove closed grants ({removeClosedCount.toString()})</>
 				)}
 			</Button>
 		</div>

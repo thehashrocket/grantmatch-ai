@@ -78,9 +78,7 @@ export function BookmarksPage() {
 		resetFilters();
 	};
 
-	const updateFilters = (
-		next: Partial<typeof filters>,
-	) => {
+	const updateFilters = (next: Partial<typeof filters>) => {
 		setFilters((prev) => ({ ...prev, ...next }));
 	};
 
@@ -117,11 +115,7 @@ export function BookmarksPage() {
 							? selectedTags
 							: undefined,
 					hasNote:
-						hasNote === 'HAS'
-							? true
-							: hasNote === 'NONE'
-								? false
-								: undefined,
+						hasNote === 'HAS' ? true : hasNote === 'NONE' ? false : undefined,
 				}
 			: undefined;
 
@@ -149,9 +143,7 @@ export function BookmarksPage() {
 			});
 		}
 		if (minFitScore !== null) {
-			next = next.filter(
-				(bookmark) => bookmark.grant.fitScore >= minFitScore,
-			);
+			next = next.filter((bookmark) => bookmark.grant.fitScore >= minFitScore);
 		}
 		if (needsReview) {
 			next = next.filter((bookmark) => {
@@ -271,23 +263,23 @@ export function BookmarksPage() {
 
 	const filtersEqual = useCallback(
 		(left: typeof filters, right: typeof filters) => {
-		const tagsEqual =
-			left.tags.length === right.tags.length &&
-			left.tags.every((tag, index) => tag === right.tags[index]);
-		return (
-			left.search === right.search &&
-			left.bookmarkStatus === right.bookmarkStatus &&
-			left.grantStatus === right.grantStatus &&
-			left.sort === right.sort &&
-			tagsEqual &&
-			left.tagMatchMode === right.tagMatchMode &&
-			left.hasNote === right.hasNote &&
-			left.dueSoon === right.dueSoon &&
-			left.minFitScore === right.minFitScore &&
-			left.needsReview === right.needsReview
-		);
-	},
-	[],
+			const tagsEqual =
+				left.tags.length === right.tags.length &&
+				left.tags.every((tag, index) => tag === right.tags[index]);
+			return (
+				left.search === right.search &&
+				left.bookmarkStatus === right.bookmarkStatus &&
+				left.grantStatus === right.grantStatus &&
+				left.sort === right.sort &&
+				tagsEqual &&
+				left.tagMatchMode === right.tagMatchMode &&
+				left.hasNote === right.hasNote &&
+				left.dueSoon === right.dueSoon &&
+				left.minFitScore === right.minFitScore &&
+				left.needsReview === right.needsReview
+			);
+		},
+		[],
 	);
 
 	const matchedView = useMemo(() => {
@@ -453,15 +445,9 @@ export function BookmarksPage() {
 							{activeView && activeView.id !== 'ALL' ? (
 								<Badge variant="secondary">View: {activeView.label}</Badge>
 							) : null}
-							{isModified ? (
-								<Badge variant="outline">Modified</Badge>
-							) : null}
+							{isModified ? <Badge variant="outline">Modified</Badge> : null}
 							{isModified && activeViewFilters ? (
-								<Button
-									variant="ghost"
-									size="sm"
-									onClick={handleResetToView}
-								>
+								<Button variant="ghost" size="sm" onClick={handleResetToView}>
 									Reset to view
 								</Button>
 							) : null}
@@ -596,8 +582,7 @@ export function BookmarksPage() {
 						{paginated.map((bookmark) => {
 							const hasNote = (bookmark.note ?? '').trim().length > 0;
 							const defaultOpen = hasNote;
-							const isOpen =
-								notesOpenById[bookmark.id] ?? defaultOpen;
+							const isOpen = notesOpenById[bookmark.id] ?? defaultOpen;
 							return (
 								<div key={bookmark.id} className="space-y-3">
 									<div className="relative">

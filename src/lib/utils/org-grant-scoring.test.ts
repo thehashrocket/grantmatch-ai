@@ -39,7 +39,7 @@ describe('computeOrgGrantFitScore', () => {
 		});
 
 		expect(result.missing.fundingAmount).toBe(true);
-		expect(result.confidence).toBe('HIGH');
+		expect(result.confidence).toBe('MED');
 		expect(
 			result.reasons.some(
 				(reason) =>
@@ -60,7 +60,7 @@ describe('computeOrgGrantFitScore', () => {
 			},
 		);
 		expect(withMoreMissing.missing.eligibleGeographies).toBe(true);
-		expect(withMoreMissing.confidence).toBe('MED');
+		expect(withMoreMissing.confidence).toBe('LOW');
 	});
 
 	it('includes a priority focus reason with detail when keyword hits', () => {

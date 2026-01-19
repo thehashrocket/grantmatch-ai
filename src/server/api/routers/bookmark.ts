@@ -469,6 +469,7 @@ export const bookmarkRouter = router({
 						id: bookmark.id,
 						status: bookmark.status,
 						createdAt: bookmark.createdAt,
+						updatedAt: bookmark.updatedAt,
 						grantStatus: bookmark.grant.status,
 						note: bookmark.note ?? null,
 						tags: bookmark.tags,
@@ -564,6 +565,75 @@ export const bookmarkRouter = router({
 				note: updated.note ?? null,
 				tags: updated.tags,
 			};
+		}),
+
+	addTag: protectedProcedure
+		.input(
+			z.object({
+				bookmarkId: z.string(),
+				tag: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = requireUserId(ctx);
+			const prismaClient = ctx.prisma;
+
+			const bookmark = await prismaClient.grantBookmark.findFirst({
+				where: { id: input.bookmarkId, userId },
+			});
+
+			if (!bookmark) {
+				throw new TRPCError({ code: 'NOT_FOUND' });
+			}
+
+			const nextTags = normalizeTags([...bookmark.tags, input.tag]);
+			if (nextTags.length === bookmark.tags.length) {
+				return { tags: bookmark.tags };
+			}
+
+			const updated = await prismaClient.grantBookmark.update({
+				where: { id: bookmark.id },
+				data: { tags: nextTags },
+			});
+
+			return { tags: updated.tags };
+		}),
+
+	removeTag: protectedProcedure
+		.input(
+			z.object({
+				bookmarkId: z.string(),
+				tag: z.string(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			const userId = requireUserId(ctx);
+			const prismaClient = ctx.prisma;
+
+			const bookmark = await prismaClient.grantBookmark.findFirst({
+				where: { id: input.bookmarkId, userId },
+			});
+
+			if (!bookmark) {
+				throw new TRPCError({ code: 'NOT_FOUND' });
+			}
+
+			const normalized = normalizeTags([input.tag])[0];
+			if (!normalized) {
+				return { tags: bookmark.tags };
+			}
+
+			const nextTags = bookmark.tags.filter((tag) => tag !== normalized);
+			if (nextTags.length === bookmark.tags.length) {
+				return { tags: bookmark.tags };
+			}
+
+			const updated = await prismaClient.grantBookmark.update({
+				where: { id: bookmark.id },
+				data: { tags: nextTags },
+			});
+
+			return { tags: updated.tags };
 		}),
 
 	getMyTags: protectedProcedure.query(async ({ ctx }) => {

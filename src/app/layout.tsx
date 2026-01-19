@@ -9,6 +9,7 @@ import { ErrorBoundary } from '@/components/error-boundary';
 import { Header } from '@/components/layout/Header';
 import { getServerSession } from 'next-auth';
 import { Analytics } from '@vercel/analytics/next';
+import { ProfileSetupToast } from '@/components/onboarding/profile-setup-toast';
 
 export const metadata: Metadata = {
 	title: 'AI GrantMatch',
@@ -40,6 +41,7 @@ export default async function RootLayout({
 					<TRPCProvider>
 						<ErrorBoundary>
 							<div className="relative min-h-screen flex flex-col">
+								<ProfileSetupToast />
 								{/* Background decoration */}
 								<div className="fixed inset-0 -z-10 overflow-hidden">
 									<div className="absolute -left-1/4 -top-1/4 h-[800px] w-[800px] rounded-full bg-blue-500/5 blur-3xl animate-pulse-slow" />

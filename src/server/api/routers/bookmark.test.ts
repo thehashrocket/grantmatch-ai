@@ -48,6 +48,16 @@ const createPrismaMock = (store: {
 	grants: TestGrant[];
 }) => ({
 	grantBookmark: {
+		findFirst: ({
+			where,
+		}: {
+			where: { id?: string; userId?: string };
+		}) =>
+			store.bookmarks.find((bookmark) => {
+				if (where.id && bookmark.id !== where.id) return false;
+				if (where.userId && bookmark.userId !== where.userId) return false;
+				return true;
+			}) ?? null,
 		findUnique: ({
 			where,
 		}: {
@@ -156,6 +166,7 @@ const createPrismaMock = (store: {
 		},
 		findMany: ({
 			where,
+			include,
 		}: {
 			where: {
 				userId?: string;
@@ -209,7 +220,7 @@ const createPrismaMock = (store: {
 				});
 			}
 			return results.map((bookmark) => {
-				if (where && (where as { grant?: unknown }).grant) {
+				if (include?.grant) {
 					const grant = store.grants.find((g) => g.id === bookmark.grantId);
 					return { ...bookmark, grant };
 				}
@@ -442,5 +453,72 @@ describe('bookmarkRouter', () => {
 		await expect(
 			caller.updateMeta({ grantId: 'grant-note', note: longNote }),
 		).rejects.toThrow();
+	});
+
+	it('adds and removes tags via tag mutations', async () => {
+		addGrant('grant-tags', $Enums.GrantStatus.OPEN);
+		state.bookmarks.push({
+			id: 'bm-tags',
+			userId: 'user-1',
+			grantId: 'grant-tags',
+			status: $Enums.BookmarkStatus.INTERESTED,
+			note: null,
+			tags: ['initial'],
+			createdAt: new Date(),
+			updatedAt: new Date(),
+		});
+
+		const caller = createCaller();
+		const added = await caller.addTag({
+			bookmarkId: 'bm-tags',
+			tag: '  New Tag ',
+		});
+		expect(added.tags).toEqual(['initial', 'new tag']);
+
+		const removed = await caller.removeTag({
+			bookmarkId: 'bm-tags',
+			tag: 'Initial',
+		});
+		expect(removed.tags).toEqual(['new tag']);
+	});
+
+	it('filters bookmarks by tagsAny and tagsAll', async () => {
+		addGrant('tag-a', $Enums.GrantStatus.OPEN);
+		addGrant('tag-b', $Enums.GrantStatus.OPEN);
+		state.bookmarks.push(
+			{
+				id: 'bm-a',
+				userId: 'user-1',
+				grantId: 'tag-a',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: null,
+				tags: ['education', 'stem'],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			{
+				id: 'bm-b',
+				userId: 'user-1',
+				grantId: 'tag-b',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: null,
+				tags: ['health'],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+		);
+
+		const caller = createCaller();
+		const anyResult = await caller.list({
+			filters: { tagsAny: ['stem'] },
+		});
+		expect(anyResult.items).toHaveLength(1);
+		expect(anyResult.items[0]?.id).toBe('bm-a');
+
+		const allResult = await caller.list({
+			filters: { tagsAll: ['education', 'stem'] },
+		});
+		expect(allResult.items).toHaveLength(1);
+		expect(allResult.items[0]?.id).toBe('bm-a');
 	});
 });

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { trpc } from '@/lib/trpc/client';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
 import { BookmarkTagsInput } from '@/components/grants/BookmarkTagsInput';
 import { Tag } from 'lucide-react';
 
@@ -146,12 +147,12 @@ export function BookmarkMetaEditor({
 			/>
 
 			<div className="space-y-2">
-				<label
+				<Label
 					className="text-xs font-medium text-muted-foreground"
 					htmlFor={noteInputId}
 				>
 					Notes (max 2000 characters)
-				</label>
+				</Label>
 				<Textarea
 					id={noteInputId}
 					value={note}

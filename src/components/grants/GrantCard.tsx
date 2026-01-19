@@ -39,6 +39,7 @@ interface GrantCardProps {
 	actionSlot?: React.ReactNode;
 	returnTo?: string;
 	returnQuery?: string;
+	summaryTags?: string[];
 }
 
 function formatDate(dateString: string): string {
@@ -54,6 +55,7 @@ export function GrantCard({
 	actionSlot,
 	returnTo,
 	returnQuery,
+	summaryTags,
 }: GrantCardProps) {
 	const category = getFitScoreCategory(grant.fitScore);
 	const colorClasses = getFitScoreColor(category);
@@ -178,6 +180,12 @@ export function GrantCard({
 		? `${grant.internalUrl}${grant.internalUrl.includes('?') ? '&' : '?'}${returnQuery}`
 		: grant.internalUrl;
 	const grantHref = applyReturnTo(detailHref, returnTo);
+	const trimmedTags = summaryTags?.filter(Boolean) ?? [];
+	const visibleTags = trimmedTags.slice(0, 2);
+	const extraTagCount =
+		trimmedTags.length > visibleTags.length
+			? trimmedTags.length - visibleTags.length
+			: 0;
 
 	return (
 		<div className="relative">
@@ -192,7 +200,7 @@ export function GrantCard({
 										alt={`${flagInfo.label} flag`}
 										width={20}
 										height={14}
-										className=""
+										className="h-auto w-5"
 									/>
 								)}
 								<Link href={grantHref} className="hover:underline line-clamp-2">
@@ -203,6 +211,14 @@ export function GrantCard({
 								<Badge className={colorClasses}>
 									{fitLabel} • {grant.fitScore.toFixed(1)}/10
 								</Badge>
+								{visibleTags.map((tag) => (
+									<Badge key={tag} variant="secondary">
+										{tag}
+									</Badge>
+								))}
+								{extraTagCount > 0 ? (
+									<Badge variant="outline">+{extraTagCount} more</Badge>
+								) : null}
 								{confidence ? (
 									<Tooltip>
 										<TooltipTrigger asChild>

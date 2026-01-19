@@ -99,9 +99,11 @@ export function OrganizationMatchForm() {
 	);
 	const mutation = trpc.organization.updateProfile.useMutation();
 	const kickMutation = trpc.organization.kickMatchRecompute.useMutation();
+	const tickMutation = trpc.organization.tickMatchIndex.useMutation();
 	const utils = trpc.useUtils();
 	const pollCancelRef = useRef(false);
 	const inProgressRef = useRef(false);
+	const tickInFlightRef = useRef(false);
 	const mountedToastShownRef = useRef(false);
 	const [now, setNow] = useState(() => Date.now());
 
@@ -212,6 +214,32 @@ export function OrganizationMatchForm() {
 		return () => clearInterval(id);
 	}, [data?.matchIndexStatus, indexStatusQuery.data?.matchIndexStatus]);
 
+	useEffect(() => {
+		const status =
+			indexStatusQuery.data?.matchIndexStatus ?? data?.matchIndexStatus;
+		if (status !== 'RUNNING') return;
+
+		let cancelled = false;
+		const interval = setInterval(async () => {
+			if (cancelled) return;
+			if (tickInFlightRef.current) return;
+			tickInFlightRef.current = true;
+			try {
+				await tickMutation.mutateAsync();
+				await indexStatusQuery.refetch();
+			} catch (tickError) {
+				console.error('Match index tick failed', tickError);
+			} finally {
+				tickInFlightRef.current = false;
+			}
+		}, 5000);
+
+		return () => {
+			cancelled = true;
+			clearInterval(interval);
+		};
+	}, [data?.matchIndexStatus, indexStatusQuery, tickMutation]);
+
 	const pollIndexStatus = async () => {
 		pollCancelRef.current = false;
 		const start = Date.now();
@@ -223,6 +251,12 @@ export function OrganizationMatchForm() {
 
 		while (Date.now() - start < POLL_MAX_MS) {
 			if (pollCancelRef.current) return { outcome: 'CANCELLED' as const };
+
+			try {
+				await tickMutation.mutateAsync();
+			} catch (tickError) {
+				console.error('Match index tick failed', tickError);
+			}
 
 			const status = await utils.organization.getIndexStatus.fetch();
 			utils.organization.getIndexStatus.setData(undefined, status);
@@ -311,6 +345,7 @@ export function OrganizationMatchForm() {
 							action: {
 								label: 'Refresh status',
 								onClick: async () => {
+									await tickMutation.mutateAsync();
 									await indexStatusQuery.refetch();
 								},
 							},
@@ -629,6 +664,7 @@ export function OrganizationMatchForm() {
 											type="button"
 											className="underline hover:text-primary"
 											onClick={async () => {
+												await tickMutation.mutateAsync();
 												await indexStatusQuery.refetch();
 											}}
 											disabled={inProgressRef.current}

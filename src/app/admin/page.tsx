@@ -1,7 +1,9 @@
+import Link from 'next/link';
 import { GrantSyncPanel } from '@/components/admin/grant-sync-panel';
 import { db } from '@/lib/db';
 import { $Enums } from '@/prisma/generated/client';
 import { FitScoreBackfill } from '@/components/admin/fit-score-backfill';
+import { Button } from '@/components/ui/button';
 
 export default async function AdminPage() {
 	const [latestFederalRun, latestCaliforniaRun] = await Promise.all([
@@ -50,6 +52,20 @@ export default async function AdminPage() {
 			</div>
 
 			<div className="space-y-4">
+				<div className="rounded-lg border border-border bg-background p-4">
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+						<div>
+							<h2 className="text-lg font-semibold">User directory</h2>
+							<p className="text-sm text-muted-foreground">
+								View users, organizations, and bookmark counts.
+							</p>
+						</div>
+						<Button asChild variant="outline" size="sm">
+							<Link href="/admin/users">View users</Link>
+						</Button>
+					</div>
+				</div>
+
 				<GrantSyncPanel
 					title="Federal grants sync"
 					description="Run the ingestion that powers federal grant listings and details."

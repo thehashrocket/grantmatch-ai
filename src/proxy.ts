@@ -4,18 +4,30 @@ import type { NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
 	const token = await getToken({ req: request });
+	const pathname = request.nextUrl.pathname;
 
-	// Allow public routes and API routes
-	if (
-		request.nextUrl.pathname.startsWith('/login') ||
-		request.nextUrl.pathname.startsWith('/register') ||
-		request.nextUrl.pathname.startsWith('/verify-email') ||
-		request.nextUrl.pathname.startsWith('/api')
-	) {
+	const publicPrefixes = ['/login', '/register', '/verify-email', '/api'];
+	const protectedPrefixes = [
+		'/dashboard',
+		'/profile',
+		'/org',
+		'/admin',
+		'/grants',
+		'/onboarding',
+	];
+	const isPublicRoute = publicPrefixes.some((prefix) =>
+		pathname.startsWith(prefix),
+	);
+	const isProtectedRoute = protectedPrefixes.some((prefix) =>
+		pathname.startsWith(prefix),
+	);
+
+	// Allow all public routes and any routes not explicitly protected.
+	if (isPublicRoute || !isProtectedRoute) {
 		return NextResponse.next();
 	}
 
-	// Protect all other routes
+	// Protect routes that require authentication.
 	if (!token) {
 		return NextResponse.redirect(new URL('/login', request.url));
 	}
@@ -24,7 +36,7 @@ export async function proxy(request: NextRequest) {
 	if (
 		token.role === 'USER' &&
 		!token.organizationId &&
-		!request.nextUrl.pathname.startsWith('/onboarding') &&
+		!pathname.startsWith('/onboarding') &&
 		// Allow a brief transition period after onboarding
 		!request.cookies.has('onboarding_complete')
 	) {
@@ -32,7 +44,7 @@ export async function proxy(request: NextRequest) {
 	}
 
 	// Admin routes
-	if (request.nextUrl.pathname.startsWith('/admin') && token.role !== 'ADMIN') {
+	if (pathname.startsWith('/admin') && token.role !== 'ADMIN') {
 		return NextResponse.redirect(new URL('/', request.url));
 	}
 

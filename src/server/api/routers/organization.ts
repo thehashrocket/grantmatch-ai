@@ -136,6 +136,17 @@ export const organizationRouter = router({
 
 		return { started, tick };
 	}),
+	tickMatchIndex: protectedProcedure.mutation(async ({ ctx }) => {
+		const organizationId = ctx.session?.organizationId ?? null;
+		if (!organizationId) {
+			throw new TRPCError({
+				code: 'BAD_REQUEST',
+				message: 'MISSING_ORGANIZATION',
+			});
+		}
+
+		return runOrgMatchIndexTick(ctx.prisma, organizationId);
+	}),
 	runMatchIndexToCompletion: protectedProcedure.mutation(async ({ ctx }) => {
 		if (process.env.NODE_ENV === 'production') {
 			throw new TRPCError({

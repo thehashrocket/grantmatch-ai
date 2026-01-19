@@ -521,4 +521,50 @@ describe('bookmarkRouter', () => {
 		expect(allResult.items).toHaveLength(1);
 		expect(allResult.items[0]?.id).toBe('bm-a');
 	});
+
+	it('filters bookmarks by note presence', async () => {
+		addGrant('note-a', $Enums.GrantStatus.OPEN);
+		addGrant('note-b', $Enums.GrantStatus.OPEN);
+		addGrant('note-c', $Enums.GrantStatus.OPEN);
+		state.bookmarks.push(
+			{
+				id: 'bm-note-a',
+				userId: 'user-1',
+				grantId: 'note-a',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: 'Has note',
+				tags: [],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			{
+				id: 'bm-note-b',
+				userId: 'user-1',
+				grantId: 'note-b',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: '',
+				tags: [],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+			{
+				id: 'bm-note-c',
+				userId: 'user-1',
+				grantId: 'note-c',
+				status: $Enums.BookmarkStatus.INTERESTED,
+				note: null,
+				tags: [],
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			},
+		);
+
+		const caller = createCaller();
+		const hasNotes = await caller.list({ filters: { hasNote: true } });
+		expect(hasNotes.items).toHaveLength(1);
+		expect(hasNotes.items[0]?.id).toBe('bm-note-a');
+
+		const noNotes = await caller.list({ filters: { hasNote: false } });
+		expect(noNotes.items).toHaveLength(2);
+	});
 });

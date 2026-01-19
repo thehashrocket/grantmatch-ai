@@ -376,11 +376,6 @@ export const bookmarkRouter = router({
 					...(filters?.grantStatus
 						? { grant: { status: { in: filters.grantStatus } } }
 						: {}),
-					...(filters?.hasNote === true
-						? { note: { not: null } }
-						: filters?.hasNote === false
-							? { note: null }
-							: {}),
 					...(tagsAny.length ? { tags: { hasSome: tagsAny } } : {}),
 					...(tagsAll.length ? { tags: { hasEvery: tagsAll } } : {}),
 				},
@@ -388,8 +383,19 @@ export const bookmarkRouter = router({
 				include: { grant: { select: bookmarkGrantSelect } },
 			});
 
+			const noteFiltered =
+				filters?.hasNote === true
+					? bookmarks.filter(
+							(bookmark) => (bookmark.note ?? '').trim().length > 0,
+						)
+					: filters?.hasNote === false
+						? bookmarks.filter(
+								(bookmark) => (bookmark.note ?? '').trim().length === 0,
+							)
+						: bookmarks;
+
 			const filtered = searchTerm
-				? bookmarks.filter((bookmark) => {
+				? noteFiltered.filter((bookmark) => {
 						const note = (bookmark.note ?? '').toLowerCase();
 						const tagsText = bookmark.tags.join(' ').toLowerCase();
 						const title = bookmark.grant.title.toLowerCase();
@@ -401,7 +407,7 @@ export const bookmarkRouter = router({
 							tagsText.includes(searchTerm)
 						);
 					})
-				: bookmarks;
+				: noteFiltered;
 
 			const grantIds = filtered.map((bookmark) => bookmark.grantId);
 			let matchMap: Record<

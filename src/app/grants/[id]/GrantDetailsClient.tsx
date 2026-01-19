@@ -91,11 +91,12 @@ export default function GrantDetailsClient({
 				return next.toString();
 			})()
 		: '';
+	const fallbackBase = '/bookmarks';
 	const backTarget = returnToParam
 		? resolveBackTarget(returnToParam)
 		: searchParamsWithoutReturnTo
-			? `/dashboard?${searchParamsWithoutReturnTo}`
-			: '/dashboard';
+			? `${fallbackBase}?${searchParamsWithoutReturnTo}`
+			: fallbackBase;
 
 	useEffect(() => {
 		if (scoreError) return;

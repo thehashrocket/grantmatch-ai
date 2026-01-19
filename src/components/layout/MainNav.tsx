@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { Home, Info, BarChart, ShieldCheck } from 'lucide-react';
+import { Home, Info, BarChart, ShieldCheck, Bookmark } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 export function MainNav({
@@ -38,18 +38,32 @@ export function MainNav({
 				<span>About</span>
 			</Link>
 			{session && (
-				<Link
-					href="/dashboard"
-					className={cn(
-						'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
-						pathname === '/dashboard'
-							? 'text-primary'
-							: 'text-muted-foreground',
-					)}
-				>
-					<BarChart className="h-4 w-4" />
-					<span>Dashboard</span>
-				</Link>
+				<>
+					<Link
+						href="/dashboard"
+						className={cn(
+							'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
+							pathname === '/dashboard'
+								? 'text-primary'
+								: 'text-muted-foreground',
+						)}
+					>
+						<BarChart className="h-4 w-4" />
+						<span>Dashboard</span>
+					</Link>
+					<Link
+						href="/bookmarks"
+						className={cn(
+							'text-sm font-medium transition-colors hover:text-primary inline-flex items-center space-x-1',
+							pathname === '/bookmarks'
+								? 'text-primary'
+								: 'text-muted-foreground',
+						)}
+					>
+						<Bookmark className="h-4 w-4" />
+						<span>Bookmarks</span>
+					</Link>
+				</>
 			)}
 			{session?.user?.role === 'ADMIN' && (
 				<Link

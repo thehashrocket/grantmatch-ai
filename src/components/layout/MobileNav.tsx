@@ -77,6 +77,13 @@ export function MobileNav({ user }: MobileNavProps) {
 							>
 								Profile
 							</Link>
+							<Link
+								href="/bookmarks"
+								className="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
+								onClick={() => setOpen(false)}
+							>
+								Bookmarks
+							</Link>
 							{isAdmin && (
 								<Link
 									href="/admin"

@@ -16,11 +16,11 @@ export const applyReturnTo = (
 };
 
 export const resolveBackTarget = (returnToParam?: string | null): string => {
-	if (!returnToParam) return '/dashboard';
+	if (!returnToParam) return '/bookmarks';
 	try {
 		return decodeURIComponent(returnToParam);
 	} catch (error) {
 		console.error('Failed to decode returnTo param', error);
-		return '/dashboard';
+		return '/bookmarks';
 	}
 };

@@ -20,6 +20,6 @@ describe('return-to helpers', () => {
 		expect(resolveBackTarget('%2Fdashboard%3FtextSearch%3Dhousing')).toBe(
 			'/dashboard?textSearch=housing',
 		);
-		expect(resolveBackTarget(null)).toBe('/dashboard');
+		expect(resolveBackTarget(null)).toBe('/bookmarks');
 	});
 });

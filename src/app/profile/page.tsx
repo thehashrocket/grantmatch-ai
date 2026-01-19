@@ -2,8 +2,10 @@ import type { Metadata } from 'next';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { ProfileForm } from '@/components/profile/profile-form';
-import { BookmarkedGrants } from '@/components/profile/bookmarked-grants';
 import { OrganizationMatchForm } from '@/components/profile/organization-match-form';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
 	title: 'Profile - AI GrantMatch',
@@ -28,17 +30,19 @@ export default async function ProfilePage() {
 				</div>
 				<ProfileForm user={session.user} />
 				<OrganizationMatchForm />
-				<section className="space-y-4">
-					<div>
-						<h2 className="text-2xl font-semibold tracking-tight">
-							Bookmarked Grants
-						</h2>
-						<p className="text-muted-foreground">
-							Review saved grants, update statuses, and clean up closed items.
+				<Card>
+					<CardHeader>
+						<CardTitle>Saved grants</CardTitle>
+					</CardHeader>
+					<CardContent className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+						<p className="text-sm text-muted-foreground">
+							Manage tags, notes, and saved views on your bookmarks page.
 						</p>
-					</div>
-					<BookmarkedGrants />
-				</section>
+						<Button asChild variant="outline">
+							<Link href="/bookmarks">Manage bookmarks</Link>
+						</Button>
+					</CardContent>
+				</Card>
 			</div>
 		</div>
 	);

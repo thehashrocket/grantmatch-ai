@@ -64,5 +64,6 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 ## Documentation
 
 - Prisma 7.2.0: <https://www.prisma.io/llms.txt>
-- Next.js 16.1.1: <https://nextjs.org/docs/llms-full.txt>
+- Next.js 16.1.3: <https://nextjs.org/docs/llms-full.txt>
 - React 19.2.3: <https://react.dev/reference/react>
+- Shadcn UI: <https://ui.shadcn.com/llms.txt>

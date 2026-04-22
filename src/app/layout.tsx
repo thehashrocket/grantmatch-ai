@@ -18,6 +18,9 @@ export const metadata: Metadata = {
 	metadataBase: new URL('https://aigrantmatch.com'),
 	keywords: ['grants', 'nonprofits', 'funding', 'AI', 'grant matching'],
 	authors: [{ name: 'AI GrantMatch' }],
+	verification: {
+		google: '0nQrUUh8r1VibNx5fkNYRrkPMctv6dUxtzJBhW5Hins',
+	},
 	openGraph: {
 		type: 'website',
 		title: 'AI GrantMatch - Empowering Nonprofits',

@@ -40,7 +40,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `src/app/` - App Router pages and API routes
   - `(auth)/` - Route group for authentication flows (register, onboarding)
   - `api/` - REST endpoints (auth, grants, organizations, onboarding, grant imports) + tRPC handler at `api/trpc/[trpc]/`
-  - Pages: `login/`, `dashboard/`, `grants/[id]/`, `profile/`, `org/`, `verify-email/`
+  - Public pages (no auth): `grants/` (browse), `grants/source/[source]/` (facet), `grants/[id]/` (detail), `contact/`, `privacy/`, `terms/`
+  - Authenticated pages: `login/`, `dashboard/`, `profile/`, `org/`, `verify-email/`
+  - Error pages: `error.tsx` (500), `not-found.tsx` (404)
 - `src/components/` - Reusable React components
   - `ui/` - Shadcn UI primitives (button, form, card, input, select, dialog, avatar, etc.)
   - `auth/` - Login and registration forms
@@ -52,6 +54,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - `trpc/` - tRPC client setup and React Query integration
   - `hooks/` - Custom hooks (useGrantSearch, etc.)
   - `types/` - TypeScript type definitions
+  - `seo/` - SEO utilities: `grants.ts` exports `grantMetadata()`, `grantJsonLd()`, `truncateDescription()`
+  - `public-grants.ts` - Unauthenticated Prisma query layer for public grant browsing
   - Auth helpers, date formatting, and utility functions
 - `src/server/` - Server-only code
   - `routers/` - tRPC router definitions
@@ -102,7 +106,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Use `./start-database.sh` for local PostgreSQL setup (regenerates password automatically)
 
 ### Testing Notes
-- Add Vitest or Playwright for testing coverage
-- Colocate test files as `*.test.ts` or `*.spec.tsx`
-- Focus testing on critical tRPC procedures and Prisma flows
-- Include manual QA notes in PR descriptions
+- **Test runner**: `pnpm test` (Vitest) — 125 tests across 24 files
+- Colocate test files as `*.test.ts` next to the module they test
+- Mock `@/lib/db` via `vi.mock` with `vi.hoisted()` for database-dependent code
+- Public data layer tests in `src/lib/public-grants.test.ts`
+- SEO utility tests in `src/lib/seo/grants.test.ts`
+- Include manual QA notes in PR descriptions for UI changes

@@ -1,16 +1,29 @@
-// Grant page
-// Show the grant details
-// Hit the API to either get the grant details from the databhase for fetch them from n8n
-
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
+import Script from 'next/script';
 import GrantDetailsClient from './GrantDetailsClient';
 import { db } from '@/lib/db';
 import { ensureGrantDetail } from '@/server/grants/ensureGrantDetail';
 import GrantDetailsKick from '@/components/grants/GrantDetailsKick';
+import { grantMetadata, grantJsonLd } from '@/lib/seo/grants';
 
 const DETAIL_TIMEOUT_MS = 8_000;
 
 type GrantPageParams = { id: string };
+
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<GrantPageParams>;
+}): Promise<Metadata> {
+	const { id } = await params;
+	const grant = await db.grant.findUnique({
+		where: { id },
+		include: { details: true },
+	});
+	if (!grant) return { title: 'Grant Not Found | GrantMatch AI' };
+	return grantMetadata(grant);
+}
 
 export default async function GrantDetailsPage({
 	params,
@@ -29,8 +42,15 @@ export default async function GrantDetailsPage({
 
 	if (!grant) notFound();
 
+	const jsonLd = grantJsonLd(grant);
+
 	return (
 		<main className="container mx-auto p-6">
+			<Script
+				id={`grant-jsonld-${id}`}
+				type="application/ld+json"
+				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd).replace(/</g, '\\u003c') }}
+			/>
 			<GrantDetailsKick grantId={id} detailsStatus={grant.detailsStatus} />
 			<GrantDetailsClient grantId={id} initialGrant={grant} />
 		</main>

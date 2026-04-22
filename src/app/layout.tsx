@@ -10,6 +10,7 @@ import { Header } from '@/components/layout/Header';
 import { getServerSession } from 'next-auth';
 import { Analytics } from '@vercel/analytics/next';
 import { ProfileSetupToast } from '@/components/onboarding/profile-setup-toast';
+import Script from 'next/script';
 
 export const metadata: Metadata = {
 	title: 'AI GrantMatch',
@@ -98,6 +99,18 @@ export default async function RootLayout({
 					<Toaster position="top-center" />
 				</NextAuthProvider>
 				<Analytics />
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=G-XNXC2ZKSDF"
+					strategy="afterInteractive"
+				/>
+				<Script id="google-analytics" strategy="afterInteractive">
+					{`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'G-XNXC2ZKSDF');
+					`}
+				</Script>
 			</body>
 		</html>
 	);

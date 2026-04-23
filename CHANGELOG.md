@@ -2,6 +2,11 @@
 
 All notable changes to GrantMatch AI are documented here.
 
+## [0.2.0.1] - 2026-04-23
+
+### Added
+- `conductor.json` setup script for Conductor workspace automation — copies `.env` from root, installs deps, starts the Docker Postgres container, runs Prisma migrations, and launches the dev server
+
 ## [0.2.0] - 2026-04-22
 
 ### Added

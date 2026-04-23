@@ -1,7 +1,7 @@
 {
     "scripts": {
-        "setup": "cp $CONDUCTOR_ROOT_PATH/.env .env && pnpm install",
-        "run": "./start-database.sh && pnpm prisma migrate dev && pnpm prisma generate && pnpm dev",
+        "setup": "export NVM_DIR=\"$HOME/.nvm\" && . \"$NVM_DIR/nvm.sh\" && nvm use 24.7.0 && cp $CONDUCTOR_ROOT_PATH/.env .env && pnpm install",
+        "run": "export NVM_DIR=\"$HOME/.nvm\" && . \"$NVM_DIR/nvm.sh\" && nvm use 24.7.0 && ./start-database.sh && pnpm prisma migrate dev && pnpm prisma generate && pnpm dev",
         "archive": ""
     }
 }

@@ -1,0 +1,7 @@
+{
+    "scripts": {
+        "setup": "cp $CONDUCTOR_ROOT_PATH/.env .env && pnpm install",
+        "run": "./start-database.sh && pnpm prisma migrate dev && pnpm prisma generate && pnpm dev",
+        "archive": ""
+    }
+}

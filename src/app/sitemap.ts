@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next';
 import { getIndexableGrantIds } from '@/lib/public-grants';
 
 const BASE_URL =
-	process.env.NEXT_PUBLIC_APP_URL ?? 'https://aigrantmatch.com';
+	process.env.NEXT_PUBLIC_APP_URL ?? 'https://www.aigrantmatch.com';
 
 const STATIC_ROUTES = ['/', '/about', '/grants', '/privacy', '/terms', '/contact'];
 

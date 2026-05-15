@@ -133,21 +133,38 @@ Key routing rules:
 
 ## GBrain Configuration (configured by /setup-gbrain)
 - Mode: local-stdio
-- Engine: pglite
+- Engine: postgres (Supabase project `ftahhwqedtldkhvjfjig`, us-east-1)
+- Connection: direct DB URL (port 5432) — pooler credentials still propagating; see note
 - Config file: ~/.gbrain/config.json (mode 0600)
 - Setup date: 2026-05-14
-- MCP registered: yes (user scope)
+- MCP registered: yes (user scope) via `~/.gbrain/serve-wrapper.sh` (cd $HOME first to avoid project .env collision)
 - Artifacts sync: artifacts-only
 - Artifacts repo: https://github.com/thehashrocket/gstack-artifacts-jasonshultz
 - Current repo policy: read-write
+
+Note on cwd: gbrain v0.33.2.1 auto-loads `.env` from cwd. When this project's `.env` is in scope, gbrain incorrectly tries to connect to `grantmatch-ai-postgres`. The MCP wrapper script cd's to $HOME first. CLI calls from this repo's terminal need to `cd ~/` or pass `GBRAIN_DATABASE_URL` explicitly.
+
+Note on pooler: Supabase Session Pooler (port 6543) credentials lag behind direct DB password resets. To switch to pooler later, wait ~hours then re-run init against the pooler URL.
+
+pglite backup: `~/.gbrain/brain.pglite.bak-20260514-124937` (1.2GB) preserved in case any local-only data needs recovery.
 
 ## GBrain Search Guidance (configured by /sync-gbrain)
 <!-- gstack-gbrain-search-guidance:start -->
 
 GBrain is set up and synced on this machine. The agent should prefer gbrain
 over Grep when the question is semantic or when you don't know the exact
-identifier yet. Two indexed corpora available via the `gbrain` CLI:
-- This repo's code (registered as `gstack-code-<repo>` source).
+identifier yet.
+
+**This worktree is pinned to a worktree-scoped code source** via the
+`.gbrain-source` file in the repo root (kubectl-style context). Any
+`gbrain code-def`, `code-refs`, `code-callers`, `code-callees`, or `query`
+call from anywhere under this worktree routes to that source by default —
+no `--source` flag needed. Conductor sibling worktrees of the same repo
+each have their own pin and their own indexed pages, so semantic results
+match the actual code on disk in this worktree.
+
+Two indexed corpora available via the `gbrain` CLI:
+- This worktree's code (auto-pinned via `.gbrain-source`).
 - `~/.gstack/` curated memory (registered as `gstack-brain-<user>` source via
   the existing federation pipeline).
 
@@ -162,7 +179,8 @@ Prefer gbrain when:
     `gbrain search "<terms>" --source gstack-brain-<user>`
 
 Grep is still right for known exact strings, regex, multiline patterns, and
-file globs. The brain auto-syncs incrementally on every gstack skill start.
-Run `/sync-gbrain` to force-refresh, `/sync-gbrain --full` for full reindex.
+file globs. Run `/sync-gbrain` after meaningful code changes; for ongoing
+auto-sync across all worktrees, run `gbrain autopilot --install` once per
+machine — gbrain's daemon handles incremental refresh on a schedule.
 
 <!-- gstack-gbrain-search-guidance:end -->

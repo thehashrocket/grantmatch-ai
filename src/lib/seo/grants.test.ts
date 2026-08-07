@@ -117,8 +117,8 @@ describe('grantJsonLd', () => {
 	it('uses estimatedTotalFunding first for price', () => {
 		const grant = {
 			...baseGrant,
-			estimatedTotalFunding: 100000,
-			awardCeiling: 50000,
+			estimatedTotalFunding: BigInt(100000),
+			awardCeiling: BigInt(50000),
 		} as Parameters<typeof grantJsonLd>[0];
 		const ld = grantJsonLd(grant);
 		const offers = ld.offers as { price: string };
@@ -128,7 +128,7 @@ describe('grantJsonLd', () => {
 	it('falls back to awardCeiling when estimatedTotalFunding is null', () => {
 		const grant = {
 			...baseGrant,
-			awardCeiling: 75000,
+			awardCeiling: BigInt(75000),
 		} as Parameters<typeof grantJsonLd>[0];
 		const ld = grantJsonLd(grant);
 		const offers = ld.offers as { price: string };
@@ -138,7 +138,7 @@ describe('grantJsonLd', () => {
 	it('falls back to awardFloor as last resort', () => {
 		const grant = {
 			...baseGrant,
-			awardFloor: 10000,
+			awardFloor: BigInt(10000),
 		} as Parameters<typeof grantJsonLd>[0];
 		const ld = grantJsonLd(grant);
 		const offers = ld.offers as { price: string };
@@ -166,7 +166,9 @@ describe('grantJsonLd', () => {
 	});
 
 	it('omits publisher when grantor is null', () => {
-		const grant = { ...baseGrant, grantor: null } as Parameters<
+		// `grantor` is non-nullable in the schema; cast through `unknown` to
+		// exercise grantJsonLd's defensive fallback for missing publishers.
+		const grant = { ...baseGrant, grantor: null } as unknown as Parameters<
 			typeof grantJsonLd
 		>[0];
 		const ld = grantJsonLd(grant);

@@ -2,7 +2,16 @@
 
 All notable changes to GrantMatch AI are documented here.
 
-## [0.2.0.1] - 2026-04-23
+## [0.2.0.2] - 2026-08-07
+
+### Fixed
+- Cleared all 10 outstanding security advisories in the dependency tree, including one critical and five high. Every advisory was confined to development tooling; no shipped application dependency was affected.
+
+### Changed
+- Upgraded the test runner from vitest 2 to vitest 4, which moves the underlying build tooling from vite 5 to vite 8 and removes the vulnerable esbuild and postcss copies it carried.
+- Pinned the legacy `brace-expansion` 1.x line to a patched release, clearing three denial-of-service advisories reachable through the lint toolchain.
+- Renamed the vitest config to `vitest.config.mts` so it loads as a real ES module, removing a forward-compatibility warning from every test run.
+- TypeScript now typechecks `.mts` files, so the vitest config is covered by `pnpm typecheck` again after the rename.
 
 ### Added
 - `conductor.json` setup script for Conductor workspace automation — copies `.env` from root, installs deps, starts the Docker Postgres container, runs Prisma migrations, and launches the dev server

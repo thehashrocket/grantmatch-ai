@@ -17,8 +17,13 @@ const fetchMock = vi.fn(async () => ({
 	grantPatch: {},
 }));
 
-const parseCalls = (spy: ReturnType<typeof vi.spyOn>) =>
-	spy.mock.calls.map(([line]) => JSON.parse(String(line)));
+// vitest 4 no longer gives `mock.calls` a usable element type for a bare
+// `ReturnType<typeof vi.spyOn>`, so pin both the argument and the result here
+// rather than letting every call site infer `any`.
+const parseCalls = (
+	spy: ReturnType<typeof vi.spyOn>,
+): Record<string, unknown>[] =>
+	(spy.mock.calls as unknown[][]).map(([line]) => JSON.parse(String(line)));
 
 vi.mock('@/server/grants/details/fetchers', () => ({
 	getDetailFetcher: vi.fn(() => ({

@@ -27,7 +27,8 @@ export async function runOrgTicksOnce(
 
 	const results = [];
 	for (const org of candidates) {
-		// eslint-disable-next-line no-await-in-loop
+		// Sequential on purpose: each tick writes match rows, so running these
+		// concurrently would contend on the same tables.
 		const result = await runOrgMatchIndexTick(prisma, org.id, opts);
 		results.push({ organizationId: org.id, result });
 	}

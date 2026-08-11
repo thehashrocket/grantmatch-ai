@@ -60,9 +60,11 @@ jobs:
       # pnpm v11+ while this repo is on pnpm 10 with a lockfileVersion 9.0
       # lockfile. Staying here keeps CI on the same pnpm major as local
       # development; switch once the repo moves to pnpm 11.
+      #
+      # No `version:` here on purpose. The action reads `packageManager` from
+      # package.json, and specifying both is a hard error unless the strings
+      # match exactly ("10" != "10.32.1"). package.json is the single source.
       - uses: pnpm/action-setup@v6
-        with:
-          version: 10
 
       - uses: actions/setup-node@v7
         with:

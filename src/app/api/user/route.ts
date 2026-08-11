@@ -4,7 +4,7 @@ import * as z from 'zod';
 
 const userUpdateSchema = z.object({
 	name: z.string().min(2),
-	email: z.string().email(),
+	email: z.email(),
 });
 
 export async function PATCH(req: Request) {

@@ -11,7 +11,7 @@ import type { FormData } from './multi-step-form';
 import { X } from 'lucide-react';
 
 const emailSchema = z.object({
-	email: z.string().email('Please enter a valid email address'),
+	email: z.email('Please enter a valid email address'),
 });
 
 interface TeamInviteFormProps {

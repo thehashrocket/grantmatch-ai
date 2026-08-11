@@ -2,6 +2,25 @@
 
 All notable changes to GrantMatch AI are documented here.
 
+## [0.2.1.0] - 2026-08-10
+
+### Fixed
+- The grant sync and backfill scripts (`pnpm sync:ca-grants`, `sync:federal-grants`, `import:california`, and the fit-score backfill) now run. All four imported `dotenv/config` while `dotenv` was never declared as a dependency, so every one of them failed immediately with `ERR_MODULE_NOT_FOUND`. Scheduled syncing was unaffected — it runs through the `/api/cron/*` routes, not these scripts.
+- Validation failures from the grant-import endpoints return their `details` payload again. The field is now read from the Zod 4 property name; left as-is it would have serialized as absent.
+
+### Changed
+- Node 24 LTS is now a declared requirement (`engines.node: "24.x"`). **Deploy note:** Vercel reads `engines.node` and it overrides the project's Node setting, so the Vercel project must be moved from 22.x to 24.x alongside this release.
+- Upgraded seven dependency majors: Zod 3 to 4, TypeScript 5 to 7, Resend 4 to 6, lucide-react to 1.x, `@hookform/resolvers` 4 to 5, `@vercel/analytics` 1 to 2, and cuid2 2 to 3. `@types/node` deliberately stays on 24 to match the runtime rather than tracking ahead of it.
+- Migrated off the Zod APIs deprecated in v4 (`z.string().email()`, `z.string().url()`, `z.nativeEnum`) so the codebase is not sitting on surface that Zod 5 removes. Email, URL, and enum validation were each verified to accept and reject exactly what they did before.
+- Linting is Biome only. The README and CLAUDE.md previously described an ESLint and Prettier setup that had already stopped running.
+
+### Removed
+- Deleted the unused ESLint and Prettier toolchains along with `eslint.config.mjs`. Neither was wired to any command: `pnpm lint` runs Biome, CI runs `pnpm lint`, and Next 16 removed `next lint`. This drops 250 packages from the install.
+- Dropped the `brace-expansion` pnpm override. It resolved to the same version with or without the pin, and the dependency path that made it necessary came in through ESLint, which is now gone.
+
+### Added
+- Tests covering organization profile validation: empty-string clearing, explicit nulls, award-range bounds, and collection limits. The empty-string path decides whether clearing a form field leaves a column untouched or writes NULL over it, and it previously had no direct coverage.
+
 ## [0.2.0.2] - 2026-08-07
 
 ### Fixed

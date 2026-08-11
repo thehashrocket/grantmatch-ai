@@ -33,7 +33,7 @@ const validationHelpers = {
 
 // Common validation schemas
 const commonSchemas = {
-	url: z.string().url('Invalid URL format'),
+	url: z.url('Invalid URL format'),
 	requiredString: (fieldName: string) =>
 		z.string().min(1, `${fieldName} is required`),
 	requiredDate: (fieldName: string) =>
@@ -191,7 +191,7 @@ export async function POST(req: Request) {
 		console.error('Error processing grant:', err);
 		if (err instanceof z.ZodError) {
 			return new Response(
-				JSON.stringify({ error: 'Validation failed', details: err.errors }),
+				JSON.stringify({ error: 'Validation failed', details: err.issues }),
 				{ status: 400 },
 			);
 		}

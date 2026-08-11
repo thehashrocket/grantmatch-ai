@@ -30,7 +30,7 @@ export async function POST(req: Request) {
 		} catch (err) {
 			if (err instanceof z.ZodError) {
 				return new Response(
-					JSON.stringify({ error: 'Validation failed', details: err.errors }),
+					JSON.stringify({ error: 'Validation failed', details: err.issues }),
 					{
 						status: 400,
 						headers: { 'Content-Type': 'application/json' },

@@ -17,8 +17,8 @@ import { parseSubscoresJson } from '@/lib/utils/match-explanation';
 
 const BOOKMARK_LIMIT = 100;
 
-const bookmarkStatusSchema = z.nativeEnum($Enums.BookmarkStatus);
-const grantStatusSchema = z.nativeEnum($Enums.GrantStatus);
+const bookmarkStatusSchema = z.enum($Enums.BookmarkStatus);
+const grantStatusSchema = z.enum($Enums.GrantStatus);
 
 const sortEnum = z.enum([
 	'BOOKMARKED_AT_DESC',

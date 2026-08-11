@@ -119,7 +119,8 @@ GrantMatch AI streamlines the grant discovery process by:
 
 - **Dev server**: `pnpm dev` - Starts Next.js with Turbopack on port 3005
 - **Build**: `pnpm build` - Runs `prisma generate` then `next build`
-- **Lint**: `pnpm lint` - Runs Next.js ESLint config with TypeScript checking
+- **Lint**: `pnpm lint` - Runs Biome (`pnpm format` to auto-format)
+- **Typecheck**: `pnpm typecheck` - Runs `tsc --noEmit`
 - **Start production**: `pnpm start` - Starts production server
 - **Database setup**: `./start-database.sh` - Provisions local PostgreSQL
 - **Migrations**: `pnpm prisma migrate dev` - Apply schema changes to database
@@ -165,7 +166,8 @@ GrantMatch AI streamlines the grant discovery process by:
 
 ## Development & Testing
 
-- `pnpm lint` enforces the Next.js ESLint config with Prettier + Tailwind; keep output clean before committing
+- `pnpm lint` runs Biome (lint + format); keep output clean before committing. ESLint and Prettier are not used
+- Node 24 LTS is required (`.nvmrc`, and `engines.node: "24.x"` in package.json)
 - `pnpm typecheck` runs the TypeScript compiler without emitting; use it to catch API/server regressions early
 - Add Vitest or Playwright coverage where relevant; colocate specs as `*.test.ts` or `*.spec.tsx`
 - Cover critical tRPC procedures and Prisma flows, and note manual QA in PR descriptions

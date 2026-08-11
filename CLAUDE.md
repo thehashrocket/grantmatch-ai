@@ -6,7 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 - **Development server**: `pnpm dev` - Starts Next.js with Turbopack on port 3005
 - **Build**: `pnpm build` - Runs `prisma generate` then `next build`
-- **Lint**: `pnpm lint` - Runs Next.js ESLint config with TypeScript checking
+- **Lint**: `pnpm lint` - Runs Biome (`pnpm format` to auto-format). ESLint/Prettier are not used.
+- **Typecheck**: `pnpm typecheck` - Runs `tsc --noEmit`
+- **Node version**: Node 24 LTS (see `.nvmrc`); `engines.node` is `24.x`. Vercel reads
+  `engines.node` and it overrides the project's Node setting, so keep them in sync.
 - **Start production**: `pnpm start` - Starts production server
 - **Database setup**: `./start-database.sh` - Provisions local PostgreSQL and regenerates password
 - **Database migrations**: `pnpm prisma migrate dev` - Apply schema changes to database

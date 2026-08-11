@@ -12,7 +12,6 @@ async function backfillFitScores() {
 	let processed = 0;
 	let updated = 0;
 
-	// eslint-disable-next-line no-constant-condition
 	while (true) {
 		const grants = await db.grant.findMany({
 			where: {

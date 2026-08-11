@@ -512,6 +512,5 @@ const debugEnabled =
 
 function logDebug(message: string, payload?: Record<string, unknown>) {
 	if (!debugEnabled) return;
-	// eslint-disable-next-line no-console
 	console.info('[grant-sync]', message, payload ?? '');
 }

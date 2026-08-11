@@ -14,14 +14,16 @@ Follow these standards to keep contributions consistent with the GrantMatch AI c
 - `pnpm dev` starts the Turbopack dev server on <http://localhost:3005>.
 - `pnpm build` compiles the production bundle; run before deploying.
 - `pnpm start` serves the built bundle for smoke testing.
-- `pnpm lint` applies the Next.js ESLint ruleset (ensure clean output before review).
+- `pnpm lint` runs Biome (ensure clean output before review); `pnpm format` auto-formats.
+- `pnpm typecheck` runs `tsc --noEmit`.
+- Node 24 LTS is required (`.nvmrc`, `engines.node: "24.x"`).
 - `pnpm prisma migrate dev` updates the local database; pair with `pnpm prisma generate` after schema edits.
 
 ## Coding Style & Naming Conventions
 
 - Write React 19 components in TypeScript with two-space indentation and single quotes (JSX attributes may use double quotes).
 - File names use kebab-case (`src/components/ui/button.tsx`); components export in PascalCase.
-- Prettier (with Tailwind plugin) and `next/core-web-vitals` ESLint manage formatting and utility ordering—do not hand-sort Tailwind classes.
+- Biome manages formatting and lint (`pnpm format` / `pnpm lint`). ESLint and Prettier are not used.
 
 ## Testing Guidelines
 

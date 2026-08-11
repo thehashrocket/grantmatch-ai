@@ -15,8 +15,14 @@ pnpm build
 # Start production server
 pnpm start
 
-# Lint code using Next.js ESLint ruleset
+# Lint code using Biome
 pnpm lint
+
+# Auto-format using Biome
+pnpm format
+
+# Typecheck without emitting
+pnpm typecheck
 ```
 
 ### Database Operations
@@ -188,7 +194,7 @@ RESEND_API_KEY="your-resend-key"
 ### Styling Conventions
 - **Tailwind CSS v4+** utility classes
 - **Mobile-first** responsive design
-- **Prettier** with Tailwind plugin for class ordering
+- **Biome** handles formatting (`pnpm format`); Prettier is not used
 - Two-space indentation, single quotes in TS/TSX
 
 ## Development Workflow

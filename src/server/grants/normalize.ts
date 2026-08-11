@@ -34,11 +34,11 @@ const candidateLists = {
 };
 
 export const normalizedGrantSchema = z.object({
-	source: z.nativeEnum($Enums.GrantSource),
+	source: z.enum($Enums.GrantSource),
 	sourceRecordId: z.string().optional(),
 	sourceKey: z.string().optional(),
 	title: z.string().min(1),
-	url: z.string().url(),
+	url: z.url(),
 	grantor: z.string().min(1),
 	stateAgency: z.string().optional(),
 	purpose: z.string().optional(),
@@ -50,7 +50,7 @@ export const normalizedGrantSchema = z.object({
 	opportunityType: z.string().optional(),
 	currentAsOf: z.date().optional(),
 	portalId: z.number().int().optional().nullable(),
-	status: z.nativeEnum($Enums.GrantStatus),
+	status: z.enum($Enums.GrantStatus),
 	closedAt: z.date().optional().nullable(),
 	contentHash: z.string(),
 	lastSeenAt: z.date(),

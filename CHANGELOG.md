@@ -2,6 +2,11 @@
 
 All notable changes to GrantMatch AI are documented here.
 
+## [0.2.1.1] - 2026-09-03
+
+### Fixed
+- Cleared five GitHub security advisories in `fast-uri`, a transitive dependency pulled in through `ajv` (via `@hookform/resolvers`, Prisma, and webpack's `schema-utils`): host confusion / SSRF-style URI parsing bugs (CVE-2026-76172 and three related advisories) plus a same-day authority-injection advisory (CVE-2026-84292) caught during review. Pinned `fast-uri` to `^3.1.7` via a pnpm override — the first version patched against all five.
+
 ## [0.2.1.0] - 2026-08-10
 
 ### Fixed

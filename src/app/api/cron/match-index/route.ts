@@ -1,5 +1,5 @@
 // /src/app/api/cron/match-index/route.ts
-// Vercel Cron hits `/api/cron/match-index` every 5 minutes (see `vercel.json`).
+// Vercel Cron hits `/api/cron/match-index` every 30 minutes (see `vercel.json`).
 import { type NextRequest, NextResponse } from 'next/server';
 import { validateCronAuth } from '@/server/cron/assertCronAuth';
 import { runOrgMatchIndexSweep } from '@/server/grants/match/runOrgMatchIndexSweep';
